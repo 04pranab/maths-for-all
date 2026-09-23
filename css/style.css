@@ -2079,3 +2079,50 @@ button {
     min-width: 76px;
   }
 }
+
+/* ---------- Quiz reflection controls ---------- */
+.quiz-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 14px auto 4px;
+  max-width: 720px;
+}
+
+.quiz-action {
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  padding: 10px 15px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.quiz-action:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.quiz-action:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.quiz-action.primary {
+  background: var(--leaf);
+  color: var(--ink);
+}
+
+.quiz-action.secondary {
+  background: var(--card);
+}
+
+.feedback.hint,
+.feedback.explanation {
+  line-height: 1.55;
+}
