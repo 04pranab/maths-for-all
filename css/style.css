@@ -1355,7 +1355,7 @@ button {
 }
 
 .btn-dare-yes {
-  background: var(--leaf);
+  background: var(--leaf-deep);
   color: #fff;
   border: none;
   padding: 12px 20px;
