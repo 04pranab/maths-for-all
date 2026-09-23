@@ -209,5 +209,8 @@ If you do not agree to these terms, you may not exercise the permissions granted
 **Copyright © 2026 Om Pranab Mohanty. All rights reserved.**
 
 Project: **Math for All**
+
 Purpose: **Basic Mathematical Literacy and Inclusive Learning**
+
 License: **Math for All Non-Commercial Educational Software License v1.0**
+
