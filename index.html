@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math For All — Inclusive Math Arcade (NEP 2020)</title>
+  <meta name="description" content="A free, offline-friendly math arcade built for inclusive classrooms — big text, gentle colors, read-aloud support, and games that never punish a wrong answer." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/slabmath.css" />
+</head>
+<body>
+
+  <!-- ===================================================
+       ACCESSIBILITY TOOLBAR — always visible, every screen
+       =================================================== -->
+  <div class="a11y-bar">
+    <div class="a11y-group">
+      <span class="a11y-label">Text size</span>
+      <button class="a11y-btn" id="a11y-font-dec" onclick="Accessibility.changeFont(-1)" aria-label="Smaller text">A−</button>
+      <button class="a11y-btn" id="a11y-font-inc" onclick="Accessibility.changeFont(1)" aria-label="Bigger text">A+</button>
+    </div>
+    <button class="a11y-progress-btn" onclick="Progress.open()">📊 My progress</button>
+  </div>
+
+  <!-- ===================================================
+       SCREEN 1: MAIN MENU
+       =================================================== -->
+  <div id="screen-menu" class="screen active">
+
+    <div class="arcade-header">
+      <div class="arcade-badge">🌈 Inclusive learning · aligned with NEP 2020</div>
+      <h1 class="arena-title">
+        <span class="title-math">Math</span>
+        <span class="title-arena">For All</span>
+      </h1>
+      <div class="arena-subtitle-hi">गणित सबके लिए</div>
+      <p class="arena-subtitle">Pick a game and go at your own pace. There's no clock ticking on your confidence here — every wrong answer is just practice.</p>
+    </div>
+
+    <div class="menu-grid">
+
+      <button class="menu-card card-quiz" onclick="Game.startArithmetic()">
+        <div class="card-badge-icon">🧮</div>
+        <div class="card-title">Arithmetic Quiz</div>
+        <div class="card-desc">Fresh questions every time, from counting to Class 4 sums.</div>
+        <div class="card-tag">Solo · Untimed</div>
+      </button>
+
+      <button class="menu-card card-race" onclick="Game.startRacing()">
+        <div class="card-badge-icon">🏁</div>
+        <div class="card-title">Math Racing</div>
+        <div class="card-desc">A friendly speed challenge — beat your own best score.</div>
+        <div class="card-tag">Solo or turns · Timed</div>
+      </button>
+
+      <button class="menu-card card-sudoku" onclick="Game.startSudoku()">
+        <div class="card-badge-icon">🔢</div>
+        <div class="card-title">Sudoku Challenge</div>
+        <div class="card-desc">Fill the grid using logic — hints are always nearby.</div>
+        <div class="card-tag">Solo · Logic</div>
+      </button>
+
+      <button class="menu-card card-shape" onclick="Game.startShapePuzzle()">
+        <div class="card-badge-icon">🔷</div>
+        <div class="card-title">Shape Fitting</div>
+        <div class="card-desc">Tap and rotate shapes to fill the board. 100 levels, every one solvable.</div>
+        <div class="card-tag">Solo · 100 levels</div>
+      </button>
+
+      <button class="menu-card card-slab" onclick="Game.startSlabMath()">
+        <div class="card-badge-icon">🧺</div>
+        <div class="card-title">Slab Maths</div>
+        <div class="card-desc">Drag number slabs into the basket until it reaches zero. Plays forever.</div>
+        <div class="card-tag">Solo · Endless</div>
+      </button>
+
+    </div>
+
+    <div class="menu-footer">
+      Built with care for every learner in the classroom — including the ones who learn a little differently.
+      Your progress is saved only on this device, never sent anywhere. Works offline once loaded.
+      <span class="type-credit">Body text is set in Atkinson Hyperlegible, a typeface designed by the Braille Institute for readers with low vision.</span>
+    </div>
+  </div>
+
+
+  <!-- ===================================================
+       SCREEN 2: ARITHMETIC QUIZ
+       =================================================== -->
+  <div id="screen-quiz" class="screen">
+
+    <div class="game-topbar">
+      <button class="btn-back" onclick="Game.goHome()">← Back</button>
+      <h2 class="topbar-title">🧮 Arithmetic Quiz</h2>
+      <button class="btn-help" onclick="ControlsOverlay.forceShow('quiz')" aria-label="How to play">?</button>
+      <div class="score-box">Score: <span id="quiz-score">0</span></div>
+    </div>
+
+    <div id="quiz-difficulty-panel" class="difficulty-panel">
+      <h3>Choose your level</h3>
+      <p class="diff-hint">Every level makes brand-new questions each time — you'll never see the exact same one twice.</p>
+      <div class="diff-buttons">
+        <button class="btn-diff btn-easy"   onclick="Quiz.setDifficulty('easy')">🌱 Starter<br/><small>Nursery &amp; Class 1</small></button>
+        <button class="btn-diff btn-medium" onclick="Quiz.setDifficulty('medium')">🌿 Growing<br/><small>Class 2 &amp; 3</small></button>
+        <button class="btn-diff btn-hard"   onclick="Quiz.setDifficulty('hard')">🌳 Champion<br/><small>Class 4</small></button>
+      </div>
+    </div>
+
+    <div id="quiz-play-panel" class="play-panel hidden">
+
+      <div class="diff-badge" id="quiz-diff-badge">Starter</div>
+      <div class="question-number">Question <span id="quiz-q-number">1</span></div>
+      <div class="question-card" id="quiz-question">Loading...</div>
+
+      <div class="answer-row">
+        <input type="number" id="quiz-input" class="answer-input" placeholder="Type your answer" autocomplete="off" inputmode="numeric" />
+        <button class="btn-submit" id="quiz-submit-btn" onclick="Quiz.submit()">✔ Submit</button>
+      </div>
+
+      <div id="quiz-feedback" class="feedback hidden"></div>
+
+      <div class="quiz-stats">
+        <span>✅ Correct: <strong id="quiz-correct">0</strong></span>
+        <span>🙂 Practiced: <strong id="quiz-wrong">0</strong></span>
+        <span>📊 Total: <strong id="quiz-total">0</strong></span>
+      </div>
+
+      <button class="btn-change-diff" onclick="Quiz.changeDifficulty()">⟲ Change Level</button>
+    </div>
+  </div>
+
+
+  <!-- ===================================================
+       SCREEN 3: MATH RACING
+       =================================================== -->
+  <div id="screen-race" class="screen">
+
+    <div class="game-topbar">
+      <button class="btn-back" onclick="Game.goHome()">← Back</button>
+      <h2 class="topbar-title">🏁 Math Racing</h2>
+      <button class="btn-help" onclick="ControlsOverlay.forceShow('race')" aria-label="How to play">?</button>
+      <div class="score-box">🏆 <span id="race-top-score">0</span></div>
+    </div>
+
+    <div id="race-setup-panel">
+      <div class="setup-card">
+        <h3>🏆 Race Setup</h3>
+        <p class="setup-desc">
+          Answer as many as you can before time's up. There's no penalty for a wrong guess — just keep going!<br/>
+          Taking turns with classmates? Compare your scores below.
+        </p>
+
+        <label class="setup-label">🤝 Your name:</label>
+        <input type="text" id="race-player-name" class="setup-input" placeholder="Enter your name" maxlength="20" />
+
+        <label class="setup-label">⏱ Timer:</label>
+        <div class="timer-options">
+          <button class="btn-timer active" id="timer-30" onclick="Racing.setTimer(30)">30s</button>
+          <button class="btn-timer"        id="timer-60" onclick="Racing.setTimer(60)">60s</button>
+          <button class="btn-timer"        id="timer-90" onclick="Racing.setTimer(90)">90s</button>
+        </div>
+
+        <label class="setup-label">🎯 Level:</label>
+        <div class="diff-buttons">
+          <button class="btn-diff btn-easy   active-diff" id="race-easy"   onclick="Racing.setDifficulty('easy')">🌱 Starter</button>
+          <button class="btn-diff btn-medium"              id="race-medium" onclick="Racing.setDifficulty('medium')">🌿 Growing</button>
+          <button class="btn-diff btn-hard"                id="race-hard"   onclick="Racing.setDifficulty('hard')">🌳 Champion</button>
+        </div>
+
+        <button class="btn-start-race" onclick="Racing.start()">🚀 Start Race!</button>
+      </div>
+
+      <div class="leaderboard">
+        <h3>🌟 Today's Scoreboard</h3>
+        <div id="leaderboard-list">
+          <p class="leaderboard-empty">No scores yet — be the first!</p>
+        </div>
+        <button class="btn-clear" onclick="Racing.clearLeaderboard()">🗑 Clear</button>
+      </div>
+    </div>
+
+    <div id="race-play-panel" class="play-panel hidden">
+      <div class="race-hud">
+        <div class="hud-block"><div class="hud-label">TIME</div><div class="hud-timer" id="race-timer">30</div></div>
+        <div class="hud-block"><div class="hud-label">PLAYER</div><div class="hud-player" id="race-player-display">You</div></div>
+        <div class="hud-block"><div class="hud-label">SCORE</div><div class="hud-score-val" id="race-live-score">0</div></div>
+      </div>
+
+      <div class="race-progress-bar"><div class="race-progress-fill" id="race-progress-fill"></div></div>
+
+      <div class="question-card" id="race-question">Get Ready!</div>
+
+      <div class="answer-row">
+        <input type="number" id="race-input" class="answer-input" placeholder="Answer fast!" autocomplete="off" inputmode="numeric" />
+        <button class="btn-submit btn-race-submit" onclick="Racing.submit()">➡ Go!</button>
+      </div>
+
+      <div id="race-feedback" class="feedback hidden"></div>
+    </div>
+
+    <div id="race-result-panel" class="play-panel hidden">
+      <div class="result-card">
+        <div class="result-emoji" id="result-emoji">🎉</div>
+        <h2 class="result-name" id="result-player-name">Player</h2>
+        <div class="result-score" id="result-final-score">0</div>
+        <div class="result-label">correct answers!</div>
+        <div class="result-stats">
+          <div>✅ Correct: <strong id="result-correct">0</strong></div>
+          <div>🙂 Practiced: <strong id="result-wrong">0</strong></div>
+          <div>📊 Accuracy: <strong id="result-accuracy">0%</strong></div>
+        </div>
+        <div class="result-message" id="result-message"></div>
+        <div class="result-buttons">
+          <button class="btn-start-race" onclick="Racing.playAgain()">⟲ Play Again</button>
+          <button class="btn-change-diff" onclick="Racing.backToSetup()">📋 Scoreboard</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===================================================
+       SCREEN 4: SUDOKU
+       =================================================== -->
+  <div id="screen-sudoku" class="screen">
+
+    <div class="game-topbar">
+      <button class="btn-back" onclick="Game.goHome()">← Back</button>
+      <h2 class="topbar-title">🔢 Sudoku Challenge</h2>
+      <button class="btn-help" onclick="ControlsOverlay.forceShow('sudoku')" aria-label="How to play">?</button>
+      <div class="score-box" id="sudoku-status">Ready</div>
+    </div>
+
+    <div id="sudoku-difficulty-panel" class="difficulty-panel">
+      <h3>Choose your level</h3>
+      <p class="diff-hint">Starter gives more filled-in hints. Champion gives fewer.</p>
+      <div class="diff-buttons">
+        <button class="btn-diff btn-easy"   onclick="Sudoku.newPuzzle('easy')">🌱 Starter<br/><small>More hints given</small></button>
+        <button class="btn-diff btn-medium" onclick="Sudoku.newPuzzle('medium')">🌿 Growing<br/><small>Balanced challenge</small></button>
+        <button class="btn-diff btn-hard"   onclick="Sudoku.newPuzzle('hard')">🌳 Champion<br/><small>Fewer cells filled</small></button>
+      </div>
+    </div>
+
+    <div id="sudoku-play-panel" class="play-panel hidden">
+      <div class="sudoku-top-row">
+        <div class="diff-badge" id="sudoku-diff-badge">Starter</div>
+        <div class="sudoku-hints-left">💡 Hints: <span id="hints-left">3</span></div>
+      </div>
+
+      <div id="sudoku-grid" class="sudoku-grid"></div>
+
+      <div class="sudoku-controls">
+        <button class="btn-sudoku btn-check"   onclick="Sudoku.checkSolution()">✔ Check</button>
+        <button class="btn-sudoku btn-hint"    onclick="Sudoku.giveHint()">💡 Hint</button>
+        <button class="btn-sudoku btn-solve"   onclick="Sudoku.solveAll()">🧠 Solve</button>
+        <button class="btn-sudoku btn-newgame" onclick="Sudoku.chooseDifficulty()">🔄 New</button>
+      </div>
+
+      <div id="sudoku-message" class="sudoku-message hidden"></div>
+    </div>
+  </div>
+
+
+  <!-- ===================================================
+       SCREEN 5: SHAPE FITTING PUZZLE
+       =================================================== -->
+  <div id="screen-shape" class="screen">
+
+    <div class="game-topbar">
+      <button class="btn-back" onclick="Game.goHome()">← Back</button>
+      <h2 class="topbar-title">🔷 Shape Fitting</h2>
+      <button class="btn-help" onclick="ControlsOverlay.forceShow('shape')" aria-label="How to play">?</button>
+      <div class="score-box" id="shape-level-badge">Level 1</div>
+    </div>
+
+    <div id="shape-level-panel" class="shape-level-panel">
+      <h3>🏁 Choose a Level</h3>
+      <p class="diff-hint">Tap a shape, then tap the board to place it. Every one of these 100 levels can be fully solved.</p>
+      <div id="shape-level-grid" class="shape-level-grid"></div>
+    </div>
+
+    <div id="shape-play-panel" class="play-panel hidden">
+      <div class="shape-info-bar">
+        <div class="shape-info-block"><div class="shape-info-label">LEVEL</div><div class="shape-info-val" id="shape-level-num">1</div></div>
+        <div class="shape-info-block"><div class="shape-info-label">GRID</div><div class="shape-info-val" id="shape-grid-size">4×4</div></div>
+        <div class="shape-info-block"><div class="shape-info-label">TIME</div><div class="shape-info-val" id="shape-timer">0:00</div></div>
+        <div class="shape-info-block"><div class="shape-info-label">PLACED</div><div class="shape-info-val" id="shape-placed">0/0</div></div>
+      </div>
+
+      <div class="shape-puzzle-area">
+        <div class="shape-board-wrap">
+          <div class="shape-board-label">▣ Board</div>
+          <div id="shape-board" class="shape-board"></div>
+        </div>
+
+        <div class="shape-right-col">
+          <div class="shape-tray-title">🏁 Shapes to place</div>
+          <div id="shape-tray" class="shape-tray"></div>
+
+          <div class="shape-controls-section">
+            <div class="shape-controls-title">Controls</div>
+            <button class="btn-shape-ctrl btn-rotate"  onclick="ShapePuzzle.rotateSelected()">⟲ Rotate &nbsp;<kbd>R</kbd></button>
+            <button class="btn-shape-ctrl btn-hint"    onclick="ShapePuzzle.showHint()">💡 Hint</button>
+            <button class="btn-shape-ctrl btn-restart" onclick="ShapePuzzle.restartLevel()">🔄 Restart</button>
+            <button class="btn-shape-ctrl btn-levels"  onclick="ShapePuzzle.backToLevels()">☰ All Levels</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="shape-instructions">
+        Tap a shape to select it · Tap a square on the board to place it ·
+        Press <kbd>R</kbd> to rotate · <kbd>Esc</kbd> to deselect
+      </div>
+
+      <div id="shape-message" class="sudoku-message hidden"></div>
+    </div>
+
+    <div id="shape-complete" class="shape-complete hidden">
+      <div class="shape-complete-card">
+        <div class="complete-emoji">🎉</div>
+        <h2>Level Complete!</h2>
+        <div class="complete-level" id="complete-level-text">Level 1</div>
+        <div class="complete-time">Time: <strong id="complete-time">0:00</strong></div>
+        <div class="complete-buttons">
+          <button class="btn-start-race" id="btn-next-level" onclick="ShapePuzzle.nextLevel()">▶ Next Level</button>
+          <button class="btn-change-diff" onclick="ShapePuzzle.restartLevel()">🔄 Replay</button>
+          <button class="btn-change-diff" onclick="ShapePuzzle.backToLevels()">☰ All Levels</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===================================================
+       SCREEN 6: SLAB MATHS  (new)
+       =================================================== -->
+  <div id="screen-slab" class="screen">
+
+    <div class="game-topbar">
+      <button class="btn-back" onclick="Game.goHome()">← Back</button>
+      <h2 class="topbar-title">🧺 Slab Maths</h2>
+      <button class="btn-help" onclick="ControlsOverlay.forceShow('slab')" aria-label="How to play">?</button>
+      <div class="score-box">Round <span id="slab-round-num">1</span></div>
+    </div>
+
+    <div class="slab-round-row">
+      <div class="slab-round-stat"><div class="val" id="slab-rounds-done">0</div><div class="lbl">Rounds won</div></div>
+      <div class="slab-round-stat"><div class="val" id="slab-slabs-left">0</div><div class="lbl">Slabs left</div></div>
+      <div class="slab-round-stat"><div class="val" id="slab-hints-left">5</div><div class="lbl">Hints left</div></div>
+    </div>
+
+    <div class="slab-puzzle-area">
+      <div class="slab-basket-wrap">
+        <div class="slab-basket" id="slab-basket">
+          <div class="basket-icon">🧺</div>
+          <div class="basket-label">Basket needs</div>
+          <div class="basket-number" id="slab-basket-number">0</div>
+        </div>
+        <div id="slab-message" class="slab-message info hidden"></div>
+      </div>
+
+      <div class="slab-right-col">
+        <div class="slab-tray-title">🔢 Drag a slab into the basket<br/>— or tap a slab, then tap the basket</div>
+        <div id="slab-tray" class="slab-tray"></div>
+
+        <div class="slab-controls">
+          <button class="btn-slab restart"  onclick="SlabMath.restartRound()">🔄 Restart Round</button>
+          <button class="btn-slab newround" onclick="SlabMath.newRound()">🔀 New Numbers</button>
+          <button class="btn-slab hint"     onclick="SlabMath.hint()">💡 Hint</button>
+          <button class="btn-slab home"     onclick="Game.goHome()">🏠 Back to Home</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="slab-complete" class="shape-complete hidden">
+      <div class="slab-complete-card">
+        <div class="complete-emoji">🎉</div>
+        <h2>Basket emptied!</h2>
+        <div class="complete-level" id="slab-complete-text">Round 1 complete</div>
+        <div class="complete-buttons">
+          <button class="btn-start-race" onclick="SlabMath.nextRound()">▶ Next Round</button>
+          <button class="btn-change-diff" onclick="Game.goHome()">🏠 Back to Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===================================================
+       MODAL: BRAIN BREAK (shown before PIN)
+       =================================================== -->
+  <div id="dare-modal" class="modal-overlay hidden">
+    <div class="modal-box dare-box">
+      <div class="modal-icon">🎈</div>
+      <h2 class="modal-title">Quick Brain Break!</h2>
+      <p class="dare-desc">Before the teacher unlocks the solution, try this — totally optional:</p>
+      <div class="dare-card" id="dare-text">Take 3 slow, deep breaths.</div>
+      <p class="dare-confirm-label">Did you give it a go?</p>
+      <div class="modal-buttons">
+        <button class="btn-dare-yes"  onclick="Sudoku.dareCompleted()">✅ Yes, I'm ready!</button>
+        <button class="btn-dare-skip" onclick="Sudoku.dareSkip()">⏭ Skip this</button>
+        <button class="btn-dare-no"   onclick="Sudoku.dareCancelled()">✖ Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       MODAL: TEACHER PIN (shown after brain break)
+       =================================================== -->
+  <div id="pin-modal" class="modal-overlay hidden">
+    <div class="modal-box pin-box" id="pin-box">
+      <div class="modal-icon">🔒</div>
+      <h2 class="modal-title">Teacher PIN Required</h2>
+      <p class="pin-desc">Only the teacher can unlock the solution.<br/>Enter the 5-digit PIN:</p>
+
+      <div class="pin-dots" id="pin-dots">
+        <span class="pin-dot" id="pdot-0"></span>
+        <span class="pin-dot" id="pdot-1"></span>
+        <span class="pin-dot" id="pdot-2"></span>
+        <span class="pin-dot" id="pdot-3"></span>
+        <span class="pin-dot" id="pdot-4"></span>
+      </div>
+
+      <div class="pin-numpad">
+        <button class="pin-key" onclick="Sudoku.pinKey('1')">1</button>
+        <button class="pin-key" onclick="Sudoku.pinKey('2')">2</button>
+        <button class="pin-key" onclick="Sudoku.pinKey('3')">3</button>
+        <button class="pin-key" onclick="Sudoku.pinKey('4')">4</button>
+        <button class="pin-key" onclick="Sudoku.pinKey('5')">5</button>
+        <button class="pin-key" onclick="Sudoku.pinKey('6')">6</button>
+        <button class="pin-key" onclick="Sudoku.pinKey('7')">7</button>
+        <button class="pin-key" onclick="Sudoku.pinKey('8')">8</button>
+        <button class="pin-key" onclick="Sudoku.pinKey('9')">9</button>
+        <button class="pin-key pin-key-clear" onclick="Sudoku.pinClear()">⟲</button>
+        <button class="pin-key" onclick="Sudoku.pinKey('0')">0</button>
+        <button class="pin-key pin-key-back"  onclick="Sudoku.pinBackspace()">⌫</button>
+      </div>
+
+      <div class="pin-error hidden" id="pin-error">❌ Wrong PIN! Try again.</div>
+      <button class="btn-dare-no" style="margin-top:14px" onclick="Sudoku.pinCancelled()">Cancel</button>
+    </div>
+  </div>
+
+
+  <!-- ===================================================
+       MODAL: CONTROLS OVERLAY  (shown when entering a game)
+       =================================================== -->
+  <div id="controls-overlay" class="modal-overlay hidden">
+    <div class="modal-box controls-box">
+      <div class="modal-icon" id="controls-icon">🎮</div>
+      <h2 class="modal-title" id="controls-title">How to play</h2>
+      <ul class="controls-list" id="controls-list"></ul>
+      <label class="controls-remember">
+        <input type="checkbox" id="controls-remember-checkbox" />
+        Don't show this again for this game
+      </label>
+      <div class="controls-buttons">
+        <button class="btn-controls-go" onclick="ControlsOverlay.dismiss()">👍 Got it, let's play!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       MODAL: MY PROGRESS  (on-device analytics dashboard)
+       =================================================== -->
+  <div id="progress-modal" class="modal-overlay hidden">
+    <div class="modal-box progress-box">
+      <div class="modal-icon">📊</div>
+      <h2 class="modal-title">My progress</h2>
+      <p class="progress-intro">This data lives only on this device. A teacher can export it below to spot patterns and plan better lessons.</p>
+      <div class="progress-grid" id="progress-grid"></div>
+      <table class="progress-table" id="progress-table">
+        <thead><tr><th>Game</th><th>Attempts</th><th>Accuracy</th></tr></thead>
+        <tbody id="progress-table-body"></tbody>
+      </table>
+      <div class="progress-actions">
+        <button class="btn-progress export" onclick="Analytics.exportJSON()">⬇ Export JSON</button>
+        <button class="btn-progress export" onclick="Analytics.exportCSV()">⬇ Export CSV</button>
+        <button class="btn-progress clear" onclick="Analytics.clearAll()">🗑 Clear data</button>
+        <button class="btn-progress close" onclick="Progress.close()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating drag ghost (used by shape puzzle) -->
+  <div id="drag-ghost" class="hidden"></div>
+
+  <!-- Scripts — order matters: shared helpers first -->
+  <script src="js/script.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/sudoku.js"></script>
+  <script src="js/shapes.js"></script>
+  <script src="js/slabmath.js"></script>
+
+</body>
+</html>
