@@ -57,25 +57,25 @@ const QuestionBank = (function () {
   /* ---------------- EASY: Nursery & Class 1 ---------------- */
   function easyCounting() {
     const emoji = Utils.pick(COUNT_EMOJI);
-    const n = Utils.randInt(3, 12);
+    const n = Utils.randInt(1, 40);
     return { text: `${emoji.repeat(n)}\nHow many are there? 🤔`, answer: n,
       spoken: `Count the pictures. How many are there?` };
   }
   function easyCompare() {
     let a = Utils.randInt(1, 30), b = Utils.randInt(1, 30);
-    while (a === b) b = Utils.randInt(1, 20);
+    while (a === b) b = Utils.randInt(1, 50);
     return { text: `🔍 Which number is BIGGER: ${a} or ${b}?`, answer: Math.max(a, b) };
   }
   function easyAdd() {
-    const a = Utils.randInt(1, 20), b = Utils.randInt(1, 15);
+    const a = Utils.randInt(1, 50), b = Utils.randInt(1, 40);
     return { text: addText(a, b), answer: a + b };
   }
   function easySub() {
-    let a = Utils.randInt(2, 30), b = Utils.randInt(1, a);
+    let a = Utils.randInt(2, 60), b = Utils.randInt(1, a);
     return { text: subText(a, b), answer: a - b };
   }
   function easyMissing() {
-    const a = Utils.randInt(1, 15), b = Utils.randInt(1, 12);
+    const a = Utils.randInt(1, 50), b = Utils.randInt(1, 40);
     return { text: `🕵️ Mystery number! ${a} + ❓ = ${a + b}`, answer: b,
       spoken: `${a} plus what number equals ${a + b}?` };
   }
@@ -83,11 +83,11 @@ const QuestionBank = (function () {
 
   /* ---------------- MEDIUM: Class 2 & 3 ---------------- */
   function medAdd() {
-    const a = Utils.randInt(10, 99), b = Utils.randInt(10, 99);
+    const a = Utils.randInt(10, 120), b = Utils.randInt(10, 120);
     return { text: addText(a, b), answer: a + b };
   }
   function medSub() {
-    let a = Utils.randInt(20, 120), b = Utils.randInt(1, a);
+    let a = Utils.randInt(20, 150), b = Utils.randInt(1, a);
     return { text: subText(a, b), answer: a - b };
   }
   function medMult() {
@@ -122,36 +122,36 @@ const QuestionBank = (function () {
   }
   function hardWordMult() {
     const n = name(), it = item(), emoji = ITEM_EMOJI[it];
-    const groups = Utils.randInt(6, 15), each = Utils.randInt(4, 12);
+    const groups = Utils.randInt(3, 15), each = Utils.randInt(4, 20);
     return { text: `${emoji} ${n} packs ${groups} boxes. Each box has ${each} ${it}.\nHow many ${it} are there altogether?`, answer: groups * each,
       hint: `There are equal groups. Which operation combines equal groups?`, explanation: `${groups} groups of ${each}: ${groups} × ${each} = ${groups * each}.` };
   }
   function hardWordDiv() {
     const n = name(), it = item(), emoji = ITEM_EMOJI[it];
-    const each = Utils.randInt(4, 12), groups = Utils.randInt(3, 8), total = each * groups;
+    const each = Utils.randInt(4, 20), groups = Utils.randInt(3, 12), total = each * groups;
     return { text: `${emoji} ${n} has ${total} ${it} and shares them equally among ${groups} children.\nHow many does each child get?`, answer: each,
       hint: `The total is being shared equally. What operation finds one equal share?`, explanation: `${total} ÷ ${groups} = ${each}. Each child gets ${each}.` };
   }
   function hardWordComparison() {
     const it = item(), emoji = ITEM_EMOJI[it];
-    const a = Utils.randInt(50, 120), extra = Utils.randInt(15, 45), b = a + extra;
+    const a = Utils.randInt(30, 150), extra = Utils.randInt(5, 60), b = a + extra;
     return { text: `${emoji} A library has ${a} ${it}. Another library has ${extra} more.\nHow many ${it} does the second library have?`, answer: b,
       hint: `“${extra} more” means the second library has more than ${a}. Which operation fits?`, explanation: `${a} + ${extra} = ${b}.` };
   }
   function hardWordMoney() {
     const n = name();
-    const price = Utils.randInt(12, 35), count = Utils.randInt(3, 8);
+    const price = Utils.randInt(5, 50), count = Utils.randInt(2, 12);
     return { text: `🪙 ${n} buys ${count} notebooks at ₹${price} each.\nHow many rupees does ${n} spend?`, answer: price * count,
       hint: `The price is the same for every notebook. How many equal groups of ₹${price} are there?`, explanation: `${count} × ₹${price} = ₹${price * count}.` };
   }
   function hardWordFraction() {
     const it = item();
-    const total = Utils.randInt(3, 12) * 4;
+    const total = Utils.randInt(2, 30) * 4;
     return { text: `🍕 A class has ${total} ${it}. One quarter of them are put on a table.\nHow many ${it} are on the table?`, answer: total / 4,
       hint: `One quarter means divide the whole amount into 4 equal parts.`, explanation: `${total} ÷ 4 = ${total / 4}.` };
   }
   function hardWordPerimeter() {
-    const l = Utils.randInt(5, 18), w = Utils.randInt(3, 12);
+    const l = Utils.randInt(5, 30), w = Utils.randInt(3, 20);
     return { text: `📏 A rectangular garden is ${l} m long and ${w} m wide. A child walks all the way around it.\nHow many metres does the child walk?`, answer: 2 * (l + w),
       hint: `Walking all the way around means finding the perimeter. Add all four sides.`, explanation: `Two lengths and two widths: ${l} + ${w} + ${l} + ${w} = ${2 * (l + w)} m.` };
   }
@@ -159,6 +159,7 @@ const QuestionBank = (function () {
 
   const TIER_GENS = { easy: EASY_GENS, medium: MEDIUM_GENS, hard: HARD_GENS };
   const usedNumbers = { easy: new Set(), medium: new Set(), hard: new Set() };
+  const MAX_NUMBER = 250;
   const usedAnswers = { easy: new Set(), medium: new Set(), hard: new Set() };
 
   function extractNumbers(text) {
@@ -178,29 +179,25 @@ const QuestionBank = (function () {
   function generate(difficulty) {
     const level = TIER_GENS[difficulty] ? difficulty : 'easy';
     const gens = TIER_GENS[level];
-    let q = null;
-    let tries = 0;
 
-    while (tries < 100) {
+    // Search aggressively for a question whose every numeric value is new.
+    // Never reset the used-number pool just because generation is difficult.
+    for (let tries = 0; tries < 500; tries++) {
       const candidate = Utils.pick(gens)();
-      tries++;
-      if (canUseQuestion(level, candidate)) {
-        q = candidate;
-        break;
+      const nums = extractNumbers(candidate.text);
+      if (nums.every(n => Number.isInteger(n) && n >= 1 && n <= MAX_NUMBER) &&
+          canUseQuestion(level, candidate)) {
+        if (!candidate.spoken) candidate.spoken = candidate.text.replace(/\n/g, '. ').replace(/❓/g, 'what number');
+        remember(level, candidate);
+        return candidate;
       }
     }
 
-    if (!q) {
-      // The current level has exhausted its unused numeric pool.
-      // Reset only that level, then continue generating normally.
-      usedNumbers[level].clear();
-      usedAnswers[level].clear();
-      q = Utils.pick(gens)();
-    }
-
-    if (!q.spoken) q.spoken = q.text.replace(/\n/g, '. ').replace(/❓/g, 'what number');
-    remember(level, q);
-    return q;
+    // If the numeric pool for this level is genuinely exhausted, start a
+    // fresh pool. This is the only point where repetition is permitted.
+    usedNumbers[level].clear();
+    usedAnswers[level].clear();
+    return generate(level);
   }
 
   return { generate };
