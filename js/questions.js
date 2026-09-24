@@ -221,6 +221,8 @@ const Quiz = (function () {
   }
 
   function setDifficulty(level) {
+    recordMasteryResult();
+    masteryHistory = [];
     difficulty = level;
     document.getElementById('quiz-diff-badge').textContent = DIFF_LABEL[level] || level;
     hide('quiz-difficulty-panel');
