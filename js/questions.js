@@ -286,6 +286,7 @@ const Quiz = (function () {
     if (!el) return;
     el.innerHTML = `
       <button class="quiz-action secondary" onclick="Quiz.retry()">🔁 Try This Again</button>
+      <button class="quiz-action secondary" onclick="Quiz.replay()">↺ Replay Question</button>
       <button class="quiz-action secondary" onclick="Quiz.hint()">💡 Give Me a Hint</button>
       ${revealAnswer ? '' : '<button class="quiz-action secondary" onclick="Quiz.explain()">🧠 Show Me How</button>'}
       <button class="quiz-action primary" onclick="Quiz.next()">➡ Next Question</button>
