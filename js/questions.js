@@ -348,6 +348,8 @@ const Quiz = (function () {
     if (!fill || !label || !note) return;
 
     fill.style.width = value + '%';
+    const top = document.getElementById('quiz-mastery-top');
+    if (top) top.textContent = value + '%';
 
     if (value >= 85) {
       label.textContent = 'Strong';
