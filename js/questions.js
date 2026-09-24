@@ -481,6 +481,8 @@ const Racing = (function () {
   let timeLeft = 30, timerInterval = null;
   let score = 0, correctCount = 0, wrongCount = 0;
   let currentAnswer = 0, totalDuration = 30, questionStartedAt = 0;
+  let raceActive = false;
+  let questionLocked = false;
   let leaderboard = [];
   const LEADERBOARD_KEY = 'mfa_race_leaderboard_v1';
 
@@ -508,6 +510,8 @@ const Racing = (function () {
     if (timerInterval) clearInterval(timerInterval);
     score = correctCount = wrongCount = 0;
     timeLeft = totalDuration = selectedTimer;
+    raceActive = true;
+    questionLocked = false;
     document.getElementById('race-player-display').textContent = playerName;
     document.getElementById('race-live-score').textContent = '0';
     document.getElementById('race-top-score').textContent = '0';
@@ -535,6 +539,8 @@ const Racing = (function () {
     if (el) el.textContent = Math.max(0, timeLeft);
   }
   function nextQuestion() {
+    if (!raceActive || timeLeft <= 0) return;
+    questionLocked = false;
     const q = QuestionBank.generate(difficulty);
     currentAnswer = q.answer;
     const questionEl = document.getElementById('race-question');
@@ -544,7 +550,8 @@ const Racing = (function () {
     questionStartedAt = performance.now();
   }
   function submit() {
-    if (timeLeft <= 0) return;
+    if (!raceActive || timeLeft <= 0 || questionLocked) return;
+    questionLocked = true;
     const inputEl = document.getElementById('race-input');
     const rawVal = inputEl ? inputEl.value.trim() : '';
     if (!rawVal) { showRaceFeedback('Type an answer before you press Go!', 'wrong'); return; }
@@ -565,6 +572,8 @@ const Racing = (function () {
   }
   function endRace() {
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    raceActive = false;
+    questionLocked = true;
     timeLeft = 0; updateTimerDisplay();
     const total = correctCount + wrongCount;
     const accuracy = total ? Math.round(correctCount / total * 100) : 0;
@@ -594,7 +603,7 @@ const Racing = (function () {
     ).join('');
   }
   function clearLeaderboard() { leaderboard = []; saveLeaderboard(); renderLeaderboard(); }
-  function back() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } hide('race-play-panel'); hide('race-result-panel'); show('race-setup-panel'); }
+  function back() { raceActive = false; questionLocked = true; if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } hide('race-play-panel'); hide('race-result-panel'); show('race-setup-panel'); }
   return { init, setTimer, setDifficulty, start, submit, back, clearLeaderboard };
 })();
 
