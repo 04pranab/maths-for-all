@@ -233,6 +233,7 @@ const Quiz = (function () {
   let questionStartedAt = 0;
   let masteryHistory = [];
   let questionResolved = false;
+  let currentMasteryValue = null;
 
   const DIFF_LABEL = { easy: 'Starter', medium: 'Growing', hard: 'Champion' };
 
@@ -240,6 +241,7 @@ const Quiz = (function () {
     score = correctCount = wrongCount = questionNum = 0;
     masteryHistory = [];
     questionResolved = false;
+    currentMasteryValue = null;
     updateMasteryDisplay();
     show('quiz-difficulty-panel');
     hide('quiz-play-panel');
@@ -266,10 +268,12 @@ const Quiz = (function () {
 
   function nextQuestion() {
     recordMasteryResult();
+    if (currentQuestion && questionNum) recordMasteryResult();
     currentQuestion = QuestionBank.generate(difficulty);
     currentAnswer = currentQuestion.answer;
     attemptCount = 0;
     questionResolved = false;
+    currentMasteryValue = null;
 
     questionNum++;
     document.getElementById('quiz-q-number').textContent = questionNum;
@@ -356,6 +360,7 @@ const Quiz = (function () {
     } else {
       masteryHistory.push(attemptCount === 1 ? 1 : 0.75);
     }
+    currentMasteryValue = null;
     if (masteryHistory.length > 10) masteryHistory.shift();
     Analytics.log('quiz', 'mastery', {
       difficulty,
@@ -367,8 +372,10 @@ const Quiz = (function () {
   }
 
   function getMastery() {
-    if (!masteryHistory.length) return 0;
-    return Math.round((masteryHistory.reduce((sum, value) => sum + value, 0) / masteryHistory.length) * 100);
+    const values = masteryHistory.slice();
+    if (currentMasteryValue !== null) values.push(currentMasteryValue);
+    if (!values.length) return 0;
+    return Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 100);
   }
 
   function updateMasteryDisplay() {
@@ -415,9 +422,11 @@ const Quiz = (function () {
       correctCount++;
       score += 10;
       questionResolved = true;
+      currentMasteryValue = attemptCount === 1 ? 1 : 0.75;
       showFeedback(Encourage.correct(), 'correct');
     } else {
       wrongCount++;
+      currentMasteryValue = 0;
       showFeedback(Encourage.tryAgain(), 'wrong');
     }
 
