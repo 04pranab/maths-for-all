@@ -108,6 +108,12 @@ Then visit:
 http://localhost:8000
 ```
 
+## 📦 Release
+
+**Current release: `v2.0.0`**
+
+This release is the stable educational-app baseline. Research data collection, authentication, database, and telemetry infrastructure are intentionally outside the v2 scope and are planned for v3.
+
 ## 🛠️ Technology
 
 - HTML5
