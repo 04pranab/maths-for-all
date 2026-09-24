@@ -170,12 +170,27 @@ const QuestionBank = (function () {
   const HARD_GENS = [hardWordTwoStep, hardWordMult, hardWordDiv, hardWordComparison, hardWordMoney, hardWordFraction, hardWordPerimeter];
 
   const TIER_GENS = { easy: EASY_GENS, medium: MEDIUM_GENS, hard: HARD_GENS };
+  const recentAnswers = [];
+
+  function rememberAnswer(answer) {
+    recentAnswers.push(answer);
+    if (recentAnswers.length > 12) recentAnswers.shift();
+  }
 
   function generate(difficulty) {
     const gens = TIER_GENS[difficulty] || EASY_GENS;
     let q = null, tries = 0;
-    do { q = Utils.pick(gens)(); tries++; } while ((!Number.isFinite(q.answer)) && tries < 10);
+
+    do {
+      q = Utils.pick(gens)();
+      tries++;
+    } while (
+      tries < 12 &&
+      (!Number.isFinite(q.answer) || recentAnswers.includes(q.answer))
+    );
+
     if (!q.spoken) q.spoken = q.text.replace(/\n/g, '. ').replace(/❓/g, 'what number');
+    rememberAnswer(q.answer);
     return q;
   }
 
