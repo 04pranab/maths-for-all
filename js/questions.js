@@ -158,34 +158,45 @@ const QuestionBank = (function () {
   const HARD_GENS = [hardWordTwoStep, hardWordMult, hardWordDiv, hardWordComparison, hardWordMoney, hardWordFraction, hardWordPerimeter];
 
   const TIER_GENS = { easy: EASY_GENS, medium: MEDIUM_GENS, hard: HARD_GENS };
-  const recentAnswers = { easy: [], medium: [], hard: [] };
-  const recentNumberSets = { easy: [], medium: [], hard: [] };
+  const usedNumbers = { easy: new Set(), medium: new Set(), hard: new Set() };
+  const usedAnswers = { easy: new Set(), medium: new Set(), hard: new Set() };
 
-  function numberSignature(text) {
-    return (String(text).match(/\d+(?:\.\d+)?/g) || []).join(',');
+  function extractNumbers(text) {
+    return (String(text).match(/\d+(?:\.\d+)?/g) || []).map(Number);
   }
 
-  function remember(difficulty, q) {
-    recentAnswers[difficulty].push(q.answer);
-    recentNumberSets[difficulty].push(numberSignature(q.text));
-    if (recentAnswers[difficulty].length > 24) recentAnswers[difficulty].shift();
-    if (recentNumberSets[difficulty].length > 18) recentNumberSets[difficulty].shift();
+  function canUseQuestion(level, q) {
+    if (!Number.isFinite(q.answer) || usedAnswers[level].has(q.answer)) return false;
+    return extractNumbers(q.text).every(n => !usedNumbers[level].has(n));
+  }
+
+  function remember(level, q) {
+    usedAnswers[level].add(q.answer);
+    extractNumbers(q.text).forEach(n => usedNumbers[level].add(n));
   }
 
   function generate(difficulty) {
     const level = TIER_GENS[difficulty] ? difficulty : 'easy';
     const gens = TIER_GENS[level];
-    let q = null, tries = 0;
+    let q = null;
+    let tries = 0;
 
-    do {
-      q = Utils.pick(gens)();
+    while (tries < 100) {
+      const candidate = Utils.pick(gens)();
       tries++;
-    } while (
-      tries < 40 &&
-      (!Number.isFinite(q.answer) ||
-       recentAnswers[level].includes(q.answer) ||
-       recentNumberSets[level].includes(numberSignature(q.text)))
-    );
+      if (canUseQuestion(level, candidate)) {
+        q = candidate;
+        break;
+      }
+    }
+
+    if (!q) {
+      // The current level has exhausted its unused numeric pool.
+      // Reset only that level, then continue generating normally.
+      usedNumbers[level].clear();
+      usedAnswers[level].clear();
+      q = Utils.pick(gens)();
+    }
 
     if (!q.spoken) q.spoken = q.text.replace(/\n/g, '. ').replace(/❓/g, 'what number');
     remember(level, q);
