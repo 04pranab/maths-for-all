@@ -204,11 +204,16 @@ const Quiz = (function () {
   let currentQuestion = null;
   let attemptCount = 0;
   let questionStartedAt = 0;
+  let masteryHistory = [];
+  let questionResolved = false;
 
   const DIFF_LABEL = { easy: 'Starter', medium: 'Growing', hard: 'Champion' };
 
   function init() {
     score = correctCount = wrongCount = questionNum = 0;
+    masteryHistory = [];
+    questionResolved = false;
+    updateMasteryDisplay();
     show('quiz-difficulty-panel');
     hide('quiz-play-panel');
     hide('quiz-feedback');
@@ -231,9 +236,11 @@ const Quiz = (function () {
   }
 
   function nextQuestion() {
+    recordMasteryResult();
     currentQuestion = QuestionBank.generate(difficulty);
     currentAnswer = currentQuestion.answer;
     attemptCount = 0;
+    questionResolved = false;
 
     questionNum++;
     document.getElementById('quiz-q-number').textContent = questionNum;
@@ -251,6 +258,7 @@ const Quiz = (function () {
   function replayQuestion() {
     if (!currentQuestion) return;
     attemptCount = 0;
+    questionResolved = false;
     document.getElementById('quiz-question').textContent = currentQuestion.text;
     document.getElementById('quiz-input').value = '';
     hide('quiz-feedback');
@@ -305,6 +313,53 @@ const Quiz = (function () {
     document.getElementById('quiz-correct').textContent = correctCount;
     document.getElementById('quiz-wrong').textContent = wrongCount;
     document.getElementById('quiz-total').textContent = correctCount + wrongCount;
+    updateMasteryDisplay();
+  }
+
+  function recordMasteryResult() {
+    if (!currentQuestion || !questionNum) return;
+    if (!questionResolved) {
+      masteryHistory.push(0);
+    } else {
+      masteryHistory.push(attemptCount === 1 ? 1 : 0.75);
+    }
+    if (masteryHistory.length > 10) masteryHistory.shift();
+    Analytics.log('quiz', 'mastery', {
+      difficulty,
+      value: masteryHistory[masteryHistory.length - 1],
+      attempts: attemptCount,
+      resolved: questionResolved
+    });
+    updateMasteryDisplay();
+  }
+
+  function getMastery() {
+    if (!masteryHistory.length) return 0;
+    return Math.round((masteryHistory.reduce((sum, value) => sum + value, 0) / masteryHistory.length) * 100);
+  }
+
+  function updateMasteryDisplay() {
+    const value = getMastery();
+    const fill = document.getElementById('quiz-mastery-fill');
+    const label = document.getElementById('quiz-mastery-label');
+    const note = document.getElementById('quiz-mastery-note');
+    if (!fill || !label || !note) return;
+
+    fill.style.width = value + '%';
+
+    if (value >= 85) {
+      label.textContent = 'Strong';
+      note.textContent = 'You are solving these confidently. Keep checking your reasoning!';
+    } else if (value >= 65) {
+      label.textContent = 'Growing';
+      note.textContent = 'Nice progress. A few more thoughtful attempts can strengthen this skill.';
+    } else if (value > 0) {
+      label.textContent = 'Building';
+      note.textContent = 'Keep practising. Hints and retries are part of learning.';
+    } else {
+      label.textContent = 'Starting';
+      note.textContent = 'Try a few questions first. Mastery grows through understanding, not speed.';
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -409,6 +464,7 @@ const Racing = (function () {
 
     if (isCorrect) {
       correctCount++; score += 10;
+      questionResolved = true;
       showFeedback(Encourage.correct(), 'correct');
     } else {
       wrongCount++;
