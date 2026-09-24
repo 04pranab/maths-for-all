@@ -132,10 +132,20 @@ Suggestions, improvements, educational ideas, and bug reports are welcome.
 
 When changing the quiz experience, keep the learning-first philosophy in mind: avoid unnecessary automation that removes the learner's opportunity to think.
 
+## 🤝 Contributors & Acknowledgements
+
+### Om Pranab Mohanty
+Project creator and primary developer.
+
+### ChatGPT (OpenAI)
+Development assistant and contributing collaborator for parts of the project, including the learning-focused arithmetic quiz flow, word-problem design, interface refinements, documentation, and code review.
+
+The project remains human-directed: educational decisions, project direction, and final changes are owned by the project creator.
+
 ## 📄 License
 
 See the repository license file for the terms under which this project is distributed.
 
 ---
 
-Built as an educational mathematics project by **Om Pranab Mohanty**.
+Built as an educational mathematics project by **Om Pranab Mohanty**, with development assistance from **ChatGPT (OpenAI)**.
