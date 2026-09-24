@@ -174,7 +174,7 @@ const QuestionBank = (function () {
 
   function rememberAnswer(answer) {
     recentAnswers.push(answer);
-    if (recentAnswers.length > 12) recentAnswers.shift();
+    if (recentAnswers.length > 18) recentAnswers.shift();
   }
 
   function generate(difficulty) {
@@ -185,7 +185,7 @@ const QuestionBank = (function () {
       q = Utils.pick(gens)();
       tries++;
     } while (
-      tries < 12 &&
+      tries < 30 &&
       (!Number.isFinite(q.answer) || recentAnswers.includes(q.answer))
     );
 
@@ -338,10 +338,14 @@ const Quiz = (function () {
   }
 
   function updateScoreDisplay() {
-    document.getElementById('quiz-score').textContent = score;
-    document.getElementById('quiz-correct').textContent = correctCount;
-    document.getElementById('quiz-wrong').textContent = wrongCount;
-    document.getElementById('quiz-total').textContent = correctCount + wrongCount;
+    const scoreEl = document.getElementById('quiz-score');
+    if (scoreEl) scoreEl.textContent = score;
+    const correctEl = document.getElementById('quiz-correct');
+    if (correctEl) correctEl.textContent = correctCount;
+    const wrongEl = document.getElementById('quiz-wrong');
+    if (wrongEl) wrongEl.textContent = wrongCount;
+    const totalEl = document.getElementById('quiz-total');
+    if (totalEl) totalEl.textContent = correctCount + wrongCount;
     updateMasteryDisplay();
   }
 
@@ -393,8 +397,67 @@ const Quiz = (function () {
     }
   }
 
+  function submit() {
+    if (!currentQuestion || questionResolved) return;
+    const input = document.getElementById('quiz-input');
+    const raw = input ? input.value.trim() : '';
+    if (!raw) {
+      showFeedback('Type an answer first, then press Submit.', 'hint');
+      return;
+    }
+
+    const value = Number(raw);
+    attemptCount++;
+    const correct = Number.isFinite(value) && value === currentAnswer;
+    const timeMs = Math.round(performance.now() - questionStartedAt);
+
+    if (correct) {
+      correctCount++;
+      score += 10;
+      questionResolved = true;
+      showFeedback(Encourage.correct(), 'correct');
+    } else {
+      wrongCount++;
+      showFeedback(Encourage.tryAgain(), 'wrong');
+    }
+
+    Analytics.log('quiz', 'answer', {
+      difficulty,
+      correct,
+      timeMs,
+      attempts: attemptCount,
+      expected: currentAnswer,
+    });
+
+    updateScoreDisplay();
+    renderQuizActions(questionResolved);
+
+    if (correct) {
+      setTimeout(() => {
+        if (questionResolved) nextQuestion();
+      }, 500);
+    }
+  }
+
+  function next() {
+    nextQuestion();
+  }
+
+  function retry() {
+    retryQuestion();
+  }
+
+  function hint() {
+    showHint();
+  }
+
+  function explain() {
+    showExplanation();
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('quiz-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+    const input = document.getElementById('quiz-input');
+    if (input) input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
   });
 
   return { init, setDifficulty, changeDifficulty, submit, next, retry, hint, explain, replay: replayQuestion };
