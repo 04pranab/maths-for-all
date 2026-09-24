@@ -123,7 +123,7 @@ const ControlsOverlay = (function () {
         'Tap an empty square, then tap a number on the keypad below the grid.',
         'Every row, every column, and every 3×3 box must have the numbers 1 to 9, with no repeats.',
         'Use Hint if you are stuck — Check tells you if anything needs fixing.',
-        'Solve needs a teacher, so it is a great one to ask for help with.',
+        'If you are stuck, ask a teacher or friend to help you reason through the next move.',
       ],
     },
     shape: {
