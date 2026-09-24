@@ -351,13 +351,17 @@ button {
 }
 
 .card-badge-icon {
-  width: 68px;
-  height: 68px;
+  width: calc(68px + (var(--font-scale) - 1) * 20px);
+  height: calc(68px + (var(--font-scale) - 1) * 20px);
+  min-width: 68px;
+  min-height: 68px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.1rem;
+  line-height: 1;
+  overflow: hidden;
   margin: 0 auto 12px;
   border: 3px solid var(--ink);
 }
@@ -1056,7 +1060,7 @@ button {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   max-width: 480px;
-  width: 92vw;
+  width: 100%;
   aspect-ratio: 1/1;
   margin: 18px auto;
   border: 3px solid var(--ink);
@@ -1229,7 +1233,7 @@ button {
 
 @media (max-width: 520px) {
   .sudoku-grid {
-    width: 96vw;
+    width: 100%;
   }
 }
 
