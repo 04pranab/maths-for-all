@@ -82,18 +82,46 @@ const SlabMath = (function () {
     return sa.length === sb.length && sa.every((v,i) => v === sb[i]);
   }
 
+  const recentTargets = [];
+
+  function pickDiverseTarget(tier) {
+    let t = tier.targetMin;
+    for (let i = 0; i < 40; i++) {
+      t = Utils.randInt(tier.targetMin, tier.targetMax);
+      if (!recentTargets.includes(t)) break;
+    }
+    recentTargets.push(t);
+    if (recentTargets.length > 10) recentTargets.shift();
+    return t;
+  }
+
   function buildRound(n) {
     const tier = tierFor(n);
-    const t = Utils.randInt(tier.targetMin, tier.targetMax);
-    const A = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
+    const t = pickDiverseTarget(tier);
+
+    let A = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
     let B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
-    for (let i = 0; i < 8 && sameMultiset(A, B); i++) B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
 
+    for (let i = 0; i < 30 && sameMultiset(A, B); i++) {
+      B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
+    }
+
+    const baseValues = [...A, ...B];
     const distractors = [];
-    for (let i = 0; i < tier.distractors; i++) distractors.push(Utils.randInt(tier.slabMin, tier.slabMax));
+    for (let i = 0; i < tier.distractors; i++) {
+      let value = Utils.randInt(tier.slabMin, tier.slabMax);
+      for (let j = 0; j < 20 && (baseValues.includes(value) || distractors.includes(value)); j++) {
+        value = Utils.randInt(tier.slabMin, tier.slabMax);
+      }
+      distractors.push(value);
+    }
 
-    const values = shuffle([...A, ...B, ...distractors]);
-    const newSlabs = values.map((v, i) => ({ id: `r${n}_${i}_${Date.now()}_${Math.floor(Math.random()*9999)}`, value: v, used: false }));
+    const values = shuffle([...baseValues, ...distractors]);
+    const newSlabs = values.map((v, i) => ({
+      id: `r${n}_${i}_${Date.now()}_${Math.floor(Math.random()*9999)}`,
+      value: v,
+      used: false
+    }));
     return { target: t, slabs: newSlabs };
   }
 
