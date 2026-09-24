@@ -310,7 +310,7 @@ const Quiz = (function () {
     document.getElementById('quiz-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
   });
 
-  return { init, setDifficulty, changeDifficulty, submit, next, retry, hint, explain };
+  return { init, setDifficulty, changeDifficulty, submit, next, retry, hint, explain, replay: replayQuestion };
 })();
 
 
