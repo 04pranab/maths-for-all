@@ -18,6 +18,7 @@ The project currently focuses on arithmetic practice with multiple difficulty le
 - 🧠 Step-by-step explanations when the learner wants help
 - ➡️ Learner-controlled progression to the next question
 - 🌱 Learning-focused mastery tracking based on recent understanding, not just score
+- 🎲 Diverse generated answers with short-term repetition control
 - 📊 Basic quiz statistics and scoring
 - 📱 Responsive, lightweight interface
 - 🚫 No framework or build system required
