@@ -10,18 +10,6 @@
    ask QuestionBank for the next question.
    ============================================================= */
 
-const recentAnswers = [];
-function diverseGenerate(difficulty) {
-  let q, tries = 0;
-  do {
-    q = QuestionBank._generate(difficulty);
-    tries++;
-  } while (tries < 8 && recentAnswers.includes(q.answer));
-  recentAnswers.push(q.answer);
-  if (recentAnswers.length > 12) recentAnswers.shift();
-  return q;
-}
-
 const QuestionBank = (function () {
 
   const NAMES  = ['Riya','Arjun','Meera','Kabir','Anaya','Dev','Zara','Ishaan','Priya','Sam'];
@@ -69,45 +57,45 @@ const QuestionBank = (function () {
   /* ---------------- EASY: Nursery & Class 1 ---------------- */
   function easyCounting() {
     const emoji = Utils.pick(COUNT_EMOJI);
-    const n = Utils.randInt(3, 10);
+    const n = Utils.randInt(3, 12);
     return { text: `${emoji.repeat(n)}\nHow many are there? 🤔`, answer: n,
       spoken: `Count the pictures. How many are there?` };
   }
   function easyCompare() {
-    let a = Utils.randInt(1, 20), b = Utils.randInt(1, 20);
+    let a = Utils.randInt(1, 30), b = Utils.randInt(1, 30);
     while (a === b) b = Utils.randInt(1, 20);
     return { text: `🔍 Which number is BIGGER: ${a} or ${b}?`, answer: Math.max(a, b) };
   }
   function easyAdd() {
-    const a = Utils.randInt(1, 12), b = Utils.randInt(1, 10);
+    const a = Utils.randInt(1, 20), b = Utils.randInt(1, 15);
     return { text: addText(a, b), answer: a + b };
   }
   function easySub() {
-    let a = Utils.randInt(2, 20), b = Utils.randInt(1, a);
+    let a = Utils.randInt(2, 30), b = Utils.randInt(1, a);
     return { text: subText(a, b), answer: a - b };
   }
   function easyMissing() {
-    const a = Utils.randInt(1, 10), b = Utils.randInt(1, 9);
+    const a = Utils.randInt(1, 15), b = Utils.randInt(1, 12);
     return { text: `🕵️ Mystery number! ${a} + ❓ = ${a + b}`, answer: b,
       spoken: `${a} plus what number equals ${a + b}?` };
   }
-  const EASY_GENS = [easyCounting, easyCounting, easyCompare, easyAdd, easyAdd, easySub, easyMissing];
+  const EASY_GENS = [easyCounting, easyCompare, easyAdd, easySub, easyMissing];
 
   /* ---------------- MEDIUM: Class 2 & 3 ---------------- */
   function medAdd() {
-    const a = Utils.randInt(10, 89), b = Utils.randInt(10, 99);
+    const a = Utils.randInt(10, 99), b = Utils.randInt(10, 99);
     return { text: addText(a, b), answer: a + b };
   }
   function medSub() {
-    let a = Utils.randInt(20, 99), b = Utils.randInt(1, a);
+    let a = Utils.randInt(20, 120), b = Utils.randInt(1, a);
     return { text: subText(a, b), answer: a - b };
   }
   function medMult() {
-    const a = Utils.randInt(2, 10), b = Utils.randInt(1, 10);
+    const a = Utils.randInt(2, 12), b = Utils.randInt(1, 12);
     return { text: multText(a, b), answer: a * b };
   }
   function medDiv() {
-    const b = Utils.randInt(2, 10), ans = Utils.randInt(2, 10);
+    const b = Utils.randInt(2, 12), ans = Utils.randInt(2, 12);
     return { text: divText(b * ans, b), answer: ans };
   }
   function medWordAdd() {
@@ -120,7 +108,7 @@ const QuestionBank = (function () {
     const a = Utils.randInt(30, 90), b = Utils.randInt(5, a - 1);
     return { text: `${emoji} ${n} has ${a} ${it} and gives away ${b}.\nHow many ${it} are left?`, answer: a - b };
   }
-  const MEDIUM_GENS = [medAdd, medSub, medMult, medMult, medDiv, medWordAdd, medWordSub];
+  const MEDIUM_GENS = [medAdd, medSub, medMult, medDiv, medWordAdd, medWordSub];
 
   /* ---------------- HARD: Class 4 ----------------
      Champion is deliberately word-problem heavy. The child must
@@ -170,27 +158,37 @@ const QuestionBank = (function () {
   const HARD_GENS = [hardWordTwoStep, hardWordMult, hardWordDiv, hardWordComparison, hardWordMoney, hardWordFraction, hardWordPerimeter];
 
   const TIER_GENS = { easy: EASY_GENS, medium: MEDIUM_GENS, hard: HARD_GENS };
-  const recentAnswers = [];
+  const recentAnswers = { easy: [], medium: [], hard: [] };
+  const recentNumberSets = { easy: [], medium: [], hard: [] };
 
-  function rememberAnswer(answer) {
-    recentAnswers.push(answer);
-    if (recentAnswers.length > 18) recentAnswers.shift();
+  function numberSignature(text) {
+    return (String(text).match(/\d+(?:\.\d+)?/g) || []).join(',');
+  }
+
+  function remember(difficulty, q) {
+    recentAnswers[difficulty].push(q.answer);
+    recentNumberSets[difficulty].push(numberSignature(q.text));
+    if (recentAnswers[difficulty].length > 24) recentAnswers[difficulty].shift();
+    if (recentNumberSets[difficulty].length > 18) recentNumberSets[difficulty].shift();
   }
 
   function generate(difficulty) {
-    const gens = TIER_GENS[difficulty] || EASY_GENS;
+    const level = TIER_GENS[difficulty] ? difficulty : 'easy';
+    const gens = TIER_GENS[level];
     let q = null, tries = 0;
 
     do {
       q = Utils.pick(gens)();
       tries++;
     } while (
-      tries < 30 &&
-      (!Number.isFinite(q.answer) || recentAnswers.includes(q.answer))
+      tries < 40 &&
+      (!Number.isFinite(q.answer) ||
+       recentAnswers[level].includes(q.answer) ||
+       recentNumberSets[level].includes(numberSignature(q.text)))
     );
 
     if (!q.spoken) q.spoken = q.text.replace(/\n/g, '. ').replace(/❓/g, 'what number');
-    rememberAnswer(q.answer);
+    remember(level, q);
     return q;
   }
 
