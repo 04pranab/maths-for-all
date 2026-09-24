@@ -24,12 +24,12 @@ const SlabMath = (function () {
      feels too easy — slab values and slab count still grow with
      the tier to keep the later rounds meaningfully harder. */
   const TIERS = [
-    { targetMin: 41, targetMax: 55,  slabMin: 1, slabMax: 9,  partsMin: 2, partsMax: 4, distractors: 2 },
-    { targetMin: 45, targetMax: 65,  slabMin: 2, slabMax: 12, partsMin: 3, partsMax: 4, distractors: 2 },
-    { targetMin: 50, targetMax: 75,  slabMin: 2, slabMax: 15, partsMin: 3, partsMax: 5, distractors: 3 },
-    { targetMin: 55, targetMax: 90,  slabMin: 3, slabMax: 18, partsMin: 3, partsMax: 5, distractors: 3 },
-    { targetMin: 60, targetMax: 110, slabMin: 5, slabMax: 20, partsMin: 4, partsMax: 6, distractors: 4 },
-    { targetMin: 70, targetMax: 130, slabMin: 5, slabMax: 25, partsMin: 4, partsMax: 6, distractors: 4 },
+    { targetMin: 10, targetMax: 30, slabMin: 1, slabMax: 15, partsMin: 2, partsMax: 3, distractors: 2 },
+    { targetMin: 15, targetMax: 45, slabMin: 1, slabMax: 15, partsMin: 3, partsMax: 4, distractors: 3 },
+    { targetMin: 20, targetMax: 60, slabMin: 1, slabMax: 15, partsMin: 3, partsMax: 5, distractors: 4 },
+    { targetMin: 25, targetMax: 75, slabMin: 1, slabMax: 15, partsMin: 4, partsMax: 6, distractors: 4 },
+    { targetMin: 30, targetMax: 90, slabMin: 1, slabMax: 15, partsMin: 4, partsMax: 7, distractors: 5 },
+    { targetMin: 35, targetMax: 105, slabMin: 1, slabMax: 15, partsMin: 5, partsMax: 8, distractors: 5 },
   ];
   function tierFor(round) { return TIERS[Math.min(TIERS.length - 1, Math.floor((round - 1) / 5))]; }
 
@@ -106,17 +106,42 @@ const SlabMath = (function () {
       B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
     }
 
+    // Slab values are always 1..15 and never repeat within a round.
+    // Generate from a shuffled 1..15 pool so every displayed number is unique.
+    const pool = shuffle(Array.from({ length: tier.slabMax - tier.slabMin + 1 }, (_, i) => i + tier.slabMin));
     const baseValues = [...A, ...B];
-    const distractors = [];
-    for (let i = 0; i < tier.distractors; i++) {
-      let value = Utils.randInt(tier.slabMin, tier.slabMax);
-      for (let j = 0; j < 20 && (baseValues.includes(value) || distractors.includes(value)); j++) {
-        value = Utils.randInt(tier.slabMin, tier.slabMax);
+    const uniqueBase = [...new Set(baseValues)];
+
+    // If two valid partitions happen to reuse a value, rebuild until the
+    // combined solution uses only unique slab values.
+    let solutionValues = uniqueBase;
+    for (let attempt = 0; attempt < 60 && solutionValues.length !== baseValues.length; attempt++) {
+      A = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
+      B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
+      solutionValues = [...new Set([...A, ...B])];
+    }
+    if (solutionValues.length !== [...A, ...B].length) {
+      A = [Math.min(15, t)];
+      B = [];
+      let remaining = t - A[0];
+      for (const v of pool) {
+        if (remaining === 0 || solutionValues.length >= tier.partsMax * 2) break;
+        if (v !== A[0] && v <= remaining) {
+          B.push(v);
+          remaining -= v;
+        }
       }
-      distractors.push(value);
+      if (remaining !== 0) return buildRound(n);
+      solutionValues = [...A, ...B];
     }
 
-    const values = shuffle([...baseValues, ...distractors]);
+    const distractors = [];
+    for (const value of pool) {
+      if (distractors.length >= tier.distractors) break;
+      if (!solutionValues.includes(value)) distractors.push(value);
+    }
+
+    const values = shuffle([...solutionValues, ...distractors]);
     const newSlabs = values.map((v, i) => ({
       id: `r${n}_${i}_${Date.now()}_${Math.floor(Math.random()*9999)}`,
       value: v,
