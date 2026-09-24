@@ -17,9 +17,20 @@ The project currently focuses on arithmetic practice with multiple difficulty le
 - 💡 Contextual hints that encourage the child to reason about the problem
 - 🧠 Step-by-step explanations when the learner wants help
 - ➡️ Learner-controlled progression to the next question
+- 🌱 Learning-focused mastery tracking based on recent understanding, not just score
 - 📊 Basic quiz statistics and scoring
 - 📱 Responsive, lightweight interface
 - 🚫 No framework or build system required
+
+## 🌱 Mastery instead of just score
+
+The Arithmetic Quiz includes a small mastery meter that looks at the learner's recent questions. A question answered correctly on the first attempt contributes fully; a question solved after retries still contributes to progress, while an unanswered question does not.
+
+The meter is intentionally described as **practice mastery**, not a permanent judgement of ability. It is there to answer a more useful question than "What is my score?":
+
+> **Am I becoming more confident with these problems?**
+
+The indicator considers the most recent ten completed questions and shows a simple state: **Starting → Building → Growing → Strong**.
 
 ## 🧠 Learning-first quiz flow
 
