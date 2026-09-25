@@ -197,13 +197,14 @@ const Auth = (function () {
     error.textContent = '';
 
     try {
-      if (!/^[A-Za-z0-9_]{3,30}$/.test(username)) {
-        throw new Error('Username must be 3–30 characters using letters, numbers, or _.');
-      }
+      if (!username) throw new Error('Enter your username or email.');
 
       const existing = account();
 
       if (mode === 'signup') {
+        if (!/^[A-Za-z0-9_]{3,30}$/.test(username)) {
+          throw new Error('Username must be 3–30 characters using letters, numbers, or _.');
+        }
         const email = document.getElementById('auth-email').value.trim().toLowerCase();
         const password = document.getElementById('auth-password').value;
         const confirmPassword = document.getElementById('auth-confirm-password').value;
