@@ -194,7 +194,7 @@ const Auth = (function () {
     authReturnFocus = document.activeElement;
     render(mode || (account() ? 'login' : 'signup'));
     document.getElementById('auth-modal').classList.remove('hidden');
-    setTimeout(() => document.querySelector('#auth-modal input, #auth-modal button:not(.consent-close)')?.focus(), 0);
+    setTimeout(() => (document.querySelector('#auth-modal input') || document.querySelector('#auth-modal button:not(.consent-close)'))?.focus(), 0);
   }
 
   function close() {
