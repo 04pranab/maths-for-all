@@ -172,7 +172,7 @@ const Auth = (function () {
             <label>Password<input id="auth-password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></label>
             <label>Confirm password<input id="auth-confirm-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Enter the password again"></label>
           ` : `
-            <label>Username<input id="auth-username" type="text" autocomplete="username" required placeholder="Your username"></label>
+            <label>Username or email<input id="auth-username" type="text" autocomplete="username" required placeholder="Username or email"></label>
             <label>Password<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Your password"></label>
           `}
           <p id="auth-error" class="auth-error" role="alert"></p>
@@ -224,8 +224,9 @@ const Auth = (function () {
         }));
       } else {
         const password = document.getElementById('auth-password').value;
-        if (!existing || existing.username !== username) {
-          throw new Error('No matching local account was found.');
+        const identifier = username.trim().toLowerCase();
+        if (!existing || (existing.username || '').toLowerCase() !== identifier && (existing.email || '').toLowerCase() !== identifier) {
+          throw new Error('No matching account was found.');
         }
         const hash = await hashPassword(password, existing.salt);
         if (hash !== existing.passwordHash) throw new Error('The username or password is incorrect.');
@@ -264,7 +265,7 @@ const Auth = (function () {
     el.innerHTML = `
       <button class="nav-account-trigger" onclick="Auth.toggleAccountMenu()" aria-expanded="false" aria-controls="account-menu">
         <span class="nav-avatar">${initial}</span>
-        <span class="nav-account-email">@${Utils.escapeHtml(username)}</span>
+        <span class="nav-account-email nav-account-username">@${Utils.escapeHtml(username)}</span>
         <span aria-hidden="true">▾</span>
       </button>
       <div class="nav-account-menu hidden" id="account-menu">
