@@ -23,6 +23,16 @@
 - Extended Slab Maths into longer rounds with basket targets starting above 35.
 
 
+## Unreleased
+
+### Tests
+
+- Added automated authentication and research-consent regression tests.
+- Added headless browser smoke/stress coverage for all five game modules.
+- Added JavaScript syntax validation for every source file.
+- Added static-resource and required-DOM checks.
+- Added browser runtime and console-error detection during stress runs.
+
 ## 2.0.0 - 2026-09-24
 
 ### Release baseline
