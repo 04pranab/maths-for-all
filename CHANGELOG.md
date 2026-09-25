@@ -2,6 +2,13 @@
 
 ## Unreleased · 2026-09-25
 
+### Authentication session hardening
+- Replaced the fixed local session marker with a random per-session token.
+- Added an 8-hour session lifetime.
+- Invalid, expired, malformed, or account-mismatched sessions are cleared automatically.
+- Session state remains in sessionStorage and is not persisted as account data.
+
+
 ### Mobile and accessibility polish
 - Improved small-screen game top bars, answer controls, difficulty buttons, dialogs, and Sudoku controls.
 - Added consistent keyboard focus visibility and touch-friendly controls.
