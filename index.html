@@ -10,17 +10,28 @@
 </head>
 <body>
 
-  <!-- ===================================================
-       ACCESSIBILITY TOOLBAR — always visible, every screen
-       =================================================== -->
-  <div class="a11y-bar">
-    <div class="a11y-group">
-      <span class="a11y-label">Text size</span>
-      <button class="a11y-btn" id="a11y-font-dec" onclick="Accessibility.changeFont(-1)" aria-label="Smaller text">A−</button>
-      <button class="a11y-btn" id="a11y-font-inc" onclick="Accessibility.changeFont(1)" aria-label="Bigger text">A+</button>
-    </div>
-    <button class="a11y-progress-btn" onclick="Progress.open()">📊 My progress</button><div id="auth-actions" class="a11y-auth-actions"></div>
-  </div>
+  <header class="site-header">
+    <nav class="site-nav" aria-label="Main navigation">
+      <button class="brand-mark" onclick="Game.goHome()" aria-label="Maths for All home">
+        <span class="brand-icon">∑</span>
+        <span class="brand-name"><strong>Math</strong> For All</span>
+      </button>
+      <button class="nav-menu-toggle" id="nav-menu-toggle" onclick="Navigation.toggleMenu()" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+      <div class="nav-links" id="nav-links">
+        <button class="nav-link active" onclick="Navigation.home()">🎮 Games</button>
+        <button class="nav-link" onclick="Navigation.progress()">📊 My Progress</button>
+        <button class="nav-link" onclick="Navigation.howToPlay()">❓ How to play</button>
+      </div>
+      <div class="nav-right">
+        <div class="nav-accessibility">
+          <span class="a11y-label">Text size</span>
+          <button class="a11y-btn" id="a11y-font-dec" onclick="Accessibility.changeFont(-1)" aria-label="Smaller text">A−</button>
+          <button class="a11y-btn" id="a11y-font-inc" onclick="Accessibility.changeFont(1)" aria-label="Bigger text">A+</button>
+        </div>
+        <div id="auth-actions" class="nav-account"></div>
+      </div>
+    </nav>
+  </header>
 
   <!-- ===================================================
        SCREEN 1: MAIN MENU

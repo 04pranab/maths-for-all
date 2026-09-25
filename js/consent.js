@@ -202,17 +202,58 @@ const Auth = (function () {
     return false;
   }
 
-  function logout() {
-    sessionStorage.removeItem(SESSION_KEY);
-    renderAccountButton();
-  }
-
   function renderAccountButton() {
     const el = document.getElementById('auth-actions');
     if (!el) return;
-    el.innerHTML = isLoggedIn()
-      ? '<button class="a11y-account-btn" onclick="ResearchConsent.open()">🔐 Privacy &amp; research</button><button class="a11y-account-btn" onclick="Auth.logout()">Log out</button>'
-      : '<button class="a11y-account-btn" onclick="Auth.open()">🔐 Log in</button>';
+
+    if (!isLoggedIn()) {
+      el.innerHTML = '<button class="nav-login" onclick="Auth.open()">Log in</button>';
+      return;
+    }
+
+    const current = account();
+    const email = current && current.email ? current.email : 'Local account';
+    const initial = email.charAt(0).toUpperCase();
+
+    el.innerHTML = `
+      <button class="nav-account-trigger" onclick="Auth.toggleAccountMenu()" aria-expanded="false" aria-controls="account-menu">
+        <span class="nav-avatar">${initial}</span>
+        <span class="nav-account-email">${email}</span>
+        <span aria-hidden="true">▾</span>
+      </button>
+      <div class="nav-account-menu hidden" id="account-menu">
+        <div class="account-summary">
+          <div class="account-summary-name">My account</div>
+          <div class="account-summary-email">${email}</div>
+        </div>
+        <button class="account-menu-item" onclick="Progress.open(); Auth.closeAccountMenu()">📊 My Progress</button>
+        <button class="account-menu-item" onclick="ResearchConsent.open(); Auth.closeAccountMenu()">🔐 Privacy &amp; research</button>
+        <button class="account-menu-item" onclick="Accessibility.changeFont(1); Auth.closeAccountMenu()">A+ Increase text size</button>
+        <div class="account-menu-divider"></div>
+        <button class="account-menu-item logout" onclick="Auth.logout()">Log out</button>
+      </div>`;
+  }
+
+  function toggleAccountMenu() {
+    const menu = document.getElementById('account-menu');
+    const trigger = document.querySelector('.nav-account-trigger');
+    if (!menu) return;
+    const opening = menu.classList.contains('hidden');
+    menu.classList.toggle('hidden', !opening);
+    if (trigger) trigger.setAttribute('aria-expanded', String(opening));
+  }
+
+  function closeAccountMenu() {
+    const menu = document.getElementById('account-menu');
+    const trigger = document.querySelector('.nav-account-trigger');
+    if (menu) menu.classList.add('hidden');
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  function logout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    closeAccountMenu();
+    renderAccountButton();
   }
 
   function init() {
@@ -220,8 +261,61 @@ const Auth = (function () {
     if (isLoggedIn() && ResearchConsent.get() === null) ResearchConsent.open();
   }
 
-  return { open, close, submit, logout, isLoggedIn, init };
+  return { open, close, submit, logout, isLoggedIn, init, toggleAccountMenu, closeAccountMenu };
 })();
+
+/* =============================================================
+   PRIMARY NAVIGATION
+   ============================================================= */
+const Navigation = (function () {
+  function closeMenu() {
+    const menu = document.getElementById('nav-links');
+    const toggle = document.getElementById('nav-menu-toggle');
+    if (menu) menu.classList.remove('open');
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open navigation menu');
+    }
+  }
+
+  function toggleMenu() {
+    const menu = document.getElementById('nav-links');
+    const toggle = document.getElementById('nav-menu-toggle');
+    if (!menu) return;
+    const opening = !menu.classList.contains('open');
+    menu.classList.toggle('open', opening);
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', String(opening));
+      toggle.setAttribute('aria-label', opening ? 'Close navigation menu' : 'Open navigation menu');
+    }
+  }
+
+  function home() {
+    Game.goHome();
+    closeMenu();
+  }
+
+  function progress() {
+    Progress.open();
+    closeMenu();
+  }
+
+  function howToPlay() {
+    closeMenu();
+    if (typeof ControlsOverlay !== 'undefined') {
+      ControlsOverlay.forceShow('quiz');
+    }
+  }
+
+  return { closeMenu, toggleMenu, home, progress, howToPlay };
+})();
+
+document.addEventListener('click', (event) => {
+  const account = document.getElementById('auth-actions');
+  if (account && !account.contains(event.target) && typeof Auth !== 'undefined') {
+    Auth.closeAccountMenu();
+  }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   ResearchConsent.init();
