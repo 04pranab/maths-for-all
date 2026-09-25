@@ -152,3 +152,7 @@ The project also records significant development milestones, pull requests, dire
 ## 9. September 25, 2026 Development Record
 
 AI assistance was used to review and implement the separation of Log in and Sign up, username-or-email login handling, account-control presentation, longer Slab Maths progression, and associated repository documentation. Changes were reviewed before integration into the development branches.
+
+## 10. September 25, 2026 Development Record
+
+AI assistance was used to review the mobile layout and accessibility surface, then implement responsive controls, focus visibility, touch-friendly interactions, and reduced-motion support. Changes were reviewed before the PR was opened.
