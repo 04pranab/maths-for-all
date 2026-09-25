@@ -2786,3 +2786,180 @@ button {
     width: 100%;
   }
 }
+
+
+/* =============================================================
+   MOBILE + ACCESSIBILITY POLISH
+   ============================================================= */
+:focus-visible {
+  outline: 3px solid var(--indigo);
+  outline-offset: 3px;
+}
+
+button,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+@media (max-width: 600px) {
+  .game-topbar {
+    top: 54px;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .topbar-title {
+    order: 2;
+    flex: 1 1 calc(100% - 112px);
+    min-width: 0;
+    font-size: 1.08rem;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .btn-back {
+    order: 1;
+    padding: 8px 12px;
+    min-height: 44px;
+  }
+
+  .btn-help {
+    order: 3;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .score-box {
+    order: 4;
+    width: 100%;
+    text-align: center;
+    padding: 7px 12px;
+  }
+
+  .answer-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .answer-input {
+    width: 100%;
+    min-height: 52px;
+    box-sizing: border-box;
+    font-size: 1.2rem;
+  }
+
+  .btn-submit {
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 20px;
+  }
+
+  .diff-buttons {
+    gap: 12px;
+    padding: 0 8px;
+  }
+
+  .btn-diff {
+    width: 100%;
+    min-width: 0;
+    min-height: 76px;
+    padding: 18px 16px;
+  }
+
+  .difficulty-panel {
+    padding: 20px 12px;
+  }
+
+  .difficulty-panel h3 {
+    font-size: 1.4rem;
+  }
+
+  .play-panel {
+    padding: 18px 12px 32px;
+  }
+
+  .question-card {
+    padding: 28px 16px;
+  }
+
+  .modal-overlay {
+    padding: 10px;
+  }
+
+  .modal-box,
+  .auth-card,
+  .consent-card {
+    max-height: calc(100vh - 20px);
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+
+  .auth-card form {
+    gap: 0.75rem;
+  }
+
+  .auth-card label {
+    font-size: 0.95rem;
+  }
+
+  .auth-card input[type="text"],
+  .auth-card input[type="email"],
+  .auth-card input[type="password"] {
+    min-height: 50px;
+    font-size: 1rem;
+  }
+
+  .sudoku-controls {
+    padding: 6px 10px;
+  }
+
+  .btn-sudoku {
+    flex: 1 1 42%;
+    min-width: 130px;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand-name {
+    max-width: 112px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav-account-trigger {
+    min-height: 44px;
+  }
+
+  .nav-accessibility .a11y-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .topbar-title {
+    font-size: 1rem;
+  }
+
+  .score-box {
+    font-size: 0.9rem;
+  }
+
+  .btn-sudoku {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
