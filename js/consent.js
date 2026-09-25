@@ -172,7 +172,7 @@ const Auth = (function () {
             <label>Password<input id="auth-password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></label>
             <label>Confirm password<input id="auth-confirm-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Enter the password again"></label>
           ` : `
-            <label>Username<input id="auth-username" type="text" autocomplete="username" required placeholder="Your username"></label>
+            <label>Username or email<input id="auth-username" type="text" autocomplete="username" required placeholder="Username or email"></label>
             <label>Password<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Your password"></label>
           `}
           <p id="auth-error" class="auth-error" role="alert"></p>
@@ -197,13 +197,14 @@ const Auth = (function () {
     error.textContent = '';
 
     try {
-      if (!/^[A-Za-z0-9_]{3,30}$/.test(username)) {
-        throw new Error('Username must be 3–30 characters using letters, numbers, or _.');
-      }
+      if (!username) throw new Error('Enter your username or email.');
 
       const existing = account();
 
       if (mode === 'signup') {
+        if (!/^[A-Za-z0-9_]{3,30}$/.test(username)) {
+          throw new Error('Username must be 3–30 characters using letters, numbers, or _.');
+        }
         const email = document.getElementById('auth-email').value.trim().toLowerCase();
         const password = document.getElementById('auth-password').value;
         const confirmPassword = document.getElementById('auth-confirm-password').value;
@@ -224,8 +225,9 @@ const Auth = (function () {
         }));
       } else {
         const password = document.getElementById('auth-password').value;
-        if (!existing || existing.username !== username) {
-          throw new Error('No matching local account was found.');
+        const identifier = username.trim().toLowerCase();
+        if (!existing || ((existing.username || '').toLowerCase() !== identifier && (existing.email || '').toLowerCase() !== identifier)) {
+          throw new Error('No matching account was found.');
         }
         const hash = await hashPassword(password, existing.salt);
         if (hash !== existing.passwordHash) throw new Error('The username or password is incorrect.');
