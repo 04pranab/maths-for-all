@@ -5,6 +5,14 @@
 const ResearchConsent = (function () {
   const KEY = 'mfa_research_consent_v1';
   const ANALYTICS_KEY = 'mfa_analytics_v1';
+  let returnFocus = null;
+
+  function focusFirst(selector) {
+    const modal = document.querySelector(selector);
+    if (!modal) return;
+    const target = modal.querySelector('input, button, a, [tabindex]:not([tabindex="-1"])');
+    if (target) setTimeout(() => target.focus(), 0);
+  }
 
   function get() {
     const value = localStorage.getItem(KEY);
@@ -27,12 +35,18 @@ const ResearchConsent = (function () {
   }
 
   function open() {
+    returnFocus = document.activeElement;
     render();
     document.getElementById('research-consent-modal').classList.remove('hidden');
+    focusFirst('#research-consent-modal');
   }
 
   function close() {
-    document.getElementById('research-consent-modal').classList.add('hidden');
+    const modal = document.getElementById('research-consent-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+    returnFocus = null;
   }
 
   function renderStatus() {
@@ -52,7 +66,7 @@ const ResearchConsent = (function () {
     if (!modal) return;
     modal.innerHTML = `
       <div class="consent-card" role="dialog" aria-modal="true" aria-labelledby="research-consent-title">
-        <button class="consent-close" onclick="ResearchConsent.close()" aria-label="Close">×</button>
+        ${value ? '<button class="consent-close" onclick="ResearchConsent.close()" aria-label="Close research privacy dialog">×</button>' : ''}
         <div class="consent-icon">🔐</div>
         <h2 id="research-consent-title">${value ? 'Research data preference' : 'Your research data choice'}</h2>
         <p class="consent-lead">Your account and your research choice are separate. We will never treat logging in as permission to collect research data.</p>
@@ -88,7 +102,7 @@ const ResearchConsent = (function () {
           <button class="consent-btn primary" onclick="ResearchConsent.choose('yes')">✓ Allow research data collection</button>
           <button class="consent-btn secondary" onclick="ResearchConsent.choose('no')">✕ Do not allow research data collection</button>
         </div>
-        <button class="consent-policy" onclick="ResearchConsent.showPolicy()">Read the full research data policy</button>
+        <a class="consent-policy" href="docs/v3/research-data-policy.html" target="_blank" rel="noopener">Read the full research data and collection policy</a>
       </div>`;
   }
 
@@ -174,13 +188,21 @@ const Auth = (function () {
     );
   }
 
+  let authReturnFocus = null;
+
   function open(mode) {
+    authReturnFocus = document.activeElement;
     render(mode || (account() ? 'login' : 'signup'));
     document.getElementById('auth-modal').classList.remove('hidden');
+    setTimeout(() => (document.querySelector('#auth-modal input') || document.querySelector('#auth-modal button:not(.consent-close)'))?.focus(), 0);
   }
 
   function close() {
-    document.getElementById('auth-modal').classList.add('hidden');
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    if (authReturnFocus && typeof authReturnFocus.focus === 'function') authReturnFocus.focus();
+    authReturnFocus = null;
   }
 
   function render(mode) {
@@ -288,7 +310,9 @@ const Auth = (function () {
     if (!el) return;
 
     if (!isLoggedIn()) {
-      el.innerHTML = '<button class="nav-login" onclick="Auth.open(\'login\')">Log in</button>';
+      el.innerHTML = `
+        <button class="nav-policy" onclick="ResearchConsent.showPolicy()" aria-label="Privacy and research data policy">Privacy &amp; data</button>
+        <button class="nav-login" onclick="Auth.open('login')">Log in</button>`;
       return;
     }
 
@@ -402,4 +426,55 @@ document.addEventListener('click', (event) => {
 document.addEventListener('DOMContentLoaded', () => {
   ResearchConsent.init();
   Auth.init();
+});
+
+
+/* =============================================================
+   KEYBOARD ACCESSIBILITY
+   Escape closes dismissible overlays. Initial research consent
+   remains mandatory until an explicit Yes or No choice exists.
+   Tab and Shift+Tab stay inside the active modal.
+   ============================================================= */
+document.addEventListener('keydown', (event) => {
+  const visible = [...document.querySelectorAll('.modal-overlay:not(.hidden)')];
+  const modal = visible[visible.length - 1];
+
+  if (modal && event.key === 'Escape') {
+    if (modal.id === 'research-consent-modal' && ResearchConsent.get() === null) {
+      event.preventDefault();
+      return;
+    }
+
+    event.preventDefault();
+    if (modal.id === 'auth-modal' && typeof Auth !== 'undefined') Auth.close();
+    else if (modal.id === 'research-consent-modal') ResearchConsent.close();
+    else if (modal.id === 'account-profile-modal' && typeof Auth !== 'undefined' && typeof Auth.closeProfile === 'function') Auth.closeProfile();
+    else if (typeof Progress !== 'undefined' && typeof Progress.close === 'function') Progress.close();
+    return;
+  }
+
+  if (!modal || event.key !== 'Tab') return;
+
+  const focusable = [...modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+    .filter(el => el.offsetParent !== null);
+
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !document.querySelector('.modal-overlay:not(.hidden)') && typeof Auth !== 'undefined') {
+    Auth.closeAccountMenu();
+    if (typeof Navigation !== 'undefined') Navigation.closeMenu();
+  }
 });

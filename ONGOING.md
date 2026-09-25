@@ -1,518 +1,208 @@
-# ONGOING.md
+# Maths for All · Ongoing Engineering Record
 
-# Maths for All Development Status
-
-**Project:** Maths for All  
-**Repository:** 04pranab/maths-for-all  
-**Current released baseline:** v2.0.0  
-**Current development line:** v2.5.0 → v3.0.0  
+**Repository:** `04pranab/maths-for-all`  
+**Author:** Om Pranab Mohanty  
+**Current stable release:** `v2.0.0`  
+**Current patch:** `v2.0.1` preparation  
+**Next major milestone:** `v2.5.0` authenticated milestone  
+**Research milestone:** `v3.0.0`  
 **Last updated:** 25 September 2026
 
 ---
 
-## 1. Purpose of This File
+## 1. Purpose
 
-`ONGOING.md` is the living engineering record for Maths for All.
+This is the project's living engineering record. It tracks releases, architecture decisions, privacy guarantees, significant changes, validation, and known limitations.
 
-It records:
-- what has been completed;
-- what is currently being worked on;
-- what remains planned;
-- important architectural decisions;
-- releases and milestones;
-- pull requests and direct commits that materially change the project;
-- validation and testing notes;
-- known limitations and follow-up work.
-
-**Rule:** every future PR or significant direct commit should leave a short entry here describing what changed and why.
+Every substantial PR or direct engineering change should leave a concise record here.
 
 ---
 
-## 2. Release and Architecture Roadmap
+## 2. Release line
 
-### v2.0.0 · Stable Educational Baseline
+### v2.0.0 · Stable educational baseline
 
-Status: **COMPLETE / FROZEN**
+**Status: COMPLETE / FROZEN**
 
-v2.0.0 is the regression reference for the educational application.
+The v2.0.0 tag is the regression reference for the educational experience.
 
-Stable baseline:
+It contains:
 - Arithmetic Quiz
 - Math Racing
 - Sudoku
 - Shape Fitting
 - Slab Maths
-- responsive desktop/mobile layouts
-- accessibility font scaling
+- responsive layouts
+- accessibility text scaling
+- learning-focused feedback and mastery behaviour
 - question-generation and repetition controls
-- learning-focused feedback and mastery behaviour.
 
 Baseline commit:
+
 `8741edcc9f1aa6a8fabfc8b08086449e94719aae`
 
----
+### v2.0.1 · Reliability, privacy, accessibility, and documentation patch
 
-### v2.5.0 · Authenticated Milestone
+**Status: PREPARED IN THIS PR**
 
-Status: **IN PROGRESS**
+This patch does not change the product roadmap. It hardens the existing v2 application.
 
-Goal: build a complete and stable authentication and consent foundation before introducing the research database and broader research infrastructure.
+Scope:
+- keyboard-operable modal overlays;
+- Escape handling for dismissible overlays;
+- focus placement and focus return;
+- keyboard focus trapping inside active dialogs;
+- guest access to the privacy and research-data policy;
+- stricter initial research-consent behaviour;
+- updated research-policy accountability language;
+- updated project license;
+- cleaned engineering documentation;
+- stronger automated stress coverage;
+- release metadata and changelog cleanup.
 
-Important boundary:
-The current local account implementation is a development/static-app authentication shell. It is **not** production server-side authentication.
+### v2.5.0 · Authenticated milestone
 
-v2.5.0 should not be considered final until the real authentication architecture, protected sessions/routes, validation, and testing are complete.
+**Status: PLANNED**
 
-Current work:
-- local account creation/login shell;
-- session state;
-- explicit research consent;
-- persistent privacy control;
-- strict analytics consent gate;
-- consent hardening;
-- browser-readable research policy;
-- main-branch integration of the authentication UI.
+The next milestone after the v2.0.x hardening line is production authentication.
 
-Remaining work:
-- production authentication backend;
-- secure server-side credential handling;
-- secure session management;
-- protected routes/resources;
-- authentication failure and recovery handling;
-- authentication-focused tests;
-- consent-flow regression tests;
-- final v2.5.0 validation and release.
+Required before release:
+- server-side authentication;
+- secure credential handling;
+- server-side sessions;
+- protected resources;
+- email verification;
+- production Google OAuth;
+- authentication recovery/error handling;
+- authentication and consent regression tests.
 
----
+The current browser-local account/session implementation remains a development shell and must not be represented as production authentication.
 
-### v3.0.0 · Research-Enabled Release
+### v3.0.0 · Research-enabled release
 
-Status: **PLANNED**
+**Status: PLANNED**
 
-Goal: introduce the complete research/data infrastructure while preserving the v2 educational baseline.
+Research infrastructure begins only after the authentication milestone.
+
+Planned sequence:
+
+`Identity → Authentication → Authorization → Consent → Research API → Database`
 
 Planned areas:
-1. research data model
-2. database infrastructure
-3. consent-aware event collection
-4. participant management
-5. data validation
-6. research API
-7. research dashboard
-8. controlled data export
-9. privacy and deletion controls
-10. integration testing
-11. documentation
-12. release-candidate validation
-13. v3.0.0 release
-
-Core privacy invariant:
-> No explicit research consent means no research event.
-
-Authentication and research consent remain separate concepts.
-
----
-
-## 3. Completed Work
-
-### PR #1 and early project development
-
-The project established the initial educational game platform and its core gameplay modules.
-
----
-
-### PR #2
-
-**Theme:** quiz mastery update
-
-Completed:
-- quiz mastery is updated immediately after answers.
-
-### PR #3
-
-**Theme:** Math Race hardening
-
-Completed:
-- guarded Math Race question/timer state;
-- refreshed deployed scripts to avoid stale cached behaviour.
-
-### PR #4
-
-**Theme:** question-generation expansion
-
-Completed:
-- broadened and balanced generated question numbers.
-
-### PR #5
-
-**Theme:** repetition control
-
-Completed:
-- prevented repeated question numbers until the available pool was exhausted.
-
-### PR #6
-
-**Theme:** diversity and Slab Maths range
-
-Completed:
-- stronger uniqueness/repetition control;
-- Slab Maths values diversified across 1–15.
-
-### PR #7
-
-**Theme:** accessibility/mobile fixes
-
-Completed:
-- contained card icons when text is enlarged;
-- improved mobile Sudoku spacing;
-- refreshed stylesheet cache.
-
----
-
-### PR #8 · v2.0.0 Baseline
-
-**Title:** `chore: prepare v2 release baseline`
-
-Status: **MERGED**
-
-Commit: `8741edcc9f1aa6a8fabfc8b08086449e94719aae`
-
-Release: `v2.0.0`
-
-Purpose: freeze a known-good educational baseline before research infrastructure work.
-
----
-
-### PR #9 · v3 Architecture and Consent Boundary
-
-**Title:** `docs: define v3 architecture and research consent boundary`
-
-Status: **MERGED**
-
-Completed:
-- v3 architecture documentation;
-- research-data policy;
-- explicit opt-in model;
-- separation of authentication and research consent;
-- consent-aware gateway requirement;
-- prohibition on direct research writes from game modules;
-- clear definition of data that may and may not be collected.
-
----
-
-### PR #10 · Local Authentication and Consent UX
-
-**Title:** `feat: add login flow and strict research consent gate`
-
-Status: **MERGED**
-
-Completed:
-- local account creation/login shell;
-- session-based local login state;
-- research-consent dialog after first successful login when no preference exists;
-- explicit Yes/No choice;
-- explanation of collected and non-collected data;
-- persistent Privacy & research control;
-- local research-data purge when the user chooses No;
-- research exports and summaries disabled without consent.
-
-Important limitation:
-This is a local/static application authentication shell, not production backend authentication.
-
----
-
-### PR #17 · Authentication Session Hardening
-
-Status: IN REVIEW
-
-Completed according to the authentication milestone plan:
-- replaced the fixed local active session marker with a random per-session token;
-- added an 8-hour local session lifetime;
-- validate session structure, expiry, and account identity before treating a user as logged in;
-- automatically clear expired, malformed, or account-mismatched sessions;
-- keep session state in sessionStorage rather than account storage.
-
-Scope is limited to authentication/session hardening. No new gameplay, research collection, or unrelated UI features are included.
-
-### PR #16 · Mobile and Accessibility Polish
-
-Status: IN REVIEW
-
-Completed:
-- improved small-screen game top bars and score placement;
-- stacked answer controls on narrow screens for easier touch interaction;
-- made difficulty buttons full-width on small screens;
-- improved mobile modal sizing and authentication form controls;
-- strengthened visible keyboard focus styling;
-- added touch-friendly interaction handling;
-- added reduced-motion support;
-- improved small-screen Sudoku controls.
-
-Scope remains presentation and accessibility only. Authentication, consent, analytics, and research boundaries are unchanged.
-
-### PR #12 · Professional Navigation
-
-Status: IN REVIEW
-
-Completed ordered primary navigation, responsive mobile navigation, account access controls, and retained accessibility controls.
-
-### PR #13 · Account Profile Experience
-
-Status: IN REVIEW
-
-Completed account information, username/email display, member-since information, local-account status, research-consent status, and links to progress and privacy controls.
-
-### PR #14 · Separate Login and Signup
-
-Status: IN REVIEW
-
-Completed distinct Log in and Sign up views in the same modal. Sign up collects username, email, password, and confirmation. Log in accepts username or email plus password. A Google sign-in entry point is prepared for the future production backend. Email verification remains a database-backed authentication requirement.
-
-A direct follow-up fix was applied to PR #14, not as another PR, to improve the username presentation and preserve username-or-email login.
-
-### PR #15 · Slab Maths Long-Game Mode
-
-Status: IN REVIEW
-
-Completed longer Slab Maths rounds with basket targets starting above 35, increasing target ranges and required slab counts in later tiers, while preserving 1–15 slab values and existing restart, hint, feasibility, and accessibility behaviour.
-
-### PR #11 · Consent and UX Hardening
-
-**Title:** `fix: harden authentication and consent UX`
-
-Status: **MERGED INTO THE PR #10 DEVELOPMENT LINE**
-
-The PR was originally stacked on the authentication branch rather than directly on `main`.
-
-Completed in the hardening work:
-- fixed literal newline markup;
-- prevented initial consent dismissal before an explicit choice;
-- improved consent modal stacking;
-- added browser-readable policy support;
-- identified and fixed the missing analytics consent gate;
-- made No a strict opt-out.
-
-Because the PR was stacked, the hardening changes required direct main-branch integration afterward.
-
----
-
-### 25 September 2026 · Direct Main-Branch Patch
-
-Status: **COMPLETED**
-
-The main branch was corrected so the authentication/consent implementation is actually wired into the deployed application.
-
-Changes:
-- fixed authentication and consent modal markup in `index.html`;
-- loaded `js/consent.js` from the main application;
-- enforced `ResearchConsent.isAllowed()` before analytics writes;
-- disabled analytics summaries and exports without explicit Yes;
-- preserved strict No-means-no behaviour;
-- expanded `AI_USAGE.md` with the development record;
-- created this `ONGOING.md`.
-
-Direct commits:
-- `173e54e65c77a1952fc7487c1f4bd61fda68e851` — `fix: wire login and consent UI into main app`
-- `208982113e587efc8b1b1a2cec89beb0fb73b862` — `fix: enforce research consent in analytics`
-
-These were direct commits, not pull requests.
-
----
-
-## 4. Current State
-
-### Educational application
-**Stable.** The v2 educational baseline remains the reference implementation.
-
-### Authentication UI
-**Wired into main.** The access interface is a single modal with separate Log in and Sign up views. Log in accepts username or email plus password. Sign up collects username, email, password, and confirmation. Google sign-in is prepared for the future backend, and email verification is reserved for the database-backed authentication stage.
-
-### Research consent
-**Wired into main.** Intended flow: `Log in → explicit research choice → Yes or No`.
-
-If the user chooses No:
-- research events are rejected;
-- locally stored research events are removed;
-- normal gameplay remains available;
-- the preference can be changed later from `Privacy & research`.
-
-### Analytics
-**Consent-gated.** Analytics cannot write, summarize, or export research events unless explicit Yes has been recorded.
-
-### Production authentication
-**Not complete.** A real backend authentication system remains future work.
-
-### Local session handling
-**Hardened for the development shell.** Sessions use a random per-session token, an 8-hour expiry, and account/session consistency checks. This remains a development-stage client-side mechanism, not server-side session security.
-
-### Research database
-**Not started.** The research database and server-side research infrastructure belong after the authentication milestone.
-
-### Slab Maths
-**Extended for longer play.** Basket targets now begin above 35 and increase through later tiers while slab values remain within 1–15.
-
-### Mobile and accessibility
-**Polished.** Small-screen layouts, touch targets, keyboard focus, dialogs, and reduced-motion behaviour have been updated in PR #16.
-
----
-
-## 5. Immediate Next Steps
-
-### Step 1 · Verify the main-branch login flow
-
-Test in a fresh browser state:
-1. open Maths for All;
-2. confirm `Log in` appears;
-3. create a local account;
-4. confirm login succeeds;
-5. confirm the research-consent dialog appears;
-6. inspect the collected/not-collected explanation;
-7. choose No;
-8. play normally;
-9. verify no research events are recorded;
-10. reopen `Privacy & research`;
-11. choose Yes;
-12. verify research events can then be recorded;
-13. change back to No;
-14. verify locally stored research events are removed.
-
-### Step 2 · Review PR #14, PR #15, and PR #16
-
-### Step 2b · Review PR #17
-Review authentication session expiry, token handling, and invalid-session cleanup.
-Review the account-access UX and longer Slab Maths rounds.
-
-### Step 3 · Authentication backend
-Design and implement the production authentication boundary.
-
-### Step 4 · Secure sessions and protected resources
-Add server-side session handling and protect authenticated resources.
-
-### Step 5 · Authentication tests
-Add automated tests for account creation, login, invalid credentials, logout, session expiry, protected access, and consent state handling.
-
-### Step 6 · v2.5.0 release validation
-Only after the authentication and consent system is stable and tested should v2.5.0 be released.
-
----
-
-## 6. Later v3 Work
-
-After v2.5.0:
 - research schema;
 - database;
-- consent-aware event API;
+- consent-aware event gateway;
 - participant management;
 - validation;
+- controlled exports;
+- privacy/deletion controls;
 - research dashboard;
-- exports;
-- privacy/deletion mechanisms;
-- integration tests;
-- documentation;
-- release candidate;
-- v3.0.0.
+- integration testing;
+- release-candidate validation.
 
 ---
 
-## 7. Non-Negotiable Privacy Rules
+## 3. Completed milestone record
+
+| Item | Status |
+|---|---|
+| v2.0.0 baseline | COMPLETE |
+| PR #9 architecture + research consent boundary | MERGED |
+| PR #10 local authentication + consent UX | MERGED |
+| PR #11 consent hardening | MERGED |
+| PR #12 professional navigation | MERGED |
+| PR #13 account profile | MERGED |
+| PR #14 separate login/signup + Google entry point | MERGED |
+| PR #15 longer Slab Maths rounds | MERGED |
+| PR #16 mobile/accessibility polish | MERGED |
+| PR #17 local session hardening | MERGED |
+| PR #18 automated auth/consent + browser stress suite | MERGED |
+| v2.0.1 hardening PR | IN REVIEW |
+| v2.5.0 production authentication | PLANNED |
+| v3.0.0 research infrastructure | PLANNED |
+
+---
+
+## 4. Privacy contract
+
+The following are non-negotiable application invariants:
 
 1. Login is not research consent.
-2. Silence is not consent.
-3. Closing an initial consent prompt is not consent.
-4. Only explicit Yes enables research collection.
-5. No means no.
-6. Choosing No stops future research collection.
-7. Choosing No removes locally stored research events.
-8. Users can change their preference later.
-9. Game modules must not bypass the consent-aware research gateway.
-10. Authentication data and research data remain separate.
+2. Account creation is not research consent.
+3. Silence is not consent.
+4. Closing the initial consent prompt is not consent.
+5. Only explicit Yes enables research collection.
+6. No means no.
+7. Selecting No blocks future research events.
+8. Selecting No removes locally stored research events.
+9. Users can change the preference later.
+10. The privacy/data policy must remain reachable without login.
+11. Game modules must not bypass the consent-aware research gateway.
+12. Authentication data and research data remain separate.
+13. New research fields or purposes require a policy and consent review before activation.
+
+Full policy:
+
+`docs/v3/research-data-policy.html`
 
 ---
 
-## 8. Development Record Convention
+## 5. v2.0.1 hardening record
 
-For every future meaningful change, add an entry containing:
-- date;
-- PR number or direct commit;
-- title/message;
-- status;
-- what changed;
-- why it changed;
-- validation performed;
-- known limitations;
-- next follow-up, if any.
+### Modal and keyboard behaviour
 
-This file is the project's running engineering notebook.
+The patch adds:
+- initial focus inside opened authentication/research dialogs;
+- focus return to the invoking control when dismissible dialogs close;
+- Escape to close dismissible overlays;
+- Escape blocked for the initial mandatory consent choice;
+- Tab and Shift+Tab cycling within the active modal;
+- keyboard-visible focus styling;
+- privacy-policy access from the unauthenticated navigation.
 
----
+This follows the expected keyboard and focus behaviour for modal dialogs described by the W3C WAI-ARIA Authoring Practices. citeturn2search0turn2search6
 
-## 9. Recent Development Notes
+### Privacy and policy
 
-PR #14 Google sign-in is a prepared UI entry point only. Actual OAuth and email verification require the future production authentication/database backend.
+The research policy now states that research collection is authorised only when the documented policy is followed. It also distinguishes project-license requirements from obligations imposed by applicable law.
 
-## 10. Known Limitations
+The license does not claim that a private project document can create legal duties by itself. It states the project's contractual conditions and reserves remedies available under applicable law.
 
-- The current authentication implementation is local/static and is not production server-side authentication.
-- Full live browser interaction testing still needs to be performed in a real browser environment.
-- Research database infrastructure is not yet implemented.
-- v2.5.0 is therefore not yet a final release.
-- v3.0.0 remains a future research-enabled milestone.
+India's Digital Personal Data Protection Act, 2023 describes consent as requiring clear affirmative action and provides for withdrawal where consent is the basis of processing. The project's implementation is designed around the stricter explicit-opt-in rule documented here. citeturn1search12turn1search13
 
----
+### Stress validation
 
-## 11. Milestone Summary
-
-| Milestone | Status | Meaning |
-|---|---|---|
-| v2.0.0 | COMPLETE | Stable educational baseline |
-| PR #9 | COMPLETE | v3 architecture + research consent policy |
-| PR #10 | COMPLETE | Local auth + consent UX |
-| PR #11 | COMPLETE | Consent hardening work |
-| PR #12 | IN REVIEW | Professional navigation |
-| PR #13 | IN REVIEW | Account profile experience |
-| PR #14 | IN REVIEW | Separate login/signup + Google entry point |
-| PR #15 | IN REVIEW | Longer Slab Maths rounds |
-| PR #16 | IN REVIEW | Mobile and accessibility polish |
-| PR #17 | IN REVIEW | Authentication session hardening |
-| Main-branch patch | COMPLETE | Auth/consent wiring + analytics gate |
-| v2.5.0 | IN PROGRESS | Complete authentication milestone |
-| v3.0.0 | PLANNED | Complete research-enabled release |
+PR #18 established the automated browser stress foundation. This patch extends the validation target to include:
+- guest privacy access;
+- keyboard opening/closing behaviour;
+- initial-consent Escape protection;
+- focus containment;
+- repeated modal open/close cycles;
+- repeated gameplay transitions;
+- malformed and expired session handling;
+- static-resource validation;
+- runtime and console-error detection.
 
 ---
 
-**Living document:** update this file after every meaningful PR, release, architectural change, or direct engineering commit.
+## 6. Known limitations
 
-### PR #18 · Automated Authentication, Consent, and Browser Stress Tests
+- The local authentication implementation is still not production authentication.
+- Server-side sessions are not yet implemented.
+- Production email verification and Google OAuth are not yet implemented.
+- Research database infrastructure is intentionally not implemented.
+- Browser automation is headless and does not replace testing with real assistive technologies.
+- The custom project license is not an OSI-approved open-source license.
+- Operators remain responsible for legal compliance in their deployment jurisdiction.
 
-Status: **IN REVIEW**
+---
 
-Completed test infrastructure for the authentication milestone:
-- automated local signup and session creation checks;
-- explicit research-consent Yes/No checks;
-- strict analytics blocking when consent is No;
-- analytics event-cap validation;
-- consent withdrawal and local research-event purge validation;
-- expired, malformed, and account-mismatched session cleanup checks;
-- username and email login checks;
-- JavaScript syntax checks;
-- required DOM and static-resource checks;
-- repeated browser stress passes through Arithmetic Quiz, Math Racing, Sudoku, Shape Fitting, and Slab Maths;
-- runtime and console-error detection during the browser stress pass.
+## 7. Development rule
 
-Scope remains test infrastructure only. No new gameplay, research collection, database, OAuth, or unrelated UI functionality is introduced.
+Do not add unrelated features to the hardening line.
 
-The local authentication implementation remains a development/static-app shell. Production authentication and server-side research infrastructure remain future milestone work.
+The sequence remains:
 
+`v2.0.1 hardening → v2.5.0 production authentication → v3.0.0 research infrastructure`
 
-### PR #18 Validation Findings and Cleanup
-
-The browser stress run initially found two concrete issues in the development line:
-- the analytics consent gate incorrectly checked `window.ResearchConsent` even though the consent module is declared as a top-level lexical binding, which prevented analytics from recording even after explicit Yes;
-- the browser requested a missing `favicon.ico`, producing a 404 during page load.
-
-Cleanup applied in this PR:
-- corrected the consent gate to test the actual `ResearchConsent` binding;
-- added `favicon.svg` and linked it from the application shell;
-- refreshed the `js/script.js` cache-busting version.
-
-Final automated validation passed after these fixes.
+Each stage should be completed and tested before the next architectural dependency is introduced.

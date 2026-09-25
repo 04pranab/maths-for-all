@@ -170,3 +170,23 @@ AI assistance was used to design and review the planned authentication/consent r
 ## 13. September 25, 2026 Development Record
 
 The automated browser stress test identified a consent-gate binding issue and a missing favicon request. AI assistance was used to diagnose and review the fixes, while the changes were validated through the repository's automated syntax and browser stress workflow.
+
+
+---
+
+## September 25, 2026 · v2.0.1 Hardening Record
+
+AI assistance was used to help review and implement the planned v2.0.1 hardening work.
+
+The assistance covered:
+- modal keyboard and focus behaviour;
+- privacy-policy access for unauthenticated users;
+- research-consent edge cases;
+- stress-test expansion and failure analysis;
+- documentation cleanup;
+- license wording review;
+- release metadata and changelog preparation.
+
+Human responsibility remained with the project author. The final scope, privacy rules, legal wording, release decision, code integration, and testing decisions were reviewed before inclusion.
+
+The project does not treat AI output as a security guarantee or legal opinion. Security findings are validated through executable tests and code review, and legal obligations remain governed by applicable law.

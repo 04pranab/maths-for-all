@@ -2218,7 +2218,7 @@ button {
 }
 .consent-btn.primary { background: #222; color: #fff; }
 .consent-btn.secondary { background: #ecece7; color: #222; }
-.consent-policy { margin-top: 0.8rem; border: 0; background: transparent; text-decoration: underline; cursor: pointer; }
+.consent-policy { display: inline-block; margin-top: 0.8rem; border: 0; background: transparent; color: var(--indigo); text-decoration: underline; cursor: pointer; font: inherit; }
 .auth-card form { display: grid; gap: 0.9rem; }
 .auth-card label { display: grid; gap: 0.35rem; font-weight: 700; }
 .auth-card input[type="text"],
@@ -2418,6 +2418,7 @@ button {
 
 .nav-right {
   margin-left: auto;
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -2551,6 +2552,25 @@ button {
   color: var(--clay);
 }
 
+.nav-policy {
+  min-height: 44px;
+  border: 2px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  padding: 8px 13px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nav-policy:hover,
+.nav-policy:focus-visible {
+  border-color: var(--indigo);
+  color: var(--indigo);
+  background: var(--card-alt);
+}
+
 .nav-login {
   min-height: 44px;
   border: 2px solid var(--indigo);
@@ -2638,6 +2658,12 @@ button {
 
   .nav-right {
     gap: 5px;
+  }
+
+  .nav-policy {
+    min-height: 42px;
+    padding: 7px 10px;
+    font-size: 0.86rem;
   }
 
   .nav-account-email {

@@ -1,66 +1,58 @@
-# Math for All 🧮
+# Maths for All 🧮
 
-A simple, friendly mathematics learning website designed to help children practise arithmetic through questions, reflection, and repeated attempts.
+A simple, friendly mathematics learning website built with plain HTML, CSS, and JavaScript.
 
-## 🌱 What is Math for All?
+Maths for All is designed around a learner-first loop: **try → understand → retry → continue**.
 
-Math for All is a browser-based learning experience built with plain **HTML, CSS, and JavaScript**. The goal is not only to tell a child whether an answer is right or wrong, but to give them space to **think, try again, understand their mistake, and continue when they are ready**.
+## Current release
 
-The project currently focuses on arithmetic practice with multiple difficulty levels, including a harder level built around contextual word problems.
+**v2.0.1**
 
-## ✨ Features
+v2.0.1 is a reliability, privacy, accessibility, and documentation patch on top of the stable v2 educational baseline.
 
-- 🧮 Arithmetic practice with generated questions
-- 🎚️ Multiple difficulty levels
-- 🏆 Hard/Champion questions are heavily based on word problems
-- 🔁 Retry the same question instead of being forced forward
-- 💡 Contextual hints that encourage the child to reason about the problem
-- 🧠 Step-by-step explanations when the learner wants help
-- ➡️ Learner-controlled progression to the next question
-- 🌱 Learning-focused mastery tracking based on recent understanding, not just score
-- 🎲 Diverse generated answers with short-term repetition control
-- 📊 Basic quiz statistics and scoring
-- 📱 Responsive, lightweight interface
-- 🚫 No framework or build system required
+## Features
 
-## 🌱 Mastery instead of just score
+- 🧮 Arithmetic Quiz with hints, explanations, retries, and practice mastery
+- 🏁 Math Racing
+- 🔢 Sudoku
+- 🔷 Shape Fitting
+- 🧺 Slab Maths with longer rounds
+- 📱 Responsive desktop and mobile layouts
+- ⌨️ Keyboard-friendly controls and visible focus states
+- 🔐 Explicit research-consent controls
+- 📄 Privacy and research-data policy available without login
+- 🚫 Strict No-means-no research collection
+- 🧪 Automated browser smoke/stress testing
 
-The Arithmetic Quiz includes a small mastery meter that looks at the learner's recent questions. A question answered correctly on the first attempt contributes fully; a question solved after retries still contributes to progress, while an unanswered question does not.
+## Privacy by design
 
-The meter is intentionally described as **practice mastery**, not a permanent judgement of ability. It is there to answer a more useful question than "What is my score?":
+Research collection is **opt-in**.
 
-> **Am I becoming more confident with these problems?**
+Logging in or creating an account is not research consent. The application must receive an explicit Yes before research events can be recorded.
 
-The indicator considers the most recent ten completed questions and shows a simple state: **Starting → Building → Growing → Strong**.
+If a learner chooses No:
+- research events are blocked;
+- locally stored research events are removed;
+- normal educational gameplay continues;
+- the preference can be reviewed and changed later.
 
-## 🧠 Learning-first quiz flow
+The full policy is available at `docs/v3/research-data-policy.html`, including the data categories, exclusions, withdrawal behaviour, implementation requirements, and compliance declaration.
 
-The quiz is intentionally designed so that answering a question does **not** immediately move the learner to another one.
+## Authentication status
 
-The intended loop is:
+The current account system is a development/static-app shell. It is not production authentication.
 
-**Attempt → Feedback → Think → Hint / Try Again / Explanation → Decide when to continue**
+The planned v2.5.0 authentication milestone will introduce:
+- server-side credential handling;
+- server-side sessions;
+- protected resources;
+- email verification;
+- production Google OAuth;
+- authentication recovery and regression testing.
 
-A wrong answer is treated as part of the learning process. The learner can reread the question, ask for a hint, retry the same question, or see an explanation before choosing to move on.
+Research database infrastructure remains intentionally deferred until after that milestone.
 
-A correct answer also does not force an immediate transition. The learner decides when they are ready for the next question.
-
-## 📚 Hard / Champion Level
-
-The hardest arithmetic level is deliberately **word-problem heavy**. Instead of relying mainly on isolated calculations, questions place arithmetic in familiar situations such as:
-
-- Shopping and quantities
-- Equal groups and multiplication
-- Sharing equally and division
-- Comparing quantities
-- Money and repeated prices
-- Fractions of a collection
-- Perimeter and measurement
-- Multi-step everyday situations
-
-The purpose is to make the learner identify **what the problem is asking and which operation is appropriate**, rather than simply performing a calculation.
-
-## 🗂️ Project Structure
+## Project structure
 
 ```text
 maths-for-all/
@@ -68,102 +60,72 @@ maths-for-all/
 ├── css/
 │   ├── style.css
 │   └── slabmath.css
-└── js/
-    ├── questions.js
-    └── script.js
+├── js/
+│   ├── consent.js
+│   ├── questions.js
+│   ├── script.js
+│   ├── sudoku.js
+│   └── shapes.js
+├── docs/v3/
+│   └── research-data-policy.html
+├── tests/
+│   └── smoke.mjs
+├── .github/workflows/
+│   └── tests.yml
+├── LICENSE
+├── VERSION
+├── CHANGELOG.md
+├── ONGOING.md
+└── AI_USAGE.md
 ```
 
-### Main files
+## Run locally
 
-| File | Purpose |
-| --- | --- |
-| `index.html` | Main application page and quiz interface |
-| `css/style.css` | Main layout, components, responsive styling, and quiz controls |
-| `css/slabmath.css` | Typography / visual styling |
-| `js/questions.js` | Question generation, difficulty levels, quiz logic, feedback, hints, and explanations |
-| `js/script.js` | General site behaviour and UI interactions |
-
-## 🚀 Run locally
-
-No installation or build step is required.
-
-Clone the repository:
+No build step is required.
 
 ```bash
 git clone https://github.com/04pranab/maths-for-all.git
 cd maths-for-all
-```
-
-Then open `index.html` in a browser.
-
-For a local development server, you can also use:
-
-```bash
 python3 -m http.server 8000
 ```
 
-Then visit:
+Open `http://localhost:8000`.
 
-```text
-http://localhost:8000
-```
+## Testing
 
-## 📦 Release
+The repository includes a headless Chromium smoke/stress suite that checks:
+- JavaScript syntax;
+- required DOM nodes;
+- static-resource availability;
+- signup/login/session handling;
+- research consent enforcement;
+- analytics blocking and purge behaviour;
+- modal keyboard behaviour;
+- repeated gameplay transitions;
+- browser runtime and console errors.
 
-**Current release: `v2.0.0`**
+The suite is a regression tool, not a substitute for real assistive-technology testing or production security review.
 
-This release is the stable educational-app baseline. Research data collection, authentication, database, and telemetry infrastructure are intentionally outside the v2 scope and are planned for v3.
+## Design principles
 
-## 🛠️ Technology
+1. Learning before scoring.
+2. Mistakes are information.
+3. Give the learner time.
+4. Explain reasoning when help is requested.
+5. Let the learner choose when to continue.
+6. Keep privacy choices explicit and reversible.
+7. Keep research collection separate from ordinary gameplay.
 
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- No external framework required
-- Client-side question generation
+## License
 
-## 🎯 Design principles
+See `LICENSE`.
 
-Math for All is guided by a few simple principles:
+The project uses a custom responsible-use license. It is not an OSI-approved open-source license.
 
-1. **Learning before scoring**  
-   A score should support learning, not replace it.
+## AI assistance
 
-2. **Mistakes are information**  
-   A wrong answer should create an opportunity to rethink the problem.
-
-3. **Give the learner time**  
-   The interface should not rush a child into the next question.
-
-4. **Explain the reasoning**  
-   When help is requested, the learner should see how the answer can be reached.
-
-5. **Let the learner choose**  
-   The child should have control over retrying, getting help, or continuing.
-
-6. **Make arithmetic meaningful**  
-   Word problems connect mathematical operations with situations a learner can understand.
-
-## 🤝 Contributing
-
-Suggestions, improvements, educational ideas, and bug reports are welcome.
-
-When changing the quiz experience, keep the learning-first philosophy in mind: avoid unnecessary automation that removes the learner's opportunity to think.
-
-## 🤝 Contributors & Acknowledgements
-
-### Om Pranab Mohanty
-Project creator and primary developer.
-
-### ChatGPT (OpenAI)
-Development assistant and contributing collaborator for parts of the project, including the learning-focused arithmetic quiz flow, word-problem design, interface refinements, documentation, and code review.
-
-The project remains human-directed: educational decisions, project direction, and final changes are owned by the project creator.
-
-## 📄 License
-
-See the repository license file for the terms under which this project is distributed.
+AI tools have been used as development assistants. See `AI_USAGE.md` for the project's disclosure and human-responsibility record.
 
 ---
 
-Built as an educational mathematics project by **Om Pranab Mohanty**, with development assistance from **ChatGPT (OpenAI)**.
+Built as an educational mathematics project by **Om Pranab Mohanty**.

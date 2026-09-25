@@ -1,0 +1,78 @@
+# Maths for All Responsible Use License v1.1
+
+Copyright © 2026 Om Pranab Mohanty. All rights reserved.
+
+## 1. Permission
+
+Permission is granted to use, study, reproduce, and modify this Software for educational, research, and non-commercial purposes, provided that the conditions in this license and the repository's documented privacy and research-data policies are followed.
+
+Redistribution of the Software or substantial portions of it must preserve this license, the copyright notice, and the project's research-data policy.
+
+## 2. Research-data compliance is a condition of use
+
+Where this Software is operated with research-data collection enabled, the operator must follow the current research-data collection policy published with the Software.
+
+The operator must not:
+- collect research data without the required explicit consent;
+- treat account creation or login as research consent;
+- collect research events after a user has selected No;
+- silently expand the documented research-data categories;
+- bypass the consent-aware research-data gateway;
+- misrepresent what data is collected or why it is collected.
+
+A failure to follow these requirements is an unauthorized use of the Software for the purposes of this license. The copyright holder reserves all remedies available under applicable law for unauthorized use, including remedies arising from breach of license terms, privacy obligations, data-protection law, or other applicable legal requirements.
+
+Nothing in this section creates a private legal obligation where applicable law does not otherwise provide one. Applicable law always controls.
+
+## 3. Compliance declaration
+
+The project author declares that research-data collection in the official Maths for All implementation is intended to operate only within the documented research-data policy.
+
+Any person or organisation operating a modified or redistributed version is responsible for its own implementation, disclosures, consent mechanisms, security controls, retention practices, and legal compliance.
+
+If an implementation cannot satisfy the published research-data policy, research-data collection must remain disabled.
+
+## 4. Privacy and consent
+
+The research-data policy is part of the project's operational documentation.
+
+The application must provide users with:
+- a clear explanation of research collection;
+- an explicit choice where research consent is requested;
+- an accessible way to review the policy;
+- an accessible way to change the research preference;
+- strict enforcement of No as an opt-out.
+
+The policy is available at:
+
+`docs/v3/research-data-policy.html`
+
+## 5. Security and authentication
+
+The current static/local authentication implementation is a development mechanism unless and until a production authentication backend is explicitly documented.
+
+Redistributors must not represent the local authentication shell as a production identity service.
+
+Production deployments are responsible for appropriate server-side authentication, session management, transport security, access control, credential protection, and security testing.
+
+## 6. Attribution and project identity
+
+Redistributions must retain the copyright notice and license.
+
+Do not represent a modified version as the official Maths for All service unless expressly authorised by the copyright holder.
+
+## 7. No warranty
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, SECURITY, AVAILABILITY, OR NON-INFRINGEMENT.
+
+## 8. Limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE COPYRIGHT HOLDER SHALL NOT BE LIABLE FOR CLAIMS, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF THE SOFTWARE, EXCEPT TO THE EXTENT SUCH LIABILITY CANNOT LAWFULLY BE EXCLUDED OR LIMITED.
+
+## 9. Changes to this license
+
+Future releases may publish a newer version of this license. Unless a release explicitly states otherwise, this version governs the version of the Software with which it is distributed.
+
+## 10. Legal notice
+
+This license is intended to state the project's copyright permissions and operational privacy requirements. It is not a substitute for legal advice. Operators remain responsible for complying with the laws and regulations applicable to their deployment, users, jurisdiction, and research activity.
