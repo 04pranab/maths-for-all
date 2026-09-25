@@ -19,7 +19,7 @@
       <button class="a11y-btn" id="a11y-font-dec" onclick="Accessibility.changeFont(-1)" aria-label="Smaller text">A−</button>
       <button class="a11y-btn" id="a11y-font-inc" onclick="Accessibility.changeFont(1)" aria-label="Bigger text">A+</button>
     </div>
-    <button class="a11y-progress-btn" onclick="Progress.open()">📊 My progress</button>
+    <button class="a11y-progress-btn" onclick="Progress.open()">📊 My progress</button><div id="auth-actions" class="a11y-auth-actions"></div>
   </div>
 
   <!-- ===================================================
@@ -495,7 +495,7 @@
     </div>
   </div>
 
-  <!-- Floating drag ghost (used by shape puzzle) -->
+  <div id="research-consent-modal" class="modal-overlay hidden"></div>\n  <div id="auth-modal" class="modal-overlay hidden"></div>\n\n  <!-- Floating drag ghost (used by shape puzzle) -->
   <div id="drag-ghost" class="hidden"></div>
 
   <!-- Scripts — order matters: shared helpers first -->
