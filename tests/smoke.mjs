@@ -151,7 +151,7 @@ async function main() {
 
   if (!modalResult?.ok) throw new Error('Modal and keyboard accessibility checks did not complete.');
 
-  const authResult = await evaluate('(async () => {
+  const authResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'localStorage.clear(); sessionStorage.clear();' +
     'Auth.open("signup");' +
