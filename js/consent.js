@@ -202,11 +202,6 @@ const Auth = (function () {
     return false;
   }
 
-  function logout() {
-    sessionStorage.removeItem(SESSION_KEY);
-    renderAccountButton();
-  }
-
   function renderAccountButton() {
     const el = document.getElementById('auth-actions');
     if (!el) return;
