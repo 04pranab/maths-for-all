@@ -481,3 +481,24 @@ PR #14 Google sign-in is a prepared UI entry point only. Actual OAuth and email 
 ---
 
 **Living document:** update this file after every meaningful PR, release, architectural change, or direct engineering commit.
+
+### PR #18 · Automated Authentication, Consent, and Browser Stress Tests
+
+Status: **IN REVIEW**
+
+Completed test infrastructure for the authentication milestone:
+- automated local signup and session creation checks;
+- explicit research-consent Yes/No checks;
+- strict analytics blocking when consent is No;
+- analytics event-cap validation;
+- consent withdrawal and local research-event purge validation;
+- expired, malformed, and account-mismatched session cleanup checks;
+- username and email login checks;
+- JavaScript syntax checks;
+- required DOM and static-resource checks;
+- repeated browser stress passes through Arithmetic Quiz, Math Racing, Sudoku, Shape Fitting, and Slab Maths;
+- runtime and console-error detection during the browser stress pass.
+
+Scope remains test infrastructure only. No new gameplay, research collection, database, OAuth, or unrelated UI functionality is introduced.
+
+The local authentication implementation remains a development/static-app shell. Production authentication and server-side research infrastructure remain future milestone work.
