@@ -2221,8 +2221,29 @@ button {
 .consent-policy { margin-top: 0.8rem; border: 0; background: transparent; text-decoration: underline; cursor: pointer; }
 .auth-card form { display: grid; gap: 0.9rem; }
 .auth-card label { display: grid; gap: 0.35rem; font-weight: 700; }
-.auth-card input[type="email"], .auth-card input[type="password"] {
-  border: 1px solid rgba(0,0,0,0.18); border-radius: 10px; padding: 0.75rem; font: inherit;
+.auth-card input[type="text"],
+.auth-card input[type="email"],
+.auth-card input[type="password"] {
+  width: 100%;
+  min-height: 46px;
+  border: 2px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+.auth-card input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.75;
+}
+.auth-card input:hover {
+  border-color: var(--indigo);
+}
+.auth-card input:focus {
+  border-color: var(--indigo);
+  outline: 3px solid rgba(47, 75, 124, 0.16);
+  outline-offset: 1px;
 }
 .auth-tabs {
   display: grid;
