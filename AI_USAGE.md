@@ -156,3 +156,7 @@ AI assistance was used to review and implement the separation of Log in and Sign
 ## 10. September 25, 2026 Development Record
 
 AI assistance was used to review the mobile layout and accessibility surface, then implement responsive controls, focus visibility, touch-friendly interactions, and reduced-motion support. Changes were reviewed before the PR was opened.
+
+## 11. September 25, 2026 Development Record
+
+AI assistance was used to implement the planned authentication/session hardening only: random session tokens, expiry, session validation, and invalid-session cleanup. No unrelated product features were added in PR #17.
