@@ -140,7 +140,7 @@ async function main() {
     'assert(localStorage.getItem("mfa_analytics_v1") === null, "Analytics data remained after consent was set to No.");' +
     'ResearchConsent.choose("yes");' +
     'for (let i = 0; i < 1600; i++) Analytics.log("stress", "answer", { correct: i % 2 === 0 });' +
-    'assert(Analytics.summary().totalEvents === 1500, "Analytics event cap is not enforced.");' +
+    'assert(Analytics.summary().totalEvents === 1500, "Analytics event cap is not enforced. Actual count: " + Analytics.summary().totalEvents);' +
     'ResearchConsent.choose("no");' +
     'assert(localStorage.getItem("mfa_analytics_v1") === null, "Changing consent back to No did not purge research events.");' +
     'const account = JSON.parse(localStorage.getItem("mfa_local_account_v1"));' +
