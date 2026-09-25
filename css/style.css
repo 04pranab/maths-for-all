@@ -2555,3 +2555,138 @@ button {
     width: min(280px, calc(100vw - 20px));
   }
 }
+
+
+/* =============================================================
+   ACCOUNT PROFILE
+   ============================================================= */
+.account-profile-box {
+  position: relative;
+  max-width: 620px;
+  width: min(620px, calc(100vw - 28px));
+  padding: 28px;
+}
+
+.account-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-right: 32px;
+  margin-bottom: 22px;
+}
+
+.account-profile-avatar {
+  flex: 0 0 66px;
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--indigo);
+  color: #fff;
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  font-weight: 800;
+  border: 3px solid var(--border-strong);
+}
+
+.account-profile-kicker {
+  color: var(--indigo);
+  font-size: 0.84rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.account-profile-subtitle {
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  margin-top: 3px;
+}
+
+.account-info-list {
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--card-alt);
+}
+
+.account-info-row {
+  display: grid;
+  grid-template-columns: minmax(135px, 0.75fr) minmax(0, 1.25fr);
+  gap: 16px;
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+
+.account-info-row:last-child {
+  border-bottom: 0;
+}
+
+.account-info-row span {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.account-info-row strong {
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.account-profile-note {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--leaf-bg);
+  border: 2px solid var(--leaf);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+}
+
+.account-profile-note strong {
+  color: var(--leaf-deep);
+}
+
+.account-profile-note p {
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.account-profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+@media (max-width: 520px) {
+  .account-profile-box {
+    padding: 22px 16px;
+  }
+
+  .account-profile-header {
+    align-items: flex-start;
+  }
+
+  .account-profile-avatar {
+    flex-basis: 54px;
+    width: 54px;
+    height: 54px;
+    font-size: 1.45rem;
+  }
+
+  .account-info-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .account-profile-actions {
+    flex-direction: column;
+  }
+
+  .account-profile-actions .btn-progress {
+    width: 100%;
+  }
+}

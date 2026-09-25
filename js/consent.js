@@ -185,7 +185,12 @@ const Auth = (function () {
         const salt = crypto.getRandomValues(new Uint8Array(16));
         const saltText = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
         const hash = await hashPassword(password, saltText);
-        localStorage.setItem(ACCOUNT_KEY, JSON.stringify({ email, salt: saltText, passwordHash: hash }));
+        localStorage.setItem(ACCOUNT_KEY, JSON.stringify({
+          email,
+          salt: saltText,
+          passwordHash: hash,
+          createdAt: new Date().toISOString()
+        }));
       } else {
         if (!existing || existing.email !== email) throw new Error('No matching local account was found.');
         const hash = await hashPassword(password, existing.salt);
@@ -226,11 +231,86 @@ const Auth = (function () {
           <div class="account-summary-name">My account</div>
           <div class="account-summary-email">${email}</div>
         </div>
+        <button class="account-menu-item" onclick="Auth.openProfile()">👤 Account information</button>
         <button class="account-menu-item" onclick="Progress.open(); Auth.closeAccountMenu()">📊 My Progress</button>
         <button class="account-menu-item" onclick="ResearchConsent.open(); Auth.closeAccountMenu()">🔐 Privacy &amp; research</button>
         <button class="account-menu-item" onclick="Accessibility.changeFont(1); Auth.closeAccountMenu()">A+ Increase text size</button>
         <div class="account-menu-divider"></div>
         <button class="account-menu-item logout" onclick="Auth.logout()">Log out</button>
+      </div>`;
+  }
+
+  function openProfile() {
+    closeAccountMenu();
+    renderProfile();
+    const modal = document.getElementById('account-profile-modal');
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeProfile() {
+    const modal = document.getElementById('account-profile-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function renderProfile() {
+    const modal = document.getElementById('account-profile-modal');
+    const current = account();
+    if (!modal || !current) return;
+
+    const email = current.email || 'Local account';
+    const initial = email.charAt(0).toUpperCase();
+    const created = current.createdAt
+      ? new Date(current.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+      : 'Before account details were introduced';
+    const consent = ResearchConsent.get();
+    const consentText = consent === 'yes'
+      ? 'Research collection is on'
+      : consent === 'no'
+        ? 'Research collection is off'
+        : 'Research preference not chosen';
+
+    modal.innerHTML = `
+      <div class="modal-box account-profile-box" role="dialog" aria-modal="true" aria-labelledby="account-profile-title">
+        <button class="consent-close" onclick="Auth.closeProfile()" aria-label="Close account">×</button>
+
+        <div class="account-profile-header">
+          <div class="account-profile-avatar">${initial}</div>
+          <div>
+            <div class="account-profile-kicker">My account</div>
+            <h2 class="modal-title" id="account-profile-title">Account information</h2>
+            <p class="account-profile-subtitle">Your account details stay on this device in this development-stage version.</p>
+          </div>
+        </div>
+
+        <div class="account-info-list">
+          <div class="account-info-row">
+            <span>Account email</span>
+            <strong>${email}</strong>
+          </div>
+          <div class="account-info-row">
+            <span>Member since</span>
+            <strong>${created}</strong>
+          </div>
+          <div class="account-info-row">
+            <span>Account type</span>
+            <strong>Local account</strong>
+          </div>
+          <div class="account-info-row">
+            <span>Research preference</span>
+            <strong>${consentText}</strong>
+          </div>
+        </div>
+
+        <div class="account-profile-note">
+          <strong>What this means</strong>
+          <p>Your account email is account information, not research data. Research collection is controlled separately through your explicit privacy choice.</p>
+        </div>
+
+        <div class="account-profile-actions">
+          <button class="btn-progress" onclick="Progress.open(); Auth.closeProfile()">📊 View my progress</button>
+          <button class="btn-progress" onclick="ResearchConsent.open(); Auth.closeProfile()">🔐 Privacy &amp; research</button>
+          <button class="btn-progress close" onclick="Auth.closeProfile()">Close</button>
+        </div>
       </div>`;
   }
 
@@ -261,7 +341,7 @@ const Auth = (function () {
     if (isLoggedIn() && ResearchConsent.get() === null) ResearchConsent.open();
   }
 
-  return { open, close, submit, logout, isLoggedIn, init, toggleAccountMenu, closeAccountMenu };
+  return { open, close, submit, logout, isLoggedIn, init, toggleAccountMenu, closeAccountMenu, openProfile, closeProfile };
 })();
 
 /* =============================================================
