@@ -2,6 +2,12 @@
 
 ## Unreleased · 2026-09-25
 
+### Mobile and accessibility polish
+- Improved small-screen game top bars, answer controls, difficulty buttons, dialogs, and Sudoku controls.
+- Added consistent keyboard focus visibility and touch-friendly controls.
+- Added reduced-motion support for learners who prefer less animation.
+
+
 ### Authentication and gameplay development
 - Separate Log in and Sign up flows with username-aware account access.
 - Sign up collects username, email, password, and password confirmation.
