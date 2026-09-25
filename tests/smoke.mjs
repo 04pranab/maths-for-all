@@ -13,6 +13,7 @@ let socket;
 let nextId = 1;
 const pending = new Map();
 const errors = [];
+const failedResources = [];
 
 async function waitFor(check, timeoutMs = 15000, intervalMs = 100) {
   const deadline = Date.now() + timeoutMs;
@@ -87,6 +88,7 @@ async function main() {
   await connectCDP();
   await cdp('Runtime.enable');
   await cdp('Log.enable');
+  await cdp('Network.enable');
   await cdp('Page.enable');
 
   socket.addEventListener('message', event => {
@@ -96,6 +98,9 @@ async function main() {
     }
     if (message.method === 'Log.entryAdded' && message.params.entry.level === 'error') {
       errors.push(message.params.entry.text || 'Console error');
+    }
+    if (message.method === 'Network.responseReceived' && message.params.response.status >= 400) {
+      failedResources.push({ status: message.params.response.status, url: message.params.response.url });
     }
   });
 
@@ -196,6 +201,7 @@ async function main() {
 
   if (!gameResult) throw new Error('Game stress test returned no result.');
   await sleep(500);
+  if (failedResources.length) throw new Error('Browser resource errors detected:\n' + failedResources.map(item => item.status + ' ' + item.url).join('\n'));
   if (errors.length) throw new Error('Browser runtime/console errors detected:\n' + [...new Set(errors)].join('\n'));
 
   console.log(JSON.stringify({ status: 'PASS', baseline, auth: authResult, games: gameResult, browserErrors: 0 }, null, 2));
