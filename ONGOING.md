@@ -481,3 +481,38 @@ PR #14 Google sign-in is a prepared UI entry point only. Actual OAuth and email 
 ---
 
 **Living document:** update this file after every meaningful PR, release, architectural change, or direct engineering commit.
+
+### PR #18 · Automated Authentication, Consent, and Browser Stress Tests
+
+Status: **IN REVIEW**
+
+Completed test infrastructure for the authentication milestone:
+- automated local signup and session creation checks;
+- explicit research-consent Yes/No checks;
+- strict analytics blocking when consent is No;
+- analytics event-cap validation;
+- consent withdrawal and local research-event purge validation;
+- expired, malformed, and account-mismatched session cleanup checks;
+- username and email login checks;
+- JavaScript syntax checks;
+- required DOM and static-resource checks;
+- repeated browser stress passes through Arithmetic Quiz, Math Racing, Sudoku, Shape Fitting, and Slab Maths;
+- runtime and console-error detection during the browser stress pass.
+
+Scope remains test infrastructure only. No new gameplay, research collection, database, OAuth, or unrelated UI functionality is introduced.
+
+The local authentication implementation remains a development/static-app shell. Production authentication and server-side research infrastructure remain future milestone work.
+
+
+### PR #18 Validation Findings and Cleanup
+
+The browser stress run initially found two concrete issues in the development line:
+- the analytics consent gate incorrectly checked `window.ResearchConsent` even though the consent module is declared as a top-level lexical binding, which prevented analytics from recording even after explicit Yes;
+- the browser requested a missing `favicon.ico`, producing a 404 during page load.
+
+Cleanup applied in this PR:
+- corrected the consent gate to test the actual `ResearchConsent` binding;
+- added `favicon.svg` and linked it from the application shell;
+- refreshed the `js/script.js` cache-busting version.
+
+Final automated validation passed after these fixes.
