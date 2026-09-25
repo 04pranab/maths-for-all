@@ -141,8 +141,8 @@ const Auth = (function () {
     );
   }
 
-  function open() {
-    render();
+  function open(mode) {
+    render(mode || (account() ? 'login' : 'signup'));
     document.getElementById('auth-modal').classList.remove('hidden');
   }
 
@@ -150,51 +150,85 @@ const Auth = (function () {
     document.getElementById('auth-modal').classList.add('hidden');
   }
 
-  function render() {
+  function render(mode) {
     const modal = document.getElementById('auth-modal');
     if (!modal) return;
+    const login = mode !== 'signup';
     modal.innerHTML = `
       <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
         <button class="consent-close" onclick="Auth.close()" aria-label="Close">×</button>
         <div class="consent-icon">👤</div>
-        <h2 id="auth-title">${account() ? 'Log in to Maths for All' : 'Create your Maths for All account'}</h2>
-        <p class="consent-lead">This PR provides the local account flow for the v2.5.0 milestone. It stores account credentials only on this device. A production server-side authentication service is a later PR.</p>
-        <form onsubmit="return Auth.submit(event)">
-          <label>Email<input id="auth-email" type="email" autocomplete="username" required placeholder="you@example.com"></label>
-          <label>Password<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters"></label>
-          <label class="auth-new-row"><input id="auth-create" type="checkbox" ${account() ? '' : 'checked'}> Create a new local account</label>
+        <div class="auth-tabs" role="tablist" aria-label="Account access">
+          <button class="auth-tab ${login ? 'active' : ''}" onclick="Auth.open('login')" role="tab" aria-selected="${login}">Log in</button>
+          <button class="auth-tab ${!login ? 'active' : ''}" onclick="Auth.open('signup')" role="tab" aria-selected="${!login}">Sign up</button>
+        </div>
+        <h2 id="auth-title">${login ? 'Log in to Maths for All' : 'Create your Maths for All account'}</h2>
+        <p class="consent-lead">${login ? 'Use your username and password to continue.' : 'Create your learner account with a username, email, and password.'}</p>
+
+        <form onsubmit="return Auth.submit(event, '${login ? 'login' : 'signup'}')">
+          ${!login ? `
+            <label>Username<input id="auth-username" type="text" autocomplete="username" minlength="3" maxlength="30" required placeholder="Choose a username"></label>
+            <label>Email<input id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+            <label>Password<input id="auth-password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></label>
+            <label>Confirm password<input id="auth-confirm-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Enter the password again"></label>
+          ` : `
+            <label>Username<input id="auth-username" type="text" autocomplete="username" required placeholder="Your username"></label>
+            <label>Password<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Your password"></label>
+          `}
           <p id="auth-error" class="auth-error" role="alert"></p>
-          <button class="consent-btn primary" type="submit">Continue</button>
+          <button class="consent-btn primary" type="submit">${login ? 'Log in' : 'Create account'}</button>
         </form>
-        <p class="consent-note"><strong>Privacy:</strong> your email is account data, not research data. It is not written to the research event log.</p>
+
+        <div class="auth-divider"><span>or</span></div>
+        <button class="google-auth-btn" type="button" onclick="Auth.googleSignIn()">
+          <span class="google-mark" aria-hidden="true">G</span>
+          Continue with Google
+        </button>
+        <p class="auth-google-note">Google sign-in will connect to the production authentication service when the database-backed auth system is introduced.</p>
+        ${!login ? '<p class="consent-note"><strong>Email verification:</strong> the account flow is designed for email verification, which will be enforced by the production database-backed authentication service. This local development flow does not send verification emails.</p>' : ''}
+        <p class="consent-note"><strong>Privacy:</strong> account information is separate from research data. Signing in does not grant research consent.</p>
       </div>`;
   }
 
-  async function submit(event) {
+  async function submit(event, mode) {
     event.preventDefault();
-    const email = document.getElementById('auth-email').value.trim().toLowerCase();
-    const password = document.getElementById('auth-password').value;
-    const create = document.getElementById('auth-create').checked;
+    const username = document.getElementById('auth-username').value.trim();
     const error = document.getElementById('auth-error');
     error.textContent = '';
 
     try {
+      if (!/^[A-Za-z0-9_]{3,30}$/.test(username)) {
+        throw new Error('Username must be 3–30 characters using letters, numbers, or _.');
+      }
+
       const existing = account();
-      if (create) {
-        if (existing) throw new Error('A local account already exists on this device. Uncheck Create a new local account to log in.');
+
+      if (mode === 'signup') {
+        const email = document.getElementById('auth-email').value.trim().toLowerCase();
+        const password = document.getElementById('auth-password').value;
+        const confirmPassword = document.getElementById('auth-confirm-password').value;
+
+        if (password !== confirmPassword) throw new Error('The passwords do not match.');
+        if (existing) throw new Error('A local account already exists on this device. Use Log in instead.');
+
         const salt = crypto.getRandomValues(new Uint8Array(16));
         const saltText = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
         const hash = await hashPassword(password, saltText);
+
         localStorage.setItem(ACCOUNT_KEY, JSON.stringify({
+          username,
           email,
           salt: saltText,
           passwordHash: hash,
           createdAt: new Date().toISOString()
         }));
       } else {
-        if (!existing || existing.email !== email) throw new Error('No matching local account was found.');
+        const password = document.getElementById('auth-password').value;
+        if (!existing || existing.username !== username) {
+          throw new Error('No matching local account was found.');
+        }
         const hash = await hashPassword(password, existing.salt);
-        if (hash !== existing.passwordHash) throw new Error('The email or password is incorrect.');
+        if (hash !== existing.passwordHash) throw new Error('The username or password is incorrect.');
       }
 
       sessionStorage.setItem(SESSION_KEY, 'active');
@@ -207,110 +241,43 @@ const Auth = (function () {
     return false;
   }
 
+  function googleSignIn() {
+    const error = document.getElementById('auth-error');
+    if (error) {
+      error.textContent = 'Google sign-in will be enabled with the production authentication backend. No Google credentials are collected by this local development flow.';
+    }
+  }
+
   function renderAccountButton() {
     const el = document.getElementById('auth-actions');
     if (!el) return;
 
     if (!isLoggedIn()) {
-      el.innerHTML = '<button class="nav-login" onclick="Auth.open()">Log in</button>';
+      el.innerHTML = '<button class="nav-login" onclick="Auth.open(\'login\')">Log in</button>';
       return;
     }
 
     const current = account();
-    const email = current && current.email ? current.email : 'Local account';
-    const initial = email.charAt(0).toUpperCase();
+    const username = current && current.username ? current.username : 'Learner';
+    const initial = username.charAt(0).toUpperCase();
 
     el.innerHTML = `
       <button class="nav-account-trigger" onclick="Auth.toggleAccountMenu()" aria-expanded="false" aria-controls="account-menu">
         <span class="nav-avatar">${initial}</span>
-        <span class="nav-account-email">${email}</span>
+        <span class="nav-account-email">@${Utils.escapeHtml(username)}</span>
         <span aria-hidden="true">▾</span>
       </button>
       <div class="nav-account-menu hidden" id="account-menu">
         <div class="account-summary">
-          <div class="account-summary-name">My account</div>
-          <div class="account-summary-email">${email}</div>
+          <div class="account-summary-name">@${Utils.escapeHtml(username)}</div>
+          <div class="account-summary-email">${Utils.escapeHtml(current && current.email ? current.email : 'Local account')}</div>
         </div>
-        <button class="account-menu-item" onclick="Auth.openProfile()">👤 Account information</button>
+        <button class="account-menu-item" onclick="Auth.openProfile(); Auth.closeAccountMenu()">👤 Account information</button>
         <button class="account-menu-item" onclick="Progress.open(); Auth.closeAccountMenu()">📊 My Progress</button>
         <button class="account-menu-item" onclick="ResearchConsent.open(); Auth.closeAccountMenu()">🔐 Privacy &amp; research</button>
         <button class="account-menu-item" onclick="Accessibility.changeFont(1); Auth.closeAccountMenu()">A+ Increase text size</button>
         <div class="account-menu-divider"></div>
         <button class="account-menu-item logout" onclick="Auth.logout()">Log out</button>
-      </div>`;
-  }
-
-  function openProfile() {
-    closeAccountMenu();
-    renderProfile();
-    const modal = document.getElementById('account-profile-modal');
-    if (modal) modal.classList.remove('hidden');
-  }
-
-  function closeProfile() {
-    const modal = document.getElementById('account-profile-modal');
-    if (modal) modal.classList.add('hidden');
-  }
-
-  function renderProfile() {
-    const modal = document.getElementById('account-profile-modal');
-    const current = account();
-    if (!modal || !current) return;
-
-    const email = current.email || 'Local account';
-    const initial = email.charAt(0).toUpperCase();
-    const created = current.createdAt
-      ? new Date(current.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
-      : 'Before account details were introduced';
-    const consent = ResearchConsent.get();
-    const consentText = consent === 'yes'
-      ? 'Research collection is on'
-      : consent === 'no'
-        ? 'Research collection is off'
-        : 'Research preference not chosen';
-
-    modal.innerHTML = `
-      <div class="modal-box account-profile-box" role="dialog" aria-modal="true" aria-labelledby="account-profile-title">
-        <button class="consent-close" onclick="Auth.closeProfile()" aria-label="Close account">×</button>
-
-        <div class="account-profile-header">
-          <div class="account-profile-avatar">${initial}</div>
-          <div>
-            <div class="account-profile-kicker">My account</div>
-            <h2 class="modal-title" id="account-profile-title">Account information</h2>
-            <p class="account-profile-subtitle">Your account details stay on this device in this development-stage version.</p>
-          </div>
-        </div>
-
-        <div class="account-info-list">
-          <div class="account-info-row">
-            <span>Account email</span>
-            <strong>${email}</strong>
-          </div>
-          <div class="account-info-row">
-            <span>Member since</span>
-            <strong>${created}</strong>
-          </div>
-          <div class="account-info-row">
-            <span>Account type</span>
-            <strong>Local account</strong>
-          </div>
-          <div class="account-info-row">
-            <span>Research preference</span>
-            <strong>${consentText}</strong>
-          </div>
-        </div>
-
-        <div class="account-profile-note">
-          <strong>What this means</strong>
-          <p>Your account email is account information, not research data. Research collection is controlled separately through your explicit privacy choice.</p>
-        </div>
-
-        <div class="account-profile-actions">
-          <button class="btn-progress" onclick="Progress.open(); Auth.closeProfile()">📊 View my progress</button>
-          <button class="btn-progress" onclick="ResearchConsent.open(); Auth.closeProfile()">🔐 Privacy &amp; research</button>
-          <button class="btn-progress close" onclick="Auth.closeProfile()">Close</button>
-        </div>
       </div>`;
   }
 
@@ -341,7 +308,7 @@ const Auth = (function () {
     if (isLoggedIn() && ResearchConsent.get() === null) ResearchConsent.open();
   }
 
-  return { open, close, submit, logout, isLoggedIn, init, toggleAccountMenu, closeAccountMenu, openProfile, closeProfile };
+  return { open, close, submit, googleSignIn, logout, isLoggedIn, init, toggleAccountMenu, closeAccountMenu, renderAccountButton };
 })();
 
 /* =============================================================
