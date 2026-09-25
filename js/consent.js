@@ -99,7 +99,7 @@ const ResearchConsent = (function () {
   }
 
   function showPolicy() {
-    window.open('docs/v3/RESEARCH_DATA_POLICY.md', '_blank', 'noopener');
+    window.open('docs/v3/research-data-policy.html', '_blank', 'noopener');
   }
 
   function init() {
