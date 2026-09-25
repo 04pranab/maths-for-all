@@ -502,3 +502,17 @@ Completed test infrastructure for the authentication milestone:
 Scope remains test infrastructure only. No new gameplay, research collection, database, OAuth, or unrelated UI functionality is introduced.
 
 The local authentication implementation remains a development/static-app shell. Production authentication and server-side research infrastructure remain future milestone work.
+
+
+### PR #18 Validation Findings and Cleanup
+
+The browser stress run initially found two concrete issues in the development line:
+- the analytics consent gate incorrectly checked `window.ResearchConsent` even though the consent module is declared as a top-level lexical binding, which prevented analytics from recording even after explicit Yes;
+- the browser requested a missing `favicon.ico`, producing a 404 during page load.
+
+Cleanup applied in this PR:
+- corrected the consent gate to test the actual `ResearchConsent` binding;
+- added `favicon.svg` and linked it from the application shell;
+- refreshed the `js/script.js` cache-busting version.
+
+Final automated validation passed after these fixes.
