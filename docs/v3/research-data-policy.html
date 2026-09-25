@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maths for All · Research Data Collection Policy</title>
+  <style>
+    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;max-width:900px;margin:0 auto;padding:2rem;color:#222;background:#fafaf7}
+    main{background:#fff;padding:2rem;border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+    h1,h2{line-height:1.2}
+    table{width:100%;border-collapse:collapse;margin:1rem 0}
+    th,td{border:1px solid #ddd;padding:.7rem;text-align:left;vertical-align:top}
+    code{background:#f2f2ed;padding:.1rem .3rem;border-radius:4px}
+    .strict{padding:1rem;border-radius:12px;background:#f3f3ee}
+  </style>
+</head>
+<body>
+<main>
+<h1>Research Data Collection Policy</h1>
+<p><strong>Status:</strong> This document defines the data-collection contract for the planned v3 research infrastructure.</p>
+<div class="strict"><strong>Research collection is opt-in.</strong> No explicit research consent means no research event.</div>
+<h2>Consent rule</h2>
+<p>A user must be shown a clear research-data explanation and must actively choose whether to participate.</p>
+<ul>
+<li><strong>Yes:</strong> the application may collect only the research fields listed below.</li>
+<li><strong>No:</strong> the application must collect none of the listed research fields.</li>
+<li>Login/account creation does not count as consent.</li>
+<li>Silence, closing the dialog, or continuing to use the games does not count as consent.</li>
+<li>The preference can be changed later from privacy/research settings.</li>
+<li>Switching from Yes to No immediately stops future research collection and removes locally stored research events.</li>
+</ul>
+<h2>What we may collect after explicit Yes</h2>
+<table><thead><tr><th>Category</th><th>Examples</th></tr></thead><tbody>
+<tr><td>Game/module</td><td>Arithmetic Quiz, Racing, Sudoku, Shape Fitting, Slab Maths</td></tr>
+<tr><td>Event type</td><td>Game opened, answer submitted, hint requested, explanation requested, retry, completion</td></tr>
+<tr><td>Learning state</td><td>Difficulty level, correct/incorrect result, attempt count</td></tr>
+<tr><td>Timing</td><td>Time spent on an answer or game event</td></tr>
+<tr><td>Game progress</td><td>Question, round, or level completion</td></tr>
+<tr><td>Technical event timestamp</td><td>Time at which the research event occurred</td></tr>
+</tbody></table>
+<p>The exact fields must remain tied to documented research questions. Future fields require a review of this policy and the consent wording.</p>
+<h2>What we do not collect as research data</h2>
+<ul>
+<li>Passwords or authentication secrets</li><li>Password hashes from the client</li><li>Email addresses unless a separate account/privacy requirement explicitly requires them</li><li>Phone numbers</li><li>Home or precise physical location</li><li>Contacts</li><li>Private messages or free-form personal notes</li><li>Advertising identifiers</li><li>Browser fingerprinting data</li><li>Precise device identifiers</li><li>Camera, microphone, or files</li><li>Data from other applications</li><li>Research events when consent is No</li>
+</ul>
+<h2>Existing local progress</h2>
+<p>Existing local progress/analytics functionality must remain behind the same consent gate so the application does not silently continue recording research-style events after a user declines.</p>
+<h2>Data minimization</h2>
+<p>Prefer derived, non-identifying measurements over raw content. Where possible, record correctness, attempt count, response time, difficulty, and completion rather than unnecessary copies of question text or personal input.</p>
+<h2>Withdrawal</h2>
+<p>A user can change the preference at any time. When research collection is disabled, future research events are rejected, locally stored research events are deleted, research exports are disabled, and the educational application continues to work normally.</p>
+<h2>Transparency requirement</h2>
+<p>The consent UI must use plain language and provide two clearly available choices: <strong>Allow research data collection</strong> and <strong>Do not allow research data collection</strong>. It must include a concise collected/not-collected explanation and access to this full policy.</p>
+<h2>Implementation requirement</h2>
+<p>No game module may write research events directly to localStorage, a future database API, or a future telemetry API. All research writes must pass through the consent-aware research event gateway.</p>
+</main>
+</body>
+</html>
