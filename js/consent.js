@@ -32,6 +32,7 @@ const ResearchConsent = (function () {
   }
 
   function close() {
+    if (get() === null) return;
     document.getElementById('research-consent-modal').classList.add('hidden');
   }
 
@@ -52,7 +53,7 @@ const ResearchConsent = (function () {
     if (!modal) return;
     modal.innerHTML = `
       <div class="consent-card" role="dialog" aria-modal="true" aria-labelledby="research-consent-title">
-        <button class="consent-close" onclick="ResearchConsent.close()" aria-label="Close">×</button>
+                ${value ? '<button class="consent-close" onclick="ResearchConsent.close()" aria-label="Close">×</button>' : ''}
         <div class="consent-icon">🔐</div>
         <h2 id="research-consent-title">${value ? 'Research data preference' : 'Your research data choice'}</h2>
         <p class="consent-lead">Your account and your research choice are separate. We will never treat logging in as permission to collect research data.</p>
@@ -99,7 +100,7 @@ const ResearchConsent = (function () {
   }
 
   function showPolicy() {
-    window.open('docs/v3/RESEARCH_DATA_POLICY.md', '_blank', 'noopener');
+    window.open('docs/v3/research-data-policy.html', '_blank', 'noopener');
   }
 
   function init() {

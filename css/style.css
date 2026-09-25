@@ -2231,3 +2231,7 @@ button {
   .consent-card, .auth-card { padding: 1.35rem; }
   .a11y-auth-actions { width: 100%; }
 }
+
+/* Consent modal: the first decision is explicit and cannot be dismissed accidentally. */
+#research-consent-modal:not(.hidden) { z-index: 110; }
+#research-consent-modal .consent-card { border: 3px solid var(--ink); }
