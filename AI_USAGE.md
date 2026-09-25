@@ -116,7 +116,30 @@ The presence of AI-assisted material should not be interpreted as a claim that t
 
 The project represents a human-directed development process in which AI tools were used as assistants during implementation and refinement.
 
+
 ---
+
+## 8. Development Record
+
+AI assistance has also been used as part of the documented engineering workflow for the v2.0.0 to v2.5.0 development line.
+
+During the September 2026 development cycle, AI assistance was used for:
+
+- reviewing the v2.0.0 release baseline;
+- planning the v3 architecture and research-consent boundary;
+- reviewing authentication and consent flows;
+- identifying an analytics consent-enforcement gap before it was carried forward;
+- hardening the research-consent UX;
+- reviewing repository structure, documentation, and release planning;
+- drafting and refining engineering documentation such as ONGOING.md;
+- suggesting test cases, validation checks, and implementation improvements.
+
+AI-assisted review was treated as engineering assistance rather than automatic approval. Repository changes were inspected before integration, and implementation decisions remained under the project author's control.
+
+The project also records significant development milestones, pull requests, direct commits, releases, and planned work in ONGOING.md so that the development history remains understandable and auditable.
+
+---
+
 
 **Copyright © 2026 Om Pranab Mohanty. All rights reserved.**
 
