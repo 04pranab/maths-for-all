@@ -219,6 +219,7 @@ const Analytics = (function () {
     catch (e) { /* storage full or unavailable – drop silently */ }
   }
   function log(category, action, detail) {
+    if (!window.ResearchConsent || !ResearchConsent.isAllowed()) return;
     load();
     events.push({ ts: Date.now(), category, action, detail: detail || {} });
     if (events.length > MAX_EVENTS) events.splice(0, events.length - MAX_EVENTS);
@@ -226,6 +227,9 @@ const Analytics = (function () {
   }
 
   function summary() {
+    if (!window.ResearchConsent || !ResearchConsent.isAllowed()) {
+      return { totalEvents: 0, byCategory: {} };
+    }
     load();
     const byCategory = {};
     events.forEach(e => {
@@ -251,10 +255,12 @@ const Analytics = (function () {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   function exportJSON() {
+    if (!window.ResearchConsent || !ResearchConsent.isAllowed()) return;
     load();
     download('math-for-all-progress.json', JSON.stringify(events, null, 2), 'application/json');
   }
   function exportCSV() {
+    if (!window.ResearchConsent || !ResearchConsent.isAllowed()) return;
     load();
     const rows = [['timestamp_iso','category','action','correct','time_ms','extra']];
     events.forEach(e => {
