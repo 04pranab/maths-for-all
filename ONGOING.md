@@ -221,6 +221,22 @@ This is a local/static application authentication shell, not production backend 
 
 ---
 
+### PR #16 · Mobile and Accessibility Polish
+
+Status: IN REVIEW
+
+Completed:
+- improved small-screen game top bars and score placement;
+- stacked answer controls on narrow screens for easier touch interaction;
+- made difficulty buttons full-width on small screens;
+- improved mobile modal sizing and authentication form controls;
+- strengthened visible keyboard focus styling;
+- added touch-friendly interaction handling;
+- added reduced-motion support;
+- improved small-screen Sudoku controls.
+
+Scope remains presentation and accessibility only. Authentication, consent, analytics, and research boundaries are unchanged.
+
 ### PR #12 · Professional Navigation
 
 Status: IN REVIEW
@@ -319,6 +335,9 @@ If the user chooses No:
 ### Slab Maths
 **Extended for longer play.** Basket targets now begin above 35 and increase through later tiers while slab values remain within 1–15.
 
+### Mobile and accessibility
+**Polished.** Small-screen layouts, touch targets, keyboard focus, dialogs, and reduced-motion behaviour have been updated in PR #16.
+
 ---
 
 ## 5. Immediate Next Steps
@@ -341,7 +360,7 @@ Test in a fresh browser state:
 13. change back to No;
 14. verify locally stored research events are removed.
 
-### Step 2 · Review PR #14 and PR #15
+### Step 2 · Review PR #14, PR #15, and PR #16
 Review the account-access UX and longer Slab Maths rounds.
 
 ### Step 3 · Authentication backend
@@ -434,6 +453,7 @@ PR #14 Google sign-in is a prepared UI entry point only. Actual OAuth and email 
 | PR #13 | IN REVIEW | Account profile experience |
 | PR #14 | IN REVIEW | Separate login/signup + Google entry point |
 | PR #15 | IN REVIEW | Longer Slab Maths rounds |
+| PR #16 | IN REVIEW | Mobile and accessibility polish |
 | Main-branch patch | COMPLETE | Auth/consent wiring + analytics gate |
 | v2.5.0 | IN PROGRESS | Complete authentication milestone |
 | v3.0.0 | PLANNED | Complete research-enabled release |
