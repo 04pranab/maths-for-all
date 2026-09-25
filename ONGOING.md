@@ -221,6 +221,19 @@ This is a local/static application authentication shell, not production backend 
 
 ---
 
+### PR #17 · Authentication Session Hardening
+
+Status: IN REVIEW
+
+Completed according to the authentication milestone plan:
+- replaced the fixed local active session marker with a random per-session token;
+- added an 8-hour local session lifetime;
+- validate session structure, expiry, and account identity before treating a user as logged in;
+- automatically clear expired, malformed, or account-mismatched sessions;
+- keep session state in sessionStorage rather than account storage.
+
+Scope is limited to authentication/session hardening. No new gameplay, research collection, or unrelated UI features are included.
+
 ### PR #16 · Mobile and Accessibility Polish
 
 Status: IN REVIEW
@@ -329,6 +342,9 @@ If the user chooses No:
 ### Production authentication
 **Not complete.** A real backend authentication system remains future work.
 
+### Local session handling
+**Hardened for the development shell.** Sessions use a random per-session token, an 8-hour expiry, and account/session consistency checks. This remains a development-stage client-side mechanism, not server-side session security.
+
 ### Research database
 **Not started.** The research database and server-side research infrastructure belong after the authentication milestone.
 
@@ -361,6 +377,9 @@ Test in a fresh browser state:
 14. verify locally stored research events are removed.
 
 ### Step 2 · Review PR #14, PR #15, and PR #16
+
+### Step 2b · Review PR #17
+Review authentication session expiry, token handling, and invalid-session cleanup.
 Review the account-access UX and longer Slab Maths rounds.
 
 ### Step 3 · Authentication backend
@@ -454,6 +473,7 @@ PR #14 Google sign-in is a prepared UI entry point only. Actual OAuth and email 
 | PR #14 | IN REVIEW | Separate login/signup + Google entry point |
 | PR #15 | IN REVIEW | Longer Slab Maths rounds |
 | PR #16 | IN REVIEW | Mobile and accessibility polish |
+| PR #17 | IN REVIEW | Authentication session hardening |
 | Main-branch patch | COMPLETE | Auth/consent wiring + analytics gate |
 | v2.5.0 | IN PROGRESS | Complete authentication milestone |
 | v3.0.0 | PLANNED | Complete research-enabled release |
