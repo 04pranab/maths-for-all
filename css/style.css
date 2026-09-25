@@ -2224,6 +2224,80 @@ button {
 .auth-card input[type="email"], .auth-card input[type="password"] {
   border: 1px solid rgba(0,0,0,0.18); border-radius: 10px; padding: 0.75rem; font: inherit;
 }
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin: 0 0 1.1rem;
+  padding: 4px;
+  background: var(--card-alt);
+  border-radius: 12px;
+}
+.auth-tab {
+  min-height: 42px;
+  border: 2px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.auth-tab.active {
+  background: var(--card);
+  border-color: var(--border-strong);
+  color: var(--indigo);
+}
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 1rem 0 0.8rem;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.google-auth-btn {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 2px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.google-auth-btn:hover {
+  border-color: var(--indigo);
+  background: var(--card-alt);
+}
+.google-mark {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-weight: 900;
+  color: var(--indigo);
+}
+.auth-google-note {
+  margin: 0.55rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  line-height: 1.45;
+  text-align: center;
+}
 .auth-new-row { display: flex !important; grid-template-columns: none; align-items: center; gap: 0.5rem !important; font-weight: 500 !important; }
 .auth-error { min-height: 1.2rem; color: #9b2c2c; margin: 0; }
 @media (max-width: 700px) {
