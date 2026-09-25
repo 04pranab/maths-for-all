@@ -165,3 +165,8 @@ AI assistance was used to implement the planned authentication/session hardening
 ## 12. September 25, 2026 Development Record
 
 AI assistance was used to design and review the planned authentication/consent regression tests and browser stress checks. The test scope follows the v2.5.0 authentication milestone and includes session validation, strict research consent enforcement, login paths, repeated game transitions, static-resource checks, and runtime-error detection. No unrelated product functionality was added as part of the test work.
+
+
+## 13. September 25, 2026 Development Record
+
+The automated browser stress test identified a consent-gate binding issue and a missing favicon request. AI assistance was used to diagnose and review the fixes, while the changes were validated through the repository's automated syntax and browser stress workflow.
