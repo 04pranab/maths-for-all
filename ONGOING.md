@@ -221,6 +221,32 @@ This is a local/static application authentication shell, not production backend 
 
 ---
 
+### PR #12 · Professional Navigation
+
+Status: IN REVIEW
+
+Completed ordered primary navigation, responsive mobile navigation, account access controls, and retained accessibility controls.
+
+### PR #13 · Account Profile Experience
+
+Status: IN REVIEW
+
+Completed account information, username/email display, member-since information, local-account status, research-consent status, and links to progress and privacy controls.
+
+### PR #14 · Separate Login and Signup
+
+Status: IN REVIEW
+
+Completed distinct Log in and Sign up views in the same modal. Sign up collects username, email, password, and confirmation. Log in accepts username or email plus password. A Google sign-in entry point is prepared for the future production backend. Email verification remains a database-backed authentication requirement.
+
+A direct follow-up fix was applied to PR #14, not as another PR, to improve the username presentation and preserve username-or-email login.
+
+### PR #15 · Slab Maths Long-Game Mode
+
+Status: IN REVIEW
+
+Completed longer Slab Maths rounds with basket targets starting above 35, increasing target ranges and required slab counts in later tiers, while preserving 1–15 slab values and existing restart, hint, feasibility, and accessibility behaviour.
+
 ### PR #11 · Consent and UX Hardening
 
 **Title:** `fix: harden authentication and consent UX`
@@ -270,7 +296,7 @@ These were direct commits, not pull requests.
 **Stable.** The v2 educational baseline remains the reference implementation.
 
 ### Authentication UI
-**Wired into main.** The login control is intended to appear in the top accessibility toolbar. The login interface is a modal rather than a separate page.
+**Wired into main.** The access interface is a single modal with separate Log in and Sign up views. Log in accepts username or email plus password. Sign up collects username, email, password, and confirmation. Google sign-in is prepared for the future backend, and email verification is reserved for the database-backed authentication stage.
 
 ### Research consent
 **Wired into main.** Intended flow: `Log in → explicit research choice → Yes or No`.
@@ -289,6 +315,9 @@ If the user chooses No:
 
 ### Research database
 **Not started.** The research database and server-side research infrastructure belong after the authentication milestone.
+
+### Slab Maths
+**Extended for longer play.** Basket targets now begin above 35 and increase through later tiers while slab values remain within 1–15.
 
 ---
 
@@ -312,16 +341,19 @@ Test in a fresh browser state:
 13. change back to No;
 14. verify locally stored research events are removed.
 
-### Step 2 · Authentication backend
+### Step 2 · Review PR #14 and PR #15
+Review the account-access UX and longer Slab Maths rounds.
+
+### Step 3 · Authentication backend
 Design and implement the production authentication boundary.
 
-### Step 3 · Secure sessions and protected resources
+### Step 4 · Secure sessions and protected resources
 Add server-side session handling and protect authenticated resources.
 
-### Step 4 · Authentication tests
+### Step 5 · Authentication tests
 Add automated tests for account creation, login, invalid credentials, logout, session expiry, protected access, and consent state handling.
 
-### Step 5 · v2.5.0 release validation
+### Step 6 · v2.5.0 release validation
 Only after the authentication and consent system is stable and tested should v2.5.0 be released.
 
 ---
@@ -376,7 +408,11 @@ This file is the project's running engineering notebook.
 
 ---
 
-## 9. Known Limitations
+## 9. Recent Development Notes
+
+PR #14 Google sign-in is a prepared UI entry point only. Actual OAuth and email verification require the future production authentication/database backend.
+
+## 10. Known Limitations
 
 - The current authentication implementation is local/static and is not production server-side authentication.
 - Full live browser interaction testing still needs to be performed in a real browser environment.
@@ -386,7 +422,7 @@ This file is the project's running engineering notebook.
 
 ---
 
-## 10. Milestone Summary
+## 11. Milestone Summary
 
 | Milestone | Status | Meaning |
 |---|---|---|
@@ -394,6 +430,10 @@ This file is the project's running engineering notebook.
 | PR #9 | COMPLETE | v3 architecture + research consent policy |
 | PR #10 | COMPLETE | Local auth + consent UX |
 | PR #11 | COMPLETE | Consent hardening work |
+| PR #12 | IN REVIEW | Professional navigation |
+| PR #13 | IN REVIEW | Account profile experience |
+| PR #14 | IN REVIEW | Separate login/signup + Google entry point |
+| PR #15 | IN REVIEW | Longer Slab Maths rounds |
 | Main-branch patch | COMPLETE | Auth/consent wiring + analytics gate |
 | v2.5.0 | IN PROGRESS | Complete authentication milestone |
 | v3.0.0 | PLANNED | Complete research-enabled release |
