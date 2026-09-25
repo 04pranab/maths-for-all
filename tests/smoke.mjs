@@ -147,7 +147,11 @@ async function main() {
     'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
     'assert(document.getElementById("research-consent-modal").classList.contains("hidden"), "Dismissible consent overlay did not close with Escape.");' +
     'return { ok: true };' +
-  '})()');\n\n  if (!modalResult?.ok) throw new Error('Modal and keyboard accessibility checks did not complete.');\n\n  const authResult = await evaluate('(async () => {
+  '})()');
+
+  if (!modalResult?.ok) throw new Error('Modal and keyboard accessibility checks did not complete.');
+
+  const authResult = await evaluate('(async () => {
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'localStorage.clear(); sessionStorage.clear();' +
     'Auth.open("signup");' +
