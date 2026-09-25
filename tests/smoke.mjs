@@ -109,7 +109,7 @@ async function main() {
   await sleep(500);
 
   const baseline = await evaluate('(() => {' +
-    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","auth-modal","research-consent-modal","progress-modal"];' +
+    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
     'const missing = required.filter(id => !document.getElementById(id));' +
     'const resources = [...Array.from(document.scripts).map(s => s.src), ...Array.from(document.querySelectorAll("link[rel=stylesheet]")).map(l => l.href)];' +
     'return { missing, resources };' +
@@ -126,7 +126,28 @@ async function main() {
   const badResources = resourceResults.filter(x => !x.ok);
   if (badResources.length) throw new Error('Broken static resources: ' + JSON.stringify(badResources));
 
-  const authResult = await evaluate('(async () => {' +
+  const modalResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'localStorage.clear(); sessionStorage.clear();' +
+    'const guestPolicy = document.querySelector(".nav-policy");' +
+    'assert(guestPolicy, "Unauthenticated privacy/data policy button is missing.");' +
+    'assert(guestPolicy.offsetParent !== null, "Unauthenticated privacy/data policy button is not visible.");' +
+    'Auth.open("login");' +
+    'await new Promise(r => setTimeout(r, 50));' +
+    'assert(document.activeElement?.id === "auth-username", "Auth modal did not move focus to the first field.");' +
+    'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
+    'assert(document.getElementById("auth-modal").classList.contains("hidden"), "Escape did not close the auth overlay.");' +
+    'ResearchConsent.open();' +
+    'await new Promise(r => setTimeout(r, 50));' +
+    'assert(document.activeElement?.classList.contains("consent-btn"), "Consent modal did not move focus to a choice.");' +
+    'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
+    'assert(!document.getElementById("research-consent-modal").classList.contains("hidden"), "Initial consent must not close with Escape before a choice.");' +
+    'ResearchConsent.choose("no");' +
+    'ResearchConsent.open();' +
+    'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
+    'assert(document.getElementById("research-consent-modal").classList.contains("hidden"), "Dismissible consent overlay did not close with Escape.");' +
+    'return { ok: true };' +
+  '})()');\n\n  if (!modalResult?.ok) throw new Error('Modal and keyboard accessibility checks did not complete.');\n\n  const authResult = await evaluate('(async () => {
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'localStorage.clear(); sessionStorage.clear();' +
     'Auth.open("signup");' +
@@ -181,19 +202,19 @@ async function main() {
     'ResearchConsent.set("yes");' +
     'Game.startArithmetic();' +
     'assert(activeScreen("screen-quiz"), "Arithmetic screen did not open.");' +
-    'for (let i = 0; i < 100; i++) { document.getElementById("quiz-input").value = "999999"; Quiz.submit(); Quiz.next(); }' +
+    'for (let i = 0; i < 300; i++) { document.getElementById("quiz-input").value = "999999"; Quiz.submit(); Quiz.next(); }' +
     'Game.startRacing();' +
     'assert(activeScreen("screen-race"), "Racing screen did not open.");' +
-    'for (let round = 0; round < 10; round++) { Racing.start(); for (let i = 0; i < 20; i++) { document.getElementById("race-input").value = "999999"; Racing.submit(); } Racing.back(); }' +
+    'for (let round = 0; round < 20; round++) { Racing.start(); for (let i = 0; i < 30; i++) { document.getElementById("race-input").value = "999999"; Racing.submit(); } Racing.back(); }' +
     'Game.startSudoku();' +
     'assert(activeScreen("screen-sudoku"), "Sudoku screen did not open.");' +
-    'for (let i = 0; i < 40; i++) { Sudoku.newPuzzle(); Sudoku.giveHint(); }' +
+    'for (let i = 0; i < 100; i++) { Sudoku.newPuzzle(); Sudoku.giveHint(); }' +
     'Game.startShapePuzzle();' +
     'assert(activeScreen("screen-shape"), "Shape screen did not open.");' +
-    'for (let i = 0; i < 40; i++) { ShapePuzzle.restartLevel(); ShapePuzzle.showHint(); ShapePuzzle.rotateSelected(); }' +
+    'for (let i = 0; i < 100; i++) { ShapePuzzle.restartLevel(); ShapePuzzle.showHint(); ShapePuzzle.rotateSelected(); }' +
     'Game.startSlabMath();' +
     'assert(activeScreen("screen-slab"), "Slab Maths screen did not open.");' +
-    'for (let i = 0; i < 40; i++) { SlabMath.restartRound(); SlabMath.hint(); SlabMath.newRound(); }' +
+    'for (let i = 0; i < 100; i++) { SlabMath.restartRound(); SlabMath.hint(); SlabMath.newRound(); }' +
     'Game.goHome();' +
     'assert(activeScreen("screen-menu"), "Home screen did not return after stress run.");' +
     'return { quizQuestions: document.getElementById("quiz-q-number")?.textContent, sudokuCells: document.querySelectorAll("#sudoku-grid .sudoku-cell").length, shapeCells: document.querySelectorAll("#shape-board .sp-cell").length };' +
