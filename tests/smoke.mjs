@@ -27,11 +27,13 @@ async function waitFor(check, timeoutMs = 15000, intervalMs = 100) {
 }
 
 async function connectCDP() {
-  const version = await waitFor(async () => {
-    const response = await fetch('http://127.0.0.1:' + debugPort + '/json/version');
-    return response.ok ? response.json() : null;
+  const target = await waitFor(async () => {
+    const response = await fetch('http://127.0.0.1:' + debugPort + '/json');
+    if (!response.ok) return null;
+    const targets = await response.json();
+    return targets.find(item => item.type === 'page' && item.webSocketDebuggerUrl) || null;
   });
-  socket = new WebSocket(version.webSocketDebuggerUrl);
+  socket = new WebSocket(target.webSocketDebuggerUrl);
   socket.addEventListener('message', event => {
     const message = JSON.parse(event.data);
     if (message.id && pending.has(message.id)) {
