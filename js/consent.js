@@ -121,14 +121,47 @@ const ResearchConsent = (function () {
 const Auth = (function () {
   const ACCOUNT_KEY = 'mfa_local_account_v1';
   const SESSION_KEY = 'mfa_local_session_v1';
+  const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
   function account() {
     try { return JSON.parse(localStorage.getItem(ACCOUNT_KEY)); }
     catch (e) { return null; }
   }
 
+  function readSession() {
+    try {
+      const value = JSON.parse(sessionStorage.getItem(SESSION_KEY));
+      if (!value || !value.token || !value.username || !value.expiresAt) return null;
+      if (Date.now() >= value.expiresAt) {
+        sessionStorage.removeItem(SESSION_KEY);
+        return null;
+      }
+      const current = account();
+      if (!current || !current.username || current.username !== value.username) {
+        sessionStorage.removeItem(SESSION_KEY);
+        return null;
+      }
+      return value;
+    } catch (e) {
+      sessionStorage.removeItem(SESSION_KEY);
+      return null;
+    }
+  }
+
+  function createSession(username) {
+    const bytes = crypto.getRandomValues(new Uint8Array(32));
+    const token = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+    const now = Date.now();
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+      token,
+      username,
+      createdAt: now,
+      expiresAt: now + SESSION_TTL_MS
+    }));
+  }
+
   function isLoggedIn() {
-    return sessionStorage.getItem(SESSION_KEY) === 'active' && !!account();
+    return !!readSession();
   }
 
   function hashPassword(password, salt) {
@@ -233,7 +266,7 @@ const Auth = (function () {
         if (hash !== existing.passwordHash) throw new Error('The username or password is incorrect.');
       }
 
-      sessionStorage.setItem(SESSION_KEY, 'active');
+      createSession(existing ? existing.username : username);
       close();
       renderAccountButton();
       if (ResearchConsent.get() === null) ResearchConsent.open();
