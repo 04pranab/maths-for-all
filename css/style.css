@@ -2459,10 +2459,15 @@ button {
 }
 
 .nav-account-email {
-  max-width: 145px;
+  max-width: 150px;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.nav-account-username {
+  font-weight: 800;
 }
 
 .nav-account-menu {
@@ -2620,6 +2625,11 @@ button {
 
   .nav-account-email {
     display: none;
+  }
+
+  .nav-account-trigger {
+    padding: 6px 9px;
+    gap: 6px;
   }
 
   .nav-account-menu {
