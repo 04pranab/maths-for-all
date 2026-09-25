@@ -60,3 +60,10 @@ No authentication, research-data collection, database, telemetry, or participant
 ### Baseline
 
 The v2.0.0 tag should be treated as the stable reference point for regression testing while v3 infrastructure is developed.
+
+### Fixes
+
+- Fixed consent-gated analytics so explicit research consent Yes permits the intended on-device event logging.
+- Added the application favicon and removed the browser favicon 404.
+- Refreshed the JavaScript cache-busting version after the analytics fix.
+- Verified the fixes with the automated browser stress suite.
