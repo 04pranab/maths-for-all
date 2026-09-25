@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased · 2026-09-25
+
+### Authentication and gameplay development
+- Separate Log in and Sign up flows with username-aware account access.
+- Sign up collects username, email, password, and password confirmation.
+- Log in accepts either username or email with password.
+- Added a prepared Google sign-in entry point for the future production authentication backend.
+- Extended Slab Maths into longer rounds with basket targets starting above 35.
+
+
 ## 2.0.0 - 2026-09-24
 
 ### Release baseline

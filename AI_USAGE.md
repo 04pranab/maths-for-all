@@ -148,3 +148,7 @@ The project also records significant development milestones, pull requests, dire
 **AI tools used:** OpenAI ChatGPT, Anthropic Claude
 
 **License:** See [LICENSE](LICENSE)
+
+## 9. September 25, 2026 Development Record
+
+AI assistance was used to review and implement the separation of Log in and Sign up, username-or-email login handling, account-control presentation, longer Slab Maths progression, and associated repository documentation. Changes were reviewed before integration into the development branches.

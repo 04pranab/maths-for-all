@@ -20,16 +20,16 @@
 
 const SlabMath = (function () {
 
-  /* Every tier's basket target stays above 40, so the game never
+  /* Every tier's basket target stays above 35, so the game never
      feels too easy — slab values and slab count still grow with
      the tier to keep the later rounds meaningfully harder. */
   const TIERS = [
-    { targetMin: 10, targetMax: 30, slabMin: 1, slabMax: 15, partsMin: 2, partsMax: 3, distractors: 2 },
-    { targetMin: 15, targetMax: 45, slabMin: 1, slabMax: 15, partsMin: 3, partsMax: 4, distractors: 3 },
-    { targetMin: 20, targetMax: 60, slabMin: 1, slabMax: 15, partsMin: 3, partsMax: 5, distractors: 4 },
-    { targetMin: 25, targetMax: 75, slabMin: 1, slabMax: 15, partsMin: 4, partsMax: 6, distractors: 4 },
-    { targetMin: 30, targetMax: 90, slabMin: 1, slabMax: 15, partsMin: 4, partsMax: 7, distractors: 5 },
-    { targetMin: 35, targetMax: 105, slabMin: 1, slabMax: 15, partsMin: 5, partsMax: 8, distractors: 5 },
+    { targetMin: 36, targetMax: 45, slabMin: 1, slabMax: 15, partsMin: 3, partsMax: 4, distractors: 3 },
+    { targetMin: 46, targetMax: 60, slabMin: 1, slabMax: 15, partsMin: 4, partsMax: 5, distractors: 4 },
+    { targetMin: 61, targetMax: 75, slabMin: 1, slabMax: 15, partsMin: 5, partsMax: 6, distractors: 4 },
+    { targetMin: 76, targetMax: 90, slabMin: 1, slabMax: 15, partsMin: 6, partsMax: 7, distractors: 5 },
+    { targetMin: 91, targetMax: 105, slabMin: 1, slabMax: 15, partsMin: 7, partsMax: 8, distractors: 5 },
+    { targetMin: 106, targetMax: 120, slabMin: 1, slabMax: 15, partsMin: 8, partsMax: 9, distractors: 6 },
   ];
   function tierFor(round) { return TIERS[Math.min(TIERS.length - 1, Math.floor((round - 1) / 5))]; }
 
