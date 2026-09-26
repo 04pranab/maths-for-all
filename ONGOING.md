@@ -185,7 +185,24 @@ PR #18 established the automated browser stress foundation. This patch extends t
 
 ---
 
-## 6. Known limitations
+## 6. Developer environment and visual foundation
+
+### Status: PREPARED
+
+The repository now has a small, explicit development-environment layer that keeps machine-specific state out of Git while making the expected runtime easy to reproduce.
+
+Included:
+- environment templates for local, test, and production configuration;
+- Git hygiene rules for environment files, runtime databases, logs, and editor state;
+- Node 22 version pinning;
+- shared editor and text-file defaults;
+- a dedicated local SVG asset library under assets/svg/;
+- a separate css/visuals.css presentation layer;
+- decorative artwork integrated into the main menu without changing game logic.
+
+The visual layer remains presentation-only. It does not collect data, change authentication, or alter the research-consent boundary.
+
+## 7. Known limitations
 
 - The local authentication implementation is still not production authentication.
 - Server-side sessions are not yet implemented.
@@ -197,7 +214,7 @@ PR #18 established the automated browser stress foundation. This patch extends t
 
 ---
 
-## 7. Development rule
+## 8. Development rule
 
 Do not add unrelated features to the hardening line.
 

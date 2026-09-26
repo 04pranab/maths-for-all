@@ -63,3 +63,12 @@ Release only when the research data model, database, event collection, participa
 ## Non-goals for this PR
 
 This PR does not add a production authentication backend or a research database. Those are implementation steps in subsequent PRs.
+
+
+## Repository environment and presentation boundary
+
+The development environment is configured through committed example files and ignored local overrides. Real credentials and machine-specific values must never be committed.
+
+The presentation layer may use local SVG assets from assets/svg/, but those assets are outside the research-data path. Decorative artwork must not emit analytics, telemetry, authentication events, or consent events.
+
+This separation keeps the visual experience free to evolve without changing the research or authentication architecture.

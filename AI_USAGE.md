@@ -190,3 +190,10 @@ The assistance covered:
 Human responsibility remained with the project author. The final scope, privacy rules, legal wording, release decision, code integration, and testing decisions were reviewed before inclusion.
 
 The project does not treat AI output as a security guarantee or legal opinion. Security findings are validated through executable tests and code review, and legal obligations remain governed by applicable law.
+
+
+## 9. Visual asset assistance
+
+AI assistance may be used to help sketch or refine small, dependency-free SVG decorations and CSS presentation ideas. Human review remains responsible for visual appropriateness, accessibility, licensing, performance, and final integration.
+
+The repository keeps decorative SVG artwork local under assets/svg/ so the application does not depend on an external image CDN for this presentation layer.
