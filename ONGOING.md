@@ -185,7 +185,20 @@ PR #18 established the automated browser stress foundation. This patch extends t
 
 ---
 
-## 6. Known limitations
+## 6. Research event boundary
+
+The browser research path now has one explicit storage boundary: `ResearchEventGateway`.
+
+- Research writes are accepted only when consent is Yes.
+- Analytics no longer writes research events directly to localStorage.
+- Withdrawal clears persisted and in-memory research events.
+- `tests/research-gateway.mjs` covers the consent and validation boundary.
+
+This is still local research infrastructure. It does not send events to a server or database.
+
+---
+
+## 7. Known limitations
 
 - The local authentication implementation is still not production authentication.
 - Server-side sessions are not yet implemented.
@@ -197,7 +210,7 @@ PR #18 established the automated browser stress foundation. This patch extends t
 
 ---
 
-## 7. Development rule
+## 8. Development rule
 
 Do not add unrelated features to the hardening line.
 
