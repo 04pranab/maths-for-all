@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import fs from 'node:fs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const httpPort = Number(process.env.TEST_HTTP_PORT || 4173);
@@ -69,8 +70,15 @@ async function evaluate(expression) {
 }
 
 async function main() {
-  server = spawn('python3', ['-m', 'http.server', String(httpPort), '--bind', '127.0.0.1'], {
+  const smokeDb = path.join('/tmp', 'mfa-smoke-' + process.pid + '.sqlite');
+  server = spawn(process.execPath, ['server/index.mjs'], {
     cwd: root,
+    env: {
+      ...process.env,
+      AUTH_PORT: String(httpPort),
+      AUTH_DB_PATH: smokeDb,
+      AUTH_ORIGIN: 'http://127.0.0.1:' + httpPort
+    },
     stdio: 'ignore'
   });
 
@@ -177,7 +185,8 @@ async function main() {
 
   if (!gameResult) throw new Error('Game stress test returned no result.');
   await sleep(500);
-  if (failedResources.length) throw new Error('Browser resource errors detected:\n' + failedResources.map(item => item.status + ' ' + item.url).join('\n'));
+  const unexpectedResourceErrors = failedResources.filter(item => !(item.status === 401 && item.url.endsWith('/api/auth/me')));
+  if (unexpectedResourceErrors.length) throw new Error('Browser resource errors detected:\n' + unexpectedResourceErrors.map(item => item.status + ' ' + item.url).join('\n'));
   if (errors.length) throw new Error('Browser runtime/console errors detected:\n' + [...new Set(errors)].join('\n'));
 
   console.log(JSON.stringify({ status: 'PASS', baseline, games: gameResult, browserErrors: 0 }, null, 2));
