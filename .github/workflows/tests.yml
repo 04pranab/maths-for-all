@@ -34,3 +34,6 @@ jobs:
 
       - name: Browser stress test
         run: node tests/smoke.mjs
+
+      - name: Production auth API checks
+        run: node tests/auth-api.mjs
