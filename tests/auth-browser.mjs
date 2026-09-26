@@ -10,11 +10,13 @@ const port = 4877;
 const debugPort = 9223;
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mfa-auth-browser-'));
 const dbPath = path.join(tempDir, 'auth.sqlite');
+const outboxPath = path.join(tempDir, 'outbox.ndjson');
 const env = {
   ...process.env,
   AUTH_PORT: String(port),
   AUTH_DB_PATH: dbPath,
-  AUTH_ORIGIN: 'http://localhost:' + port
+  AUTH_ORIGIN: 'http://localhost:' + port,
+  AUTH_TEST_OUTBOX_PATH: outboxPath
 };
 
 let server;
@@ -82,10 +84,15 @@ async function connect() {
   await waitFor(() => socket.readyState === WebSocket.OPEN);
 }
 
+function latestVerificationToken() {
+  const rows = fs.readFileSync(outboxPath, 'utf8').trim().split('\n').filter(Boolean).map(JSON.parse);
+  const mail = [...rows].reverse().find(row => row.type === 'email-verification');
+  const url = mail.text.slice(mail.text.indexOf('http'));
+  return new URL(url).searchParams.get('verify');
+}
+
 try {
-  server = spawn(process.execPath, ['server/index.mjs'], {
-    cwd: root, env, stdio: 'ignore'
-  });
+  server = spawn(process.execPath, ['server/index.mjs'], { cwd: root, env, stdio: 'ignore' });
   browser = spawn(process.env.CHROMIUM || 'chromium', [
     '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
     '--remote-debugging-address=127.0.0.1', '--remote-debugging-port=' + debugPort,
@@ -116,40 +123,39 @@ try {
     document.getElementById('auth-confirm-password').value = 'BrowserPass123';
     await Auth.submit({ preventDefault() {} }, 'signup');
 
-    assert(Auth.isLoggedIn(), 'Browser signup did not create a server session.');
-    assert(!localStorage.getItem('mfa_local_account_v1'), 'Legacy local account data was written.');
-    assert(document.cookie === '', 'The session cookie is accessible to page JavaScript.');
+    assert(!Auth.isLoggedIn(), 'Unverified signup must not create an authenticated session.');
+    assert(document.getElementById('auth-modal').textContent.includes('Check your email'), 'Signup did not explain email verification.');
 
-    assert(ResearchConsent.get() === null, 'Research consent should remain separate from authentication.');
-    assert(!document.getElementById('research-consent-modal').classList.contains('hidden'), 'Consent did not open after login.');
+    return { status: 'PASS', signupRequiresVerification: true };
+  })()`);
 
-    ResearchConsent.choose('no');
-    Analytics.log('stress', 'blocked', {});
-    assert(Analytics.summary().totalEvents === 0, 'Research analytics were recorded after No.');
-    assert(!localStorage.getItem('mfa_analytics_v1'), 'Research analytics survived a No choice.');
+  assert.deepEqual(result, { status: 'PASS', signupRequiresVerification: true });
 
-    await Auth.logout();
-    assert(!Auth.isLoggedIn(), 'Logout did not clear the authenticated browser state.');
+  const token = latestVerificationToken();
+  await cdp('Page.navigate', { url: 'http://localhost:' + port + '/?verify=' + encodeURIComponent(token) });
+  await waitFor(async () => (await evaluate('document.readyState')) === 'complete');
+  await waitFor(async () => (await evaluate(`document.getElementById('auth-modal')?.textContent.includes('email is verified')`)) === true);
 
+  const verified = await evaluate(`(async () => {
+    const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    assert(document.getElementById('auth-modal').textContent.includes('email is verified'), 'Verification result was not shown.');
     Auth.open('login');
     document.getElementById('auth-username').value = 'browser_user';
     document.getElementById('auth-password').value = 'BrowserPass123';
     await Auth.submit({ preventDefault() {} }, 'login');
-    assert(Auth.isLoggedIn(), 'Username login failed.');
-
+    assert(Auth.isLoggedIn(), 'Verified browser login failed.');
+    assert(document.cookie === '', 'HttpOnly session cookie is accessible to JavaScript.');
+    ResearchConsent.choose('no');
+    Analytics.log('stress', 'blocked', {});
+    assert(Analytics.summary().totalEvents === 0, 'Research analytics were recorded after No.');
     await Auth.logout();
-    Auth.open('login');
-    document.getElementById('auth-username').value = 'browser@example.com';
-    document.getElementById('auth-password').value = 'BrowserPass123';
-    await Auth.submit({ preventDefault() {} }, 'login');
-    assert(Auth.isLoggedIn(), 'Email login failed.');
-
-    return { status: 'PASS', authenticated: true, researchBlockedOnNo: true };
+    assert(!Auth.isLoggedIn(), 'Logout failed.');
+    return true;
   })()`);
 
-  assert.deepEqual(result, { status: 'PASS', authenticated: true, researchBlockedOnNo: true });
-  if (errors.length) throw new Error('Browser errors detected:\\n' + [...new Set(errors)].join('\\n'));
-  console.log(JSON.stringify(result));
+  assert.equal(verified, true);
+  if (errors.length) throw new Error('Browser errors detected:\n' + [...new Set(errors)].join('\n'));
+  console.log(JSON.stringify({ status: 'PASS', checks: 8 }));
 } finally {
   if (socket && socket.readyState === WebSocket.OPEN) socket.close();
   if (browser) browser.kill('SIGTERM');

@@ -135,9 +135,9 @@ const ResearchConsent = (function () {
 const Auth = (function () {
   const API = '/api/auth';
   let currentUser = null;
-  let authReady = false;
   let authReturnFocus = null;
   let profileReturnFocus = null;
+  let pendingMessage = '';
 
   async function request(path, options = {}) {
     const response = await fetch(API + path, {
@@ -150,12 +150,14 @@ const Auth = (function () {
     return payload;
   }
 
-  function account() {
-    return currentUser;
-  }
+  function account() { return currentUser; }
+  function isLoggedIn() { return !!currentUser; }
 
-  function isLoggedIn() {
-    return !!currentUser;
+  function clearAuthQuery() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('verify');
+    url.searchParams.delete('reset');
+    window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
   }
 
   function open(mode) {
@@ -173,9 +175,44 @@ const Auth = (function () {
     authReturnFocus = null;
   }
 
-  function render(mode) {
+  function render(mode, message = '') {
     const modal = document.getElementById('auth-modal');
     if (!modal) return;
+
+    if (mode === 'reset') {
+      modal.innerHTML = `
+        <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+          <button class="consent-close" onclick="Auth.close()" aria-label="Close">×</button>
+          <div class="consent-icon">🔑</div>
+          <h2 id="auth-title">Reset your password</h2>
+          <p class="consent-lead">Enter your account email. If it is registered, we will send a reset link.</p>
+          <form onsubmit="return Auth.requestReset(event)">
+            <label>Email<input id="auth-reset-email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+            <p id="auth-error" class="auth-error" role="alert">${Utils.escapeHtml(message)}</p>
+            <button class="consent-btn primary" type="submit">Send reset link</button>
+          </form>
+          <button class="btn-progress close" type="button" onclick="Auth.open('login')">Back to login</button>
+        </div>`;
+      return;
+    }
+
+    if (mode === 'reset-confirm') {
+      modal.innerHTML = `
+        <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+          <button class="consent-close" onclick="Auth.close()" aria-label="Close">×</button>
+          <div class="consent-icon">🔐</div>
+          <h2 id="auth-title">Choose a new password</h2>
+          <p class="consent-lead">Use at least 8 characters. The reset link can only be used once.</p>
+          <form onsubmit="return Auth.confirmReset(event)">
+            <label>New password<input id="auth-new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+            <label>Confirm password<input id="auth-new-password-confirm" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+            <p id="auth-error" class="auth-error" role="alert">${Utils.escapeHtml(message)}</p>
+            <button class="consent-btn primary" type="submit">Change password</button>
+          </form>
+        </div>`;
+      return;
+    }
+
     const login = mode !== 'signup';
     modal.innerHTML = `
       <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
@@ -187,6 +224,7 @@ const Auth = (function () {
         </div>
         <h2 id="auth-title">${login ? 'Log in to Maths for All' : 'Create your Maths for All account'}</h2>
         <p class="consent-lead">${login ? 'Use your username and password to continue.' : 'Create your learner account with a username, email, and password.'}</p>
+        ${message ? '<p class="consent-note"><strong>' + Utils.escapeHtml(message) + '</strong></p>' : ''}
 
         <form onsubmit="return Auth.submit(event, '${login ? 'login' : 'signup'}')">
           ${!login ? `
@@ -202,12 +240,17 @@ const Auth = (function () {
           <button class="consent-btn primary" type="submit">${login ? 'Log in' : 'Create account'}</button>
         </form>
 
+        ${login ? `
+          <button class="auth-link" type="button" onclick="Auth.open('reset')">Forgot password?</button>
+          <button class="auth-link" type="button" onclick="Auth.resendVerification()">Resend verification email</button>
+        ` : ''}
+
         <div class="auth-divider"><span>or</span></div>
         <button class="google-auth-btn" type="button" onclick="Auth.googleSignIn()">
           <span class="google-mark" aria-hidden="true">G</span>
           Continue with Google
         </button>
-        <p class="auth-google-note">Google sign-in will be connected to the production identity provider in the authentication milestone.</p>
+        <p class="auth-google-note">Google sign-in is reserved for the production identity-provider integration.</p>
         <p class="consent-note"><strong>Privacy:</strong> account information is separate from research data. Signing in does not grant research consent.</p>
       </div>`;
   }
@@ -229,21 +272,21 @@ const Auth = (function () {
           method: 'POST',
           body: JSON.stringify({ username: identifier, email, password })
         });
-        const loginResult = await request('/login', {
-          method: 'POST',
-          body: JSON.stringify({ identifier, password })
-        });
-        currentUser = loginResult.user;
-      } else {
-        const password = document.getElementById('auth-password').value;
-        const result = await request('/login', {
-          method: 'POST',
-          body: JSON.stringify({ identifier, password })
-        });
-        currentUser = result.user;
+        close();
+        pendingMessage = 'Account created. Check your email and verify your address before logging in.';
+        render('login', pendingMessage);
+        pendingMessage = '';
+        document.getElementById('auth-modal').classList.remove('hidden');
+        setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
+        return false;
       }
 
-      authReady = true;
+      const password = document.getElementById('auth-password').value;
+      const result = await request('/login', {
+        method: 'POST',
+        body: JSON.stringify({ identifier, password })
+      });
+      currentUser = result.user;
       close();
       renderAccountButton();
       if (ResearchConsent.get() === null) ResearchConsent.open();
@@ -251,6 +294,100 @@ const Auth = (function () {
       error.textContent = e.message || 'Unable to continue.';
     }
     return false;
+  }
+
+  async function resendVerification() {
+    const input = document.getElementById('auth-username');
+    const error = document.getElementById('auth-error');
+    if (!input || !error) return;
+    const identifier = input.value.trim();
+    if (!identifier) {
+      error.textContent = 'Enter your username or email first.';
+      return;
+    }
+    try {
+      const result = await request('/resend-verification', {
+        method: 'POST',
+        body: JSON.stringify({ identifier })
+      });
+      error.textContent = result.message;
+    } catch (e) {
+      error.textContent = e.message || 'Unable to resend the verification email.';
+    }
+  }
+
+  async function requestReset(event) {
+    event.preventDefault();
+    const error = document.getElementById('auth-error');
+    try {
+      const result = await request('/password-reset/request', {
+        method: 'POST',
+        body: JSON.stringify({ email: document.getElementById('auth-reset-email').value.trim() })
+      });
+      error.textContent = result.message;
+    } catch (e) {
+      error.textContent = e.message || 'Unable to request a password reset.';
+    }
+    return false;
+  }
+
+  async function confirmReset(event) {
+    event.preventDefault();
+    const error = document.getElementById('auth-error');
+    const password = document.getElementById('auth-new-password').value;
+    const confirmPassword = document.getElementById('auth-new-password-confirm').value;
+    if (password !== confirmPassword) {
+      error.textContent = 'The passwords do not match.';
+      return false;
+    }
+
+    const token = new URL(window.location.href).searchParams.get('reset');
+    try {
+      await request('/password-reset/confirm', {
+        method: 'POST',
+        body: JSON.stringify({ token, password })
+      });
+      clearAuthQuery();
+      const message = 'Your password was changed. You can now log in.';
+      open('login');
+      render('login', message);
+      document.getElementById('auth-modal').classList.remove('hidden');
+      setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
+    } catch (e) {
+      error.textContent = e.message || 'Unable to reset the password.';
+    }
+    return false;
+  }
+
+  async function handleAuthLink() {
+    const url = new URL(window.location.href);
+    const verifyToken = url.searchParams.get('verify');
+    const resetToken = url.searchParams.get('reset');
+
+    if (verifyToken) {
+      try {
+        await request('/verify-email', { method: 'POST', body: JSON.stringify({ token: verifyToken }) });
+        clearAuthQuery();
+        const message = 'Your email is verified. You can now log in.';
+        open('login');
+        render('login', message);
+        document.getElementById('auth-modal').classList.remove('hidden');
+        setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
+        return;
+      } catch (e) {
+        clearAuthQuery();
+        const message = e.message || 'This verification link is invalid or expired.';
+        open('login');
+        render('login', message);
+        document.getElementById('auth-modal').classList.remove('hidden');
+        setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
+        return;
+      }
+    }
+
+    if (resetToken) {
+      open('reset-confirm');
+    }
   }
 
   function googleSignIn() {
@@ -311,7 +448,6 @@ const Auth = (function () {
   async function logout() {
     try { await request('/logout', { method: 'POST', body: '{}' }); } catch {}
     currentUser = null;
-    authReady = true;
     closeAccountMenu();
     renderAccountButton();
   }
@@ -358,15 +494,26 @@ const Auth = (function () {
     } catch {
       currentUser = null;
     }
-    authReady = true;
     renderAccountButton();
     if (currentUser && ResearchConsent.get() === null) ResearchConsent.open();
+    if (!currentUser) {
+      if (pendingMessage) {
+        const message = pendingMessage;
+        pendingMessage = '';
+        open('login');
+        render('login', message);
+        document.getElementById('auth-modal').classList.remove('hidden');
+        setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
+      } else {
+        await handleAuthLink();
+      }
+    }
   }
 
   return {
     open, close, submit, googleSignIn, logout, isLoggedIn, init,
     toggleAccountMenu, closeAccountMenu, renderAccountButton,
-    openProfile, closeProfile, account
+    openProfile, closeProfile, account, resendVerification, requestReset, confirmReset
   };
 })();
 

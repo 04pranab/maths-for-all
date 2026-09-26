@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { config } from './config.mjs';
-import { getUserBySession, login, logout, register } from './service.mjs';
+import { getUserBySession, login, logout, register, resendVerification, verifyEmail, requestPasswordReset, resetPassword } from './service.mjs';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -86,13 +86,29 @@ export async function handleRequest(req, res) {
           : sendJson(res, 200, { authenticated: false });
       }
       if (req.method === 'POST' && url.pathname === '/api/auth/register') {
-        const user = await register(await readBody(req));
-        return sendJson(res, 201, { user });
+        return sendJson(res, 201, await register(await readBody(req)));
       }
       if (req.method === 'POST' && url.pathname === '/api/auth/login') {
         const result = await login(await readBody(req));
         setSessionCookie(res, result.token, config.sessionTtlSeconds);
         return sendJson(res, 200, { user: result.user, expiresAt: result.expiresAt });
+      }
+
+      if (req.method === 'POST' && url.pathname === '/api/auth/verify-email') {
+        return sendJson(res, 200, await verifyEmail((await readBody(req)).token));
+      }
+
+      if (req.method === 'POST' && url.pathname === '/api/auth/resend-verification') {
+        return sendJson(res, 202, await resendVerification((await readBody(req)).identifier));
+      }
+
+      if (req.method === 'POST' && url.pathname === '/api/auth/password-reset/request') {
+        return sendJson(res, 202, await requestPasswordReset((await readBody(req)).email));
+      }
+
+      if (req.method === 'POST' && url.pathname === '/api/auth/password-reset/confirm') {
+        const body = await readBody(req);
+        return sendJson(res, 200, await resetPassword(body.token, body.password));
       }
       if (req.method === 'POST' && url.pathname === '/api/auth/logout') {
         logout(cookieToken(req));
@@ -102,7 +118,7 @@ export async function handleRequest(req, res) {
       return sendJson(res, 404, { error: 'Not found.' });
     } catch (error) {
       const message = error?.message || 'Request failed.';
-      const status = message.includes('incorrect') ? 401 : 400;
+      const status = message.includes('incorrect') || message.includes('Verify your email') ? 401 : 400;
       return sendJson(res, status, { error: message });
     }
   }
