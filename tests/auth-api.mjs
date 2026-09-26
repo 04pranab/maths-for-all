@@ -46,7 +46,7 @@ function latestMail(type) {
 }
 
 function tokenFromMail(mail, query) {
-  return new URL(mail.text).searchParams.get(query);
+  return new URL(mail.text.slice(mail.text.indexOf('http'))).searchParams.get(query);
 }
 
 try {
