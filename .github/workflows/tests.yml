@@ -37,3 +37,6 @@ jobs:
 
       - name: Production auth API checks
         run: node tests/auth-api.mjs
+
+      - name: Production auth browser checks
+        run: node tests/auth-browser.mjs
