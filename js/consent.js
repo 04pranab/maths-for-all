@@ -133,66 +133,34 @@ const ResearchConsent = (function () {
    This is not a production authentication backend.
    ============================================================= */
 const Auth = (function () {
-  const ACCOUNT_KEY = 'mfa_local_account_v1';
-  const SESSION_KEY = 'mfa_local_session_v1';
-  const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+  const API = '/api/auth';
+  let currentUser = null;
+  let authReady = false;
+  let authReturnFocus = null;
+  let profileReturnFocus = null;
+
+  async function request(path, options = {}) {
+    const response = await fetch(API + path, {
+      credentials: 'same-origin',
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || 'Unable to complete the request.');
+    return payload;
+  }
 
   function account() {
-    try { return JSON.parse(localStorage.getItem(ACCOUNT_KEY)); }
-    catch (e) { return null; }
-  }
-
-  function readSession() {
-    try {
-      const value = JSON.parse(sessionStorage.getItem(SESSION_KEY));
-      if (!value || !value.token || !value.username || !value.expiresAt) return null;
-      if (Date.now() >= value.expiresAt) {
-        sessionStorage.removeItem(SESSION_KEY);
-        return null;
-      }
-      const current = account();
-      if (!current || !current.username || current.username !== value.username) {
-        sessionStorage.removeItem(SESSION_KEY);
-        return null;
-      }
-      return value;
-    } catch (e) {
-      sessionStorage.removeItem(SESSION_KEY);
-      return null;
-    }
-  }
-
-  function createSession(username) {
-    const bytes = crypto.getRandomValues(new Uint8Array(32));
-    const token = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
-    const now = Date.now();
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-      token,
-      username,
-      createdAt: now,
-      expiresAt: now + SESSION_TTL_MS
-    }));
+    return currentUser;
   }
 
   function isLoggedIn() {
-    return !!readSession();
+    return !!currentUser;
   }
-
-  function hashPassword(password, salt) {
-    if (!window.crypto || !window.crypto.subtle) {
-      return Promise.reject(new Error('Secure browser cryptography is unavailable.'));
-    }
-    const data = new TextEncoder().encode(password + salt);
-    return crypto.subtle.digest('SHA-256', data).then(buffer =>
-      Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('')
-    );
-  }
-
-  let authReturnFocus = null;
 
   function open(mode) {
     authReturnFocus = document.activeElement;
-    render(mode || (account() ? 'login' : 'signup'));
+    render(mode || 'login');
     document.getElementById('auth-modal').classList.remove('hidden');
     setTimeout(() => (document.querySelector('#auth-modal input') || document.querySelector('#auth-modal button:not(.consent-close)'))?.focus(), 0);
   }
@@ -224,11 +192,11 @@ const Auth = (function () {
           ${!login ? `
             <label>Username<input id="auth-username" type="text" autocomplete="username" minlength="3" maxlength="30" required placeholder="Choose a username"></label>
             <label>Email<input id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
-            <label>Password<input id="auth-password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></label>
-            <label>Confirm password<input id="auth-confirm-password" type="password" autocomplete="new-password" minlength="8" required placeholder="Enter the password again"></label>
+            <label>Password<input id="auth-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"></label>
+            <label>Confirm password<input id="auth-confirm-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="Enter the password again"></label>
           ` : `
             <label>Username or email<input id="auth-username" type="text" autocomplete="username" required placeholder="Username or email"></label>
-            <label>Password<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Your password"></label>
+            <label>Password<input id="auth-password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="Your password"></label>
           `}
           <p id="auth-error" class="auth-error" role="alert"></p>
           <button class="consent-btn primary" type="submit">${login ? 'Log in' : 'Create account'}</button>
@@ -239,56 +207,43 @@ const Auth = (function () {
           <span class="google-mark" aria-hidden="true">G</span>
           Continue with Google
         </button>
-        <p class="auth-google-note">Google sign-in will connect to the production authentication service when the database-backed auth system is introduced.</p>
-        ${!login ? '<p class="consent-note"><strong>Email verification:</strong> the account flow is designed for email verification, which will be enforced by the production database-backed authentication service. This local development flow does not send verification emails.</p>' : ''}
+        <p class="auth-google-note">Google sign-in will be connected to the production identity provider in the authentication milestone.</p>
         <p class="consent-note"><strong>Privacy:</strong> account information is separate from research data. Signing in does not grant research consent.</p>
       </div>`;
   }
 
   async function submit(event, mode) {
     event.preventDefault();
-    const username = document.getElementById('auth-username').value.trim();
     const error = document.getElementById('auth-error');
     error.textContent = '';
-
     try {
-      if (!username) throw new Error('Enter your username or email.');
-
-      const existing = account();
+      const identifier = document.getElementById('auth-username').value.trim();
+      if (!identifier) throw new Error('Enter your username or email.');
 
       if (mode === 'signup') {
-        if (!/^[A-Za-z0-9_]{3,30}$/.test(username)) {
-          throw new Error('Username must be 3–30 characters using letters, numbers, or _.');
-        }
-        const email = document.getElementById('auth-email').value.trim().toLowerCase();
+        const email = document.getElementById('auth-email').value.trim();
         const password = document.getElementById('auth-password').value;
         const confirmPassword = document.getElementById('auth-confirm-password').value;
-
         if (password !== confirmPassword) throw new Error('The passwords do not match.');
-        if (existing) throw new Error('A local account already exists on this device. Use Log in instead.');
-
-        const salt = crypto.getRandomValues(new Uint8Array(16));
-        const saltText = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
-        const hash = await hashPassword(password, saltText);
-
-        localStorage.setItem(ACCOUNT_KEY, JSON.stringify({
-          username,
-          email,
-          salt: saltText,
-          passwordHash: hash,
-          createdAt: new Date().toISOString()
-        }));
+        await request('/register', {
+          method: 'POST',
+          body: JSON.stringify({ username: identifier, email, password })
+        });
+        const loginResult = await request('/login', {
+          method: 'POST',
+          body: JSON.stringify({ identifier, password })
+        });
+        currentUser = loginResult.user;
       } else {
         const password = document.getElementById('auth-password').value;
-        const identifier = username.trim().toLowerCase();
-        if (!existing || ((existing.username || '').toLowerCase() !== identifier && (existing.email || '').toLowerCase() !== identifier)) {
-          throw new Error('No matching account was found.');
-        }
-        const hash = await hashPassword(password, existing.salt);
-        if (hash !== existing.passwordHash) throw new Error('The username or password is incorrect.');
+        const result = await request('/login', {
+          method: 'POST',
+          body: JSON.stringify({ identifier, password })
+        });
+        currentUser = result.user;
       }
 
-      createSession(existing ? existing.username : username);
+      authReady = true;
       close();
       renderAccountButton();
       if (ResearchConsent.get() === null) ResearchConsent.open();
@@ -300,9 +255,7 @@ const Auth = (function () {
 
   function googleSignIn() {
     const error = document.getElementById('auth-error');
-    if (error) {
-      error.textContent = 'Google sign-in will be enabled with the production authentication backend. No Google credentials are collected by this local development flow.';
-    }
+    if (error) error.textContent = 'Google sign-in is reserved for the production identity-provider integration.';
   }
 
   function renderAccountButton() {
@@ -316,8 +269,7 @@ const Auth = (function () {
       return;
     }
 
-    const current = account();
-    const username = current && current.username ? current.username : 'Learner';
+    const username = currentUser.username || 'Learner';
     const initial = username.charAt(0).toUpperCase();
 
     el.innerHTML = `
@@ -329,7 +281,7 @@ const Auth = (function () {
       <div class="nav-account-menu hidden" id="account-menu">
         <div class="account-summary">
           <div class="account-summary-name">@${Utils.escapeHtml(username)}</div>
-          <div class="account-summary-email">${Utils.escapeHtml(current && current.email ? current.email : 'Local account')}</div>
+          <div class="account-summary-email">${Utils.escapeHtml(currentUser.email || '')}</div>
         </div>
         <button class="account-menu-item" onclick="Auth.openProfile(); Auth.closeAccountMenu()">👤 Account information</button>
         <button class="account-menu-item" onclick="Progress.open(); Auth.closeAccountMenu()">📊 My Progress</button>
@@ -356,18 +308,66 @@ const Auth = (function () {
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
   }
 
-  function logout() {
-    sessionStorage.removeItem(SESSION_KEY);
+  async function logout() {
+    try { await request('/logout', { method: 'POST', body: '{}' }); } catch {}
+    currentUser = null;
+    authReady = true;
     closeAccountMenu();
     renderAccountButton();
   }
 
-  function init() {
-    renderAccountButton();
-    if (isLoggedIn() && ResearchConsent.get() === null) ResearchConsent.open();
+  function openProfile() {
+    if (!currentUser) return;
+    profileReturnFocus = document.activeElement;
+    const modal = document.getElementById('account-profile-modal');
+    if (!modal) return;
+    const memberDate = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString() : 'Not available';
+    modal.innerHTML = `
+      <div class="progress-box" role="dialog" aria-modal="true" aria-labelledby="account-profile-title">
+        <button class="consent-close" onclick="Auth.closeProfile()" aria-label="Close account information">×</button>
+        <div class="consent-icon">👤</div>
+        <h2 id="account-profile-title" class="modal-title">Account information</h2>
+        <div class="progress-grid">
+          <div class="progress-stat"><span class="stat-num">${Utils.escapeHtml(currentUser.username)}</span><span class="stat-label">Username</span></div>
+          <div class="progress-stat"><span class="stat-num">${Utils.escapeHtml(currentUser.email)}</span><span class="stat-label">Email</span></div>
+          <div class="progress-stat"><span class="stat-num">${currentUser.emailVerified ? 'Verified' : 'Unverified'}</span><span class="stat-label">Email status</span></div>
+          <div class="progress-stat"><span class="stat-num">${memberDate}</span><span class="stat-label">Member since</span></div>
+        </div>
+        <p class="progress-intro">Research participation is controlled separately under Privacy &amp; research.</p>
+        <div class="progress-actions">
+          <button class="btn-progress close" onclick="Auth.closeProfile()">Close</button>
+        </div>
+      </div>`;
+    modal.classList.remove('hidden');
+    setTimeout(() => modal.querySelector('button')?.focus(), 0);
   }
 
-  return { open, close, submit, googleSignIn, logout, isLoggedIn, init, toggleAccountMenu, closeAccountMenu, renderAccountButton };
+  function closeProfile() {
+    const modal = document.getElementById('account-profile-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    if (profileReturnFocus && typeof profileReturnFocus.focus === 'function') profileReturnFocus.focus();
+    profileReturnFocus = null;
+  }
+
+  async function init() {
+    renderAccountButton();
+    try {
+      const result = await request('/me');
+      currentUser = result.user || null;
+    } catch {
+      currentUser = null;
+    }
+    authReady = true;
+    renderAccountButton();
+    if (currentUser && ResearchConsent.get() === null) ResearchConsent.open();
+  }
+
+  return {
+    open, close, submit, googleSignIn, logout, isLoggedIn, init,
+    toggleAccountMenu, closeAccountMenu, renderAccountButton,
+    openProfile, closeProfile, account
+  };
 })();
 
 /* =============================================================
