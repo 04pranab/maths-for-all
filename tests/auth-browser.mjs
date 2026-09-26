@@ -134,7 +134,7 @@ try {
   const token = latestVerificationToken();
   await cdp('Page.navigate', { url: 'http://localhost:' + port + '/?verify=' + encodeURIComponent(token) });
   await waitFor(async () => (await evaluate('document.readyState')) === 'complete');
-  await sleep(300);
+  await waitFor(async () => (await evaluate(`document.getElementById('auth-modal')?.textContent.includes('email is verified')`)) === true);
 
   const verified = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
