@@ -57,9 +57,30 @@ Research database infrastructure remains intentionally deferred until after that
 ```text
 maths-for-all/
 ├── index.html
+├── assets/svg/
+│   ├── math-sprout.svg
+│   ├── number-cloud.svg
+│   ├── geometry-garden.svg
+│   ├── fraction-sun.svg
+│   ├── graph-vine.svg
+│   ├── compass-star.svg
+│   ├── abacus-bloom.svg
+│   ├── pi-orbit.svg
+│   ├── dot-matrix.svg
+│   ├── learning-ribbon.svg
+│   ├── ruler-sun.svg
+│   ├── equation-bubble.svg
+│   ├── angle-fan.svg
+│   ├── coordinate-stars.svg
+│   ├── calculator-flower.svg
+│   ├── number-path.svg
+│   ├── triangle-kite.svg
+│   ├── fraction-pie.svg
+│   └── README.md
 ├── css/
 │   ├── style.css
-│   └── slabmath.css
+│   ├── slabmath.css
+│   └── visuals.css
 ├── js/
 │   ├── consent.js
 │   ├── questions.js
@@ -72,12 +93,39 @@ maths-for-all/
 │   └── smoke.mjs
 ├── .github/workflows/
 │   └── tests.yml
+├── .env.example
+├── .env.local.example
+├── .env.test.example
+├── .env.production.example
+├── .gitignore
+├── .gitattributes
+├── .editorconfig
+├── .nvmrc
 ├── LICENSE
 ├── VERSION
 ├── CHANGELOG.md
 ├── ONGOING.md
 └── AI_USAGE.md
 ```
+
+## Developer environment
+
+The repository now includes explicit local environment templates, Git hygiene rules, Node version pinning, and editor defaults.
+
+    cp .env.local.example .env.local
+    set -a
+    source .env.local
+    set +a
+
+The real .env.local stays untracked. Runtime SQLite files under data/ are also ignored. The committed example files contain placeholders only.
+
+The repository targets Node.js 22 and serves the application without a frontend build step.
+
+## Visual assets
+
+Friendly mathematical decoration lives in assets/svg/. The visual layer is intentionally separate from game logic and uses local, dependency-free SVGs. Decorative images are hidden from assistive technology, and the CSS honours the existing reduced-motion preference.
+
+See docs/DESIGN_SYSTEM.md and assets/svg/README.md before adding new artwork.
 
 ## Run locally
 
@@ -129,3 +177,17 @@ AI tools have been used as development assistants. See `AI_USAGE.md` for the pro
 ---
 
 Built as an educational mathematics project by **Om Pranab Mohanty**.
+
+## Engineering notes
+
+This PR establishes repository hygiene and the visual asset foundation only. It does not merge the separate authentication-hardening or OAuth branches and does not introduce a new research collection path.
+
+
+
+## Environment and database preparation
+
+The committed environment files are templates only. They do not contain passwords, database URLs, OAuth secrets, or email-delivery credentials.
+
+DATABASE_URL is intentionally reserved for the upcoming Supabase PostgreSQL migration. Until that migration is merged and tested, the current authentication backend remains unchanged.
+
+See docs/DEVELOPMENT.md for the exact environment boundary and database preparation rules.
