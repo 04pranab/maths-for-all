@@ -12,6 +12,7 @@ export const db = new DatabaseSync(config.dbPath, {
 
 db.exec(fs.readFileSync(path.resolve('db/migrations/001_auth.sql'), 'utf8'));
 db.exec(fs.readFileSync(path.resolve('db/migrations/002_verification_recovery.sql'), 'utf8'));
+db.exec(fs.readFileSync(path.resolve('db/migrations/003_google_auth.sql'), 'utf8'));
 
 export function closeExpiredSessions(now = new Date().toISOString()) {
   db.prepare('DELETE FROM sessions WHERE expires_at <= ?').run(now);
