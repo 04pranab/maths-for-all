@@ -157,6 +157,7 @@ const Auth = (function () {
     const url = new URL(window.location.href);
     url.searchParams.delete('verify');
     url.searchParams.delete('reset');
+    url.searchParams.delete('google');
     window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
   }
 
