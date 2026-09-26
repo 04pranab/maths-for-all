@@ -49,3 +49,8 @@ For decorative HTML images, use an empty alt value so assistive technologies do 
 ## Scope discipline
 
 Work one planned PR at a time. Do not fold authentication, research infrastructure, analytics, or unrelated gameplay changes into a visual or environment PR.
+
+
+## Supabase preparation note
+
+The repository uses DATABASE_URL as the single future server-side PostgreSQL connection variable. Keep the real value only in an ignored local environment or deployment secret store. Do not add a Supabase service-role key or database password to frontend JavaScript.

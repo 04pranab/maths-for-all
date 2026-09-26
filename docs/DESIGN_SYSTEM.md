@@ -8,13 +8,13 @@ The visual language uses the existing warm paper, indigo, leaf, marigold, and cl
 
 ## SVG library
 
-Reusable mathematical decoration lives in assets/svg/. Current assets include sprouting mathematics, number clouds, geometry shapes, fractions, graph lines, compass and star motifs, abacus beads, pi orbits, dot patterns, and learning ribbons.
+Reusable mathematical decoration lives in assets/svg/. The current library contains 18 lightweight motifs covering arithmetic, geometry, fractions, graphs, measurement, logic, progress, setup, and completion.
 
 Artwork is local and dependency-free. Do not introduce remote image hosts for ordinary decoration.
 
 ## Placement
 
-Use decoration to support hierarchy. Hero artwork frames the welcome message, card artwork gives each game a visual hint without replacing its title, dot patterns provide quiet texture, and ribbons/orbits can separate sections or finish the page.
+Use decoration to support hierarchy. Hero artwork frames the welcome message, card artwork gives each game a visual hint without replacing its title, subtle corner artwork continues through game screens, and ribbons/orbits can separate sections or finish the page.
 
 Do not place important instructions, scores, consent choices, or error messages inside an SVG.
 
@@ -31,3 +31,8 @@ Prefer small, simple SVG paths and shapes. Avoid embedded raster images, externa
 ## Change rule
 
 A new visual asset should have a descriptive filename, a purpose documented in assets/svg/README.md, a clear place in the interface, and no dependency on game state unless that dependency is part of a planned feature.
+
+
+## Database boundary
+
+Visual assets are never part of the database or research path. They are static presentation resources and must remain independent from authentication, consent, analytics, and research events.

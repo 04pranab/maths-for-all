@@ -113,11 +113,134 @@
   50% { translate: 0 -7px; }
 }
 
+/* Quiet decoration continues through every learner-facing screen. */
+.screen:not(#screen-menu) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-image: url("../assets/svg/dot-matrix.svg");
+  background-size: 150px 150px;
+  background-blend-mode: multiply;
+  background-color: rgba(251, 243, 231, 0.92);
+}
+
+.screen:not(#screen-menu)::before {
+  content: "";
+  position: absolute;
+  top: 72px;
+  right: clamp(-20px, 3vw, 34px);
+  width: clamp(96px, 13vw, 150px);
+  height: 100px;
+  background: url("../assets/svg/angle-fan.svg") center / contain no-repeat;
+  opacity: 0.14;
+  pointer-events: none;
+  transform: rotate(8deg);
+}
+
+.screen:not(#screen-menu)::after {
+  content: "";
+  position: absolute;
+  left: clamp(-20px, 2vw, 28px);
+  bottom: 18px;
+  width: clamp(110px, 15vw, 170px);
+  height: 100px;
+  background: url("../assets/svg/coordinate-stars.svg") center / contain no-repeat;
+  opacity: 0.11;
+  pointer-events: none;
+  transform: rotate(-5deg);
+}
+
+.game-topbar,
+.difficulty-panel,
+.setup-card,
+.leaderboard,
+.play-panel,
+.result-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.game-topbar::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 68px;
+  height: 42px;
+  transform: translateY(-50%);
+  background: url("../assets/svg/number-path.svg") center / contain no-repeat;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.difficulty-panel::after,
+.setup-card::after,
+.leaderboard::after,
+.result-card::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  width: 82px;
+  height: 58px;
+  background: url("../assets/svg/fraction-pie.svg") center / contain no-repeat;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.question-card::before {
+  content: "";
+  display: block;
+  width: min(150px, 36vw);
+  height: 58px;
+  margin: 0 auto 8px;
+  background: url("../assets/svg/equation-bubble.svg") center / contain no-repeat;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.setup-card::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 68px;
+  height: 54px;
+  background: url("../assets/svg/calculator-flower.svg") center / contain no-repeat;
+  opacity: 0.13;
+  pointer-events: none;
+}
+
+.result-card::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 72px;
+  height: 58px;
+  background: url("../assets/svg/triangle-kite.svg") center / contain no-repeat;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.visual-corner {
+  position: absolute;
+  width: 88px;
+  height: 66px;
+  opacity: 0.18;
+  pointer-events: none;
+  background: url("../assets/svg/ruler-sun.svg") center / contain no-repeat;
+}
+
 @media (max-width: 760px) {
   .hero-doodle.left, .hero-doodle.right { width: 78px; opacity: 0.55; }
   .hero-doodle.left { left: 4px; }
   .hero-doodle.right { right: 4px; }
   .menu-card-art { width: 92px; opacity: 0.28; }
+  .screen:not(#screen-menu)::before,
+  .screen:not(#screen-menu)::after { opacity: 0.07; }
+  .game-topbar::after { width: 48px; right: 8px; }
+  .question-card::before { height: 42px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

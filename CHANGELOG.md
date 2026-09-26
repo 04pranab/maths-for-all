@@ -51,7 +51,9 @@ v2.0.0 remains the regression reference for the educational application.
 - Added repository-level environment templates for local, test, and production configuration.
 - Added Git hygiene rules for secrets, runtime databases, logs, and editor files.
 - Added Node 22 pinning and consistent editor/text-file defaults.
-- Added a dependency-free local SVG asset library with ten friendly mathematical decorations.
+- Added a dependency-free local SVG asset library with eighteen friendly mathematical decorations.
+- Extended the presentation layer across learner-facing game screens.
+- Added safe DATABASE_URL and Google OAuth placeholders without committing credentials.
 - Added a dedicated visual CSS layer and integrated the artwork into the main menu.
 - Kept decorative artwork outside game logic and research collection.
 - Preserved reduced-motion behaviour for the new presentation layer.

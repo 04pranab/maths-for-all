@@ -2,11 +2,11 @@
 
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
-**Current stable release:** `v2.0.0`  
-**Current patch:** `v2.0.1` preparation  
+**Current stable release:** `v2.0.1`  
+**Next milestone:** `v2.5.0` authentication  
 **Next major milestone:** `v2.5.0` authenticated milestone  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 25 September 2026
+**Last updated:** 26 September 2026
 
 ---
 
@@ -117,8 +117,15 @@ Planned areas:
 | PR #16 mobile/accessibility polish | MERGED |
 | PR #17 local session hardening | MERGED |
 | PR #18 automated auth/consent + browser stress suite | MERGED |
-| v2.0.1 hardening PR | IN REVIEW |
-| v2.5.0 production authentication | PLANNED |
+| v2.0.1 hardening PR | RELEASED |
+| PR #20 production auth foundation | MERGED |
+| PR #21 browser auth API integration | MERGED |
+| PR #22 email verification and recovery | MERGED |
+| PR #23 auth security hardening | OPEN / REVIEW |
+| PR #24 Google OAuth | OPEN / REVIEW |
+| PR #25 environment + visual foundation | OPEN / REVIEW |
+| PR #26 consent-aware research gateway | OPEN / REVIEW |
+| v2.5.0 production authentication | IN PROGRESS |
 | v3.0.0 research infrastructure | PLANNED |
 
 ---
@@ -185,7 +192,7 @@ PR #18 established the automated browser stress foundation. This patch extends t
 
 ---
 
-## 6. Developer environment and visual foundation
+## 6. Developer environment, database preparation, and visual foundation
 
 ### Status: PREPARED
 
@@ -223,3 +230,8 @@ The sequence remains:
 `v2.0.1 hardening → v2.5.0 production authentication → v3.0.0 research infrastructure`
 
 Each stage should be completed and tested before the next architectural dependency is introduced.
+
+
+## 9. Current preparation boundary
+
+The repository is prepared for the next local database step without committing any secret values. DATABASE_URL is a placeholder until the Supabase project and connection details are configured locally. The browser remains outside the database boundary.

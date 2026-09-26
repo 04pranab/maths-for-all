@@ -197,3 +197,8 @@ The project does not treat AI output as a security guarantee or legal opinion. S
 AI assistance may be used to help sketch or refine small, dependency-free SVG decorations and CSS presentation ideas. Human review remains responsible for visual appropriateness, accessibility, licensing, performance, and final integration.
 
 The repository keeps decorative SVG artwork local under assets/svg/ so the application does not depend on an external image CDN for this presentation layer.
+
+
+## September 26, 2026 · Environment and visual foundation record
+
+AI assistance was used to prepare safe environment templates, review Git ignore coverage, design additional dependency-free mathematical SVG artwork, and extend the presentation layer into game screens. The changes remain presentation-only and do not create a new data-collection path.

@@ -68,6 +68,14 @@ maths-for-all/
 │   ├── pi-orbit.svg
 │   ├── dot-matrix.svg
 │   ├── learning-ribbon.svg
+│   ├── ruler-sun.svg
+│   ├── equation-bubble.svg
+│   ├── angle-fan.svg
+│   ├── coordinate-stars.svg
+│   ├── calculator-flower.svg
+│   ├── number-path.svg
+│   ├── triangle-kite.svg
+│   ├── fraction-pie.svg
 │   └── README.md
 ├── css/
 │   ├── style.css
@@ -174,3 +182,12 @@ Built as an educational mathematics project by **Om Pranab Mohanty**.
 
 This PR establishes repository hygiene and the visual asset foundation only. It does not merge the separate authentication-hardening or OAuth branches and does not introduce a new research collection path.
 
+
+
+## Environment and database preparation
+
+The committed environment files are templates only. They do not contain passwords, database URLs, OAuth secrets, or email-delivery credentials.
+
+DATABASE_URL is intentionally reserved for the upcoming Supabase PostgreSQL migration. Until that migration is merged and tested, the current authentication backend remains unchanged.
+
+See docs/DEVELOPMENT.md for the exact environment boundary and database preparation rules.
