@@ -52,6 +52,9 @@ function tokenFromMail(mail, query) {
 try {
   await waitForHealth();
 
+  const googleStart = await fetch('http://localhost:' + port + '/api/auth/google/start');
+  assert.equal(googleStart.status, 503);
+
   const register = await call('/api/auth/register', {
     method: 'POST',
     body: JSON.stringify({ username: 'stress_user', email: 'stress@example.com', password: 'StressPass123' })
