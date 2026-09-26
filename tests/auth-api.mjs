@@ -147,14 +147,14 @@ try {
   assert.equal(headersCheck.headers.get('cross-origin-resource-policy'), 'same-origin');
 
   for (let i = 0; i < 5; i += 1) {
-    const limitedAttempt = await call('/api/auth/register', {
+    const limitedAttempt = await call('/api/auth/resend-verification', {
       method: 'POST',
       body: JSON.stringify({})
     });
-    assert.equal(limitedAttempt.status, 400);
+    assert.equal(limitedAttempt.status, 202);
   }
 
-  const rateLimited = await call('/api/auth/register', {
+  const rateLimited = await call('/api/auth/resend-verification', {
     method: 'POST',
     body: JSON.stringify({})
   });
