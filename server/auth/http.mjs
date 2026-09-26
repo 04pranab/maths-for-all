@@ -67,7 +67,6 @@ function securityHeaders(res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'same-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'");
 }
 
 export async function handleRequest(req, res) {
@@ -84,7 +83,7 @@ export async function handleRequest(req, res) {
       if (req.method === 'GET' && url.pathname === '/api/auth/me') {
         const user = getUserBySession(cookieToken(req));
         return user ? sendJson(res, 200, { authenticated: true, user })
-          : sendJson(res, 401, { authenticated: false });
+          : sendJson(res, 200, { authenticated: false });
       }
       if (req.method === 'POST' && url.pathname === '/api/auth/register') {
         const user = await register(await readBody(req));
