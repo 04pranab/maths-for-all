@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { db, closeExpiredSessions } from './db.mjs';
 import { config } from './config.mjs';
+import { verifyCallback } from './google.mjs';
 import { sendPasswordResetEmail, sendVerificationEmail } from './email.mjs';
 import {
   hashPassword, verifyPassword, randomToken, hashToken,
@@ -87,6 +88,55 @@ export function verifyEmail(rawToken) {
   db.prepare('UPDATE users SET email_verified_at = ? WHERE id = ?').run(now, row.user_id);
   db.prepare('DELETE FROM email_verification_tokens WHERE token_hash = ?').run(row.token_hash);
   return { ok: true };
+}
+
+
+function googleUsername(email) {
+  const local = email.split('@')[0].replace(/[^a-z0-9_]/g, '_').replace(/^_+|_+$/g, '').slice(0, 20);
+  const base = local.length >= 3 ? local : 'learner';
+  let username = base;
+  let suffix = 0;
+  while (db.prepare('SELECT id FROM users WHERE username = ?').get(username)) {
+    suffix += 1;
+    username = base.slice(0, Math.max(3, 24 - String(suffix).length - 1)) + '_' + suffix;
+  }
+  return username;
+}
+
+export async function loginWithGoogle(code) {
+  const identity = await verifyCallback(code);
+  let user = db.prepare('SELECT * FROM users WHERE google_subject = ?').get(identity.subject);
+
+  if (!user) {
+    user = db.prepare('SELECT * FROM users WHERE email = ?').get(identity.email);
+
+    if (user) {
+      if (!user.email_verified_at) {
+        throw new Error('Verify the account email before connecting Google sign-in.');
+      }
+      db.prepare('UPDATE users SET google_subject = ? WHERE id = ?').run(identity.subject, user.id);
+      user = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
+    } else {
+      const createdAt = new Date().toISOString();
+      const id = randomUUID();
+      const username = googleUsername(identity.email);
+      const passwordHash = await hashPassword(randomToken(48));
+      db.prepare(
+        'INSERT INTO users (id, username, email, password_hash, email_verified_at, google_subject, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+      ).run(id, username, identity.email, passwordHash, createdAt, createdAt, identity.subject);
+      user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+    }
+  }
+
+  closeExpiredSessions();
+  const rawToken = randomToken(32);
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + config.sessionTtlSeconds * 1000).toISOString();
+  db.prepare(
+    'INSERT INTO sessions (token_hash, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)'
+  ).run(hashToken(rawToken), user.id, expiresAt, now.toISOString());
+
+  return { token: rawToken, user: publicUser(user), expiresAt };
 }
 
 export async function login({ identifier, password }) {

@@ -10,7 +10,10 @@ export const config = {
   origin: process.env.AUTH_ORIGIN || '',
   emailDeliveryUrl: process.env.AUTH_EMAIL_DELIVERY_URL || '',
   emailDeliveryToken: process.env.AUTH_EMAIL_DELIVERY_TOKEN || '',
-  emailFrom: process.env.AUTH_EMAIL_FROM || ''
+  emailFrom: process.env.AUTH_EMAIL_FROM || '',
+  googleClientId: process.env.AUTH_GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.AUTH_GOOGLE_CLIENT_SECRET || '',
+  googleRedirectUri: process.env.AUTH_GOOGLE_REDIRECT_URI || ''
 };
 
 if (config.sessionTtlSeconds < 900 || config.sessionTtlSeconds > 30 * 24 * 60 * 60) {
@@ -27,5 +30,8 @@ if (process.env.NODE_ENV === 'production') {
   }
   if (!config.emailDeliveryUrl || !config.emailDeliveryToken) {
     throw new Error('AUTH_EMAIL_DELIVERY_URL and AUTH_EMAIL_DELIVERY_TOKEN must be configured in production.');
+  }
+  if (!config.googleClientId || !config.googleClientSecret || !config.googleRedirectUri) {
+    throw new Error('AUTH_GOOGLE_CLIENT_ID, AUTH_GOOGLE_CLIENT_SECRET, and AUTH_GOOGLE_REDIRECT_URI must be configured in production.');
   }
 }

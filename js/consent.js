@@ -157,6 +157,7 @@ const Auth = (function () {
     const url = new URL(window.location.href);
     url.searchParams.delete('verify');
     url.searchParams.delete('reset');
+    url.searchParams.delete('google');
     window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
   }
 
@@ -358,6 +359,20 @@ const Auth = (function () {
 
   async function handleAuthLink() {
     const url = new URL(window.location.href);
+    const googleResult = url.searchParams.get('google');
+    if (googleResult === 'success') {
+      clearAuthQuery();
+      pendingMessage = 'Google sign-in completed. Your account is ready.';
+      open('login');
+      return;
+    }
+    if (googleResult === 'error') {
+      clearAuthQuery();
+      pendingMessage = 'Google sign-in could not be completed. Please try again.';
+      open('login');
+      return;
+    }
+
     const verifyToken = url.searchParams.get('verify');
     const resetToken = url.searchParams.get('reset');
 
@@ -380,8 +395,7 @@ const Auth = (function () {
   }
 
   function googleSignIn() {
-    const error = document.getElementById('auth-error');
-    if (error) error.textContent = 'Google sign-in is reserved for the production identity-provider integration.';
+    window.location.assign('/api/auth/google/start');
   }
 
   function renderAccountButton() {
@@ -484,6 +498,15 @@ const Auth = (function () {
       currentUser = null;
     }
     renderAccountButton();
+
+    const googleResult = new URL(window.location.href).searchParams.get('google');
+    if (googleResult) {
+      clearAuthQuery();
+      if (!currentUser && googleResult === 'error') {
+        pendingMessage = 'Google sign-in could not be completed. Please try again.';
+      }
+    }
+
     if (currentUser && ResearchConsent.get() === null) ResearchConsent.open();
     if (!currentUser) {
       if (pendingMessage) {
