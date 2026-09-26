@@ -2,8 +2,15 @@ import { randomUUID } from 'node:crypto';
 import { db, closeExpiredSessions } from './db.mjs';
 import { config } from './config.mjs';
 import {
-  hashPassword, verifyPassword, randomToken, hashToken,
-  normalizeUsername, normalizeEmail, validUsername, validEmail, validPassword
+  hashPassword,
+  verifyPassword,
+  randomToken,
+  hashToken,
+  normalizeUsername,
+  normalizeEmail,
+  validUsername,
+  validEmail,
+  validPassword
 } from './crypto.mjs';
 
 function publicUser(row) {
@@ -16,6 +23,13 @@ function publicUser(row) {
   };
 }
 
+function duplicateError(error) {
+  if (error?.code === '23505') {
+    throw new Error('An account with that username or email already exists.');
+  }
+  throw error;
+}
+
 export async function register({ username, email, password }) {
   username = normalizeUsername(username);
   email = normalizeEmail(email);
@@ -24,58 +38,105 @@ export async function register({ username, email, password }) {
   if (!validEmail(email)) throw new Error('Enter a valid email address.');
   if (!validPassword(password)) throw new Error('Password must be 8–128 characters.');
 
-  const existing = db.prepare(
-    'SELECT id FROM users WHERE username = ? OR email = ?'
-  ).get(username, email);
-  if (existing) throw new Error('An account with that username or email already exists.');
+  const existing = await db.query(
+    'SELECT id FROM users WHERE username = $1 OR email = $2 LIMIT 1',
+    [username, email]
+  );
 
-  const createdAt = new Date().toISOString();
+  if (existing.rows.length) {
+    throw new Error('An account with that username or email already exists.');
+  }
+
   const id = randomUUID();
+  const createdAt = new Date().toISOString();
   const passwordHash = await hashPassword(password);
 
-  db.prepare(
-    'INSERT INTO users (id, username, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)'
-  ).run(id, username, email, passwordHash, createdAt);
+  try {
+    const result = await db.query(
+      `INSERT INTO users
+        (id, username, email, password_hash, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $5)
+       RETURNING id, username, email, email_verified_at, created_at`,
+      [id, username, email, passwordHash, createdAt]
+    );
 
-  return publicUser({ id, username, email, email_verified_at: null, created_at: createdAt });
+    return publicUser(result.rows[0]);
+  } catch (error) {
+    return duplicateError(error);
+  }
 }
 
 export async function login({ identifier, password }) {
   const value = String(identifier || '').trim().toLowerCase();
+
   if (!value || typeof password !== 'string' || !password.length) {
     throw new Error('Enter your username or email and password.');
   }
 
-  const user = db.prepare(
-    'SELECT * FROM users WHERE username = ? OR email = ?'
-  ).get(value, value);
+  const result = await db.query(
+    'SELECT * FROM users WHERE username = $1 OR email = $1 LIMIT 1',
+    [value]
+  );
+
+  const user = result.rows[0];
 
   if (!user || !(await verifyPassword(password, user.password_hash))) {
     throw new Error('The username or password is incorrect.');
   }
 
-  closeExpiredSessions();
+  await closeExpiredSessions();
 
   const rawToken = randomToken(32);
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + config.sessionTtlSeconds * 1000).toISOString();
+  const expiresAt = new Date(
+    now.getTime() + config.sessionTtlSeconds * 1000
+  ).toISOString();
 
-  db.prepare(
-    'INSERT INTO sessions (token_hash, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)'
-  ).run(hashToken(rawToken), user.id, expiresAt, now.toISOString());
+  await db.query(
+    `INSERT INTO sessions
+      (token_hash, user_id, expires_at, created_at, last_used_at)
+     VALUES ($1, $2, $3, $4, $4)`,
+    [hashToken(rawToken), user.id, expiresAt, now.toISOString()]
+  );
 
-  return { token: rawToken, user: publicUser(user), expiresAt };
+  return {
+    token: rawToken,
+    user: publicUser(user),
+    expiresAt
+  };
 }
 
-export function getUserBySession(rawToken) {
+export async function getUserBySession(rawToken) {
   if (!rawToken) return null;
-  closeExpiredSessions();
-  const row = db.prepare(
-    'SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires_at > ?'
-  ).get(hashToken(rawToken), new Date().toISOString());
-  return row ? publicUser(row) : null;
+
+  await closeExpiredSessions();
+
+  const result = await db.query(
+    `SELECT u.*
+       FROM sessions s
+       JOIN users u ON u.id = s.user_id
+      WHERE s.token_hash = $1
+        AND s.expires_at > $2
+      LIMIT 1`,
+    [hashToken(rawToken), new Date().toISOString()]
+  );
+
+  const row = result.rows[0];
+
+  if (!row) return null;
+
+  await db.query(
+    'UPDATE sessions SET last_used_at = $1 WHERE token_hash = $2',
+    [new Date().toISOString(), hashToken(rawToken)]
+  );
+
+  return publicUser(row);
 }
 
-export function logout(rawToken) {
-  if (rawToken) db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(hashToken(rawToken));
+export async function logout(rawToken) {
+  if (!rawToken) return;
+  await db.query(
+    'DELETE FROM sessions WHERE token_hash = $1',
+    [hashToken(rawToken)]
+  );
 }
