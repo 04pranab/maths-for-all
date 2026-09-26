@@ -137,7 +137,28 @@ try {
   });
   assert.equal(badOrigin.status, 403);
 
-  console.log(JSON.stringify({ status: 'PASS', checks: 13 }));
+  const headersCheck = await fetch('http://localhost:' + port + '/api/health');
+  assert.equal(headersCheck.headers.get('x-content-type-options'), 'nosniff');
+  assert.equal(headersCheck.headers.get('x-frame-options'), 'DENY');
+  assert.equal(headersCheck.headers.get('cross-origin-opener-policy'), 'same-origin');
+  assert.equal(headersCheck.headers.get('cross-origin-resource-policy'), 'same-origin');
+
+  for (let i = 0; i < 5; i += 1) {
+    const limitedAttempt = await call('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+    assert.equal(limitedAttempt.status, 400);
+  }
+
+  const rateLimited = await call('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify({})
+  });
+  assert.equal(rateLimited.status, 429);
+  assert.ok(Number(rateLimited.headers.get('retry-after')) >= 1);
+
+  console.log(JSON.stringify({ status: 'PASS', checks: 20 }));
 } finally {
   server.kill('SIGTERM');
   fs.rmSync(tempDir, { recursive: true, force: true });
