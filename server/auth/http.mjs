@@ -118,7 +118,7 @@ export async function handleRequest(req, res) {
       return sendJson(res, 404, { error: 'Not found.' });
     } catch (error) {
       const message = error?.message || 'Request failed.';
-      const status = message.includes('incorrect') ? 401 : 400;
+      const status = message.includes('incorrect') || message.includes('Verify your email') ? 401 : 400;
       return sendJson(res, status, { error: message });
     }
   }
