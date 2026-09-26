@@ -358,6 +358,20 @@ const Auth = (function () {
 
   async function handleAuthLink() {
     const url = new URL(window.location.href);
+    const googleResult = url.searchParams.get('google');
+    if (googleResult === 'success') {
+      clearAuthQuery();
+      pendingMessage = 'Google sign-in completed. Your account is ready.';
+      open('login');
+      return;
+    }
+    if (googleResult === 'error') {
+      clearAuthQuery();
+      pendingMessage = 'Google sign-in could not be completed. Please try again.';
+      open('login');
+      return;
+    }
+
     const verifyToken = url.searchParams.get('verify');
     const resetToken = url.searchParams.get('reset');
 
@@ -380,8 +394,7 @@ const Auth = (function () {
   }
 
   function googleSignIn() {
-    const error = document.getElementById('auth-error');
-    if (error) error.textContent = 'Google sign-in is reserved for the production identity-provider integration.';
+    window.location.assign('/api/auth/google/start');
   }
 
   function renderAccountButton() {
