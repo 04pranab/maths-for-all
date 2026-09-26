@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { db, closeExpiredSessions } from './db.mjs';
+import { query, closeExpiredSessions } from './db.mjs';
 import { config } from './config.mjs';
 import {
   hashPassword,
@@ -38,7 +38,7 @@ export async function register({ username, email, password }) {
   if (!validEmail(email)) throw new Error('Enter a valid email address.');
   if (!validPassword(password)) throw new Error('Password must be 8–128 characters.');
 
-  const existing = await db.query(
+  const existing = await query(
     'SELECT id FROM users WHERE username = $1 OR email = $2 LIMIT 1',
     [username, email]
   );
@@ -52,7 +52,7 @@ export async function register({ username, email, password }) {
   const passwordHash = await hashPassword(password);
 
   try {
-    const result = await db.query(
+    const result = await query(
       `INSERT INTO users
         (id, username, email, password_hash, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $5)
@@ -73,7 +73,7 @@ export async function login({ identifier, password }) {
     throw new Error('Enter your username or email and password.');
   }
 
-  const result = await db.query(
+  const result = await query(
     'SELECT * FROM users WHERE username = $1 OR email = $1 LIMIT 1',
     [value]
   );
@@ -92,7 +92,7 @@ export async function login({ identifier, password }) {
     now.getTime() + config.sessionTtlSeconds * 1000
   ).toISOString();
 
-  await db.query(
+  await query(
     `INSERT INTO sessions
       (token_hash, user_id, expires_at, created_at, last_used_at)
      VALUES ($1, $2, $3, $4, $4)`,
@@ -111,23 +111,24 @@ export async function getUserBySession(rawToken) {
 
   await closeExpiredSessions();
 
-  const result = await db.query(
+  const tokenHash = hashToken(rawToken);
+  const result = await query(
     `SELECT u.*
        FROM sessions s
        JOIN users u ON u.id = s.user_id
       WHERE s.token_hash = $1
         AND s.expires_at > $2
       LIMIT 1`,
-    [hashToken(rawToken), new Date().toISOString()]
+    [tokenHash, new Date().toISOString()]
   );
 
   const row = result.rows[0];
 
   if (!row) return null;
 
-  await db.query(
+  await query(
     'UPDATE sessions SET last_used_at = $1 WHERE token_hash = $2',
-    [new Date().toISOString(), hashToken(rawToken)]
+    [new Date().toISOString(), tokenHash]
   );
 
   return publicUser(row);
@@ -135,7 +136,8 @@ export async function getUserBySession(rawToken) {
 
 export async function logout(rawToken) {
   if (!rawToken) return;
-  await db.query(
+
+  await query(
     'DELETE FROM sessions WHERE token_hash = $1',
     [hashToken(rawToken)]
   );
