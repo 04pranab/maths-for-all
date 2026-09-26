@@ -12,6 +12,26 @@ on:
 jobs:
   browser-smoke:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mathforall_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d mathforall_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/mathforall_test
+      DATABASE_POOL_MAX: 5
+      AUTH_COOKIE_SECURE: false
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,16 +41,26 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Install Chromium
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium
+
+      - name: Prepare PostgreSQL schema
+        run: node tests/setup-postgres.mjs
 
       - name: Syntax check
         run: |
           for file in js/*.js; do
             node --check "$file"
           done
+          find server tests -name '*.mjs' -print0 | xargs -0 -n1 node --check
+
+      - name: PostgreSQL connectivity check
+        run: node tests/postgres-auth.mjs
 
       - name: Browser stress test
         run: node tests/smoke.mjs
