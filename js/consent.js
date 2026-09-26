@@ -24,6 +24,10 @@ const ResearchConsent = (function () {
   }
 
   function purgeResearchData() {
+    if (typeof ResearchEventGateway !== 'undefined') {
+      ResearchEventGateway.clear();
+      return;
+    }
     try { localStorage.removeItem(ANALYTICS_KEY); } catch (e) {}
   }
 

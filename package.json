@@ -3,6 +3,12 @@
   "version": "2.0.1",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.13" },
-  "scripts": { "start": "node server/index.mjs", "test:auth": "node tests/auth-api.mjs" }
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node server/index.mjs",
+    "test:auth": "node tests/auth-api.mjs",
+    "test:research-gateway": "node tests/research-gateway.mjs"
+  }
 }

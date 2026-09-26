@@ -25,11 +25,11 @@ Data: account data, optional research events, research exports/database.
 
 ## Research event gateway
 
-All future research events must pass through one consent-aware gateway. Game code must not write research data directly.
+All research-style events pass through `ResearchEventGateway`. Game code and presentation code must not write research events directly to `localStorage`, a database, or a telemetry endpoint.
 
-Game event -> ResearchEventGateway -> consent NO: discard; consent YES: record.
+Game event -> `ResearchEventGateway` -> consent NO: discard; consent YES: record.
 
-This prevents a new game feature from accidentally bypassing the consent policy.
+The gateway owns the research-event storage boundary and rejects malformed category/action values. Withdrawal clears both persisted events and the gateway's in-memory cache. This prevents a new game feature from accidentally bypassing the consent policy or resurrecting events after withdrawal.
 
 ## v3 data principles
 

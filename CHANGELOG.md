@@ -45,7 +45,15 @@
 
 v2.0.0 remains the regression reference for the educational application.
 
-## Unreleased / future milestones
+## Unreleased
+
+### Research event boundary
+- Added `ResearchEventGateway` as the single consent-aware research-event write boundary.
+- Routed local research analytics through the gateway instead of direct storage access.
+- Withdrawal now clears persisted and in-memory research events.
+- Added gateway validation tests and a dedicated test command.
+
+## Future milestones
 
 ### v2.5.0
 Production authentication, server-side sessions, email verification, Google OAuth, protected resources, and authentication regression tests.
