@@ -86,8 +86,7 @@ export async function handleRequest(req, res) {
           : sendJson(res, 200, { authenticated: false });
       }
       if (req.method === 'POST' && url.pathname === '/api/auth/register') {
-        const user = await register(await readBody(req));
-        return sendJson(res, 201, { user });
+        return sendJson(res, 201, await register(await readBody(req)));
       }
       if (req.method === 'POST' && url.pathname === '/api/auth/login') {
         const result = await login(await readBody(req));
