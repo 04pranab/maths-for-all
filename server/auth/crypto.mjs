@@ -26,7 +26,7 @@ export async function hashPassword(password) {
 }
 
 export async function verifyPassword(password, encoded) {
-  const match = /^scrypt-N(\\d+)-r(\\d+)-p(\\d+)\\$([^$]+)\\$([^$]+)$/.exec(encoded || '');
+  const match = /^scrypt-N([0-9]+)-r([0-9]+)-p([0-9]+)[$]([^$]+)[$]([^$]+)$/.exec(encoded || '');
   if (!match) return false;
   const [, nText, rText, pText, saltText, digestText] = match;
   const n = Number(nText);
@@ -54,7 +54,7 @@ export function validUsername(value) {
 }
 
 export function validEmail(value) {
-  return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value);
+  return /^[^ @]+@[^ @]+[.][^ @]+$/.test(value);
 }
 
 export function validPassword(value) {
