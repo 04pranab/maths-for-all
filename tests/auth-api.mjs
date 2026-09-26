@@ -109,7 +109,8 @@ try {
   assert.equal(reset.status, 200);
 
   const oldSession = await call('/api/auth/me', { headers: { cookie } });
-  assert.equal(oldSession.status, 401);
+  assert.equal(oldSession.status, 200);
+  assert.equal((await oldSession.json()).authenticated, false);
 
   const oldPassword = await call('/api/auth/login', {
     method: 'POST',
