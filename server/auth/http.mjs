@@ -57,29 +57,37 @@ function sameOrigin(req) {
   return !origin || origin === config.origin;
 }
 
+function appendCookie(res, value) {
+  const existing = res.getHeader('Set-Cookie');
+  const cookies = existing
+    ? Array.isArray(existing) ? existing : [existing]
+    : [];
+  res.setHeader('Set-Cookie', [...cookies, value]);
+}
+
 function setSessionCookie(res, token, maxAge) {
-  res.setHeader(
-    'Set-Cookie',
+  appendCookie(
+    res,
     '__Host-mfa_session=' + encodeURIComponent(token) +
     '; Max-Age=' + maxAge + '; Path=/; HttpOnly; Secure; SameSite=Lax'
   );
 }
 
 function clearSessionCookie(res) {
-  res.setHeader('Set-Cookie', '__Host-mfa_session=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax');
+  appendCookie(res, '__Host-mfa_session=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax');
 }
 
 function setOAuthStateCookie(res, state) {
-  res.setHeader(
-    'Set-Cookie',
+  appendCookie(
+    res,
     '__Host-mfa_google_state=' + encodeURIComponent(state) +
     '; Max-Age=600; Path=/; HttpOnly; Secure; SameSite=Lax'
   );
 }
 
 function clearOAuthStateCookie(res) {
-  res.setHeader(
-    'Set-Cookie',
+  appendCookie(
+    res,
     '__Host-mfa_google_state=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax'
   );
 }
