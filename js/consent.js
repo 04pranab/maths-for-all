@@ -497,6 +497,15 @@ const Auth = (function () {
       currentUser = null;
     }
     renderAccountButton();
+
+    const googleResult = new URL(window.location.href).searchParams.get('google');
+    if (googleResult) {
+      clearAuthQuery();
+      if (!currentUser && googleResult === 'error') {
+        pendingMessage = 'Google sign-in could not be completed. Please try again.';
+      }
+    }
+
     if (currentUser && ResearchConsent.get() === null) ResearchConsent.open();
     if (!currentUser) {
       if (pendingMessage) {
