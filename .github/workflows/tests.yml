@@ -31,6 +31,7 @@ jobs:
           for file in js/*.js; do
             node --check "$file"
           done
+          find server tests -name '*.mjs' -print0 | xargs -0 -n1 node --check
 
       - name: Browser stress test
         run: node tests/smoke.mjs
