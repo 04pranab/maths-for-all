@@ -117,10 +117,12 @@ export async function handleRequest(req, res) {
       }
 
       if (req.method === 'POST' && url.pathname === '/api/auth/resend-verification') {
+        if (!rateLimit(req, res, 'resendVerification')) return;
         return sendJson(res, 202, await resendVerification((await readBody(req)).identifier));
       }
 
       if (req.method === 'POST' && url.pathname === '/api/auth/password-reset/request') {
+        if (!rateLimit(req, res, 'passwordResetRequest')) return;
         return sendJson(res, 202, await requestPasswordReset((await readBody(req)).email));
       }
 
