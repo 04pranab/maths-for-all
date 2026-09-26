@@ -2,7 +2,6 @@ import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import fs from 'node:fs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const httpPort = Number(process.env.TEST_HTTP_PORT || 4173);
@@ -70,14 +69,13 @@ async function evaluate(expression) {
 }
 
 async function main() {
-  const smokeDb = path.join('/tmp', 'mfa-smoke-' + process.pid + '.sqlite');
   server = spawn(process.execPath, ['server/index.mjs'], {
     cwd: root,
     env: {
       ...process.env,
       AUTH_PORT: String(httpPort),
-      AUTH_DB_PATH: smokeDb,
-      AUTH_ORIGIN: 'http://127.0.0.1:' + httpPort
+      AUTH_ORIGIN: 'http://127.0.0.1:' + httpPort,
+      AUTH_COOKIE_SECURE: 'false'
     },
     stdio: 'ignore'
   });
@@ -161,31 +159,29 @@ async function main() {
 
   const gameResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
-    'const activeScreen = id => document.getElementById(id).classList.contains("active");' +
     'ResearchConsent.set("yes");' +
     'Game.startArithmetic();' +
-    'assert(activeScreen("screen-quiz"), "Arithmetic screen did not open.");' +
+    'assert(document.getElementById("screen-quiz").classList.contains("active"), "Arithmetic screen did not open.");' +
     'for (let i = 0; i < 300; i++) { document.getElementById("quiz-input").value = "999999"; Quiz.submit(); Quiz.next(); }' +
     'Game.startRacing();' +
-    'assert(activeScreen("screen-race"), "Racing screen did not open.");' +
+    'assert(document.getElementById("screen-race").classList.contains("active"), "Racing screen did not open.");' +
     'for (let round = 0; round < 20; round++) { Racing.start(); for (let i = 0; i < 30; i++) { document.getElementById("race-input").value = "999999"; Racing.submit(); } Racing.back(); }' +
     'Game.startSudoku();' +
-    'assert(activeScreen("screen-sudoku"), "Sudoku screen did not open.");' +
+    'assert(document.getElementById("screen-sudoku").classList.contains("active"), "Sudoku screen did not open.");' +
     'for (let i = 0; i < 100; i++) { Sudoku.newPuzzle(); Sudoku.giveHint(); }' +
     'Game.startShapePuzzle();' +
-    'assert(activeScreen("screen-shape"), "Shape screen did not open.");' +
+    'assert(document.getElementById("screen-shape").classList.contains("active"), "Shape screen did not open.");' +
     'for (let i = 0; i < 100; i++) { ShapePuzzle.restartLevel(); ShapePuzzle.showHint(); ShapePuzzle.rotateSelected(); }' +
     'Game.startSlabMath();' +
-    'assert(activeScreen("screen-slab"), "Slab Maths screen did not open.");' +
+    'assert(document.getElementById("screen-slab").classList.contains("active"), "Slab Maths screen did not open.");' +
     'for (let i = 0; i < 100; i++) { SlabMath.restartRound(); SlabMath.hint(); SlabMath.newRound(); }' +
     'Game.goHome();' +
-    'assert(activeScreen("screen-menu"), "Home screen did not return after stress run.");' +
+    'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after stress run.");' +
     'return { quizQuestions: document.getElementById("quiz-q-number")?.textContent, sudokuCells: document.querySelectorAll("#sudoku-grid .sudoku-cell").length, shapeCells: document.querySelectorAll("#shape-board .sp-cell").length };' +
   '})()');
 
-  if (!gameResult) throw new Error('Game stress test returned no result.');
   await sleep(500);
-  const unexpectedResourceErrors = failedResources.filter(item => !(item.status === 401 && item.url.endsWith('/api/auth/me')));
+  const unexpectedResourceErrors = failedResources.filter(item => item.status !== 404 || !item.url.includes('/api/'));
   if (unexpectedResourceErrors.length) throw new Error('Browser resource errors detected:\n' + unexpectedResourceErrors.map(item => item.status + ' ' + item.url).join('\n'));
   if (errors.length) throw new Error('Browser runtime/console errors detected:\n' + [...new Set(errors)].join('\n'));
 

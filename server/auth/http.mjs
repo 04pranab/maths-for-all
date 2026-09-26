@@ -24,43 +24,70 @@ function sendJson(res, status, body, headers = {}) {
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let raw = '';
+
     req.on('data', chunk => {
       raw += chunk;
+
       if (raw.length > 64 * 1024) {
         reject(new Error('Request body is too large.'));
         req.destroy();
       }
     });
+
     req.on('end', () => {
-      try { resolve(JSON.parse(raw || '{}')); }
-      catch { reject(new Error('Invalid JSON request.')); }
+      try {
+        resolve(JSON.parse(raw || '{}'));
+      } catch {
+        reject(new Error('Invalid JSON request.'));
+      }
     });
+
     req.on('error', reject);
   });
 }
 
 function cookieToken(req) {
   const cookies = String(req.headers.cookie || '').split(';');
-  const item = cookies.map(x => x.trim()).find(x => x.startsWith('__Host-mfa_session='));
-  return item ? decodeURIComponent(item.slice('__Host-mfa_session='.length)) : '';
+  const item = cookies
+    .map(value => value.trim())
+    .find(value =>
+      value.startsWith(config.sessionCookieName + '=')
+    );
+
+  return item
+    ? decodeURIComponent(item.slice(config.sessionCookieName.length + 1))
+    : '';
 }
 
 function sameOrigin(req) {
   if (!config.origin) return true;
+
   const origin = req.headers.origin;
   return !origin || origin === config.origin;
 }
 
 function setSessionCookie(res, token, maxAge) {
+  const secure = config.cookieSecure ? '; Secure' : '';
+
   res.setHeader(
     'Set-Cookie',
-    '__Host-mfa_session=' + encodeURIComponent(token) +
-    '; Max-Age=' + maxAge + '; Path=/; HttpOnly; Secure; SameSite=Lax'
+    config.sessionCookieName + '=' + encodeURIComponent(token) +
+    '; Max-Age=' + maxAge +
+    '; Path=/; HttpOnly' +
+    secure +
+    '; SameSite=Lax'
   );
 }
 
 function clearSessionCookie(res) {
-  res.setHeader('Set-Cookie', '__Host-mfa_session=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax');
+  const secure = config.cookieSecure ? '; Secure' : '';
+
+  res.setHeader(
+    'Set-Cookie',
+    config.sessionCookieName + '=; Max-Age=0; Path=/; HttpOnly' +
+    secure +
+    '; SameSite=Lax'
+  );
 }
 
 function securityHeaders(res) {
@@ -71,34 +98,57 @@ function securityHeaders(res) {
 
 export async function handleRequest(req, res) {
   securityHeaders(res);
+
   const url = new URL(req.url, 'http://localhost');
 
   if (url.pathname.startsWith('/api/')) {
-    if (!sameOrigin(req)) return sendJson(res, 403, { error: 'Cross-origin request rejected.' });
+    if (!sameOrigin(req)) {
+      return sendJson(res, 403, { error: 'Cross-origin request rejected.' });
+    }
 
     try {
       if (req.method === 'GET' && url.pathname === '/api/health') {
-        return sendJson(res, 200, { status: 'ok', service: 'maths-for-all-auth' });
+        return sendJson(res, 200, {
+          status: 'ok',
+          service: 'maths-for-all-auth',
+          database: 'postgresql'
+        });
       }
+
       if (req.method === 'GET' && url.pathname === '/api/auth/me') {
-        const user = getUserBySession(cookieToken(req));
-        return user ? sendJson(res, 200, { authenticated: true, user })
+        const user = await getUserBySession(cookieToken(req));
+
+        return user
+          ? sendJson(res, 200, { authenticated: true, user })
           : sendJson(res, 200, { authenticated: false });
       }
+
       if (req.method === 'POST' && url.pathname === '/api/auth/register') {
         const user = await register(await readBody(req));
         return sendJson(res, 201, { user });
       }
+
       if (req.method === 'POST' && url.pathname === '/api/auth/login') {
         const result = await login(await readBody(req));
-        setSessionCookie(res, result.token, config.sessionTtlSeconds);
-        return sendJson(res, 200, { user: result.user, expiresAt: result.expiresAt });
+
+        setSessionCookie(
+          res,
+          result.token,
+          config.sessionTtlSeconds
+        );
+
+        return sendJson(res, 200, {
+          user: result.user,
+          expiresAt: result.expiresAt
+        });
       }
+
       if (req.method === 'POST' && url.pathname === '/api/auth/logout') {
-        logout(cookieToken(req));
+        await logout(cookieToken(req));
         clearSessionCookie(res);
         return sendJson(res, 200, { ok: true });
       }
+
       return sendJson(res, 404, { error: 'Not found.' });
     } catch (error) {
       const message = error?.message || 'Request failed.';
@@ -113,31 +163,48 @@ export async function handleRequest(req, res) {
   }
 
   const root = path.resolve('.');
-  const requested = decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname);
+  const requested = decodeURIComponent(
+    url.pathname === '/' ? '/index.html' : url.pathname
+  );
   const target = path.resolve(root, '.' + requested);
+
   if (target !== root && !target.startsWith(root + path.sep)) {
     res.writeHead(400);
     return res.end('Bad path');
   }
-  if (target.includes(path.sep + '.git' + path.sep) ||
-      target.endsWith('.sqlite') || target.endsWith('.sqlite-shm') ||
-      target.endsWith('.sqlite-wal') || target.endsWith('.env')) {
+
+  if (
+    target.includes(path.sep + '.git' + path.sep) ||
+    target.endsWith('.sqlite') ||
+    target.endsWith('.sqlite-shm') ||
+    target.endsWith('.sqlite-wal') ||
+    target.endsWith('.env')
+  ) {
     res.writeHead(404);
     return res.end('Not found');
   }
 
   try {
     const stat = fs.statSync(target);
+
     if (!stat.isFile()) throw new Error('Not a file');
+
     const type = MIME[path.extname(target)] || 'application/octet-stream';
+
     res.writeHead(200, {
       'Content-Type': type,
-      'Cache-Control': target.endsWith('index.html') ? 'no-cache' : 'public, max-age=3600'
+      'Cache-Control': target.endsWith('index.html')
+        ? 'no-cache'
+        : 'public, max-age=3600'
     });
+
     if (req.method === 'HEAD') return res.end();
+
     res.end(fs.readFileSync(target));
   } catch {
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.writeHead(404, {
+      'Content-Type': 'text/plain; charset=utf-8'
+    });
     res.end('Not found');
   }
 }
