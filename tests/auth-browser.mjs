@@ -87,7 +87,8 @@ async function connect() {
 function latestVerificationToken() {
   const rows = fs.readFileSync(outboxPath, 'utf8').trim().split('\n').filter(Boolean).map(JSON.parse);
   const mail = [...rows].reverse().find(row => row.type === 'email-verification');
-  return new URL(mail.text).searchParams.get('verify');
+  const url = mail.text.slice(mail.text.indexOf('http'));
+  return new URL(url).searchParams.get('verify');
 }
 
 try {
