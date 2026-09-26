@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { config } from './config.mjs';
 import { getUserBySession, login, logout, register, resendVerification, verifyEmail, requestPasswordReset, resetPassword } from './service.mjs';
+import { checkRateLimit } from './rate-limit.mjs';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -67,6 +68,20 @@ function securityHeaders(res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'same-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+  if (/^https:\/\//i.test(config.origin)) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+}
+
+function rateLimit(req, res, action) {
+  const result = checkRateLimit(req, action);
+  if (result.allowed) return true;
+  res.setHeader('Retry-After', String(result.retryAfterSeconds));
+  sendJson(res, 429, { error: 'Too many requests. Please try again later.' });
+  return false;
 }
 
 export async function handleRequest(req, res) {
@@ -86,15 +101,18 @@ export async function handleRequest(req, res) {
           : sendJson(res, 200, { authenticated: false });
       }
       if (req.method === 'POST' && url.pathname === '/api/auth/register') {
+        if (!rateLimit(req, res, 'register')) return;
         return sendJson(res, 201, await register(await readBody(req)));
       }
       if (req.method === 'POST' && url.pathname === '/api/auth/login') {
+        if (!rateLimit(req, res, 'login')) return;
         const result = await login(await readBody(req));
         setSessionCookie(res, result.token, config.sessionTtlSeconds);
         return sendJson(res, 200, { user: result.user, expiresAt: result.expiresAt });
       }
 
       if (req.method === 'POST' && url.pathname === '/api/auth/verify-email') {
+        if (!rateLimit(req, res, 'verifyEmail')) return;
         return sendJson(res, 200, await verifyEmail((await readBody(req)).token));
       }
 
@@ -107,6 +125,7 @@ export async function handleRequest(req, res) {
       }
 
       if (req.method === 'POST' && url.pathname === '/api/auth/password-reset/confirm') {
+        if (!rateLimit(req, res, 'passwordResetConfirm')) return;
         const body = await readBody(req);
         return sendJson(res, 200, await resetPassword(body.token, body.password));
       }
