@@ -274,7 +274,10 @@ const Auth = (function () {
         });
         close();
         pendingMessage = 'Account created. Check your email and verify your address before logging in.';
-        open('login');
+        render('login', pendingMessage);
+        pendingMessage = '';
+        document.getElementById('auth-modal').classList.remove('hidden');
+        setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
         return false;
       }
 
