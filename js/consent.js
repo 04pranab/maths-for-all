@@ -348,8 +348,11 @@ const Auth = (function () {
         body: JSON.stringify({ token, password })
       });
       clearAuthQuery();
-      pendingMessage = 'Your password was changed. You can now log in.';
+      const message = 'Your password was changed. You can now log in.';
       open('login');
+      render('login', message);
+      document.getElementById('auth-modal').classList.remove('hidden');
+      setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
     } catch (e) {
       error.textContent = e.message || 'Unable to reset the password.';
     }
@@ -365,13 +368,21 @@ const Auth = (function () {
       try {
         await request('/verify-email', { method: 'POST', body: JSON.stringify({ token: verifyToken }) });
         clearAuthQuery();
-        pendingMessage = 'Your email is verified. You can now log in.';
+        const message = 'Your email is verified. You can now log in.';
+        open('login');
+        render('login', message);
+        document.getElementById('auth-modal').classList.remove('hidden');
+        setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
+        return;
       } catch (e) {
         clearAuthQuery();
-        pendingMessage = e.message || 'This verification link is invalid or expired.';
+        const message = e.message || 'This verification link is invalid or expired.';
+        open('login');
+        render('login', message);
+        document.getElementById('auth-modal').classList.remove('hidden');
+        setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
+        return;
       }
-      open('login');
-      return;
     }
 
     if (resetToken) {
