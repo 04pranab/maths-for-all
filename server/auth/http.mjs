@@ -1,8 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { config } from './config.mjs';
-import { getUserBySession, login, logout, register, resendVerification, verifyEmail, requestPasswordReset, resetPassword } from './service.mjs';
+import { getUserBySession, login, loginWithGoogle, logout, register, resendVerification, verifyEmail, requestPasswordReset, resetPassword } from './service.mjs';
 import { checkRateLimit } from './rate-limit.mjs';
+import { authorizationUrl, createState, isConfigured } from './google.mjs';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -40,10 +41,14 @@ function readBody(req) {
   });
 }
 
-function cookieToken(req) {
+function cookieValue(req, name) {
   const cookies = String(req.headers.cookie || '').split(';');
-  const item = cookies.map(x => x.trim()).find(x => x.startsWith('__Host-mfa_session='));
-  return item ? decodeURIComponent(item.slice('__Host-mfa_session='.length)) : '';
+  const item = cookies.map(x => x.trim()).find(x => x.startsWith(name + '='));
+  return item ? decodeURIComponent(item.slice(name.length + 1)) : '';
+}
+
+function cookieToken(req) {
+  return cookieValue(req, '__Host-mfa_session');
 }
 
 function sameOrigin(req) {
@@ -62,6 +67,26 @@ function setSessionCookie(res, token, maxAge) {
 
 function clearSessionCookie(res) {
   res.setHeader('Set-Cookie', '__Host-mfa_session=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax');
+}
+
+function setOAuthStateCookie(res, state) {
+  res.setHeader(
+    'Set-Cookie',
+    '__Host-mfa_google_state=' + encodeURIComponent(state) +
+    '; Max-Age=600; Path=/; HttpOnly; Secure; SameSite=Lax'
+  );
+}
+
+function clearOAuthStateCookie(res) {
+  res.setHeader(
+    'Set-Cookie',
+    '__Host-mfa_google_state=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax'
+  );
+}
+
+function redirect(res, location) {
+  res.writeHead(302, { Location: location, 'Cache-Control': 'no-store' });
+  res.end();
 }
 
 function securityHeaders(res) {
@@ -94,6 +119,31 @@ export async function handleRequest(req, res) {
     try {
       if (req.method === 'GET' && url.pathname === '/api/health') {
         return sendJson(res, 200, { status: 'ok', service: 'maths-for-all-auth' });
+      }
+      if (req.method === 'GET' && url.pathname === '/api/auth/google/start') {
+        if (!isConfigured()) return sendJson(res, 503, { error: 'Google sign-in is not configured.' });
+        if (!rateLimit(req, res, 'login')) return;
+        const state = createState();
+        setOAuthStateCookie(res, state);
+        return redirect(res, authorizationUrl(state));
+      }
+      if (req.method === 'GET' && url.pathname === '/api/auth/google/callback') {
+        if (!isConfigured()) return redirect(res, '/?google=error');
+        const expectedState = cookieValue(req, '__Host-mfa_google_state');
+        const receivedState = url.searchParams.get('state') || '';
+        clearOAuthStateCookie(res);
+        if (!expectedState || !receivedState || expectedState !== receivedState) {
+          return redirect(res, '/?google=error');
+        }
+        const code = url.searchParams.get('code') || '';
+        if (!code) return redirect(res, '/?google=error');
+        try {
+          const result = await loginWithGoogle(code);
+          setSessionCookie(res, result.token, config.sessionTtlSeconds);
+          return redirect(res, '/?google=success');
+        } catch {
+          return redirect(res, '/?google=error');
+        }
       }
       if (req.method === 'GET' && url.pathname === '/api/auth/me') {
         const user = getUserBySession(cookieToken(req));
