@@ -18,7 +18,10 @@ export const config = {
   databaseUrl: process.env.DATABASE_URL || '',
   databasePoolMax: number('DATABASE_POOL_MAX', 5),
   cookieSecure,
-  sessionCookieName: cookieSecure ? '__Host-mfa_session' : 'mfa_session'
+  sessionCookieName: cookieSecure ? '__Host-mfa_session' : 'mfa_session',
+  googleClientId: process.env.AUTH_GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.AUTH_GOOGLE_CLIENT_SECRET || '',
+  googleRedirectUri: process.env.AUTH_GOOGLE_REDIRECT_URI || ''
 };
 
 if (!config.databaseUrl) {
@@ -31,4 +34,14 @@ if (config.sessionTtlSeconds < 900 || config.sessionTtlSeconds > 30 * 24 * 60 * 
 
 if (config.cookieSecure && !config.origin.startsWith('https://')) {
   throw new Error('AUTH_COOKIE_SECURE=true requires an HTTPS AUTH_ORIGIN.');
+}
+
+if (process.env.NODE_ENV === 'production') {
+  if (!config.origin.startsWith('https://')) throw new Error('AUTH_ORIGIN must be an HTTPS origin in production.');
+  if (!config.emailFrom || !config.emailDeliveryUrl || !config.emailDeliveryToken) {
+    throw new Error('Production email delivery configuration is incomplete.');
+  }
+  if (!config.googleClientId || !config.googleClientSecret || !config.googleRedirectUri) {
+    throw new Error('Production Google OAuth configuration is incomplete.');
+  }
 }
