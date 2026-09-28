@@ -2,7 +2,7 @@
 
 ## Current boundary
 
-The current main branch does not perform the SQLite-to-PostgreSQL migration.
+The application server uses PostgreSQL for authentication. The browser never connects directly to the database.
 
 The planned architecture is:
 
@@ -34,18 +34,22 @@ For a persistent backend, choose the Supabase direct connection when the deploym
 
 Use SSL for database connections. For stronger certificate and hostname verification, configure the Supabase CA certificate and the PostgreSQL verify-full mode in the server deployment.
 
+## Current authentication schema
+
+The PostgreSQL schema in `db/migrations/001_auth.sql` contains users, sessions, email-verification tokens, and password-reset tokens. The server validates these tables at startup and does not silently create or alter them.
+
+Google identity linkage is represented by `users.google_subject` and its unique partial index.
+
 ## Migration order
 
 1. Create the Supabase project.
 2. Create the local environment file.
 3. Verify the connection from the server only.
-4. Inspect the current SQLite schema and authentication service.
-5. Write a versioned PostgreSQL migration that matches the real application schema.
-6. Migrate authentication data carefully.
-7. Run API and browser regression tests.
-8. Run concurrency and failure-path tests.
-9. Only then switch the production database backend.
-10. Keep research tables and research collection outside this migration until the v3 research milestone.
+4. Apply the versioned PostgreSQL authentication schema.
+5. Configure the application server with DATABASE_URL.
+6. Run API and browser regression tests.
+7. Run concurrency and failure-path tests.
+8. Keep research tables and research collection outside this migration until the v3 research milestone.
 
 ## Security rules
 
