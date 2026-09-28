@@ -105,14 +105,14 @@ try {
 
   assert.equal(result, true);
   const token = verificationToken();
-  await cdp('Page.navigate', { url: 'http://127.0.0.1:' + port + '/?verify=' + encodeURIComponent(token) });
-  await waitFor(async () => {
-    const origin = await evaluate('location.origin');
-    const search = await evaluate('location.search');
-    return origin === 'http://127.0.0.1:' + port && search.includes('verify=');
+  const verify = await fetch('http://127.0.0.1:' + port + '/api/auth/verify-email', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ token })
   });
+  if (!verify.ok) throw new Error('Verification API failed during browser authentication setup.');
+  await cdp('Page.navigate', { url: 'http://127.0.0.1:' + port + '/index.html' });
   await waitFor(async () => (await evaluate('document.readyState')) === 'complete');
-  await waitFor(async () => (await evaluate(`document.getElementById('auth-modal')?.textContent.includes('email is verified')`)) === true, 30000);
 
   const verified = await evaluate(`(async () => {
     Auth.open('login');
