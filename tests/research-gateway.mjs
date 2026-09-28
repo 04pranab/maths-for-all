@@ -27,9 +27,9 @@ const context = {
 };
 
 vm.createContext(context);
-vm.runInContext(source, context);
+vm.runInContext(source + '\nglobalThis.__gateway = ResearchEventGateway;', context);
 
-const gateway = context.ResearchEventGateway;
+const gateway = context.__gateway;
 assert.ok(gateway);
 
 assert.equal(gateway.record('quiz', 'open', {}), false);
