@@ -1,4 +1,4 @@
-# Local environment and secrets
+# Local environment
 .env
 .env.*
 !.env.example
@@ -9,18 +9,27 @@
 # Dependencies
 node_modules/
 
-# Test/browser artifacts
-.test-chrome-profile/
-coverage/
-*.log
-
-# Local database artifacts
+# Runtime data
+data/*
+!data/.gitkeep
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
+
+# Logs and local reports
+*.log
+coverage/
+playwright-report/
+test-results/
 
 # OS/editor files
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
