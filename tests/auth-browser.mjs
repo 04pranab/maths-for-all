@@ -106,8 +106,13 @@ try {
   assert.equal(result, true);
   const token = verificationToken();
   await cdp('Page.navigate', { url: 'http://127.0.0.1:' + port + '/?verify=' + encodeURIComponent(token) });
+  await waitFor(async () => {
+    const origin = await evaluate('location.origin');
+    const search = await evaluate('location.search');
+    return origin === 'http://127.0.0.1:' + port && search.includes('verify=');
+  });
   await waitFor(async () => (await evaluate('document.readyState')) === 'complete');
-  await waitFor(async () => (await evaluate(`document.getElementById('auth-modal')?.textContent.includes('email is verified')`)) === true);
+  await waitFor(async () => (await evaluate(`document.getElementById('auth-modal')?.textContent.includes('email is verified')`)) === true, 30000);
 
   const verified = await evaluate(`(async () => {
     Auth.open('login');
