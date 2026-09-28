@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260924-3" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/slabmath.css" />
+  <link rel="stylesheet" href="css/visuals.css" />
 </head>
 <body>
 
@@ -40,6 +41,9 @@
   <div id="screen-menu" class="screen active">
 
     <div class="arcade-header">
+      <img class="hero-doodle left" src="assets/svg/math-sprout.svg" alt="" role="presentation" />
+      <img class="hero-doodle right" src="assets/svg/fraction-sun.svg" alt="" role="presentation" />
+      <img class="hero-doodle bottom" src="assets/svg/learning-ribbon.svg" alt="" role="presentation" />
       <div class="arcade-badge">🌈 Inclusive learning · aligned with NEP 2020</div>
       <h1 class="arena-title">
         <span class="title-math">Math</span>
@@ -52,6 +56,7 @@
     <div class="menu-grid">
 
       <button class="menu-card card-quiz" onclick="Game.startArithmetic()">
+        <span class="menu-card-art"><img src="assets/svg/number-cloud.svg" alt="" role="presentation" /></span>
         <div class="card-badge-icon">🧮</div>
         <div class="card-title">Arithmetic Quiz</div>
         <div class="card-desc">Fresh questions every time, from counting to Class 4 sums.</div>
@@ -59,6 +64,7 @@
       </button>
 
       <button class="menu-card card-race" onclick="Game.startRacing()">
+        <span class="menu-card-art"><img src="assets/svg/graph-vine.svg" alt="" role="presentation" /></span>
         <div class="card-badge-icon">🏁</div>
         <div class="card-title">Math Racing</div>
         <div class="card-desc">A friendly speed challenge — beat your own best score.</div>
@@ -66,6 +72,7 @@
       </button>
 
       <button class="menu-card card-sudoku" onclick="Game.startSudoku()">
+        <span class="menu-card-art"><img src="assets/svg/abacus-bloom.svg" alt="" role="presentation" /></span>
         <div class="card-badge-icon">🔢</div>
         <div class="card-title">Sudoku Challenge</div>
         <div class="card-desc">Fill the grid using logic — hints are always nearby.</div>
@@ -73,6 +80,7 @@
       </button>
 
       <button class="menu-card card-shape" onclick="Game.startShapePuzzle()">
+        <span class="menu-card-art"><img src="assets/svg/geometry-garden.svg" alt="" role="presentation" /></span>
         <div class="card-badge-icon">🔷</div>
         <div class="card-title">Shape Fitting</div>
         <div class="card-desc">Tap and rotate shapes to fill the board. 100 levels, every one solvable.</div>
@@ -80,6 +88,7 @@
       </button>
 
       <button class="menu-card card-slab" onclick="Game.startSlabMath()">
+        <span class="menu-card-art"><img src="assets/svg/compass-star.svg" alt="" role="presentation" /></span>
         <div class="card-badge-icon">🧺</div>
         <div class="card-title">Slab Maths</div>
         <div class="card-desc">Drag number slabs into the basket until it reaches zero. Plays forever.</div>
@@ -87,6 +96,8 @@
       </button>
 
     </div>
+
+    <img class="visual-divider" src="assets/svg/pi-orbit.svg" alt="" role="presentation" />
 
     <div class="menu-footer">
       Built with care for every learner in the classroom — including the ones who learn a little differently.
