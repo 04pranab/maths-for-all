@@ -52,6 +52,6 @@ allowed = false;
 gateway.clear();
 
 assert.equal(storage.has('mfa_analytics_v1'), false);
-assert.deepEqual(gateway.read(), []);
+assert.equal(gateway.read().length, 0);
 
 console.log(JSON.stringify({ status: 'PASS', checks: 8 }));
