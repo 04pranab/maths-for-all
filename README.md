@@ -40,26 +40,39 @@ The full policy is available at `docs/v3/research-data-policy.html`, including t
 
 ## Authentication status
 
-The current account system is a development/static-app shell. It is not production authentication.
+The v2.5.0 authentication foundation is now server-backed through PostgreSQL, with server-side sessions, email verification, password recovery, and a production-ready Google OAuth boundary. Provider credentials remain server-side and are configured only through deployment secrets.
 
-The planned v2.5.0 authentication milestone will introduce:
-- server-side credential handling;
-- server-side sessions;
-- protected resources;
-- email verification;
-- production Google OAuth;
-- authentication recovery and regression testing.
-
-Research database infrastructure remains intentionally deferred until after that milestone.
+Research collection remains separate from authentication. The browser research gateway enforces explicit consent locally, while server-side research infrastructure remains deferred to v3.0.0.
 
 ## Project structure
 
 ```text
 maths-for-all/
 ├── index.html
+├── assets/svg/
+│   ├── math-sprout.svg
+│   ├── number-cloud.svg
+│   ├── geometry-garden.svg
+│   ├── fraction-sun.svg
+│   ├── graph-vine.svg
+│   ├── compass-star.svg
+│   ├── abacus-bloom.svg
+│   ├── pi-orbit.svg
+│   ├── dot-matrix.svg
+│   ├── learning-ribbon.svg
+│   ├── ruler-sun.svg
+│   ├── equation-bubble.svg
+│   ├── angle-fan.svg
+│   ├── coordinate-stars.svg
+│   ├── calculator-flower.svg
+│   ├── number-path.svg
+│   ├── triangle-kite.svg
+│   ├── fraction-pie.svg
+│   └── README.md
 ├── css/
 │   ├── style.css
-│   └── slabmath.css
+│   ├── slabmath.css
+│   └── visuals.css
 ├── js/
 │   ├── consent.js
 │   ├── questions.js
@@ -72,12 +85,39 @@ maths-for-all/
 │   └── smoke.mjs
 ├── .github/workflows/
 │   └── tests.yml
+├── .env.example
+├── .env.local.example
+├── .env.test.example
+├── .env.production.example
+├── .gitignore
+├── .gitattributes
+├── .editorconfig
+├── .nvmrc
 ├── LICENSE
 ├── VERSION
 ├── CHANGELOG.md
 ├── ONGOING.md
 └── AI_USAGE.md
 ```
+
+## Developer environment
+
+The repository now includes explicit local environment templates, Git hygiene rules, Node version pinning, and editor defaults.
+
+    cp .env.local.example .env.local
+    set -a
+    source .env.local
+    set +a
+
+The real .env.local stays untracked. The committed example files contain placeholders only.
+
+The repository targets Node.js 22. The Node application server serves the frontend and exposes the authentication API.
+
+## Visual assets
+
+Friendly mathematical decoration lives in assets/svg/. The visual layer is intentionally separate from game logic and uses local, dependency-free SVGs. Decorative images are hidden from assistive technology, and the CSS honours the existing reduced-motion preference.
+
+See docs/DESIGN_SYSTEM.md and assets/svg/README.md before adding new artwork.
 
 ## Run locally
 
@@ -129,3 +169,17 @@ AI tools have been used as development assistants. See `AI_USAGE.md` for the pro
 ---
 
 Built as an educational mathematics project by **Om Pranab Mohanty**.
+
+## Engineering notes
+
+The repository combines the authenticated v2.5.0 foundation, consent-aware local research boundary, and learner-facing visual system. Research database infrastructure remains a v3.0.0 boundary.
+
+
+
+## Environment and database preparation
+
+The committed environment files are templates only. They do not contain passwords, database URLs, OAuth secrets, or email-delivery credentials.
+
+DATABASE_URL is the server-only PostgreSQL connection string. The application validates the required authentication schema at startup and never exposes database credentials to the browser.
+
+See docs/DEVELOPMENT.md for the exact environment boundary and database preparation rules.

@@ -1,98 +1,66 @@
-# Maths for All Database
+# Maths for All Database Preparation
 
-## Current architecture
+## Current boundary
 
-The production authentication database is PostgreSQL.
+The application server uses PostgreSQL for authentication. The browser never connects directly to the database.
 
-```
-Browser
-   |
-   v
-Node application server
-   |
-   v
-Supabase PostgreSQL
-```
+The planned architecture is:
 
-The browser never receives the PostgreSQL connection string or database credentials.
+Browser -> Application server -> PostgreSQL
 
-## Supabase configuration
+The browser must never receive the PostgreSQL connection string or server-side database credentials.
 
-The application uses the PostgreSQL connection string:
+## Supabase
 
-```text
-DATABASE_URL=
-```
+The project is prepared to use Supabase PostgreSQL for the managed database layer.
 
-Copy the connection string from the Supabase Dashboard's **Connect** panel.
-
-For a persistent Node backend, use the Supabase **direct connection** when the deployment supports IPv6. If the deployment is IPv4-only, use the **shared session pooler**. Do not use the transaction pooler for this persistent backend.
-
-Keep `sslmode=require` in the copied connection string. For stronger certificate verification in production, configure PostgreSQL `verify-full` with the Supabase CA certificate.
+The free plan is intended for the project's early development stage. Current Supabase documentation lists 500 MB database size per free project, 5 GB egress, and 50,000 monthly active users. Free projects can also be paused after inactivity. Check the provider's current limits before deployment.
 
 ## Local configuration
 
-Create the ignored file:
+Copy the template:
 
-```bash
-cp .env.local.example .env.local
-```
+    cp .env.local.example .env.local
 
-Then set:
+Then put the real database connection string in:
 
-```env
-DATABASE_URL=your_supabase_postgresql_connection_string
-AUTH_ORIGIN=http://127.0.0.1:8080
-AUTH_COOKIE_SECURE=false
-```
+    DATABASE_URL=
 
-The server loads `.env.local` automatically during local development.
+Never commit .env.local.
 
-Never commit `.env.local`.
+## Connection choice
 
-## Credentials and API keys
+For a persistent backend, choose the Supabase direct connection when the deployment supports IPv6. If the backend is IPv4-only, use the shared session pooler. Do not guess the pooler host or construct it manually. Copy the connection string from the Supabase Connect dialog.
 
-This application does **not** need a Supabase API key to perform its server-side PostgreSQL queries. It uses the PostgreSQL connection string from `DATABASE_URL`.
+Use SSL for database connections. For stronger certificate and hostname verification, configure the Supabase CA certificate and the PostgreSQL verify-full mode in the server deployment.
 
-Do not put a Supabase service-role key in browser JavaScript.
+## Current authentication schema
 
-Google OAuth credentials and email-delivery credentials belong in the server environment only. They are separate from `DATABASE_URL`.
+The PostgreSQL schema in `db/migrations/001_auth.sql` contains users, sessions, email-verification tokens, and password-reset tokens. The server validates these tables at startup and does not silently create or alter them.
 
-## Existing schema
+Google identity linkage is represented by `users.google_subject` and its unique partial index.
 
-The repository's PostgreSQL authentication schema is already represented by:
+## Migration order
 
-```
-users
-sessions
-email_verification_tokens
-password_reset_tokens
-```
+1. Create the Supabase project.
+2. Create the local environment file.
+3. Verify the connection from the server only.
+4. Apply the versioned PostgreSQL authentication schema.
+5. Configure the application server with DATABASE_URL.
+6. Run API and browser regression tests.
+7. Run concurrency and failure-path tests.
+8. Keep research tables and research collection outside this migration until the v3 research milestone.
 
-The application validates that these tables exist at startup. It does not silently create or modify them.
+## Security rules
 
-## Testing
+- Never put DATABASE_URL in browser JavaScript.
+- Never commit a database password.
+- Never commit a Supabase service-role credential.
+- Keep database access server-side.
+- Use least-privilege database roles where practical.
+- Keep authentication data and research data logically separated.
+- Research writes remain blocked unless explicit research consent is active.
 
-With `DATABASE_URL` configured:
+## Important
 
-```bash
-npm run test:postgres
-```
-
-The test verifies connectivity, the public schema, and the required authentication tables.
-
-Without `DATABASE_URL`, the PostgreSQL test reports `SKIP` rather than pretending that a database connection was tested.
-
-## Security
-
-- Database credentials stay server-side.
-- Browser code never connects directly to PostgreSQL.
-- Session tokens are stored hashed in the database.
-- Sessions expire server-side.
-- Database queries use PostgreSQL parameters.
-- Passwords are stored as scrypt-derived hashes.
-- Do not paste credentials into GitHub issues, pull requests, logs, screenshots, or chat.
-
-## Research boundary
-
-Research tables are deliberately outside this authentication PR. Research collection must still pass through the explicit consent boundary and will be added in the v3 research milestone.
+Do not paste a real DATABASE_URL into GitHub issues, pull requests, README files, screenshots, browser console logs, or source files.

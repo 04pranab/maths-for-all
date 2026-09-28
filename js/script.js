@@ -204,81 +204,100 @@ const ControlsOverlay = (function () {
    chooses to export it as JSON or CSV.
    ============================================================= */
 const Analytics = (function () {
-  const KEY = 'mfa_analytics_v1';
-  const MAX_EVENTS = 1500;
-  let events = null;
+  const LABELS = {
+    quiz: 'Arithmetic Quiz',
+    race: 'Math Racing',
+    sudoku: 'Sudoku',
+    shape: 'Shape Fitting',
+    slab: 'Slab Maths'
+  };
 
-  function load() {
-    if (events) return events;
-    try { events = JSON.parse(localStorage.getItem(KEY)) || []; }
-    catch (e) { events = []; }
-    return events;
+  function events() {
+    if (typeof ResearchEventGateway === 'undefined') return [];
+    return ResearchEventGateway.read();
   }
-  function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(events)); }
-    catch (e) { /* storage full or unavailable – drop silently */ }
-  }
+
   function log(category, action, detail) {
-    if (typeof ResearchConsent === 'undefined' || !ResearchConsent.isAllowed()) return;
-    load();
-    events.push({ ts: Date.now(), category, action, detail: detail || {} });
-    if (events.length > MAX_EVENTS) events.splice(0, events.length - MAX_EVENTS);
-    save();
+    if (typeof ResearchEventGateway === 'undefined') return false;
+    return ResearchEventGateway.record(category, action, detail || {});
   }
 
   function summary() {
-    if (typeof ResearchConsent === 'undefined' || !ResearchConsent.isAllowed()) {
-      return { totalEvents: 0, byCategory: {} };
-    }
-    load();
+    const list = events();
     const byCategory = {};
-    events.forEach(e => {
-      const c = byCategory[e.category] || (byCategory[e.category] = { attempts: 0, correct: 0, totalMs: 0, timedCount: 0 });
+
+    list.forEach(e => {
+      const c = byCategory[e.category] || (byCategory[e.category] = {
+        attempts: 0,
+        correct: 0,
+        totalMs: 0,
+        timedCount: 0
+      });
+
       if (e.action === 'answer') {
         c.attempts++;
-        if (e.detail.correct) c.correct++;
-        if (typeof e.detail.timeMs === 'number') { c.totalMs += e.detail.timeMs; c.timedCount++; }
+        if (e.detail && e.detail.correct) c.correct++;
+        if (e.detail && typeof e.detail.timeMs === 'number') {
+          c.totalMs += e.detail.timeMs;
+          c.timedCount++;
+        }
       }
-      if (e.action === 'round_complete' || e.action === 'level_complete' || e.action === 'puzzle_solved') {
-        c.attempts++; c.correct++;
+
+      if (e.action === 'round_complete' ||
+          e.action === 'level_complete' ||
+          e.action === 'puzzle_solved') {
+        c.attempts++;
+        c.correct++;
       }
     });
-    return { totalEvents: events.length, byCategory };
+
+    return { totalEvents: list.length, byCategory };
   }
 
   function download(filename, content, mime) {
     const blob = new Blob([content], { type: mime });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = filename;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
+
   function exportJSON() {
-    if (typeof ResearchConsent === 'undefined' || !ResearchConsent.isAllowed()) return;
-    load();
-    download('math-for-all-progress.json', JSON.stringify(events, null, 2), 'application/json');
+    const list = events();
+    if (!list.length) return;
+    download('math-for-all-progress.json', JSON.stringify(list, null, 2), 'application/json');
   }
+
   function exportCSV() {
-    if (typeof ResearchConsent === 'undefined' || !ResearchConsent.isAllowed()) return;
-    load();
-    const rows = [['timestamp_iso','category','action','correct','time_ms','extra']];
-    events.forEach(e => {
+    const list = events();
+    if (!list.length) return;
+
+    const rows = [['timestamp_iso', 'category', 'action', 'correct', 'time_ms', 'extra']];
+    list.forEach(e => {
       rows.push([
         new Date(e.ts).toISOString(),
-        e.category, e.action,
+        e.category,
+        e.action,
         e.detail && ('correct' in e.detail) ? e.detail.correct : '',
         e.detail && ('timeMs' in e.detail) ? e.detail.timeMs : '',
-        JSON.stringify(e.detail || {}).replace(/"/g,'""'),
+        JSON.stringify(e.detail || {})
       ]);
     });
-    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+
+    const csv = rows
+      .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(','))
+      .join('\\n');
+
     download('math-for-all-progress.csv', csv, 'text/csv');
   }
+
   function clearAll() {
     if (!confirm('Clear all progress data stored on this device? This cannot be undone.')) return;
-    events = [];
-    save();
+    if (typeof ResearchEventGateway !== 'undefined') ResearchEventGateway.clear();
     Progress.render();
   }
 
