@@ -1,22 +1,35 @@
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
 import { spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 import { setTimeout as sleep } from 'node:timers/promises';
+import pg from 'pg';
 
-const root = path.resolve(import.meta.dirname, '..');
-const dbPath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'mfa-auth-')), 'test.sqlite');
+const root = new URL('..', import.meta.url);
 const port = 4876;
+
+if (!process.env.DATABASE_URL) {
+  console.log(JSON.stringify({ status: 'SKIP', reason: 'DATABASE_URL is not configured' }));
+  process.exit(0);
+}
+
+const { Pool } = pg;
+const cleanup = new Pool({ connectionString: process.env.DATABASE_URL });
+const suffix = randomUUID().slice(0, 8);
+const username = 'stress_' + suffix;
+const email = username + '@example.com';
+const password = 'StressPass123';
+
 const env = {
   ...process.env,
   AUTH_PORT: String(port),
-  AUTH_DB_PATH: dbPath,
-  AUTH_ORIGIN: 'http://127.0.0.1:' + port
+  AUTH_ORIGIN: 'http://127.0.0.1:' + port,
+  AUTH_COOKIE_SECURE: 'false'
 };
 
 const server = spawn(process.execPath, ['server/index.mjs'], {
-  cwd: root, env, stdio: ['ignore', 'pipe', 'pipe']
+  cwd: root,
+  env,
+  stdio: ['ignore', 'pipe', 'pipe']
 });
 
 async function waitForHealth() {
@@ -25,7 +38,7 @@ async function waitForHealth() {
       const response = await fetch('http://127.0.0.1:' + port + '/api/health');
       if (response.ok) return;
     } catch {}
-    await sleep(50);
+    await sleep(100);
   }
   throw new Error('Auth server did not start.');
 }
@@ -33,7 +46,10 @@ async function waitForHealth() {
 async function call(pathname, options = {}) {
   return fetch('http://127.0.0.1:' + port + pathname, {
     ...options,
-    headers: { 'content-type': 'application/json', ...(options.headers || {}) }
+    headers: {
+      'content-type': 'application/json',
+      ...(options.headers || {})
+    }
   });
 }
 
@@ -42,25 +58,49 @@ try {
 
   const register = await call('/api/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ username: 'stress_user', email: 'stress@example.com', password: 'StressPass123' })
+    body: JSON.stringify({ username, email, password })
   });
   assert.equal(register.status, 201);
 
   const duplicate = await call('/api/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ username: 'stress_user', email: 'other@example.com', password: 'StressPass123' })
+    body: JSON.stringify({ username, email: 'other-' + email, password })
   });
   assert.equal(duplicate.status, 400);
 
   const badOrigin = await call('/api/auth/login', {
     method: 'POST',
     headers: { origin: 'https://evil.example' },
-    body: JSON.stringify({ identifier: 'stress_user', password: 'StressPass123' })
+    body: JSON.stringify({ identifier: username, password })
   });
   assert.equal(badOrigin.status, 403);
 
-  console.log(JSON.stringify({ status: 'PASS', checks: 3 }));
+  const login = await call('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ identifier: username, password })
+  });
+  assert.equal(login.status, 200);
+
+  const cookie = login.headers.get('set-cookie');
+  assert.ok(cookie && cookie.includes('mfa_session='));
+
+  const me = await call('/api/auth/me', {
+    headers: { cookie: cookie.split(';')[0] }
+  });
+  assert.equal(me.status, 200);
+  const meBody = await me.json();
+  assert.equal(meBody.authenticated, true);
+  assert.equal(meBody.user.username, username);
+
+  const logout = await call('/api/auth/logout', {
+    method: 'POST',
+    headers: { cookie: cookie.split(';')[0] }
+  });
+  assert.equal(logout.status, 200);
+
+  console.log(JSON.stringify({ status: 'PASS', checks: 7 }));
 } finally {
   server.kill('SIGTERM');
-  fs.rmSync(path.dirname(dbPath), { recursive: true, force: true });
+  await cleanup.query('DELETE FROM users WHERE username = $1', [username]).catch(() => {});
+  await cleanup.end();
 }

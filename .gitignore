@@ -1,0 +1,26 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.local.example
+!.env.test.example
+!.env.production.example
+
+# Dependencies
+node_modules/
+
+# Test/browser artifacts
+.test-chrome-profile/
+coverage/
+*.log
+
+# Local database artifacts
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
