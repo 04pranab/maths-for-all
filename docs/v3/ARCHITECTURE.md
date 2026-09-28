@@ -72,3 +72,12 @@ The development environment is configured through committed example files and ig
 The presentation layer may use local SVG assets from assets/svg/, but those assets are outside the research-data path. Decorative artwork must not emit analytics, telemetry, authentication events, or consent events.
 
 This separation keeps the visual experience free to evolve without changing the research or authentication architecture.
+
+
+## Repository environment and presentation boundary
+
+The development environment uses committed example files and ignored local overrides. Real credentials and machine-specific values must never be committed.
+
+The presentation layer may use local SVG assets from assets/svg/, but those assets are outside the research-data path. Decorative artwork must not emit analytics, telemetry, authentication events, or consent events.
+
+The research-event gateway owns the local research-event boundary before any future server-side research API is introduced.
