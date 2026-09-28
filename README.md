@@ -40,17 +40,9 @@ The full policy is available at `docs/v3/research-data-policy.html`, including t
 
 ## Authentication status
 
-The current account system is a development/static-app shell. It is not production authentication.
+The v2.5.0 authentication foundation is now server-backed through PostgreSQL, with server-side sessions, email verification, password recovery, and a production-ready Google OAuth boundary. Provider credentials remain server-side and are configured only through deployment secrets.
 
-The planned v2.5.0 authentication milestone will introduce:
-- server-side credential handling;
-- server-side sessions;
-- protected resources;
-- email verification;
-- production Google OAuth;
-- authentication recovery and regression testing.
-
-Research database infrastructure remains intentionally deferred until after that milestone.
+Research collection remains separate from authentication. The browser research gateway enforces explicit consent locally, while server-side research infrastructure remains deferred to v3.0.0.
 
 ## Project structure
 
@@ -117,9 +109,9 @@ The repository now includes explicit local environment templates, Git hygiene ru
     source .env.local
     set +a
 
-The real .env.local stays untracked. Runtime SQLite files under data/ are also ignored. The committed example files contain placeholders only.
+The real .env.local stays untracked. The committed example files contain placeholders only.
 
-The repository targets Node.js 22 and serves the application without a frontend build step.
+The repository targets Node.js 22. The Node application server serves the frontend and exposes the authentication API.
 
 ## Visual assets
 
@@ -180,7 +172,7 @@ Built as an educational mathematics project by **Om Pranab Mohanty**.
 
 ## Engineering notes
 
-This PR establishes repository hygiene and the visual asset foundation only. It does not merge the separate authentication-hardening or OAuth branches and does not introduce a new research collection path.
+The repository combines the authenticated v2.5.0 foundation, consent-aware local research boundary, and learner-facing visual system. Research database infrastructure remains a v3.0.0 boundary.
 
 
 
@@ -188,6 +180,6 @@ This PR establishes repository hygiene and the visual asset foundation only. It 
 
 The committed environment files are templates only. They do not contain passwords, database URLs, OAuth secrets, or email-delivery credentials.
 
-DATABASE_URL is intentionally reserved for the upcoming Supabase PostgreSQL migration. Until that migration is merged and tested, the current authentication backend remains unchanged.
+DATABASE_URL is the server-only PostgreSQL connection string. The application validates the required authentication schema at startup and never exposes database credentials to the browser.
 
 See docs/DEVELOPMENT.md for the exact environment boundary and database preparation rules.
