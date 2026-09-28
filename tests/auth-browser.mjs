@@ -75,12 +75,16 @@ try {
     if (message.method === 'Log.entryAdded' && message.params.entry.level === 'error') errors.push(message.params.entry.text || 'Console error');
   });
 
+  await waitFor(async () => {
+    const response = await fetch('http://127.0.0.1:' + port + '/api/health');
+    return response.ok;
+  });
   await waitFor(() => socket.readyState === WebSocket.OPEN);
   await cdp('Runtime.enable');
   await cdp('Log.enable');
   await cdp('Page.enable');
   await cdp('Page.navigate', { url: 'http://127.0.0.1:' + port + '/index.html' });
-  await waitFor(async () => (await evaluate('document.readyState')) === 'complete');
+  await waitFor(async () => (await evaluate('document.readyState')) === 'complete' && (await evaluate('location.origin')) === 'http://127.0.0.1:' + port);
 
   const result = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
