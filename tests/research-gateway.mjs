@@ -33,7 +33,7 @@ const gateway = context.__gateway;
 assert.ok(gateway);
 
 assert.equal(gateway.record('quiz', 'open', {}), false);
-assert.deepEqual(gateway.read(), []);
+assert.equal(gateway.read().length, 0);
 
 allowed = true;
 
