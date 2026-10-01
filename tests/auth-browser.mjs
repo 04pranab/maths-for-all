@@ -86,14 +86,6 @@ try {
   await cdp('Page.navigate', { url: 'http://127.0.0.1:' + port + '/index.html' });
   await waitFor(async () => (await evaluate('document.readyState')) === 'complete' && (await evaluate('location.origin')) === 'http://127.0.0.1:' + port);
 
-  const prototypeCheck = await evaluate(`(() => ({
-    authEnabled: typeof Auth !== 'undefined' && typeof Auth.submit === 'function' && typeof Auth.isLoggedIn === 'function'
-  }))()`);
-  if (!prototypeCheck?.authEnabled) {
-    console.log(JSON.stringify({ status: 'SKIP', reason: 'Authentication UI is disabled for the physical prototype.' }));
-    process.exit(0);
-  }
-
   const result = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     localStorage.clear();
