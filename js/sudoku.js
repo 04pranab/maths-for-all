@@ -418,12 +418,42 @@ const Sudoku = (function () {
 
   function handleKeyboard(e) {
     if (!selected) return;
-    if (e.key >= '1' && e.key <= '9') { enterNumber(parseInt(e.key)); return; }
-    if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') { enterNumber(0); return; }
-    if (e.key === 'ArrowUp'    && selected.row > 0) { selectCell(selected.row - 1, selected.col); return; }
-    if (e.key === 'ArrowDown'  && selected.row < 8) { selectCell(selected.row + 1, selected.col); return; }
-    if (e.key === 'ArrowLeft'  && selected.col > 0) { selectCell(selected.row, selected.col - 1); return; }
-    if (e.key === 'ArrowRight' && selected.col < 8) { selectCell(selected.row, selected.col + 1); return; }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      selected = null;
+      refreshCellHighlights();
+      return;
+    }
+    if (e.key >= '1' && e.key <= '9') {
+      e.preventDefault();
+      enterNumber(parseInt(e.key));
+      return;
+    }
+    if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
+      e.preventDefault();
+      enterNumber(0);
+      return;
+    }
+    if (e.key === 'ArrowUp' && selected.row > 0) {
+      e.preventDefault();
+      selectCell(selected.row - 1, selected.col);
+      return;
+    }
+    if (e.key === 'ArrowDown' && selected.row < 8) {
+      e.preventDefault();
+      selectCell(selected.row + 1, selected.col);
+      return;
+    }
+    if (e.key === 'ArrowLeft' && selected.col > 0) {
+      e.preventDefault();
+      selectCell(selected.row, selected.col - 1);
+      return;
+    }
+    if (e.key === 'ArrowRight' && selected.col < 8) {
+      e.preventDefault();
+      selectCell(selected.row, selected.col + 1);
+      return;
+    }
   }
 
   /* -------------------------------------------------------
@@ -651,6 +681,13 @@ const Sudoku = (function () {
   }
 
   /* Expose public API */
+  function clearSelection() {
+    if (!selected) return false;
+    selected = null;
+    refreshCellHighlights();
+    return true;
+  }
+
   return {
     init, newPuzzle, chooseDifficulty,
     giveHint, checkSolution, solveAll,

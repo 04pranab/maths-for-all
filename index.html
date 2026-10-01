@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="css/style.css?v=20260924-3" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/slabmath.css" />
-  <link rel="stylesheet" href="css/visuals.css" />
 </head>
 <body>
 
@@ -30,7 +29,8 @@
           <button class="a11y-btn" id="a11y-font-dec" onclick="Accessibility.changeFont(-1)" aria-label="Smaller text">A−</button>
           <button class="a11y-btn" id="a11y-font-inc" onclick="Accessibility.changeFont(1)" aria-label="Bigger text">A+</button>
         </div>
-        <div id="auth-actions" class="nav-account"></div>
+        <button class="nav-policy" onclick="ResearchConsent.open()" aria-label="Privacy and research data">Privacy &amp; data</button>
+        <!-- Authentication is temporarily disabled for the physical game prototype. -->
       </div>
     </nav>
   </header>
@@ -41,9 +41,6 @@
   <div id="screen-menu" class="screen active">
 
     <div class="arcade-header">
-      <img class="hero-doodle left" src="assets/svg/math-sprout.svg" alt="" role="presentation" />
-      <img class="hero-doodle right" src="assets/svg/fraction-sun.svg" alt="" role="presentation" />
-      <img class="hero-doodle bottom" src="assets/svg/learning-ribbon.svg" alt="" role="presentation" />
       <div class="arcade-badge">🌈 Inclusive learning · aligned with NEP 2020</div>
       <h1 class="arena-title">
         <span class="title-math">Math</span>
@@ -96,8 +93,6 @@
       </button>
 
     </div>
-
-    <img class="visual-divider" src="assets/svg/pi-orbit.svg" alt="" role="presentation" />
 
     <div class="menu-footer">
       Built with care for every learner in the classroom — including the ones who learn a little differently.
@@ -521,10 +516,12 @@
   <!-- ===================================================
        MODAL: MY ACCOUNT
        =================================================== -->
-  <div id="account-profile-modal" class="modal-overlay hidden"></div>
+  <!-- Authentication profile UI temporarily disabled for physical prototype testing. -->
+  <!-- <div id="account-profile-modal" class="modal-overlay hidden"></div> -->
 
   <div id="research-consent-modal" class="modal-overlay hidden"></div>
-  <div id="auth-modal" class="modal-overlay hidden"></div>
+  <!-- Authentication UI temporarily disabled for physical prototype testing. -->
+  <!-- <div id="auth-modal" class="modal-overlay hidden"></div> -->
 
   <!-- Floating drag ghost (used by shape puzzle) -->
   <div id="drag-ghost" class="hidden"></div>
@@ -536,7 +533,7 @@
   <script src="js/sudoku.js?v=20260924-2"></script>
   <script src="js/shapes.js?v=20260924-2"></script>
   <script src="js/slabmath.js?v=20260924-2"></script>
-  <script src="js/consent.js?v=20260925-1"></script>
+  <script src="js/consent.js?v=20261001-1"></script>
 
 </body>
 </html>

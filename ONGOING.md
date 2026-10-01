@@ -3,8 +3,8 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.1`  
-**Next milestone:** `v2.5.0` authentication  
-**Next major milestone:** `v2.5.0` authenticated milestone  
+**Current focus:** physical game-mechanics testing  
+**Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 26 September 2026
 
@@ -62,21 +62,9 @@ Scope:
 
 ### v2.5.0 · Authenticated milestone
 
-**Status: PLANNED**
+**Status: DEFERRED DURING PHYSICAL PROTOTYPE TESTING**
 
-The next milestone after the v2.0.x hardening line is production authentication.
-
-Required before release:
-- server-side authentication;
-- secure credential handling;
-- server-side sessions;
-- protected resources;
-- email verification;
-- production Google OAuth;
-- authentication recovery/error handling;
-- authentication and consent regression tests.
-
-The current browser-local account/session implementation remains a development shell and must not be represented as production authentication.
+The authentication implementation remains in the repository for later work, but its browser entry points are temporarily disabled while the physical game mechanics are tested.
 
 ### v3.0.0 · Research-enabled release
 
@@ -125,7 +113,7 @@ Planned areas:
 | PR #24 Google OAuth | OPEN / REVIEW |
 | PR #25 environment + visual foundation | OPEN / REVIEW |
 | PR #26 consent-aware research gateway | OPEN / REVIEW |
-| v2.5.0 production authentication | IN PROGRESS |
+| v2.5.0 production authentication | DEFERRED FOR PROTOTYPE TESTING |
 | v3.0.0 research infrastructure | PLANNED |
 
 ---
@@ -203,17 +191,15 @@ Included:
 - Git hygiene rules for environment files, runtime databases, logs, and editor state;
 - Node 22 version pinning;
 - shared editor and text-file defaults;
-- a dedicated local SVG asset library under assets/svg/;
-- a separate css/visuals.css presentation layer;
-- decorative artwork integrated into the main menu without changing game logic.
+- five small card illustrations under assets/svg/;
+- card-only artwork without changes to game logic.
 
-The visual layer remains presentation-only. It does not collect data, change authentication, or alter the research-consent boundary.
+Card artwork remains presentation-only and does not collect data or alter gameplay.
 
 ## 7. Known limitations
 
-- The local authentication implementation is still not production authentication.
+- Authentication is temporarily disabled on the physical prototype branch.
 - Server-side sessions are not yet implemented.
-- Production email verification and Google OAuth are not yet implemented.
 - Research database infrastructure is intentionally not implemented.
 - Browser automation is headless and does not replace testing with real assistive technologies.
 - The custom project license is not an OSI-approved open-source license.

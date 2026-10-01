@@ -655,15 +655,26 @@ const ShapePuzzle = (function () {
     return `rgb(${r},${g},${b})`;
   }
 
+  function clearSelection() {
+    if (selectedPiece < 0) return false;
+    selectedPiece = -1;
+    clearGhost();
+    renderShapes();
+    return true;
+  }
+
   /* ── Keyboard handler (R = rotate, Esc = deselect) ── */
   document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
       if (!document.getElementById('screen-shape').classList.contains('active')) return;
-      if (e.key === 'r' || e.key === 'R') rotateSelected();
+      if (e.defaultPrevented || e.ctrlKey || e.altKey || e.metaKey) return;
+      if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        rotateSelected();
+      }
       if (e.key === 'Escape') {
-        selectedPiece = -1;
-        clearGhost();
-        renderShapes();
+        e.preventDefault();
+        clearSelection();
       }
     });
   });
@@ -673,7 +684,7 @@ const ShapePuzzle = (function () {
     init, loadLevel,
     rotateSelected, showHint,
     restartLevel, backToLevels, nextLevel,
-    checkPuzzleSolved,
+    checkPuzzleSolved, clearSelection,
   };
 
 })();

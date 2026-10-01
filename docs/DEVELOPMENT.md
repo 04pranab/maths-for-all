@@ -42,7 +42,7 @@ The GitHub Actions workflow remains the authoritative repository CI entry point.
 
 ## Visual work
 
-Put reusable local artwork in assets/svg/. Keep presentation CSS in css/visuals.css when it is specific to the decoration layer. Keep game logic in the existing game JavaScript modules.
+Keep the five card illustrations in assets/svg/. Do not add page-wide decorative artwork during physical prototype testing. Keep game logic in the existing game JavaScript modules.
 
 For decorative HTML images, use an empty alt value so assistive technologies do not announce artwork that does not add information. Keep non-essential motion behind prefers-reduced-motion.
 

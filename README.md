@@ -8,7 +8,7 @@ Maths for All is designed around a learner-first loop: **try → understand → 
 
 **v2.0.1**
 
-v2.0.1 is a reliability, privacy, accessibility, and documentation patch on top of the stable v2 educational baseline.
+This branch is a physical game-testing prototype built from the v2 educational baseline.
 
 ## Features
 
@@ -38,11 +38,9 @@ If a learner chooses No:
 
 The full policy is available at `docs/v3/research-data-policy.html`, including the data categories, exclusions, withdrawal behaviour, implementation requirements, and compliance declaration.
 
-## Authentication status
+## Prototype mode
 
-The v2.5.0 authentication foundation is now server-backed through PostgreSQL, with server-side sessions, email verification, password recovery, and a production-ready Google OAuth boundary. Provider credentials remain server-side and are configured only through deployment secrets.
-
-Research collection remains separate from authentication. The browser research gateway enforces explicit consent locally, while server-side research infrastructure remains deferred to v3.0.0.
+Authentication and account controls are temporarily disabled for physical gameplay testing. The privacy and research-data policy remains available from the navigation and can still be reviewed and changed.
 
 ## Project structure
 
@@ -111,13 +109,11 @@ The repository now includes explicit local environment templates, Git hygiene ru
 
 The real .env.local stays untracked. The committed example files contain placeholders only.
 
-The repository targets Node.js 22. The Node application server serves the frontend and exposes the authentication API.
+The prototype is intended to run as a static browser application for physical game testing.
 
 ## Visual assets
 
-Friendly mathematical decoration lives in assets/svg/. The visual layer is intentionally separate from game logic and uses local, dependency-free SVGs. Decorative images are hidden from assistive technology, and the CSS honours the existing reduced-motion preference.
-
-See docs/DESIGN_SYSTEM.md and assets/svg/README.md before adding new artwork.
+SVG decoration is intentionally limited to the five game cards on the main menu. The artwork is presentational only and does not replace game instructions or controls.
 
 ## Run locally
 
@@ -162,24 +158,3 @@ See `LICENSE`.
 
 The project uses a custom responsible-use license. It is not an OSI-approved open-source license.
 
-## AI assistance
-
-AI tools have been used as development assistants. See `AI_USAGE.md` for the project's disclosure and human-responsibility record.
-
----
-
-Built as an educational mathematics project by **Om Pranab Mohanty**.
-
-## Engineering notes
-
-The repository combines the authenticated v2.5.0 foundation, consent-aware local research boundary, and learner-facing visual system. Research database infrastructure remains a v3.0.0 boundary.
-
-
-
-## Environment and database preparation
-
-The committed environment files are templates only. They do not contain passwords, database URLs, OAuth secrets, or email-delivery credentials.
-
-DATABASE_URL is the server-only PostgreSQL connection string. The application validates the required authentication schema at startup and never exposes database credentials to the browser.
-
-See docs/DEVELOPMENT.md for the exact environment boundary and database preparation rules.

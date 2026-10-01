@@ -471,8 +471,21 @@ const Quiz = (function () {
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('quiz-input');
-    if (input) input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+    const quizInput = document.getElementById('quiz-input');
+    if (quizInput) quizInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submit();
+      }
+    });
+
+    const raceInput = document.getElementById('race-input');
+    if (raceInput) raceInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submit();
+      }
+    });
   });
 
   return { init, setDifficulty, changeDifficulty, submit, next, retry, hint, explain, replay: replayQuestion };
