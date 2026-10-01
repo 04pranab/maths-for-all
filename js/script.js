@@ -104,7 +104,7 @@ const ControlsOverlay = (function () {
       bullets: [
         'Pick a level: Starter, Growing, or Champion.',
         'Read the question, then type your answer in the box.',
-        'Press Submit (or the Enter key) to check it.',
+        'Press Submit or Enter to check it.',
         'Every question is new — take your time, there is no clock.',
       ],
     },
@@ -112,7 +112,7 @@ const ControlsOverlay = (function () {
       icon: '🏁', title: 'How to play: Math Racing',
       bullets: [
         'Choose a timer length and a level, then press Start Race.',
-        'Type each answer and press Go — you move straight to the next question.',
+        'Type each answer and press Enter or Go — you move straight to the next question.',
         'Try to answer as many as you can before the time runs out.',
         'A wrong answer just moves you on — it never costs you points.',
       ],
@@ -120,9 +120,9 @@ const ControlsOverlay = (function () {
     sudoku: {
       icon: '🔢', title: 'How to play: Sudoku Challenge',
       bullets: [
-        'Tap an empty square, then tap a number on the keypad below the grid.',
+        'Tap an empty square, then use the keypad or laptop number keys 1–9.',
         'Every row, every column, and every 3×3 box must have the numbers 1 to 9, with no repeats.',
-        'Use Hint if you are stuck — Check tells you if anything needs fixing.',
+        'Use Arrow keys to move, Backspace/Delete to erase, and Hint if you are stuck.',
         'If you are stuck, ask a teacher or friend to help you reason through the next move.',
       ],
     },
@@ -131,7 +131,7 @@ const ControlsOverlay = (function () {
       bullets: [
         'Tap a shape in the panel on the right — it will glow gold.',
         'Tap a square on the board to place it there.',
-        'Tap the Rotate button (or press R) to turn the shape if it does not fit.',
+        'Tap Rotate or press R to turn the shape; Esc deselects it.',
         'Fill every square on the board to win the level — Hint is there if you need it.',
       ],
     },
@@ -142,7 +142,7 @@ const ControlsOverlay = (function () {
         'Drag a number slab into the basket — or tap a slab, then tap the basket.',
         'Each slab you use is subtracted from the basket and disappears.',
         'There is more than one way to win each round — some slabs are extra, just for you to think about.',
-        'Stuck? Press Hint, or Restart Round to try again from the start.',
+        'Press 1–9 to select a slab by position, Enter to use it, or Esc to deselect.',
       ],
     },
   };
@@ -374,6 +374,22 @@ const Game = (function () {
 
   return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath };
 })();
+
+/* =============================================================
+   PHYSICAL PROTOTYPE KEYBOARD CONTROLS
+   Shortcuts are active only in their relevant game context and do not
+   consume keystrokes while the learner is typing in a text field.
+   ============================================================= */
+function isTypingTarget(target) {
+  return !!target && (
+    target.matches('input, textarea, select') ||
+    target.isContentEditable
+  );
+}
+
+function activeGameScreen() {
+  return document.querySelector('.screen.active');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Math For All – ready. गणित सबके लिए');

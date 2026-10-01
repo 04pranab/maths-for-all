@@ -331,6 +331,46 @@ const SlabMath = (function () {
     showMessage(`💡 Try the slab showing ${best.value}.`, 'info');
   }
 
+  function clearSelection() {
+    if (!selectedSlabId) return false;
+    selectedSlabId = null;
+    render();
+    return true;
+  }
+
+  /* ---------------- laptop keyboard controls ---------------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('keydown', (e) => {
+      if (!document.getElementById('screen-slab').classList.contains('active')) return;
+      if (e.defaultPrevented || e.ctrlKey || e.altKey || e.metaKey) return;
+
+      const target = e.target;
+      if (target && target.matches('input, textarea, select, button, a')) return;
+
+      if (e.key >= '1' && e.key <= '9') {
+        const index = Number(e.key) - 1;
+        const available = slabs.filter(s => !s.used);
+        if (available[index]) {
+          e.preventDefault();
+          selectedSlabId = available[index].id;
+          render();
+        }
+        return;
+      }
+
+      if (e.key === 'Enter' && selectedSlabId) {
+        e.preventDefault();
+        attemptUse(selectedSlabId);
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        clearSelection();
+      }
+    });
+  });
+
   /* ---------------- basket drag targets (wired once) ---------------- */
   document.addEventListener('DOMContentLoaded', () => {
     const basket = document.getElementById('slab-basket');
@@ -348,5 +388,5 @@ const SlabMath = (function () {
     });
   });
 
-  return { init, newRound, restartRound, nextRound, hint };
+  return { init, newRound, restartRound, nextRound, hint, clearSelection };
 })();

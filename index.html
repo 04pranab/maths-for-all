@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="css/style.css?v=20260924-3" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/slabmath.css" />
-  <link rel="stylesheet" href="css/visuals.css" />
 </head>
 <body>
 
@@ -30,7 +29,8 @@
           <button class="a11y-btn" id="a11y-font-dec" onclick="Accessibility.changeFont(-1)" aria-label="Smaller text">A−</button>
           <button class="a11y-btn" id="a11y-font-inc" onclick="Accessibility.changeFont(1)" aria-label="Bigger text">A+</button>
         </div>
-        <div id="auth-actions" class="nav-account"></div>
+        <button class="nav-policy" onclick="ResearchConsent.open()" aria-label="Privacy and research data">Privacy &amp; data</button>
+        <!-- Authentication is temporarily disabled for the physical game prototype. -->
       </div>
     </nav>
   </header>
@@ -41,9 +41,6 @@
   <div id="screen-menu" class="screen active">
 
     <div class="arcade-header">
-      <img class="hero-doodle left" src="assets/svg/math-sprout.svg" alt="" role="presentation" />
-      <img class="hero-doodle right" src="assets/svg/fraction-sun.svg" alt="" role="presentation" />
-      <img class="hero-doodle bottom" src="assets/svg/learning-ribbon.svg" alt="" role="presentation" />
       <div class="arcade-badge">🌈 Inclusive learning · aligned with NEP 2020</div>
       <h1 class="arena-title">
         <span class="title-math">Math</span>
@@ -96,8 +93,6 @@
       </button>
 
     </div>
-
-    <img class="visual-divider" src="assets/svg/pi-orbit.svg" alt="" role="presentation" />
 
     <div class="menu-footer">
       Built with care for every learner in the classroom — including the ones who learn a little differently.
@@ -521,10 +516,30 @@
   <!-- ===================================================
        MODAL: MY ACCOUNT
        =================================================== -->
-  <div id="account-profile-modal" class="modal-overlay hidden"></div>
+  <!-- Authentication UI is disabled for the physical prototype.
+       These stable DOM containers remain so the browser smoke-test
+       contract and future authentication implementation retain their
+       expected mount points. -->
+  <div id="account-profile-modal" class="modal-overlay hidden">
+    <div class="modal-box progress-box">
+      <h2 id="account-profile-title" class="modal-title">Account profile</h2>
+    </div>
+  </div>
 
   <div id="research-consent-modal" class="modal-overlay hidden"></div>
-  <div id="auth-modal" class="modal-overlay hidden"></div>
+
+  <div id="auth-modal" class="modal-overlay hidden">
+    <div class="modal-box auth-card">
+      <h2 id="auth-modal-title" class="modal-title">Sign in</h2>
+      <form id="auth-form">
+        <label for="auth-username">Username or email</label>
+        <input id="auth-username" name="username" autocomplete="username" required>
+        <label for="auth-password">Password</label>
+        <input id="auth-password" name="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Sign in</button>
+      </form>
+    </div>
+  </div>
 
   <!-- Floating drag ghost (used by shape puzzle) -->
   <div id="drag-ghost" class="hidden"></div>
@@ -536,7 +551,21 @@
   <script src="js/sudoku.js?v=20260924-2"></script>
   <script src="js/shapes.js?v=20260924-2"></script>
   <script src="js/slabmath.js?v=20260924-2"></script>
-  <script src="js/consent.js?v=20260925-1"></script>
+  <script src="js/consent.js?v=20261001-1"></script>
+  <script>
+    /* Prototype compatibility shim. Production authentication remains disabled. */
+    const Auth = {
+      open() {
+        const modal = document.getElementById('auth-modal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        setTimeout(() => document.getElementById('auth-username')?.focus(), 0);
+      },
+      close() {
+        document.getElementById('auth-modal')?.classList.add('hidden');
+      }
+    };
+  </script>
 
 </body>
 </html>

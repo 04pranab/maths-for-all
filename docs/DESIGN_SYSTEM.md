@@ -14,7 +14,7 @@ Artwork is local and dependency-free. Do not introduce remote image hosts for or
 
 ## Placement
 
-Use decoration to support hierarchy. Hero artwork frames the welcome message, card artwork gives each game a visual hint without replacing its title, subtle corner artwork continues through game screens, and ribbons/orbits can separate sections or finish the page.
+Use decoration only inside the five game cards. Card artwork gives each game a visual hint without replacing its title or instructions.
 
 Do not place important instructions, scores, consent choices, or error messages inside an SVG.
 
@@ -35,4 +35,4 @@ A new visual asset should have a descriptive filename, a purpose documented in a
 
 ## Database boundary
 
-Visual assets are never part of the database or research path. They are static presentation resources and must remain independent from authentication, consent, analytics, and research events.
+Visual assets are static presentation resources and remain independent from consent, analytics, and research events.
