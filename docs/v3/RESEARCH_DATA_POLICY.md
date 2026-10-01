@@ -65,3 +65,8 @@ The consent UI must use plain language and provide two clearly available choices
 ## Implementation requirement
 
 No game module may write research events directly to localStorage, a future database API, or a future telemetry API. All research writes must pass through the consent-aware research event gateway.
+
+
+## Gateway enforcement
+
+All research writes must pass through ResearchEventGateway. The gateway rejects writes unless consent is Yes, validates event shape, caps retained local events, and clears persisted research events when collection is withdrawn.

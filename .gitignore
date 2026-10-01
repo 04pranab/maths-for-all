@@ -1,0 +1,35 @@
+# Local environment
+.env
+.env.*
+!.env.example
+!.env.local.example
+!.env.test.example
+!.env.production.example
+
+# Dependencies
+node_modules/
+
+# Runtime data
+data/*
+!data/.gitkeep
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Logs and local reports
+*.log
+coverage/
+playwright-report/
+test-results/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
