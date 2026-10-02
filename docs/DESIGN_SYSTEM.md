@@ -6,33 +6,26 @@ Maths for All should feel like a friendly mathematics desk rather than a dashboa
 
 The visual language uses the existing warm paper, indigo, leaf, marigold, and clay palette already present in the application.
 
-## SVG library
+## Artwork
 
-Reusable mathematical decoration lives in assets/svg/. The current library contains 18 lightweight motifs covering arithmetic, geometry, fractions, graphs, measurement, logic, progress, setup, and completion.
+The physical-testing prototype uses no SVG assets and no external decorative image library.
 
-Artwork is local and dependency-free. Do not introduce remote image hosts for ordinary decoration.
-
-## Placement
-
-Use decoration only inside the five game cards. Card artwork gives each game a visual hint without replacing its title or instructions.
-
-Do not place important instructions, scores, consent choices, or error messages inside an SVG.
+Game identity should come from the game title, interface symbols, typography, layout, and the mechanics themselves. Do not add decorative image assets to the prototype.
 
 ## Accessibility
 
-Decorative images use empty alt text and are marked presentational in HTML. Meaningful visual content must have a useful text alternative instead.
+Visual decoration must never replace instructions, scores, consent choices, or error messages. Meaningful information must remain available as text.
 
-New animation must respect prefers-reduced-motion. The current decoration layer uses only a small vertical float on large-screen hero artwork and disables that movement when reduced motion is requested.
+New interaction and animation must respect `prefers-reduced-motion` where applicable.
 
 ## Performance
 
-Prefer small, simple SVG paths and shapes. Avoid embedded raster images, external fonts, scripts, unnecessarily expensive filters, or large path dumps.
+Keep the prototype lightweight and dependency-free. Avoid adding decorative image payloads or external image hosts.
 
 ## Change rule
 
-A new visual asset should have a descriptive filename, a purpose documented in assets/svg/README.md, a clear place in the interface, and no dependency on game state unless that dependency is part of a planned feature.
-
+New visual work should first improve clarity, interaction, feedback, or accessibility. Decorative asset libraries remain out of scope for the physical-testing prototype.
 
 ## Database boundary
 
-Visual assets are static presentation resources and remain independent from consent, analytics, and research events.
+Visual presentation remains independent from consent, analytics, and research events.
