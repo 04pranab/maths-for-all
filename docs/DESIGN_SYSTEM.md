@@ -14,9 +14,9 @@ Game identity should come from the game title, interface symbols, typography, la
 
 ## Accessibility
 
-Decorative images use empty alt text and are marked presentational in HTML. Meaningful visual content must have a useful text alternative instead.
+Visual decoration must never replace instructions, scores, consent choices, or error messages. Meaningful information must remain available as text.
 
-New animation must respect prefers-reduced-motion. The current decoration layer uses only a small vertical float on large-screen hero artwork and disables that movement when reduced motion is requested.
+New interaction and animation must respect `prefers-reduced-motion` where applicable.
 
 ## Performance
 
@@ -24,9 +24,8 @@ Keep the prototype lightweight and dependency-free. Avoid adding decorative imag
 
 ## Change rule
 
-A new visual asset should have a descriptive filename, a purpose documented in assets/svg/README.md, a clear place in the interface, and no dependency on game state unless that dependency is part of a planned feature.
-
+New visual work should first improve clarity, interaction, feedback, or accessibility. Decorative asset libraries remain out of scope for the physical-testing prototype.
 
 ## Database boundary
 
-Visual assets are static presentation resources and remain independent from consent, analytics, and research events.
+Visual presentation remains independent from consent, analytics, and research events.
