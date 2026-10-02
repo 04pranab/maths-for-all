@@ -28,8 +28,7 @@
           <button class="a11y-btn" id="a11y-font-dec" onclick="Accessibility.changeFont(-1)" aria-label="Smaller text">A−</button>
           <button class="a11y-btn" id="a11y-font-inc" onclick="Accessibility.changeFont(1)" aria-label="Bigger text">A+</button>
         </div>
-        <button class="nav-policy" onclick="ResearchConsent.open()" aria-label="Privacy and research data">Privacy &amp; data</button>
-        <!-- Authentication is temporarily disabled for the physical game prototype. -->
+        <div id="auth-actions" class="auth-actions"></div>
       </div>
     </nav>
   </header>
@@ -510,30 +509,12 @@
   <!-- ===================================================
        MODAL: MY ACCOUNT
        =================================================== -->
-  <!-- Authentication UI is disabled for the physical prototype.
-       These stable DOM containers remain so the browser smoke-test
-       contract and future authentication implementation retain their
-       expected mount points. -->
-  <div id="account-profile-modal" class="modal-overlay hidden">
-    <div class="modal-box progress-box">
-      <h2 id="account-profile-title" class="modal-title">Account profile</h2>
-    </div>
-  </div>
+  <!-- Authentication and account dialogs -->
+  <div id="account-profile-modal" class="modal-overlay hidden"></div>
 
   <div id="research-consent-modal" class="modal-overlay hidden"></div>
 
-  <div id="auth-modal" class="modal-overlay hidden">
-    <div class="modal-box auth-card">
-      <h2 id="auth-modal-title" class="modal-title">Sign in</h2>
-      <form id="auth-form">
-        <label for="auth-username">Username or email</label>
-        <input id="auth-username" name="username" autocomplete="username" required>
-        <label for="auth-password">Password</label>
-        <input id="auth-password" name="password" type="password" autocomplete="current-password" required>
-        <button type="submit">Sign in</button>
-      </form>
-    </div>
-  </div>
+  <div id="auth-modal" class="modal-overlay hidden"></div>
 
   <!-- Floating drag ghost (used by shape puzzle) -->
   <div id="drag-ghost" class="hidden"></div>
