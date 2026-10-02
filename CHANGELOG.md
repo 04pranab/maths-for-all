@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.2 · 2026-10-02
+
+### Physical-testing prototype
+- Removed the remaining SVG game-card illustrations.
+- Removed the standalone SVG favicon and SVG asset-library documentation.
+- Removed the game-card SVG references from the main menu.
+- Kept game identity and controls in text, interface symbols, typography, layout, and game mechanics.
+- Kept authentication and account controls disabled during physical game testing.
+- Preserved the privacy and research-data policy and the consent-aware research boundary.
+- Preserved the laptop keyboard controls added for the five existing games.
+
 ## 2.0.1 · 2026-09-25
 
 ### Privacy and consent
@@ -47,21 +58,7 @@ v2.0.0 remains the regression reference for the educational application.
 
 ## Unreleased
 
-### Developer environment and visual foundation
-- Added repository-level environment templates for local, test, and production configuration.
-- Added Git hygiene rules for secrets, runtime databases, logs, and editor files.
-- Added Node 22 pinning and consistent editor/text-file defaults.
-- Added a dependency-free local SVG asset library with eighteen friendly mathematical decorations.
-- Extended the presentation layer across learner-facing game screens.
-- Added safe DATABASE_URL and Google OAuth placeholders without committing credentials.
-- Added a dedicated visual CSS layer and integrated the artwork into the main menu.
-- Kept decorative artwork outside game logic and research collection.
-- Preserved reduced-motion behaviour for the new presentation layer.
-
-## Unreleased / future milestones
-
-### v2.5.0
-Production authentication, server-side sessions, email verification, Google OAuth, protected resources, and authentication regression tests.
-
-### v3.0.0
-Research database and consent-aware research infrastructure after the authenticated milestone.
+### Next development line
+- Re-enable and validate the existing production authentication UI after physical game-mechanics testing.
+- Complete the deferred v2.5.0 authentication deployment/configuration work before introducing v3 research infrastructure.
+- Keep research infrastructure behind the explicit consent boundary.
