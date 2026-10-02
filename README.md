@@ -6,7 +6,7 @@ Maths for All is designed around a learner-first loop: **try → understand → 
 
 ## Current release
 
-**v2.0.1**
+**v2.0.2**
 
 This branch is a physical game-testing prototype built from the v2 educational baseline.
 
@@ -47,39 +47,23 @@ Authentication and account controls are temporarily disabled for physical gamepl
 ```text
 maths-for-all/
 ├── index.html
-├── assets/svg/
-│   ├── math-sprout.svg
-│   ├── number-cloud.svg
-│   ├── geometry-garden.svg
-│   ├── fraction-sun.svg
-│   ├── graph-vine.svg
-│   ├── compass-star.svg
-│   ├── abacus-bloom.svg
-│   ├── pi-orbit.svg
-│   ├── dot-matrix.svg
-│   ├── learning-ribbon.svg
-│   ├── ruler-sun.svg
-│   ├── equation-bubble.svg
-│   ├── angle-fan.svg
-│   ├── coordinate-stars.svg
-│   ├── calculator-flower.svg
-│   ├── number-path.svg
-│   ├── triangle-kite.svg
-│   ├── fraction-pie.svg
-│   └── README.md
 ├── css/
 │   ├── style.css
-│   ├── slabmath.css
-│   └── visuals.css
+│   └── slabmath.css
 ├── js/
 │   ├── consent.js
 │   ├── questions.js
+│   ├── research-gateway.js
 │   ├── script.js
 │   ├── sudoku.js
 │   └── shapes.js
 ├── docs/v3/
 │   └── research-data-policy.html
 ├── tests/
+│   ├── auth-api.mjs
+│   ├── postgres-auth.mjs
+│   ├── research-gateway.mjs
+│   ├── setup-postgres.mjs
 │   └── smoke.mjs
 ├── .github/workflows/
 │   └── tests.yml
@@ -95,7 +79,7 @@ maths-for-all/
 ├── VERSION
 ├── CHANGELOG.md
 ├── ONGOING.md
-└── AI_USAGE.md
+└── package.json
 ```
 
 ## Developer environment
@@ -113,7 +97,7 @@ The prototype is intended to run as a static browser application for physical ga
 
 ## Visual assets
 
-SVG decoration is intentionally limited to the five game cards on the main menu. The artwork is presentational only and does not replace game instructions or controls.
+The physical-testing prototype uses no SVG assets or external decorative image library. Game identity is communicated through text, interface symbols, typography, layout, and the game mechanics themselves.
 
 ## Run locally
 
