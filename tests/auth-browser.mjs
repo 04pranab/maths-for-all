@@ -93,10 +93,10 @@ try {
     assert(document.querySelector('.nav-policy')?.offsetParent !== null, 'Guest privacy button is missing.');
     Auth.open('signup');
     await new Promise(r => setTimeout(r, 50));
-    document.getElementById('auth-username').value = "browser_6h9xc3x";
-    document.getElementById('auth-email').value = "browser_6h9xc3x@example.com";
-    document.getElementById('auth-password').value = "BrowserPass123";
-    document.getElementById('auth-confirm-password').value = "BrowserPass123";
+    document.getElementById('auth-username').value = ${JSON.stringify(username)};
+    document.getElementById('auth-email').value = ${JSON.stringify(email)};
+    document.getElementById('auth-password').value = ${JSON.stringify(password)};
+    document.getElementById('auth-confirm-password').value = ${JSON.stringify(password)};
     await Auth.submit({ preventDefault() {} }, 'signup');
     assert(!Auth.isLoggedIn(), 'Unverified signup created a session.');
     assert(document.getElementById('auth-modal').textContent.includes('Check your email'), 'Verification guidance missing.');
@@ -116,8 +116,8 @@ try {
 
   const verified = await evaluate(`(async () => {
     Auth.open('login');
-    document.getElementById('auth-username').value = "browser_6h9xc3x";
-    document.getElementById('auth-password').value = "BrowserPass123";
+    document.getElementById('auth-username').value = ${JSON.stringify(username)};
+    document.getElementById('auth-password').value = ${JSON.stringify(password)};
     await Auth.submit({ preventDefault() {} }, 'login');
     if (!Auth.isLoggedIn()) throw new Error('Verified browser login failed.');
     if (document.cookie !== '') throw new Error('HttpOnly session cookie is accessible.');
