@@ -6,17 +6,11 @@ Maths for All should feel like a friendly mathematics desk rather than a dashboa
 
 The visual language uses the existing warm paper, indigo, leaf, marigold, and clay palette already present in the application.
 
-## SVG library
+## Artwork
 
-Reusable mathematical decoration lives in assets/svg/. The current library contains 18 lightweight motifs covering arithmetic, geometry, fractions, graphs, measurement, logic, progress, setup, and completion.
+The physical-testing prototype uses no SVG assets and no external decorative image library.
 
-Artwork is local and dependency-free. Do not introduce remote image hosts for ordinary decoration.
-
-## Placement
-
-Use decoration only inside the five game cards. Card artwork gives each game a visual hint without replacing its title or instructions.
-
-Do not place important instructions, scores, consent choices, or error messages inside an SVG.
+Game identity should come from the game title, interface symbols, typography, layout, and the mechanics themselves. Do not add decorative image assets to the prototype.
 
 ## Accessibility
 
@@ -26,7 +20,7 @@ New animation must respect prefers-reduced-motion. The current decoration layer 
 
 ## Performance
 
-Prefer small, simple SVG paths and shapes. Avoid embedded raster images, external fonts, scripts, unnecessarily expensive filters, or large path dumps.
+Keep the prototype lightweight and dependency-free. Avoid adding decorative image payloads or external image hosts.
 
 ## Change rule
 
