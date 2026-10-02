@@ -2,11 +2,11 @@
 
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
-**Current stable release:** `v2.0.1`  
+**Current stable release:** `v2.0.2`  
 **Current focus:** physical game-mechanics testing  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 26 September 2026
+**Last updated:** 2 October 2026
 
 ---
 
@@ -59,6 +59,14 @@ Scope:
 - cleaned engineering documentation;
 - stronger automated stress coverage;
 - release metadata and changelog cleanup.
+
+### v2.0.2 · Physical-testing prototype baseline
+
+**Status: COMPLETE / FROZEN FOR TESTING**
+
+This patch removes the remaining SVG presentation assets and keeps the five existing games focused on physical mechanics testing. Authentication remains intentionally disabled in the browser prototype.
+
+The privacy and research-data policy remains reachable without login, and the consent-aware research gateway remains the boundary for research-style events.
 
 ### v2.5.0 · Authenticated milestone
 
@@ -180,21 +188,20 @@ PR #18 established the automated browser stress foundation. This patch extends t
 
 ---
 
-## 6. Developer environment, database preparation, and visual foundation
+## 6. Developer environment and database preparation
 
 ### Status: PREPARED
 
-The repository now has a small, explicit development-environment layer that keeps machine-specific state out of Git while making the expected runtime easy to reproduce.
+The repository keeps machine-specific state out of Git while making the expected runtime reproducible.
 
 Included:
 - environment templates for local, test, and production configuration;
 - Git hygiene rules for environment files, runtime databases, logs, and editor state;
 - Node 22 version pinning;
 - shared editor and text-file defaults;
-- five small card illustrations under assets/svg/;
-- card-only artwork without changes to game logic.
+- PostgreSQL/Supabase preparation without committed credentials.
 
-Card artwork remains presentation-only and does not collect data or alter gameplay.
+The physical-testing prototype intentionally contains no decorative SVG asset library.
 
 ## 7. Known limitations
 
@@ -213,7 +220,7 @@ Do not add unrelated features to the hardening line.
 
 The sequence remains:
 
-`v2.0.1 hardening → v2.5.0 production authentication → v3.0.0 research infrastructure`
+`v2.0.2 physical testing → v2.5.0 production authentication → v3.0.0 research infrastructure`
 
 Each stage should be completed and tested before the next architectural dependency is introduced.
 
