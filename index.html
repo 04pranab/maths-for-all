@@ -528,20 +528,6 @@
   <script src="js/shapes.js?v=20260924-2"></script>
   <script src="js/slabmath.js?v=20260924-2"></script>
   <script src="js/consent.js?v=20261001-1"></script>
-  <script>
-    /* Prototype compatibility shim. Production authentication remains disabled. */
-    const Auth = {
-      open() {
-        const modal = document.getElementById('auth-modal');
-        if (!modal) return;
-        modal.classList.remove('hidden');
-        setTimeout(() => document.getElementById('auth-username')?.focus(), 0);
-      },
-      close() {
-        document.getElementById('auth-modal')?.classList.add('hidden');
-      }
-    };
-  </script>
 
 </body>
 </html>
