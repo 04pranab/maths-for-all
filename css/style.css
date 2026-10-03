@@ -526,7 +526,7 @@ button {
   background: var(--indigo);
   color: #fff;
   position: sticky;
-  top: 61px;
+  top: 0;
   z-index: 30;
   flex-wrap: wrap;
 }
