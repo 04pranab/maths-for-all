@@ -260,6 +260,34 @@ async function main() {
   '})()');
 
   if (!generatorResult) throw new Error('Generator and accessibility audit did not complete.');
+  if (!concurrencyResult) throw new Error('Concurrency audit did not complete.');
+
+  const concurrencyResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'const generated = await Promise.all(Array.from({length: 90}, (_, i) => Promise.resolve().then(() => QuestionBank.generate(["easy","medium","hard"][i % 3]))));' +
+    'assert(generated.length === 90, "Concurrent question generation returned the wrong count.");' +
+    'assert(generated.every(q => q && Number.isFinite(q.answer) && typeof q.text === "string"), "Concurrent question generation returned an invalid question.");' +
+    'const slabRounds = await Promise.all(Array.from({length: 30}, () => Promise.resolve().then(() => { SlabMath.newRound(); return Number(document.getElementById("slab-basket-number").textContent); })));' +
+    'assert(slabRounds.length === 30 && slabRounds.every(Number.isFinite), "Concurrent Slab Maths generation failed.");' +
+    'const queuedStarts = ["quiz","race","sudoku","shape","slab"];' +
+    'await Promise.all(queuedStarts.map((key, index) => new Promise(resolve => setTimeout(() => { Game.goHome(); ({ quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath }[key])(); resolve(); }, index))));' +
+    'assert(document.querySelector(".screen.active")?.id === "screen-slab", "Rapid queued game starts did not leave the last requested game active.");' +
+    'Game.startShapePuzzle();' +
+    'const shapeTimerBeforeSwitch = document.getElementById("shape-timer")?.textContent;' +
+    'Game.startArithmetic();' +
+    'await new Promise(r => setTimeout(r, 1200));' +
+    'assert(document.getElementById("shape-timer")?.textContent === shapeTimerBeforeSwitch, "Shape timer continued running after leaving Shape Fitting.");' +
+    'Game.startRacing();' +
+    'Racing.start();' +
+    'document.getElementById("race-input").value = "0";' +
+    'Racing.submit();' +
+    'Racing.back();' +
+    'await new Promise(r => setTimeout(r, 260));' +
+    'assert(document.getElementById("race-setup-panel")?.classList.contains("hidden") === false, "Racing did not remain on setup after immediate back.");' +
+    'assert(document.getElementById("race-play-panel")?.classList.contains("hidden") === true, "A stale Racing callback modified the play panel after back.");' +
+    'Game.goHome();' +
+    'return { concurrentQuestions: generated.length, concurrentSlabRounds: slabRounds.length, queuedStarts: queuedStarts.length, staleTimerChecks: 2 };' +
+  '})()');
 
   const gameResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
@@ -289,7 +317,7 @@ async function main() {
   if (unexpectedResourceErrors.length) throw new Error('Browser resource errors detected:\n' + unexpectedResourceErrors.map(item => item.status + ' ' + item.url).join('\n'));
   if (errors.length) throw new Error('Browser runtime/console errors detected:\n' + [...new Set(errors)].join('\n'));
 
-  console.log(JSON.stringify({ status: 'PASS', baseline, games: gameResult, browserErrors: 0 }, null, 2));
+  console.log(JSON.stringify({ status: 'PASS', baseline, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0 }, null, 2));
 }
 
 try {
