@@ -1136,8 +1136,8 @@ button {
 .sudoku-grid {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
+  width: min(480px, calc(100vw - 32px));
   max-width: 480px;
-  width: 100%;
   aspect-ratio: 1/1;
   margin: 18px auto;
   border: 3px solid var(--ink);
@@ -1150,7 +1150,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(1rem, 3.4vw, 1.4rem);
+  font-size: clamp(0.95rem, 2.4vw, 1.25rem);
   font-weight: 700;
   border: 1px solid var(--border);
   cursor: pointer;
@@ -1253,15 +1253,15 @@ button {
 .sudoku-keypad {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  gap: 6px;
   max-width: 480px;
-  width: 92vw;
+  width: min(480px, calc(100vw - 32px));
   margin: 16px auto;
 }
 
 .btn-key,
 .btn-key-erase {
-  padding: 14px 0;
+  padding: 10px 0;
   border: 2px solid var(--border-strong);
   border-radius: var(--radius-sm);
   background: var(--card);
@@ -1318,7 +1318,7 @@ button {
 
   .btn-key,
   .btn-key-erase {
-    min-height: 52px;
+    min-height: 48px;
   }
 }
 
@@ -1727,8 +1727,8 @@ button {
 
 .shape-level-panel {
   text-align: center;
-  padding: 26px 20px;
-  max-width: 900px;
+  padding: 18px 16px;
+  max-width: 820px;
   margin: 0 auto;
 }
 
@@ -1741,15 +1741,15 @@ button {
 .shape-level-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
   margin-top: 18px;
 }
 
 .btn-level {
-  width: 58px;
-  height: 58px;
-  border-radius: 14px;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   border: 2px solid var(--border-strong);
   background: var(--card);
   font-weight: 700;
