@@ -523,10 +523,12 @@ button {
   align-items: center;
   gap: 12px;
   padding: 14px 18px;
+  margin: 0;
   background: var(--indigo);
   color: #fff;
-  position: sticky;
-  top: 0;
+  position: relative;
+  top: auto;
+  inset-block-start: auto;
   z-index: 30;
   flex-wrap: wrap;
 }
@@ -2951,7 +2953,9 @@ textarea {
 
 @media (max-width: 600px) {
   .game-topbar {
-    top: 54px;
+    top: auto;
+    inset-block-start: auto;
+    margin: 0;
     padding: 10px 12px;
     gap: 8px;
   }
@@ -3206,11 +3210,18 @@ body {
   min-height: 0;
   max-height: calc(100dvh - 68px);
   overflow: hidden;
+  margin: 0;
+  padding-top: 0;
   padding-bottom: 8px;
 }
 
 .site-header {
   height: 68px;
+  margin: 0;
+}
+
+.site-nav {
+  margin-bottom: 0;
 }
 
 .difficulty-panel {
