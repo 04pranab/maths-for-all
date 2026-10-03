@@ -29,38 +29,38 @@
 
 :root {
   /* ---- Warm, hand-picked palette (not the default AI cream+terracotta) ---- */
-  --paper: #FBF3E7;
+  --paper: #F7F9F4;
   /* base background: warm unbleached paper */
-  --paper-line: #ECDFC8;
+  --paper-line: #DCE7DD;
   /* notebook dotted-line color */
-  --card: #FFFDF8;
+  --card: #FFFFFF;
   /* card surface, warmer than pure white */
-  --card-alt: #FFF6E9;
-  --ink: #33302A;
+  --card-alt: #F2F8F3;
+  --ink: #263238;
   /* warm near-black, like pencil lead */
-  --ink-soft: #6B6154;
+  --ink-soft: #56666B;
   /* dimmed text, still warm */
-  --marigold: #F2A93B;
+  --marigold: #F4B942;
   /* joy, energy — primary accent */
-  --marigold-deep: #D98D1F;
-  --indigo: #2F4B7C;
+  --marigold-deep: #B87516;
+  --indigo: #315A7D;
   /* calm, trustworthy — primary brand color */
-  --indigo-deep: #223A63;
-  --clay: #C96A4B;
+  --indigo-deep: #24445F;
+  --clay: #C45D52;
   /* terracotta clay — used sparingly */
-  --leaf: #6E9B4C;
+  --leaf: #4E8A62;
   /* success, growth */
-  --leaf-deep: #557A38;
-  --sky: #4FA6B8;
+  --leaf-deep: #376947;
+  --sky: #4B9DB3;
   /* racing / motion accent */
-  --berry: #8C6BAE;
+  --berry: #8767B5;
   /* playful variety accent */
   --amber-soft: #F0A85E;
   /* gentle "try again" — never red */
   --amber-bg: #FCEBD4;
   --leaf-bg: #E9F2E0;
-  --border: #E4D5BC;
-  --border-strong: #D8C29E;
+  --border: #D5E0D8;
+  --border-strong: #B9CCBF;
   --focus: #2C6BED;
   /* keyboard-focus ring — functional, stays cool/blue on purpose */
 
@@ -92,8 +92,8 @@ body {
 
 body {
   background-image:
-    radial-gradient(var(--paper-line) 1.4px, transparent 1.4px);
-  background-size: 26px 26px;
+    radial-gradient(var(--paper-line) 1.1px, transparent 1.1px);
+  background-size: 28px 28px;
   min-height: 100vh;
   padding-bottom: 20px;
 }
@@ -231,16 +231,105 @@ button {
 }
 
 /* =============================================================
+   MAIN MENU  — playful, calm, and easy to scan
+   ============================================================= */
+
+#screen-menu {
+  position: relative;
+  isolation: isolate;
+}
+
+#screen-menu::before {
+  content: "∑   π   √   ∞   +   −   ×   ÷   =   ≈   ∆   θ   1   2   3   5   8   13";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--indigo);
+  opacity: 0.035;
+  font-family: var(--font-head);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 2.8;
+  letter-spacing: 0.45em;
+  word-spacing: 0.35em;
+  transform: rotate(-7deg) scale(1.15);
+  white-space: normal;
+}
+
+.learning-promise {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 18px auto 8px;
+  max-width: 760px;
+}
+
+.learning-promise span {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1.5px solid var(--border);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  box-shadow: 0 3px 10px rgba(38, 50, 56, 0.05);
+}
+
+.math-wisdom {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 13px auto 2px;
+  color: var(--indigo);
+}
+
+.math-wisdom-sanskrit {
+  font-family: var(--font-head);
+  font-size: 1.18rem;
+  font-weight: 800;
+}
+
+.math-wisdom-meaning {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.footer-welcome,
+.footer-note {
+  display: block;
+}
+
+.footer-welcome {
+  color: var(--indigo);
+  font-weight: 700;
+}
+
+.footer-note {
+  margin-top: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #screen-menu::before {
+    transform: none;
+  }
+}
+
+/* =============================================================
    MAIN MENU  — the one bold, playful moment on the whole site
    ============================================================= */
 .arcade-header {
   text-align: center;
-  padding: 22px 20px 10px;
+  padding: 28px 20px 10px;
 }
 
 .arcade-badge {
   display: inline-block;
-  background: var(--leaf-bg);
+  background: #E8F4EC;
   border: 2px solid var(--leaf);
   color: var(--leaf-deep);
   padding: 7px 20px;
@@ -272,7 +361,7 @@ button {
 .arena-subtitle-hi {
   font-family: var(--font-head);
   font-size: 1.3rem;
-  color: var(--clay);
+  color: var(--indigo);
   margin-top: 2px;
 }
 

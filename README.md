@@ -42,6 +42,18 @@ The full policy is available at `docs/v3/research-data-policy.html`, including t
 
 Authentication and account controls are temporarily disabled for physical gameplay testing. The privacy and research-data policy remains available from the navigation and can still be reviewed and changed.
 
+## Home-screen presentation
+
+The current home screen is intentionally calm and playful:
+- short learner-focused introductory copy;
+- three non-interactive learning promises;
+- the Sanskrit learning maxim **विद्या ददाति विनयं** with a plain-English interpretation;
+- a very faint mathematical-symbol background confined to the home screen;
+- a soft green, blue, warm-yellow, and paper-toned palette;
+- accessible typography, visible keyboard focus, and reduced-motion handling.
+
+The background notation is decorative only and is kept intentionally faint so it does not compete with the game cards or controls.
+
 ## Project structure
 
 ```text
@@ -84,7 +96,7 @@ maths-for-all/
 
 ## Developer environment
 
-The repository now includes explicit local environment templates, Git hygiene rules, Node version pinning, and editor defaults.
+The repository includes explicit local environment templates, Git hygiene rules, Node version pinning, and editor defaults.
 
     cp .env.local.example .env.local
     set -a
@@ -141,4 +153,3 @@ The suite is a regression tool, not a substitute for real assistive-technology t
 See `LICENSE`.
 
 The project uses a custom responsible-use license. It is not an OSI-approved open-source license.
-

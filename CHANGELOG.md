@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+### Home-screen presentation refresh
+- Replaced the older introductory and footer copy with shorter, learner-focused language.
+- Added three non-interactive learning promises: learn at your pace, try without fear, and celebrate every step.
+- Added the Sanskrit learning maxim **विद्या ददाति विनयं** with a plain-English interpretation.
+- Added a very faint mathematical-symbol background to the home screen only.
+- Refreshed the home palette with soft green, blue, warm yellow, and clean paper tones.
+- Preserved readable contrast, keyboard focus, text scaling, reduced-motion behaviour, and existing game interactions.
+- Kept the visual refresh free of external decorative assets, telemetry, authentication changes, and game-logic changes.
+
+## 2.0.2
+
+### Physical-testing baseline
+- Current stable physical-testing baseline for the educational application.
+- Authentication and account controls remain temporarily disabled during physical gameplay testing.
+- Privacy and research-data policy remains available without login.
+- SVG decorative assets are removed from the project.
+- Browser smoke/stress, authentication, consent, and research-gateway validation remain part of the regression boundary.
+
 ## 2.0.1 · 2026-09-25
 
 ### Privacy and consent
@@ -30,6 +50,7 @@
 - Updated the project license with research-policy compliance conditions and a legal-accountability declaration.
 - Clarified that applicable law controls over project documentation.
 - Updated release metadata to `v2.0.1`.
+- Updated the project changelog.
 
 ## 2.0.0 · 2026-09-24
 
@@ -45,20 +66,7 @@
 
 v2.0.0 remains the regression reference for the educational application.
 
-## Unreleased
-
-### Developer environment and visual foundation
-- Added repository-level environment templates for local, test, and production configuration.
-- Added Git hygiene rules for secrets, runtime databases, logs, and editor files.
-- Added Node 22 pinning and consistent editor/text-file defaults.
-- Added a dependency-free local SVG asset library with eighteen friendly mathematical decorations.
-- Extended the presentation layer across learner-facing game screens.
-- Added safe DATABASE_URL and Google OAuth placeholders without committing credentials.
-- Added a dedicated visual CSS layer and integrated the artwork into the main menu.
-- Kept decorative artwork outside game logic and research collection.
-- Preserved reduced-motion behaviour for the new presentation layer.
-
-## Unreleased / future milestones
+## Future milestones
 
 ### v2.5.0
 Production authentication, server-side sessions, email verification, Google OAuth, protected resources, and authentication regression tests.
