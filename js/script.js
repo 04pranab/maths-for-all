@@ -185,15 +185,19 @@ const ControlsOverlay = (function () {
     render(key);
     show('controls-overlay');
   }
+  function close() {
+    hide('controls-overlay');
+  }
+
   function dismiss() {
     const remember = document.getElementById('controls-remember-checkbox').checked;
     if (remember && activeKey) { seen[activeKey] = true; saveSeen(); }
-    hide('controls-overlay');
+    close();
   }
 
   document.addEventListener('DOMContentLoaded', loadSeen);
 
-  return { maybeShow, forceShow, dismiss };
+  return { maybeShow, forceShow, dismiss, close };
 })();
 
 
