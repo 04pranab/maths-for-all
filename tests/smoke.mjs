@@ -378,10 +378,13 @@ async function main() {
       'accessibility[key] = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2;' +
       'assert(accessibility[key], "Horizontal overflow at large text size in " + key);' +
     '}' +
+    'await cdp("Emulation.setDeviceMetricsOverride", {width: 1366, height: 768, deviceScaleFactor: 1, mobile: false});' +
     'Game.startSudoku();' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
-    'assert(sudokuWidth <= Math.min(640, window.innerWidth - 20), "Sudoku board is oversized for the viewport.");' +
+    'const sudokuPanel = document.querySelector("#screen-sudoku .play-panel");' +
+    'assert(sudokuWidth <= 620, "Sudoku board is oversized at desktop width.");' +
+    'assert(getComputedStyle(sudokuPanel).gridTemplateColumns.split(" ").length === 2, "Sudoku desktop layout did not place controls beside the board.");' +
     'const sudokuControls = document.querySelector(".sudoku-controls");' +
     'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
     'assert(sudokuControls && sudokuKeypad, "Sudoku side controls are missing.");' +
@@ -394,6 +397,12 @@ async function main() {
     'const levelButton = document.querySelector(".btn-level");' +
     'assert(levelButton && levelButton.getBoundingClientRect().width >= 60, "Shape level buttons are too small for visibility.");' +
     'assert(levelButton && levelButton.getBoundingClientRect().height >= 60, "Shape level buttons are too small for visibility.");' +
+    'await cdp("Emulation.setDeviceMetricsOverride", {width: 390, height: 844, deviceScaleFactor: 1, mobile: true});' +
+    'Game.startSudoku();' +
+    'const mobilePanel = document.querySelector("#screen-sudoku .play-panel");' +
+    'assert(getComputedStyle(mobilePanel).gridTemplateColumns.split(" ").length === 1, "Sudoku did not collapse to a single column on mobile.");' +
+    'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Mobile layout has horizontal overflow.");' +
+    'await cdp("Emulation.clearDeviceMetricsOverride");' +
     'document.documentElement.style.setProperty("--font-scale", "1");' +
     'return { questionStats, sudokuStats, slabRounds: 180, shapeStats, accessibility };' +
   '})()');
