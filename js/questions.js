@@ -256,6 +256,7 @@ const Quiz = (function () {
   let masteryHistory = [];
   let questionResolved = false;
   let currentMasteryValue = null;
+  let advanceTimeout = null;
 
   const DIFF_LABEL = { easy: 'Starter', medium: 'Growing', hard: 'Champion' };
 
@@ -464,14 +465,22 @@ const Quiz = (function () {
     renderQuizActions(questionResolved);
 
     if (correct) {
-      setTimeout(() => {
+      if (advanceTimeout) clearTimeout(advanceTimeout);
+      advanceTimeout = setTimeout(() => {
+        advanceTimeout = null;
         if (questionResolved) nextQuestion();
       }, 500);
     }
   }
 
   function next() {
+    if (advanceTimeout) { clearTimeout(advanceTimeout); advanceTimeout = null; }
     nextQuestion();
+  }
+
+  function stop() {
+    if (advanceTimeout) { clearTimeout(advanceTimeout); advanceTimeout = null; }
+    questionResolved = true;
   }
 
   function retry() {
@@ -504,7 +513,7 @@ const Quiz = (function () {
     });
   });
 
-  return { init, setDifficulty, changeDifficulty, submit, next, retry, hint, explain, replay: replayQuestion };
+  return { init, setDifficulty, changeDifficulty, submit, next, retry, hint, explain, replay: replayQuestion, stop };
 })();
 
 
