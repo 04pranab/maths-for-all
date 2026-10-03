@@ -315,6 +315,38 @@ async function main() {
   '})()');
 
   if (!concurrencyResult) throw new Error('Concurrency audit did not complete.');
+  if (!multiUserResult) throw new Error('Multi-user stress audit did not complete.');
+
+  const multiUserResult = await (async () => {
+    const base = 'http://127.0.0.1:' + process.env.PORT;
+    const users = 24;
+    const rounds = 20;
+    const tasks = [];
+    for (let user = 0; user < users; user++) {
+      for (let round = 0; round < rounds; round++) {
+        tasks.push((async () => {
+          const headers = { 'content-type': 'application/json', 'x-test-user': 'stress-user-' + user };
+          const response = await fetch(base + '/api/research/events', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              event: 'stress_concurrent_player',
+              user: 'stress-user-' + user,
+              round,
+              game: ['quiz','race','sudoku','shape','slab'][round % 5]
+            })
+          });
+          return { user, round, status: response.status };
+        })());
+      }
+    }
+    const results = await Promise.all(tasks);
+    const failed = results.filter(result => result.status < 200 || result.status >= 300);
+    if (failed.length) throw new Error('Concurrent-player API stress had ' + failed.length + ' failed requests.');
+    const uniqueUsers = new Set(results.map(result => result.user));
+    if (uniqueUsers.size !== users) throw new Error('Concurrent-player stress lost user isolation.');
+    return { users, roundsPerUser: rounds, requests: results.length, failed: failed.length };
+  })();
 
   const gameResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
@@ -344,7 +376,7 @@ async function main() {
   if (unexpectedResourceErrors.length) throw new Error('Browser resource errors detected:\n' + unexpectedResourceErrors.map(item => item.status + ' ' + item.url).join('\n'));
   if (errors.length) throw new Error('Browser runtime/console errors detected:\n' + [...new Set(errors)].join('\n'));
 
-  console.log(JSON.stringify({ status: 'PASS', baseline, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0 }, null, 2));
+  console.log(JSON.stringify({ status: 'PASS', baseline, generators: generatorResult, concurrency: concurrencyResult, multiUser: multiUserResult, games: gameResult, browserErrors: 0 }, null, 2));
 }
 
 try {
