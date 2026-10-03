@@ -3182,3 +3182,349 @@ textarea {
     grid-column: 1 / -1;
   }
 }
+
+
+/* =============================================================
+   COMPACT NO-SCROLL GAME LAYOUT
+   Keep core game controls inside the viewport. Desktop uses the
+   available width; narrow screens collapse only when necessary.
+   ============================================================= */
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  min-height: 100dvh;
+  padding-bottom: 0;
+}
+
+.screen {
+  height: calc(100dvh - 68px);
+  min-height: 0;
+  max-height: calc(100dvh - 68px);
+  overflow: hidden;
+  padding-bottom: 8px;
+}
+
+.site-header {
+  height: 68px;
+}
+
+.difficulty-panel {
+  width: min(1180px, calc(100vw - 32px));
+  max-width: none;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
+  grid-template-areas:
+    "title title"
+    "hint hint"
+    "guide buttons";
+  align-items: center;
+  gap: 10px 24px;
+}
+
+.difficulty-panel h3 {
+  grid-area: title;
+  margin-bottom: 0;
+}
+
+.difficulty-panel .diff-hint {
+  grid-area: hint;
+  margin-bottom: 0;
+}
+
+.difficulty-panel .level-guide {
+  grid-area: guide;
+  width: 100%;
+  margin: 0;
+  grid-template-columns: 1fr;
+  align-self: stretch;
+}
+
+.difficulty-panel .level-guide strong {
+  grid-column: auto;
+}
+
+.difficulty-panel .diff-buttons {
+  grid-area: buttons;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+.difficulty-panel .btn-diff {
+  width: 100%;
+  min-height: 70px;
+  padding: 14px 18px;
+}
+
+#race-setup-panel {
+  width: min(1240px, calc(100vw - 32px));
+  max-width: none;
+  padding: 18px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.85fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.setup-card,
+.leaderboard {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 0;
+  padding: 20px;
+}
+
+.setup-card .diff-buttons {
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.setup-card .btn-diff {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 64px;
+  padding: 12px 10px;
+}
+
+.timer-options {
+  gap: 8px;
+}
+
+.btn-timer {
+  padding: 11px;
+  min-height: 46px;
+}
+
+.btn-start-race {
+  margin-top: 12px;
+  min-height: 48px;
+  padding: 11px 15px;
+}
+
+#race-play-panel {
+  width: min(1120px, calc(100vw - 32px));
+  max-width: none;
+  padding: 14px 0;
+}
+
+#race-play-panel .question-card {
+  width: 100%;
+  min-height: 180px;
+  padding: 38px 28px;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+}
+
+.race-hud {
+  width: 100%;
+}
+
+#screen-quiz .play-panel {
+  width: min(1120px, calc(100vw - 32px));
+  max-width: none;
+}
+
+#screen-quiz .quiz-mastery {
+  max-width: none;
+}
+
+#screen-sudoku .play-panel {
+  width: min(1120px, calc(100vw - 32px));
+  max-width: none;
+}
+
+#screen-slab .slab-puzzle-area {
+  width: min(1180px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 6px 0 10px;
+  flex-wrap: nowrap;
+}
+
+#screen-slab .slab-basket {
+  width: clamp(300px, 34vw, 420px);
+  height: clamp(230px, 30vh, 300px);
+}
+
+#screen-slab .slab-right-col {
+  max-width: none;
+}
+
+#screen-menu {
+  height: calc(100dvh - 68px);
+  max-height: calc(100dvh - 68px);
+  overflow: hidden;
+}
+
+#screen-menu .arcade-header {
+  padding-top: 14px;
+}
+
+#screen-menu .menu-grid {
+  padding-top: 12px;
+  padding-bottom: 8px;
+  gap: 14px;
+}
+
+#screen-menu .menu-card {
+  padding: 16px 14px;
+}
+
+#screen-menu .menu-footer {
+  padding-top: 8px;
+}
+
+.modal-overlay {
+  overflow: hidden;
+}
+
+.modal-box {
+  max-height: calc(100dvh - 24px);
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .site-header {
+    height: auto;
+  }
+
+  .screen {
+    height: calc(100dvh - 68px);
+    max-height: calc(100dvh - 68px);
+  }
+
+  .difficulty-panel {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "title"
+      "hint"
+      "guide"
+      "buttons";
+    max-height: calc(100dvh - 78px);
+    overflow: hidden;
+  }
+
+  .difficulty-panel .level-guide {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .difficulty-panel .level-guide strong {
+    grid-column: 1 / -1;
+  }
+
+  #race-setup-panel {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .difficulty-panel {
+    width: calc(100vw - 20px);
+    padding: 10px;
+    gap: 7px;
+  }
+
+  .difficulty-panel .level-guide {
+    grid-template-columns: 1fr;
+    padding: 9px;
+    gap: 6px;
+  }
+
+  .difficulty-panel .level-guide strong {
+    grid-column: auto;
+  }
+
+  .difficulty-panel .level-guide span {
+    padding: 7px 9px;
+  }
+
+  .difficulty-panel .btn-diff {
+    min-height: 58px;
+    padding: 9px 12px;
+  }
+
+  #race-setup-panel {
+    width: calc(100vw - 20px);
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 8px 0;
+  }
+
+  .setup-card,
+  .leaderboard {
+    padding: 13px;
+  }
+
+  .leaderboard {
+    display: none;
+  }
+
+  #race-play-panel {
+    width: calc(100vw - 20px);
+  }
+
+  #race-play-panel .question-card {
+    min-height: 140px;
+    padding: 24px 16px;
+  }
+
+  #screen-slab .slab-puzzle-area {
+    width: calc(100vw - 20px);
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #screen-slab .slab-basket {
+    width: min(72vw, 340px);
+    height: 190px;
+  }
+
+  #screen-slab .slab-right-col {
+    width: 100%;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 701px) {
+  .game-topbar {
+    padding: 9px 14px;
+  }
+
+  .difficulty-panel {
+    padding-top: 8px;
+    padding-bottom: 6px;
+    gap: 6px 18px;
+  }
+
+  .difficulty-panel .level-guide span {
+    padding: 6px 9px;
+  }
+
+  .difficulty-panel .btn-diff {
+    min-height: 54px;
+    padding: 9px 14px;
+  }
+
+  #race-setup-panel {
+    padding-top: 8px;
+  }
+
+  .setup-card,
+  .leaderboard {
+    padding: 14px;
+  }
+
+  #screen-menu .arcade-header {
+    padding-top: 7px;
+  }
+
+  #screen-menu .menu-card {
+    padding: 11px 10px;
+  }
+}

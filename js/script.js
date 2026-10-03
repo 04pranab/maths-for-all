@@ -406,3 +406,39 @@ function activeGameScreen() {
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Math For All – ready. गणित सबके लिए');
 });
+
+
+/* ---------- Overlay Escape handling ----------
+   Escape dismisses only an open overlay. It must never change the
+   active game or navigate home. If no overlay is open, game-specific
+   keyboard handlers may use Escape for their own local action. */
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return;
+
+  const overlays = [
+    'controls-overlay',
+    'progress-modal',
+    'research-consent-modal',
+    'auth-modal',
+    'account-profile-modal',
+    'dare-modal',
+    'pin-modal'
+  ];
+
+  for (const id of overlays) {
+    const overlay = document.getElementById(id);
+    if (overlay && !overlay.classList.contains('hidden')) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (id === 'controls-overlay') ControlsOverlay.close();
+      else if (id === 'progress-modal') Progress.close();
+      else if (id === 'auth-modal' && window.Auth?.close) Auth.close();
+      else if (id === 'account-profile-modal') overlay.classList.add('hidden');
+      else if (id === 'research-consent-modal' && typeof ResearchConsent !== 'undefined' && ResearchConsent.get() === null) return;
+      else if (id === 'research-consent-modal' && typeof ResearchConsent !== 'undefined') ResearchConsent.close();
+      else overlay.classList.add('hidden');
+      return;
+    }
+  }
+}, true);

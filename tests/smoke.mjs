@@ -208,6 +208,10 @@ async function main() {
     'const guestPolicy = document.querySelector(".nav-policy");' +
     'assert(guestPolicy, "Unauthenticated privacy/data policy button is missing.");' +
     'assert(guestPolicy.offsetParent !== null, "Unauthenticated privacy/data policy button is not visible.");' +
+    'Game.startArithmetic();' +
+    'await new Promise(r => setTimeout(r, 20));' +
+    'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+    'assert(document.getElementById("screen-quiz").classList.contains("active"), "Escape without an overlay must not navigate away from the game.");' +
     'Auth.open("login");' +
     'await new Promise(r => setTimeout(r, 50));' +
     'assert(document.activeElement?.id === "auth-username", "Auth modal did not move focus to the first field.");' +
