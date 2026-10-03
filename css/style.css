@@ -43,9 +43,9 @@
   --marigold: #F4B942;
   /* joy, energy — primary accent */
   --marigold-deep: #B87516;
-  --indigo: #315A7D;
+  --indigo: #765A72;
   /* calm, trustworthy — primary brand color */
-  --indigo-deep: #24445F;
+  --indigo-deep: #584354;
   --clay: #C45D52;
   /* terracotta clay — used sparingly */
   --leaf: #4E8A62;
@@ -61,7 +61,7 @@
   --leaf-bg: #E9F2E0;
   --border: #D5E0D8;
   --border-strong: #B9CCBF;
-  --focus: #2C6BED;
+  --focus: #4E8A62;
   /* keyboard-focus ring — functional, stays cool/blue on purpose */
 
   --radius: 18px;
@@ -105,13 +105,14 @@ body::before {
   pointer-events: none;
   overflow: hidden;
   color: var(--indigo);
-  opacity: 0.045;
+  opacity: 0.055;
   font-family: var(--font-head);
-  font-size: clamp(1.7rem, 4vw, 3.6rem);
+  font-size: clamp(1.45rem, 3.2vw, 3rem);
   font-weight: 700;
-  line-height: 2.9;
-  letter-spacing: 0.3em;
-  word-spacing: 0.5em;
+  line-height: 2.45;
+  letter-spacing: 0.22em;
+  word-spacing: 0.4em;
+  text-align: center;
   transform: rotate(-8deg) scale(1.15);
   white-space: normal;
 }
@@ -597,6 +598,38 @@ button {
   font-size: 1.6rem;
   margin-bottom: 8px;
   color: var(--ink);
+}
+
+.level-guide {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: min(900px, 100%);
+  margin: 18px auto 0;
+  padding: 14px;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background: var(--card-alt);
+  text-align: left;
+}
+
+.level-guide strong {
+  grid-column: 1 / -1;
+  color: var(--leaf-deep);
+}
+
+.level-guide span {
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.slab-level-guide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 980px;
 }
 
 .diff-hint {
@@ -3074,5 +3107,78 @@ textarea {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ---------- Large-text resilience ---------- */
+.difficulty-panel,
+.setup-card,
+.play-panel,
+.level-guide,
+.game-topbar,
+.shape-level-panel,
+.modal-box,
+.consent-card,
+.auth-card {
+  min-width: 0;
+}
+
+.difficulty-panel *,
+.setup-card *,
+.play-panel *,
+.level-guide *,
+.shape-level-panel *,
+.modal-box *,
+.consent-card *,
+.auth-card * {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.btn-diff,
+.btn-timer,
+.btn-start-race,
+.btn-sudoku,
+.btn-shape-ctrl,
+.btn-slab,
+.quiz-action,
+.btn-submit {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.game-topbar .topbar-title {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+}
+
+@media (max-width: 760px) {
+  .level-guide,
+  .slab-level-guide {
+    grid-template-columns: 1fr;
+  }
+
+  .level-guide strong {
+    grid-column: auto;
+  }
+}
+
+@media (min-width: 761px) {
+  .level-guide span {
+    min-height: 72px;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1050px) {
+  .level-guide {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .level-guide strong {
+    grid-column: 1 / -1;
   }
 }
