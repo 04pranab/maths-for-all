@@ -8,7 +8,7 @@ Maths for All is designed around a learner-first loop: **try → understand → 
 
 **v2.0.2**
 
-This branch is a physical game-testing prototype built from the v2 educational baseline.
+This is the physical game-testing baseline. Authentication and account controls are temporarily disabled while the game mechanics are tested.
 
 ## Features
 
@@ -16,13 +16,43 @@ This branch is a physical game-testing prototype built from the v2 educational b
 - 🏁 Math Racing
 - 🔢 Sudoku
 - 🔷 Shape Fitting
-- 🧺 Slab Maths with longer rounds
+- 🧺 Slab Maths
 - 📱 Responsive desktop and mobile layouts
 - ⌨️ Keyboard-friendly controls and visible focus states
+- ❓ Game-specific How to play instructions
 - 🔐 Explicit research-consent controls
 - 📄 Privacy and research-data policy available without login
 - 🚫 Strict No-means-no research collection
 - 🧪 Automated browser smoke/stress testing
+
+## Current presentation
+
+The home screen uses a calm, playful palette and a full-page field of very faint mathematical symbols instead of the previous dotted background.
+
+The home introduction no longer uses the removed sentence beginning:
+
+`Explore numbers, shapes and patterns at your own pace...`
+
+The existing game cards, learning promises, Sanskrit learning maxim, and accessible typography remain.
+
+## How to play
+
+The navigation **How to play** control follows the active game:
+- Arithmetic Quiz → Arithmetic instructions
+- Math Racing → Racing instructions
+- Sudoku → Sudoku instructions
+- Shape Fitting → Shape instructions
+- Slab Maths → Slab Maths instructions
+
+If no game is active, the navigation does not open unrelated game instructions.
+
+The existing `?` button inside each game remains game-specific.
+
+## Keyboard and overlays
+
+Escape closes dismissible overlays, including the How to play overlay, and returns to the underlying state.
+
+The initial mandatory research-consent prompt remains non-dismissible with Escape until an explicit Yes or No choice is made.
 
 ## Privacy by design
 
@@ -36,80 +66,11 @@ If a learner chooses No:
 - normal educational gameplay continues;
 - the preference can be reviewed and changed later.
 
-The full policy is available at `docs/v3/research-data-policy.html`, including the data categories, exclusions, withdrawal behaviour, implementation requirements, and compliance declaration.
-
-## Prototype mode
-
-Authentication and account controls are temporarily disabled for physical gameplay testing. The privacy and research-data policy remains available from the navigation and can still be reviewed and changed.
-
-## Home-screen presentation
-
-The current home screen is intentionally calm and playful:
-- short learner-focused introductory copy;
-- three non-interactive learning promises;
-- the Sanskrit learning maxim **विद्या ददाति विनयं** with a plain-English interpretation;
-- a very faint mathematical-symbol background confined to the home screen;
-- a soft green, blue, warm-yellow, and paper-toned palette;
-- accessible typography, visible keyboard focus, and reduced-motion handling.
-
-The background notation is decorative only and is kept intentionally faint so it does not compete with the game cards or controls.
-
-## Project structure
-
-```text
-maths-for-all/
-├── index.html
-├── css/
-│   ├── style.css
-│   └── slabmath.css
-├── js/
-│   ├── consent.js
-│   ├── questions.js
-│   ├── research-gateway.js
-│   ├── script.js
-│   ├── sudoku.js
-│   └── shapes.js
-├── docs/v3/
-│   └── research-data-policy.html
-├── tests/
-│   ├── auth-api.mjs
-│   ├── postgres-auth.mjs
-│   ├── research-gateway.mjs
-│   ├── setup-postgres.mjs
-│   └── smoke.mjs
-├── .github/workflows/
-│   └── tests.yml
-├── .env.example
-├── .env.local.example
-├── .env.test.example
-├── .env.production.example
-├── .gitignore
-├── .gitattributes
-├── .editorconfig
-├── .nvmrc
-├── LICENSE
-├── VERSION
-├── CHANGELOG.md
-├── ONGOING.md
-└── package.json
-```
-
-## Developer environment
-
-The repository includes explicit local environment templates, Git hygiene rules, Node version pinning, and editor defaults.
-
-    cp .env.local.example .env.local
-    set -a
-    source .env.local
-    set +a
-
-The real .env.local stays untracked. The committed example files contain placeholders only.
-
-The prototype is intended to run as a static browser application for physical game testing.
+The full policy is available at `docs/v3/research-data-policy.html`.
 
 ## Visual assets
 
-The physical-testing prototype uses no SVG assets or external decorative image library. Game identity is communicated through text, interface symbols, typography, layout, and the game mechanics themselves.
+The physical-testing prototype uses no SVG assets or external decorative image library.
 
 ## Run locally
 
@@ -125,18 +86,18 @@ Open `http://localhost:8000`.
 
 ## Testing
 
-The repository includes a headless Chromium smoke/stress suite that checks:
+The repository includes a headless Chromium smoke/stress suite covering:
 - JavaScript syntax;
 - required DOM nodes;
 - static-resource availability;
-- signup/login/session handling;
-- research consent enforcement;
-- analytics blocking and purge behaviour;
+- authentication/session paths;
+- research-consent enforcement;
 - modal keyboard behaviour;
+- game-specific help behaviour;
 - repeated gameplay transitions;
 - browser runtime and console errors.
 
-The suite is a regression tool, not a substitute for real assistive-technology testing or production security review.
+The suite is a regression tool, not a substitute for real assistive-technology testing or physical learner testing.
 
 ## Design principles
 
