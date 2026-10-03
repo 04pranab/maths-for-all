@@ -10,6 +10,13 @@
 
 ## Unreleased
 
+### Responsive game layout
+- Restored natural vertical scrolling when game content exceeds the viewport.
+- Reduced oversized Sudoku board cells and keypad controls.
+- Reduced Shape Fitting level buttons and selection-panel spacing.
+- Added browser regression checks for compact sizing and vertical overflow behaviour.
+
+
 ### Home and navigation robustness
 - Removed the home-screen introductory sentence beginning with “Explore numbers, shapes and patterns...”.
 - Replaced the previous dotted page background with a very faint full-page mathematical-symbol field.
