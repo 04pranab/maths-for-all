@@ -2,14 +2,13 @@
 
 ## Unreleased
 
-### Home-screen presentation refresh
-- Replaced the older introductory and footer copy with shorter, learner-focused language.
-- Added three non-interactive learning promises: learn at your pace, try without fear, and celebrate every step.
-- Added the Sanskrit learning maxim **विद्या ददाति विनयं** with a plain-English interpretation.
-- Added a very faint mathematical-symbol background to the home screen only.
-- Refreshed the home palette with soft green, blue, warm yellow, and clean paper tones.
-- Preserved readable contrast, keyboard focus, text scaling, reduced-motion behaviour, and existing game interactions.
-- Kept the visual refresh free of external decorative assets, telemetry, authentication changes, and game-logic changes.
+### Home and navigation robustness
+- Removed the home-screen introductory sentence beginning with “Explore numbers, shapes and patterns...”.
+- Replaced the previous dotted page background with a very faint full-page mathematical-symbol field.
+- Made the navigation How to play action follow the currently active game instead of always opening Arithmetic Quiz instructions.
+- Made Escape close the dismissible How to play/Controls overlay.
+- Added browser regression coverage for game-specific help and Escape dismissal.
+- Preserved the mandatory first-run research-consent Escape restriction.
 
 ## 2.0.2
 
