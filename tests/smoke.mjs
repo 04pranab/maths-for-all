@@ -235,6 +235,27 @@ async function main() {
 
   if (!helpResult?.ok) throw new Error('Context-sensitive help and Escape overlay checks did not complete.');
 
+  const malformedInputResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'const inputs = ["", "abc", "-999999999999999999999999", "999999999999999999999999", "\\u0000", "  "];' +
+    'Game.startArithmetic();' +
+    'for (const value of inputs) { document.getElementById("quiz-input").value = value; Quiz.submit(); }' +
+    'Game.startRacing();' +
+    'Racing.start();' +
+    'for (const value of inputs) { document.getElementById("race-input").value = value; Racing.submit(); }' +
+    'Game.startSudoku();' +
+    'for (const cell of document.querySelectorAll("#sudoku-grid .sudoku-cell")) { cell.dispatchEvent(new KeyboardEvent("keydown", { key: "x" })); cell.dispatchEvent(new InputEvent("input", { bubbles: true, data: "x", inputType: "insertText" })); }' +
+    'Game.startShapePuzzle();' +
+    'for (let i=0;i<50;i++) { ShapePuzzle.rotateSelected(); ShapePuzzle.showHint(); }' +
+    'Game.startSlabMath();' +
+    'for (let i=0;i<50;i++) { SlabMath.submit(); SlabMath.hint(); }' +
+    'assert(document.querySelector(".screen.active"), "Malformed-input stress left no active screen.");' +
+    'Game.goHome();' +
+    'return { malformedQuizInputs: inputs.length, malformedRaceInputs: inputs.length, sudokuInvalidInputAttempts: 81, repeatedShapeActions: 100, repeatedSlabActions: 100 };' +
+  '})()');
+
+  if (!malformedInputResult) throw new Error('Malformed-input stress did not complete.');
+
   const generatorResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const questionStats = {};' +
@@ -408,7 +429,7 @@ async function main() {
   if (serverErrors.length) throw new Error('Server emitted output during a successful test run:\n' + serverErrors.join('\n'));
   if (processErrors.length) throw new Error('Test process captured uncaught failures:\n' + processErrors.join('\n'));
 
-  console.log(JSON.stringify({ status: 'PASS', baseline, httpAudit, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0, serverErrors: 0, processErrors: 0 }, null, 2));
+  console.log(JSON.stringify({ status: 'PASS', baseline, httpAudit, malformedInputs: malformedInputResult, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0, serverErrors: 0, processErrors: 0 }, null, 2));
 }
 
 try {
