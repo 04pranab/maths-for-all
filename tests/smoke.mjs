@@ -382,13 +382,11 @@ async function main() {
     'Game.startSudoku();' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
-    'const sudokuPanel = document.querySelector("#screen-sudoku .play-panel");' +
     'assert(sudokuWidth <= 620, "Sudoku board is oversized at desktop width.");' +
     'const desktopControls = document.querySelector(".sudoku-controls");' +
     'assert(desktopControls.getBoundingClientRect().left > sudokuGrid.getBoundingClientRect().right - 10, "Sudoku desktop controls are not beside the board.");' +
-    'const sudokuControls = document.querySelector(".sudoku-controls");' +
     'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
-    'assert(sudokuControls && sudokuKeypad, "Sudoku side controls are missing.");' +
+    'assert(desktopControls && sudokuKeypad, "Sudoku side controls are missing.");' +
     'const sudokuAction = document.querySelector("#screen-sudoku .sudoku-controls .btn-sudoku");' +
     'assert(sudokuAction && sudokuAction.getBoundingClientRect().height <= 52, "Sudoku action buttons are oversized.");' +
     'assert(getComputedStyle(document.querySelector("#screen-sudoku .play-panel")).gridTemplateColumns !== "none", "Sudoku board/control split layout is missing.");' +
