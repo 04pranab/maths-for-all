@@ -155,7 +155,24 @@ async function main() {
     'return { ok: true };' +
   '})()');
 
-  if (!modalResult?.ok) throw new Error('Modal and keyboard accessibility checks did not complete.');
+  const helpResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'const cases = [['screen-quiz','quiz','How to play: Arithmetic Quiz'],['screen-race','race','How to play: Math Racing'],['screen-sudoku','sudoku','How to play: Sudoku Challenge'],['screen-shape','shape','How to play: Shape Fitting'],['screen-slab','slab','How to play: Slab Maths']];' +
+    'for (const [screenId, key, title] of cases) {' +
+      'Game.goHome();' +
+      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath }[key];' +
+      'start();' +
+      'Navigation.howToPlay();' +
+      'await new Promise(r => setTimeout(r, 20));' +
+      'assert(document.getElementById(screenId).classList.contains("active"), "Expected active game screen: " + screenId);' +
+      'assert(document.getElementById("controls-title").textContent === title, "How to play opened the wrong instructions for " + key);' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
+      'assert(document.getElementById("controls-overlay").classList.contains("hidden"), "Escape did not close controls overlay for " + key);' +
+    '}' +
+    'return { ok: true };' +
+  '})()');
+
+  if (!helpResult?.ok) throw new Error('Context-sensitive help and Escape overlay checks did not complete.');
 
   const gameResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
