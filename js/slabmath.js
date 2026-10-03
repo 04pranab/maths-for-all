@@ -57,32 +57,43 @@ const SlabMath = (function () {
   }
 
   /* ---------------- round generation ---------------- */
-  function randomPartition(sum, minParts, maxParts, minVal, maxVal) {
-    for (let attempt = 0; attempt < 60; attempt++) {
+  function randomPartition(sum, minParts, maxParts, minVal, maxVal, usage = new Map()) {
+    const candidates = Array.from({ length: maxVal - minVal + 1 }, (_, i) => i + minVal);
+    for (let attempt = 0; attempt < 120; attempt++) {
       const parts = Utils.randInt(minParts, maxParts);
-      let remaining = sum - minVal * parts;
-      if (remaining < 0) continue;
-      const vals = new Array(parts).fill(minVal);
-      let guard = 0;
-      while (remaining > 0 && guard < 2000) {
-        guard++;
-        const i = Utils.randInt(0, parts - 1);
-        if (vals[i] < maxVal) { vals[i]++; remaining--; }
+      const shuffled = shuffle(candidates.slice());
+      const chosen = [];
+
+      function search(index, remaining) {
+        if (chosen.length === parts) return remaining === 0;
+        if (remaining <= 0) return false;
+
+        for (let i = index; i < shuffled.length; i++) {
+          const value = shuffled[i];
+          if ((usage.get(value) || 0) >= 2) continue;
+          if (value > remaining) continue;
+
+          chosen.push(value);
+          usage.set(value, (usage.get(value) || 0) + 1);
+          if (search(i + 1, remaining - value)) return true;
+          usage.set(value, usage.get(value) - 1);
+          chosen.pop();
+        }
+        return false;
       }
-      if (remaining === 0) return vals;
+
+      if (search(0, sum)) return chosen.slice();
     }
-    // Guaranteed fallback: chop `sum` into maxVal-sized chunks.
-    const vals = [];
-    let left = sum;
-    while (left > 0) { const chunk = Math.min(maxVal, left); vals.push(Math.max(1, chunk)); left -= chunk; }
-    return vals;
+    return null;
   }
+
   function sameMultiset(a, b) {
     const sa = [...a].sort((x,y)=>x-y), sb = [...b].sort((x,y)=>x-y);
     return sa.length === sb.length && sa.every((v,i) => v === sb[i]);
   }
 
   const recentTargets = [];
+  let lastValueOrder = '';
 
   function pickDiverseTarget(tier) {
     let t = tier.targetMin;
@@ -99,49 +110,44 @@ const SlabMath = (function () {
     const tier = tierFor(n);
     const t = pickDiverseTarget(tier);
 
-    let A = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
-    let B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
-
-    for (let i = 0; i < 30 && sameMultiset(A, B); i++) {
-      B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
-    }
-
-    // Slab values are always 1..15 and never repeat within a round.
-    // Generate from a shuffled 1..15 pool so every displayed number is unique.
-    const pool = shuffle(Array.from({ length: tier.slabMax - tier.slabMin + 1 }, (_, i) => i + tier.slabMin));
-    const baseValues = [...A, ...B];
-    const uniqueBase = [...new Set(baseValues)];
-
-    // If two valid partitions happen to reuse a value, rebuild until the
-    // combined solution uses only unique slab values.
-    let solutionValues = uniqueBase;
-    for (let attempt = 0; attempt < 60 && solutionValues.length !== baseValues.length; attempt++) {
-      A = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
-      B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax);
-      solutionValues = [...new Set([...A, ...B])];
-    }
-    if (solutionValues.length !== [...A, ...B].length) {
-      A = [Math.min(15, t)];
-      B = [];
-      let remaining = t - A[0];
-      for (const v of pool) {
-        if (remaining === 0 || solutionValues.length >= tier.partsMax * 2) break;
-        if (v !== A[0] && v <= remaining) {
-          B.push(v);
-          remaining -= v;
-        }
+    let A = null;
+    let B = null;
+    for (let attempt = 0; attempt < 100 && (!A || !B || sameMultiset(A, B)); attempt++) {
+      const usage = new Map();
+      A = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax, usage);
+      if (!A) continue;
+      B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax, usage);
+      if (!B || sameMultiset(A, B)) {
+        A = null;
+        B = null;
       }
-      if (remaining !== 0) return buildRound(n);
-      solutionValues = [...A, ...B];
     }
+
+    if (!A || !B) {
+      return buildRound(n);
+    }
+
+    const solutionValues = [...A, ...B];
+    const counts = new Map();
+    for (const value of solutionValues) counts.set(value, (counts.get(value) || 0) + 1);
 
     const distractors = [];
+    const pool = shuffle(Array.from({ length: tier.slabMax - tier.slabMin + 1 }, (_, i) => i + tier.slabMin));
     for (const value of pool) {
       if (distractors.length >= tier.distractors) break;
-      if (!solutionValues.includes(value)) distractors.push(value);
+      if ((counts.get(value) || 0) >= 2) continue;
+      distractors.push(value);
+      counts.set(value, (counts.get(value) || 0) + 1);
     }
 
-    const values = shuffle([...solutionValues, ...distractors]);
+    let values = shuffle([...solutionValues, ...distractors]);
+    let order = values.join(',');
+    for (let attempt = 0; attempt < 12 && order === lastValueOrder; attempt++) {
+      values = shuffle(values);
+      order = values.join(',');
+    }
+    lastValueOrder = order;
+
     const newSlabs = values.map((v, i) => ({
       id: `r${n}_${i}_${Date.now()}_${Math.floor(Math.random()*9999)}`,
       value: v,
