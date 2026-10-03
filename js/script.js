@@ -435,7 +435,8 @@ document.addEventListener('keydown', (event) => {
       else if (id === 'progress-modal') Progress.close();
       else if (id === 'auth-modal' && window.Auth?.close) Auth.close();
       else if (id === 'account-profile-modal') overlay.classList.add('hidden');
-      else if (window.ResearchConsent?.close) ResearchConsent.close();
+      else if (id === 'research-consent-modal' && window.ResearchConsent?.get?.() === null) return;
+      else if (id === 'research-consent-modal' && window.ResearchConsent?.close) ResearchConsent.close();
       else overlay.classList.add('hidden');
       return;
     }
