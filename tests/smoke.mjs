@@ -381,7 +381,10 @@ async function main() {
     'Game.startSudoku();' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
-    'assert(sudokuWidth <= Math.min(500, window.innerWidth - 20), "Sudoku board is oversized for the viewport.");' +
+    'assert(sudokuWidth <= Math.min(640, window.innerWidth - 20), "Sudoku board is oversized for the viewport.");    'const sudokuControls = document.querySelector(".sudoku-controls");' +
+    'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
+    'assert(sudokuControls && sudokuKeypad, "Sudoku side controls are missing.");' +
+    'assert(getComputedStyle(document.querySelector("#screen-sudoku .play-panel")).gridTemplateColumns !== "none", "Sudoku board/control split layout is missing.");' +
     'assert(getComputedStyle(document.documentElement).overflowY === "auto", "Vertical page scrolling is not available.");' +
     'assert(getComputedStyle(document.querySelector(".screen.active")).overflowY !== "hidden", "Active game screen is clipping vertical content.");' +
     'Game.startShapePuzzle();' +
