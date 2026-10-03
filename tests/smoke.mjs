@@ -14,6 +14,10 @@ let nextId = 1;
 const pending = new Map();
 const errors = [];
 const failedResources = [];
+const serverErrors = [];
+const processErrors = [];
+process.on('uncaughtException', error => processErrors.push('uncaughtException: ' + (error?.stack || error?.message || error)));
+process.on('unhandledRejection', error => processErrors.push('unhandledRejection: ' + (error?.stack || error?.message || error)));
 
 async function waitFor(check, timeoutMs = 15000, intervalMs = 100) {
   const deadline = Date.now() + timeoutMs;
@@ -77,8 +81,10 @@ async function main() {
       AUTH_ORIGIN: 'http://127.0.0.1:' + httpPort,
       AUTH_COOKIE_SECURE: 'false'
     },
-    stdio: 'ignore'
+    stdio: ['ignore', 'pipe', 'pipe']
   });
+  server.stdout.on('data', chunk => { const text = String(chunk).trim(); if (text) serverErrors.push('stdout: ' + text); });
+  server.stderr.on('data', chunk => { const text = String(chunk).trim(); if (text) serverErrors.push('stderr: ' + text); });
 
   browser = spawn(process.env.CHROMIUM || 'chromium', [
     '--headless=new',
@@ -90,6 +96,61 @@ async function main() {
     '--user-data-dir=' + path.join(root, '.test-chrome-profile'),
     'about:blank'
   ], { stdio: 'ignore' });
+
+  const baseUrl = 'http://127.0.0.1:' + httpPort;
+  const httpGet = async (path, headers = {}) => fetch(baseUrl + path, { headers });
+  const httpPost = async (path, body, headers = {}) => fetch(baseUrl + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...headers },
+    body: JSON.stringify(body)
+  });
+
+  const httpAudit = await (async () => {
+    const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    const health = await httpGet('/api/health');
+    assert(health.status === 200, 'Health endpoint failed before stress run: ' + health.status);
+    const unknown = await httpGet('/api/does-not-exist');
+    assert(unknown.status === 404, 'Unknown API route did not return 404.');
+    const malformed = await fetch(baseUrl + '/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{not-json'
+    });
+    assert(malformed.status === 400, 'Malformed JSON was not rejected with 400: ' + malformed.status);
+    const crossOrigin = await httpGet('/api/health', { Origin: 'https://invalid.example' });
+    assert(crossOrigin.status === 403, 'Cross-origin API request was not rejected: ' + crossOrigin.status);
+
+    const rateResults = await Promise.all(Array.from({ length: 14 }, () => httpPost('/api/auth/login', {
+      username: 'stress-invalid-user', password: 'invalid-password'
+    })));
+    const rateStatuses = rateResults.map(response => response.status);
+    assert(rateStatuses.includes(429), 'Login rate limiting did not activate under repeated invalid requests: ' + rateStatuses.join(','));
+    assert(rateStatuses.every(status => [401, 400, 429].includes(status)), 'Unexpected login error status during rate-limit audit: ' + rateStatuses.join(','));
+
+    const userIds = Array.from({ length: 32 }, (_, i) => 'stress-user-' + i);
+    const rounds = 30;
+    const workloads = [];
+    for (const userId of userIds) {
+      for (let round = 0; round < rounds; round++) {
+        workloads.push((async () => {
+          const [h, me, page] = await Promise.all([
+            httpGet('/api/health', { 'x-stress-user': userId }),
+            httpGet('/api/auth/me', { Cookie: 'mfa_session=synthetic-invalid-' + userId + '-' + round }),
+            httpGet('/index.html', { 'x-stress-user': userId })
+          ]);
+          assert(h.status === 200, userId + ' health status ' + h.status);
+          assert(me.status === 200, userId + ' auth/me status ' + me.status);
+          const meBody = await me.json();
+          assert(meBody.authenticated === false, userId + ' synthetic session was accepted unexpectedly.');
+          assert(page.status === 200, userId + ' page status ' + page.status);
+          return userId;
+        })());
+      }
+    }
+    const identities = await Promise.all(workloads);
+    assert(new Set(identities).size === userIds.length, 'Not all stress identities completed independently.');
+    return { users: userIds.length, roundsPerUser: rounds, workloads: workloads.length, httpRequests: workloads.length * 3, malformedCases: 3, rateLimitRequests: rateResults.length };
+  })();
 
   await connectCDP();
   await cdp('Runtime.enable');
@@ -344,13 +405,27 @@ async function main() {
   if (unexpectedResourceErrors.length) throw new Error('Browser resource errors detected:\n' + unexpectedResourceErrors.map(item => item.status + ' ' + item.url).join('\n'));
   if (errors.length) throw new Error('Browser runtime/console errors detected:\n' + [...new Set(errors)].join('\n'));
 
-  console.log(JSON.stringify({ status: 'PASS', baseline, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0 }, null, 2));
+  if (serverErrors.length) throw new Error('Server emitted output during a successful test run:\n' + serverErrors.join('\n'));
+  if (processErrors.length) throw new Error('Test process captured uncaught failures:\n' + processErrors.join('\n'));
+
+  console.log(JSON.stringify({ status: 'PASS', baseline, httpAudit, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0, serverErrors: 0, processErrors: 0 }, null, 2));
 }
 
 try {
   await main();
+} catch (error) {
+  console.error(JSON.stringify({
+    status: 'FAIL',
+    error: error?.stack || error?.message || String(error),
+    browserErrors: [...new Set(errors)],
+    failedResources,
+    serverErrors,
+    processErrors
+  }, null, 2));
+  process.exitCode = 1;
 } finally {
   if (socket && socket.readyState === WebSocket.OPEN) socket.close();
   if (browser) browser.kill('SIGTERM');
   if (server) server.kill('SIGTERM');
+  if (server && server.exitCode === null) server.kill('SIGKILL');
 }
