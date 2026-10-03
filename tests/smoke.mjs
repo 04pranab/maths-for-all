@@ -260,7 +260,6 @@ async function main() {
   '})()');
 
   if (!generatorResult) throw new Error('Generator and accessibility audit did not complete.');
-  if (!concurrencyResult) throw new Error('Concurrency audit did not complete.');
 
   const concurrencyResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
@@ -288,6 +287,8 @@ async function main() {
     'Game.goHome();' +
     'return { concurrentQuestions: generated.length, concurrentSlabRounds: slabRounds.length, queuedStarts: queuedStarts.length, staleTimerChecks: 2 };' +
   '})()');
+
+  if (!concurrencyResult) throw new Error('Concurrency audit did not complete.');
 
   const gameResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
