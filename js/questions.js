@@ -158,22 +158,38 @@ const QuestionBank = (function () {
   const HARD_GENS = [hardWordTwoStep, hardWordMult, hardWordDiv, hardWordComparison, hardWordMoney, hardWordFraction, hardWordPerimeter];
 
   const TIER_GENS = { easy: EASY_GENS, medium: MEDIUM_GENS, hard: HARD_GENS };
-  const usedNumbers = { easy: new Set(), medium: new Set(), hard: new Set() };
+  // A displayed number may occur twice, but never three times in the
+  // active pool. This keeps generated questions varied without making
+  // long sessions run out of useful arithmetic combinations immediately.
+  const numberCounts = { easy: new Map(), medium: new Map(), hard: new Map() };
   const MAX_NUMBER = 250;
-  const usedAnswers = { easy: new Set(), medium: new Set(), hard: new Set() };
+  const MAX_NUMBER_USES = 2;
+  const usedAnswers = { easy: new Map(), medium: new Map(), hard: new Map() };
 
   function extractNumbers(text) {
     return (String(text).match(/\d+(?:\.\d+)?/g) || []).map(Number);
   }
 
   function canUseQuestion(level, q) {
-    if (!Number.isFinite(q.answer) || usedAnswers[level].has(q.answer)) return false;
-    return extractNumbers(q.text).every(n => !usedNumbers[level].has(n));
+    if (!Number.isFinite(q.answer)) return false;
+    const answerUses = usedAnswers[level].get(q.answer) || 0;
+    if (answerUses >= MAX_NUMBER_USES) return false;
+
+    const counts = new Map();
+    for (const n of extractNumbers(q.text)) {
+      const next = (counts.get(n) || 0) + 1;
+      if (next > MAX_NUMBER_USES) return false;
+      if ((numberCounts[level].get(n) || 0) + next > MAX_NUMBER_USES) return false;
+      counts.set(n, next);
+    }
+    return true;
   }
 
   function remember(level, q) {
-    usedAnswers[level].add(q.answer);
-    extractNumbers(q.text).forEach(n => usedNumbers[level].add(n));
+    usedAnswers[level].set(q.answer, (usedAnswers[level].get(q.answer) || 0) + 1);
+    extractNumbers(q.text).forEach(n => {
+      numberCounts[level].set(n, (numberCounts[level].get(n) || 0) + 1);
+    });
   }
 
   function generate(difficulty) {
@@ -193,9 +209,9 @@ const QuestionBank = (function () {
       }
     }
 
-    // If the numeric pool for this level is genuinely exhausted, start a
-    // fresh pool. This is the only point where repetition is permitted.
-    usedNumbers[level].clear();
+    // If this pool is exhausted, begin a fresh pool. The reset is explicit,
+    // so no number can silently appear three times in one active pool.
+    numberCounts[level].clear();
     usedAnswers[level].clear();
     return generate(level);
   }

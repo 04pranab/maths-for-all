@@ -174,6 +174,93 @@ async function main() {
 
   if (!helpResult?.ok) throw new Error('Context-sensitive help and Escape overlay checks did not complete.');
 
+  const generatorResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'const questionStats = {};' +
+    'for (const level of ["easy","medium","hard"]) {' +
+      'const counts = new Map();' +
+      'for (let i = 0; i < 40; i++) {' +
+        'const q = QuestionBank.generate(level);' +
+        'assert(q && typeof q.text === "string" && q.text.trim(), "Generated question has no usable text: " + level);' +
+        'assert(Number.isFinite(q.answer), "Generated question has a non-finite answer: " + level);' +
+        'for (const n of (q.text.match(/\\d+(?:\\.\\d+)?/g) || []).map(Number)) {' +
+          'assert(Number.isInteger(n) && n >= 1 && n <= 250, "Question contains an invalid numeric token: " + n);' +
+          'const next = (counts.get(n) || 0) + 1;' +
+          'assert(next <= 2, "A question number repeated more than twice in one generator pool: " + n);' +
+          'counts.set(n, next);' +
+        '}' +
+      '}' +
+      'questionStats[level] = { questions: 40, distinctNumbers: counts.size, maxUses: Math.max(...counts.values()) };' +
+    '}' +
+    'function sudokuCount(grid) {' +
+      'const copy = grid.map(row => row.slice()); let found = 0;' +
+      'function valid(r,c,n) {' +
+        'for (let i=0;i<9;i++) if (copy[r][i]===n || copy[i][c]===n) return false;' +
+        'const br=Math.floor(r/3)*3, bc=Math.floor(c/3)*3;' +
+        'for(let rr=br;rr<br+3;rr++) for(let cc=bc;cc<bc+3;cc++) if(copy[rr][cc]===n) return false;' +
+        'return true;' +
+      '}' +
+      'function solve() {' +
+        'let br=-1,bc=-1;' +
+        'outer: for(let r=0;r<9;r++) for(let c=0;c<9;c++) if(copy[r][c]===0){br=r;bc=c;break outer;}' +
+        'if(br<0){found++;return found;}' +
+        'for(let n=1;n<=9;n++){if(!valid(br,bc,n))continue;copy[br][bc]=n;solve();copy[br][bc]=0;if(found>1)return found;}' +
+        'return found;' +
+      '}' +
+      'return solve();' +
+    '}' +
+    'const sudokuStats = {};' +
+    'for (const level of ["easy","medium","hard"]) {' +
+      'let previous = "";' +
+      'for (let i=0;i<12;i++) {' +
+        'Sudoku.newPuzzle(level);' +
+        'const cells = [...document.querySelectorAll("#sudoku-grid .sudoku-cell")];' +
+        'assert(cells.length === 81, "Sudoku grid is not 9x9.");' +
+        'const grid = Array.from({length:9},(_,r)=>cells.slice(r*9,r*9+9).map(c => Number(c.textContent || 0)));' +
+        'const givens = grid.map(row => row.slice());' +
+        'for(let r=0;r<9;r++) for(let c=0;c<9;c++) assert(givens[r][c]>=0 && givens[r][c]<=9, "Sudoku contains an invalid cell.");' +
+        'const signature = givens.map(row=>row.join("")).join("/");' +
+        'assert(i===0 || signature !== previous, "Sudoku repeated the immediately previous puzzle: " + level);' +
+        'previous = signature;' +
+        'assert(sudokuCount(givens) === 1, "Sudoku puzzle is not uniquely solvable: " + level);' +
+      '}' +
+      'sudokuStats[level] = "12 unique solvable puzzles";' +
+    '}' +
+    'function hasSubset(values, target) {' +
+      'const reachable = new Set([0]);' +
+      'for (const value of values) for (const sum of [...reachable]) if (sum + value <= target) reachable.add(sum + value);' +
+      'return reachable.has(target);' +
+    '}' +
+    'let previousSlabOrder = "";' +
+    'for (let i=0;i<60;i++) {' +
+      'SlabMath.newRound();' +
+      'const target = Number(document.getElementById("slab-basket-number").textContent);' +
+      'const values = [...document.querySelectorAll("#slab-tray .slab-tile")].map(el => Number(el.textContent));' +
+      'assert(values.length > 0, "Slab Maths generated no tiles.");' +
+      'assert(values.every(v => Number.isInteger(v) && v >= 1 && v <= 15), "Slab Maths generated a value outside 1–15.");' +
+      'const counts = new Map(); values.forEach(v => counts.set(v,(counts.get(v)||0)+1));' +
+      'assert(Math.max(...counts.values()) <= 2, "Slab Maths repeated a number more than twice.");' +
+      'assert(hasSubset(values,target), "Slab Maths generated an unreachable target: " + target);' +
+      'const order = values.join(",");' +
+      'if (i > 0) assert(order !== previousSlabOrder, "Slab Maths repeated the exact tile order.");' +
+      'previousSlabOrder = order;' +
+    '}' +
+    'const accessibility = {};' +
+    'document.documentElement.style.setProperty("--font-scale", "1.5");' +
+    'for (const key of ["quiz","race","sudoku","shape","slab"]) {' +
+      'Game.goHome();' +
+      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath }[key];' +
+      'start();' +
+      'await new Promise(r => setTimeout(r, 20));' +
+      'accessibility[key] = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2;' +
+      'assert(accessibility[key], "Horizontal overflow at large text size in " + key);' +
+    '}' +
+    'document.documentElement.style.setProperty("--font-scale", "1");' +
+    'return { questionStats, sudokuStats, slabRounds: 60, accessibility };' +
+  '})()');
+
+  if (!generatorResult) throw new Error('Generator and accessibility audit did not complete.');
+
   const gameResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'ResearchConsent.set("yes");' +
