@@ -3343,6 +3343,9 @@ body {
 
 #screen-sudoku .sudoku-controls .btn-sudoku {
   width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  font-size: 0.95rem;
 }
 
 #screen-sudoku .sudoku-message {
