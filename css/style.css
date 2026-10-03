@@ -91,11 +91,29 @@ body {
 }
 
 body {
-  background-image:
-    radial-gradient(var(--paper-line) 1.1px, transparent 1.1px);
-  background-size: 28px 28px;
   min-height: 100vh;
   padding-bottom: 20px;
+  position: relative;
+  isolation: isolate;
+}
+
+body::before {
+  content: "∑  π  √  ∞  +  −  ×  ÷  =  ≈  ≠  ≤  ≥  ∆  θ  α  β  γ  x²  y²  1  2  3  5  8  13  21  34";
+  position: fixed;
+  inset: -12%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  color: var(--indigo);
+  opacity: 0.045;
+  font-family: var(--font-head);
+  font-size: clamp(1.7rem, 4vw, 3.6rem);
+  font-weight: 700;
+  line-height: 2.9;
+  letter-spacing: 0.3em;
+  word-spacing: 0.5em;
+  transform: rotate(-8deg) scale(1.15);
+  white-space: normal;
 }
 
 h1,
@@ -236,26 +254,6 @@ button {
 
 #screen-menu {
   position: relative;
-  isolation: isolate;
-}
-
-#screen-menu::before {
-  content: "∑   π   √   ∞   +   −   ×   ÷   =   ≈   ∆   θ   1   2   3   5   8   13";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-  color: var(--indigo);
-  opacity: 0.035;
-  font-family: var(--font-head);
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 700;
-  line-height: 2.8;
-  letter-spacing: 0.45em;
-  word-spacing: 0.35em;
-  transform: rotate(-7deg) scale(1.15);
-  white-space: normal;
 }
 
 .learning-promise {
@@ -314,7 +312,7 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #screen-menu::before {
+  body::before {
     transform: none;
   }
 }
