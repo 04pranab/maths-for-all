@@ -74,6 +74,12 @@ No research infrastructure is required for these checks.
 
 ---
 
+## Current layout work
+
+The physical-testing line now allows vertical page scrolling whenever content exceeds the viewport instead of clipping game screens. Sudoku boards, keypads, and Shape Fitting level controls are kept compact while preserving usable interaction sizes across desktop and smaller devices.
+
+---
+
 ## 3. Release line
 
 ### v2.0.0 · Stable educational baseline
