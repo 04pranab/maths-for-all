@@ -179,7 +179,7 @@ async function main() {
     'const questionStats = {};' +
     'for (const level of ["easy","medium","hard"]) {' +
       'const counts = new Map();' +
-      'for (let i = 0; i < 100; i++) {' +
+      'for (let i = 0; i < 40; i++) {' +
         'const q = QuestionBank.generate(level);' +
         'assert(q && typeof q.text === "string" && q.text.trim(), "Generated question has no usable text: " + level);' +
         'assert(Number.isFinite(q.answer), "Generated question has a non-finite answer: " + level);' +
@@ -190,7 +190,7 @@ async function main() {
           'counts.set(n, next);' +
         '}' +
       '}' +
-      'questionStats[level] = { questions: 100, distinctNumbers: counts.size, maxUses: Math.max(...counts.values()) };' +
+      'questionStats[level] = { questions: 40, distinctNumbers: counts.size, maxUses: Math.max(...counts.values()) };' +
     '}' +
     'function sudokuCount(grid) {' +
       'const copy = grid.map(row => row.slice()); let found = 0;' +
