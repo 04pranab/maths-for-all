@@ -10,7 +10,9 @@
     "start": "node server/index.mjs",
     "test:auth": "node tests/auth-api.mjs",
     "test:postgres": "node tests/postgres-auth.mjs",
-    "test:research-gateway": "node tests/research-gateway.mjs"
+    "test:research-gateway": "node tests/research-gateway.mjs",
+    "test:smoke": "node tests/smoke.mjs",
+    "test:stress": "node tests/smoke.mjs"
   },
   "dependencies": {
     "pg": "^8.16.3",
