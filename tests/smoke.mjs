@@ -381,7 +381,8 @@ async function main() {
     'Game.startSudoku();' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
-    'assert(sudokuWidth <= Math.min(640, window.innerWidth - 20), "Sudoku board is oversized for the viewport.");    'const sudokuControls = document.querySelector(".sudoku-controls");' +
+    'assert(sudokuWidth <= Math.min(640, window.innerWidth - 20), "Sudoku board is oversized for the viewport.");' +
+    'const sudokuControls = document.querySelector(".sudoku-controls");' +
     'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
     'assert(sudokuControls && sudokuKeypad, "Sudoku side controls are missing.");' +
     'assert(getComputedStyle(document.querySelector("#screen-sudoku .play-panel")).gridTemplateColumns !== "none", "Sudoku board/control split layout is missing.");' +
@@ -389,8 +390,8 @@ async function main() {
     'assert(getComputedStyle(document.querySelector(".screen.active")).overflowY !== "hidden", "Active game screen is clipping vertical content.");' +
     'Game.startShapePuzzle();' +
     'const levelButton = document.querySelector(".btn-level");' +
-    'assert(levelButton && levelButton.getBoundingClientRect().width <= 56, "Shape level buttons are oversized.");' +
-    'assert(levelButton && levelButton.getBoundingClientRect().height <= 56, "Shape level buttons are oversized.");' +
+    'assert(levelButton && levelButton.getBoundingClientRect().width >= 60, "Shape level buttons are too small for visibility.");' +
+    'assert(levelButton && levelButton.getBoundingClientRect().height >= 60, "Shape level buttons are too small for visibility.");' +
     'document.documentElement.style.setProperty("--font-scale", "1");' +
     'return { questionStats, sudokuStats, slabRounds: 180, shapeStats, accessibility };' +
   '})()');
