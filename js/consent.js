@@ -603,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* =============================================================
    KEYBOARD ACCESSIBILITY
-   Escape closes dismissible overlays. Initial research consent
+   Escape closes dismissible overlays only. Initial research consent
    remains mandatory until an explicit Yes or No choice exists.
    Tab and Shift+Tab stay inside the active modal.
    ============================================================= */
@@ -611,18 +611,24 @@ document.addEventListener('keydown', (event) => {
   const visible = [...document.querySelectorAll('.modal-overlay:not(.hidden)')];
   const modal = visible[visible.length - 1];
 
-  if (modal && event.key === 'Escape') {
+  if (event.key === 'Escape') {
+    if (!modal) return;
+
     if (modal.id === 'research-consent-modal' && ResearchConsent.get() === null) {
       event.preventDefault();
+      event.stopPropagation();
       return;
     }
 
     event.preventDefault();
-    if (modal.id === 'auth-modal' && typeof Auth !== 'undefined') Auth.close();
+    event.stopPropagation();
+
+    if (modal.id === 'auth-modal' && typeof Auth !== 'undefined' && typeof Auth.close === 'function') Auth.close();
     else if (modal.id === 'research-consent-modal') ResearchConsent.close();
     else if (modal.id === 'account-profile-modal' && typeof Auth !== 'undefined' && typeof Auth.closeProfile === 'function') Auth.closeProfile();
     else if (modal.id === 'controls-overlay' && typeof ControlsOverlay !== 'undefined') ControlsOverlay.close();
     else if (modal.id === 'progress-modal' && typeof Progress !== 'undefined' && typeof Progress.close === 'function') Progress.close();
+    else modal.classList.add('hidden');
     return;
   }
 
@@ -638,7 +644,7 @@ document.addEventListener('keydown', (event) => {
 
   if (event.shiftKey && document.activeElement === first) {
     event.preventDefault();
-    last.focus();
+    first === last ? first.focus() : last.focus();
   } else if (!event.shiftKey && document.activeElement === last) {
     event.preventDefault();
     first.focus();
@@ -670,6 +676,6 @@ document.addEventListener('keydown', (event) => {
     if (typeof SlabMath.clearSelection === 'function' && SlabMath.clearSelection()) return;
   }
 
-  event.preventDefault();
-  Game.goHome();
+  /* Escape without an overlay is intentionally a no-op. It must never
+     navigate away from the current game. */
 });

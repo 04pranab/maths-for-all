@@ -35,6 +35,25 @@ The page background now uses a very faint mathematical-symbol field rather than 
 
 ## 2. Robustness audit backlog
 
+### Full-system stress audit
+
+**Status: PR in review**
+
+Issue #46 defines the bounded high-stress regression contract. The browser smoke suite now captures uncaught Node exceptions, unhandled rejections, server output, browser runtime errors, console errors, failed resources, malformed input handling, HTTP error paths, and multi-user request stress.
+
+Current bounded stress includes:
+- 960 HTTP multi-user workloads / 2,880 requests;
+- concurrent generator calls;
+- all 100 Shape Fitting levels;
+- repeated Sudoku, Slab Maths, Arithmetic Quiz, and Math Racing actions;
+- rapid cross-game switching and stale callback checks;
+- malformed browser input values;
+- API unknown-route, malformed-JSON, cross-origin, and rate-limit checks.
+
+The full contract is documented in docs/testing/full-system-stress-audit.md.
+
+
+
 The project should improve reliability without introducing unnecessary architectural changes.
 
 Track these separately:
@@ -113,6 +132,7 @@ Full policy:
 
 The automated suite covers:
 - JavaScript syntax;
+- bounded full-system stress and failure capture;
 - required DOM nodes;
 - static-resource availability;
 - authentication/session paths;
