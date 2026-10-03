@@ -256,6 +256,7 @@ const Quiz = (function () {
   let masteryHistory = [];
   let questionResolved = false;
   let currentMasteryValue = null;
+  let advanceTimeout = null;
 
   const DIFF_LABEL = { easy: 'Starter', medium: 'Growing', hard: 'Champion' };
 
@@ -464,14 +465,22 @@ const Quiz = (function () {
     renderQuizActions(questionResolved);
 
     if (correct) {
-      setTimeout(() => {
+      if (advanceTimeout) clearTimeout(advanceTimeout);
+      advanceTimeout = setTimeout(() => {
+        advanceTimeout = null;
         if (questionResolved) nextQuestion();
       }, 500);
     }
   }
 
   function next() {
+    if (advanceTimeout) { clearTimeout(advanceTimeout); advanceTimeout = null; }
     nextQuestion();
+  }
+
+  function stop() {
+    if (advanceTimeout) { clearTimeout(advanceTimeout); advanceTimeout = null; }
+    questionResolved = true;
   }
 
   function retry() {
@@ -504,7 +513,7 @@ const Quiz = (function () {
     });
   });
 
-  return { init, setDifficulty, changeDifficulty, submit, next, retry, hint, explain, replay: replayQuestion };
+  return { init, setDifficulty, changeDifficulty, submit, next, retry, hint, explain, replay: replayQuestion, stop };
 })();
 
 
@@ -518,10 +527,13 @@ const Racing = (function () {
   let currentAnswer = 0, totalDuration = 30, questionStartedAt = 0;
   let raceActive = false;
   let questionLocked = false;
+  let nextQuestionTimeout = null;
+  let raceGeneration = 0;
   let leaderboard = [];
   const LEADERBOARD_KEY = 'mfa_race_leaderboard_v1';
 
   function init() {
+    stop();
     show('race-setup-panel'); hide('race-play-panel'); hide('race-result-panel');
     loadLeaderboard(); renderLeaderboard(); setTimer(30); setDifficulty('easy');
   }
@@ -540,6 +552,8 @@ const Racing = (function () {
     });
   }
   function start() {
+    stop();
+    raceGeneration++;
     const nameInput = document.getElementById('race-player-name');
     playerName = (nameInput && nameInput.value.trim()) || 'Student';
     if (timerInterval) clearInterval(timerInterval);
@@ -598,7 +612,12 @@ const Racing = (function () {
     const top = document.getElementById('race-top-score');
     if (live) live.textContent = score;
     if (top) top.textContent = score;
-    setTimeout(() => { if (timeLeft > 0) nextQuestion(); }, 180);
+    if (nextQuestionTimeout) clearTimeout(nextQuestionTimeout);
+    const generation = raceGeneration;
+    nextQuestionTimeout = setTimeout(() => {
+      nextQuestionTimeout = null;
+      if (generation === raceGeneration && raceActive && timeLeft > 0) nextQuestion();
+    }, 180);
   }
   function showRaceFeedback(msg, type) {
     const el = document.getElementById('race-feedback');
@@ -606,6 +625,8 @@ const Racing = (function () {
     el.textContent = msg; el.className = 'feedback ' + type; show('race-feedback');
   }
   function endRace() {
+    raceGeneration++;
+    if (nextQuestionTimeout) { clearTimeout(nextQuestionTimeout); nextQuestionTimeout = null; }
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     raceActive = false;
     questionLocked = true;
@@ -638,8 +659,15 @@ const Racing = (function () {
     ).join('');
   }
   function clearLeaderboard() { leaderboard = []; saveLeaderboard(); renderLeaderboard(); }
-  function back() { raceActive = false; questionLocked = true; if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } hide('race-play-panel'); hide('race-result-panel'); show('race-setup-panel'); }
-  return { init, setTimer, setDifficulty, start, submit, back, clearLeaderboard };
+  function stop() {
+    raceGeneration++;
+    raceActive = false;
+    questionLocked = true;
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    if (nextQuestionTimeout) { clearTimeout(nextQuestionTimeout); nextQuestionTimeout = null; }
+  }
+  function back() { stop(); hide('race-play-panel'); hide('race-result-panel'); show('race-setup-panel'); }
+  return { init, setTimer, setDifficulty, start, submit, back, stop, clearLeaderboard };
 })();
 
 // =============================================================

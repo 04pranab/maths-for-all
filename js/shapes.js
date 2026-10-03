@@ -165,7 +165,7 @@ const ShapePuzzle = (function () {
 
   /* ── Init: show level selector ── */
   function init() {
-    stopTimer();
+    stop();
     hide('shape-play-panel');
     hide('shape-complete');
     show('shape-level-panel');
@@ -268,6 +268,12 @@ const ShapePuzzle = (function () {
   }
   function stopTimer() {
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  }
+
+  function stop() {
+    stopTimer();
+    clearHint();
+    selectedPiece = -1;
   }
   function updateTimerDisplay() {
     const m = Math.floor(elapsedSeconds / 60);
@@ -681,7 +687,7 @@ const ShapePuzzle = (function () {
 
   /* ── Public API ── */
   return {
-    init, loadLevel,
+    init, stop, loadLevel,
     rotateSelected, showHint,
     restartLevel, backToLevels, nextLevel,
     checkPuzzleSolved, clearSelection,

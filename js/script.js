@@ -358,7 +358,15 @@ const Game = (function () {
     slab:   'screen-slab',
   };
 
+  function stopBackgroundGames() {
+    if (window.Quiz && typeof Quiz.stop === 'function') Quiz.stop();
+    if (window.Racing && typeof Racing.stop === 'function') Racing.stop();
+    if (window.ShapePuzzle && typeof ShapePuzzle.stop === 'function') ShapePuzzle.stop();
+    if (window.SlabMath && typeof SlabMath.stop === 'function') SlabMath.stop();
+  }
+
   function showScreen(name) {
+    stopBackgroundGames();
     Object.values(SCREENS).forEach(id => {
       const el = document.getElementById(id);
       if (el) el.classList.remove('active');

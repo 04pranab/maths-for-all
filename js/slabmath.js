@@ -27,9 +27,9 @@ const SlabMath = (function () {
     { targetMin: 36, targetMax: 45, slabMin: 1, slabMax: 15, partsMin: 3, partsMax: 4, distractors: 3 },
     { targetMin: 46, targetMax: 60, slabMin: 1, slabMax: 15, partsMin: 4, partsMax: 5, distractors: 4 },
     { targetMin: 61, targetMax: 75, slabMin: 1, slabMax: 15, partsMin: 5, partsMax: 6, distractors: 4 },
-    { targetMin: 76, targetMax: 90, slabMin: 1, slabMax: 15, partsMin: 6, partsMax: 7, distractors: 5 },
-    { targetMin: 91, targetMax: 105, slabMin: 1, slabMax: 15, partsMin: 7, partsMax: 8, distractors: 5 },
-    { targetMin: 106, targetMax: 120, slabMin: 1, slabMax: 15, partsMin: 8, partsMax: 9, distractors: 6 },
+    { targetMin: 76, targetMax: 84, slabMin: 1, slabMax: 15, partsMin: 6, partsMax: 7, distractors: 5 },
+    { targetMin: 85, targetMax: 92, slabMin: 1, slabMax: 15, partsMin: 7, partsMax: 8, distractors: 5 },
+    { targetMin: 93, targetMax: 97, slabMin: 1, slabMax: 15, partsMin: 8, partsMax: 9, distractors: 6 },
   ];
   function tierFor(round) { return TIERS[Math.min(TIERS.length - 1, Math.floor((round - 1) / 5))]; }
 
@@ -43,6 +43,8 @@ const SlabMath = (function () {
   let hintsLeft = 5;
   let selectedSlabId = null;
   let roundLocked = false;     // true once won or stuck, until restart/new round
+  let messageTimeout = null;
+  let hintTimeout = null;
 
   /* ---------------- persistence (just the round counter) ---------------- */
   function loadProgress() {
@@ -57,33 +59,60 @@ const SlabMath = (function () {
   }
 
   /* ---------------- round generation ---------------- */
-  function randomPartition(sum, minParts, maxParts, minVal, maxVal, usage = new Map()) {
-    const candidates = Array.from({ length: maxVal - minVal + 1 }, (_, i) => i + minVal);
-    for (let attempt = 0; attempt < 120; attempt++) {
-      const parts = Utils.randInt(minParts, maxParts);
-      const shuffled = shuffle(candidates.slice());
-      const chosen = [];
+  function buildDistinctPartition(sum, parts) {
+    const values = Array.from({ length: parts }, (_, i) => i + 1);
+    let remaining = sum - (parts * (parts + 1)) / 2;
 
-      function search(index, remaining) {
-        if (chosen.length === parts) return remaining === 0;
-        if (remaining <= 0) return false;
-
-        for (let i = index; i < shuffled.length; i++) {
-          const value = shuffled[i];
-          if ((usage.get(value) || 0) >= 2) continue;
-          if (value > remaining) continue;
-
-          chosen.push(value);
-          usage.set(value, (usage.get(value) || 0) + 1);
-          if (search(i + 1, remaining - value)) return true;
-          usage.set(value, usage.get(value) - 1);
-          chosen.pop();
-        }
-        return false;
-      }
-
-      if (search(0, sum)) return chosen.slice();
+    for (let i = parts - 1; i >= 0; i--) {
+      const maxValue = i === parts - 1 ? 15 : values[i + 1] - 1;
+      const room = maxValue - values[i];
+      const add = Math.min(remaining, room);
+      values[i] += add;
+      remaining -= add;
     }
+
+    return remaining === 0 ? values : null;
+  }
+
+  function differentPartition(values) {
+    const base = values.slice();
+    const present = new Set(base);
+
+    for (let i = 0; i < base.length; i++) {
+      for (let j = 0; j < base.length; j++) {
+        if (i === j) continue;
+        const lower = base[i] - 1;
+        const higher = base[j] + 1;
+        if (lower < 1 || higher > 15) continue;
+        if (present.has(lower) || present.has(higher)) continue;
+
+        const alternate = base.slice();
+        alternate[i] = lower;
+        alternate[j] = higher;
+        alternate.sort((a, b) => a - b);
+
+        if (alternate.every((value, index) => index === 0 || value > alternate[index - 1])) {
+          return alternate;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function buildPartitionPair(sum, minParts, maxParts) {
+    const partCounts = shuffle(
+      Array.from({ length: maxParts - minParts + 1 }, (_, i) => minParts + i)
+    );
+
+    for (const parts of partCounts) {
+      const first = buildDistinctPartition(sum, parts);
+      if (!first) continue;
+
+      const second = differentPartition(first);
+      if (second) return [first, second];
+    }
+
     return null;
   }
 
@@ -110,23 +139,12 @@ const SlabMath = (function () {
     const tier = tierFor(n);
     const t = pickDiverseTarget(tier);
 
-    let A = null;
-    let B = null;
-    for (let attempt = 0; attempt < 100 && (!A || !B || sameMultiset(A, B)); attempt++) {
-      const usage = new Map();
-      A = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax, usage);
-      if (!A) continue;
-      B = randomPartition(t, tier.partsMin, tier.partsMax, tier.slabMin, tier.slabMax, usage);
-      if (!B || sameMultiset(A, B)) {
-        A = null;
-        B = null;
-      }
+    const pair = buildPartitionPair(t, tier.partsMin, tier.partsMax);
+    if (!pair) {
+      throw new Error(`No valid Slab Maths partition exists for target ${t} in tier ${tier.targetMin}–${tier.targetMax}.`);
     }
 
-    if (!A || !B) {
-      return buildRound(n);
-    }
-
+    const [A, B] = pair;
     const solutionValues = [...A, ...B];
     const counts = new Map();
     for (const value of solutionValues) counts.set(value, (counts.get(value) || 0) + 1);
@@ -176,6 +194,7 @@ const SlabMath = (function () {
 
   /* ---------------- lifecycle ---------------- */
   function init() {
+    stop();
     if (roundNum === null) {
       loadProgress();
       startRoundData(buildRound(roundNum));
@@ -192,13 +211,21 @@ const SlabMath = (function () {
     roundLocked = false;
   }
 
+  function stop() {
+    if (messageTimeout) { clearTimeout(messageTimeout); messageTimeout = null; }
+    if (hintTimeout) { clearTimeout(hintTimeout); hintTimeout = null; }
+    selectedSlabId = null;
+  }
+
   function newRound() {
+    stop();
     Analytics.log('slab', 'new_numbers', { round: roundNum });
     startRoundData(buildRound(roundNum));
     render();
   }
 
   function restartRound() {
+    stop();
     Analytics.log('slab', 'restart_round', { round: roundNum });
     target = initialRound.target;
     slabs = initialRound.slabs.map(s => ({ ...s }));
@@ -211,6 +238,7 @@ const SlabMath = (function () {
   }
 
   function nextRound() {
+    stop();
     roundNum++;
     saveProgress();
     hide('slab-complete');
@@ -292,7 +320,8 @@ const SlabMath = (function () {
   function rejectAnimation() {
     const basket = document.getElementById('slab-basket');
     basket.classList.remove('reject'); void basket.offsetWidth; basket.classList.add('reject');
-    setTimeout(() => basket.classList.remove('reject'), 400);
+    if (messageTimeout) clearTimeout(messageTimeout);
+    messageTimeout = setTimeout(() => { messageTimeout = null; basket.classList.remove('reject'); }, 400);
   }
 
   function handleWin() {
@@ -333,7 +362,11 @@ const SlabMath = (function () {
     Analytics.log('slab', 'hint_used', { round: roundNum });
     render();
     const el = document.querySelector(`.slab-tile[data-id="${best.id}"]`);
-    if (el) { el.classList.add('hinted'); setTimeout(() => el.classList.remove('hinted'), 2500); }
+    if (el) {
+      el.classList.add('hinted');
+      if (hintTimeout) clearTimeout(hintTimeout);
+      hintTimeout = setTimeout(() => { hintTimeout = null; el.classList.remove('hinted'); }, 2500);
+    }
     showMessage(`💡 Try the slab showing ${best.value}.`, 'info');
   }
 
@@ -394,5 +427,5 @@ const SlabMath = (function () {
     });
   });
 
-  return { init, newRound, restartRound, nextRound, hint, clearSelection };
+  return { init, stop, newRound, restartRound, nextRound, hint, clearSelection };
 })();

@@ -1,3 +1,8 @@
+## [Unreleased]
+- Follow-up gameplay concurrency audit: stale Quiz/Racing callbacks and background game timers are now cancelled when sessions end or screens change.
+- Slab Maths target generation now uses only mathematically constructible target ranges under the two-copy rule and fails explicitly instead of recursively retrying an impossible target.
+- Added concurrent generation, rapid queued navigation, stale-callback, fresh Slab round, and all-100-Shape-level structural regression checks.
+
 # Changelog
 
 ## Unreleased
