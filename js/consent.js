@@ -575,9 +575,17 @@ const Navigation = (function () {
 
   function howToPlay() {
     closeMenu();
-    if (typeof ControlsOverlay !== 'undefined') {
-      ControlsOverlay.forceShow('quiz');
-    }
+    if (typeof ControlsOverlay === 'undefined') return;
+    const activeGame = {
+      'screen-quiz': 'quiz',
+      'screen-race': 'race',
+      'screen-sudoku': 'sudoku',
+      'screen-shape': 'shape',
+      'screen-slab': 'slab'
+    };
+    const screen = document.querySelector('.screen.active');
+    const key = screen ? activeGame[screen.id] : null;
+    if (key) ControlsOverlay.forceShow(key);
   }
 
   return { closeMenu, toggleMenu, home, progress, howToPlay };
@@ -613,7 +621,8 @@ document.addEventListener('keydown', (event) => {
     if (modal.id === 'auth-modal' && typeof Auth !== 'undefined') Auth.close();
     else if (modal.id === 'research-consent-modal') ResearchConsent.close();
     else if (modal.id === 'account-profile-modal' && typeof Auth !== 'undefined' && typeof Auth.closeProfile === 'function') Auth.closeProfile();
-    else if (typeof Progress !== 'undefined' && typeof Progress.close === 'function') Progress.close();
+    else if (modal.id === 'controls-overlay' && typeof ControlsOverlay !== 'undefined') ControlsOverlay.close();
+    else if (modal.id === 'progress-modal' && typeof Progress !== 'undefined' && typeof Progress.close === 'function') Progress.close();
     return;
   }
 
