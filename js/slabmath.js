@@ -43,6 +43,8 @@ const SlabMath = (function () {
   let hintsLeft = 5;
   let selectedSlabId = null;
   let roundLocked = false;     // true once won or stuck, until restart/new round
+  let messageTimeout = null;
+  let hintTimeout = null;
 
   /* ---------------- persistence (just the round counter) ---------------- */
   function loadProgress() {
@@ -176,6 +178,7 @@ const SlabMath = (function () {
 
   /* ---------------- lifecycle ---------------- */
   function init() {
+    stop();
     if (roundNum === null) {
       loadProgress();
       startRoundData(buildRound(roundNum));
@@ -192,13 +195,21 @@ const SlabMath = (function () {
     roundLocked = false;
   }
 
+  function stop() {
+    if (messageTimeout) { clearTimeout(messageTimeout); messageTimeout = null; }
+    if (hintTimeout) { clearTimeout(hintTimeout); hintTimeout = null; }
+    selectedSlabId = null;
+  }
+
   function newRound() {
+    stop();
     Analytics.log('slab', 'new_numbers', { round: roundNum });
     startRoundData(buildRound(roundNum));
     render();
   }
 
   function restartRound() {
+    stop();
     Analytics.log('slab', 'restart_round', { round: roundNum });
     target = initialRound.target;
     slabs = initialRound.slabs.map(s => ({ ...s }));
@@ -211,6 +222,7 @@ const SlabMath = (function () {
   }
 
   function nextRound() {
+    stop();
     roundNum++;
     saveProgress();
     hide('slab-complete');
@@ -292,7 +304,8 @@ const SlabMath = (function () {
   function rejectAnimation() {
     const basket = document.getElementById('slab-basket');
     basket.classList.remove('reject'); void basket.offsetWidth; basket.classList.add('reject');
-    setTimeout(() => basket.classList.remove('reject'), 400);
+    if (messageTimeout) clearTimeout(messageTimeout);
+    messageTimeout = setTimeout(() => { messageTimeout = null; basket.classList.remove('reject'); }, 400);
   }
 
   function handleWin() {
@@ -333,7 +346,11 @@ const SlabMath = (function () {
     Analytics.log('slab', 'hint_used', { round: roundNum });
     render();
     const el = document.querySelector(`.slab-tile[data-id="${best.id}"]`);
-    if (el) { el.classList.add('hinted'); setTimeout(() => el.classList.remove('hinted'), 2500); }
+    if (el) {
+      el.classList.add('hinted');
+      if (hintTimeout) clearTimeout(hintTimeout);
+      hintTimeout = setTimeout(() => { hintTimeout = null; el.classList.remove('hinted'); }, 2500);
+    }
     showMessage(`💡 Try the slab showing ${best.value}.`, 'info');
   }
 
@@ -394,5 +411,5 @@ const SlabMath = (function () {
     });
   });
 
-  return { init, newRound, restartRound, nextRound, hint, clearSelection };
+  return { init, stop, newRound, restartRound, nextRound, hint, clearSelection };
 })();
