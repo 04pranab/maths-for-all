@@ -105,6 +105,15 @@ async function main() {
     body: JSON.stringify(body)
   });
 
+  await waitFor(async () => {
+    try {
+      const response = await httpGet('/api/health');
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  });
+
   const httpAudit = await (async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     const health = await httpGet('/api/health');
