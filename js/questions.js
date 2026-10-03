@@ -554,7 +554,6 @@ const Racing = (function () {
   function start() {
     stop();
     raceGeneration++;
-    const generation = raceGeneration;
     const nameInput = document.getElementById('race-player-name');
     playerName = (nameInput && nameInput.value.trim()) || 'Student';
     if (timerInterval) clearInterval(timerInterval);
