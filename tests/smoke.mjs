@@ -245,6 +245,32 @@ async function main() {
       'if (i > 0) assert(order !== previousSlabOrder, "Slab Maths repeated the exact tile order.");' +
       'previousSlabOrder = order;' +
     '}' +
+    'let previousSlabSignature = "";' +
+    'for (let i=0;i<120;i++) {' +
+      'SlabMath.newRound();' +
+      'const target = Number(document.getElementById("slab-basket-number").textContent);' +
+      'const values = [...document.querySelectorAll("#slab-tray .slab-tile")].map(el => Number(el.textContent));' +
+      'assert(target >= 36 && target <= 97, "Slab Maths generated a target outside the mathematically constructible range: " + target);' +
+      'const signature = target + ":" + values.slice().sort((a,b)=>a-b).join(",");' +
+      'assert(signature !== previousSlabSignature, "Slab Maths repeated the same target and tile multiset immediately.");' +
+      'previousSlabSignature = signature;' +
+    '}' +
+    'const shapeStats = { levels: 0, cells: 0 };' +
+    'for (let i=0;i<LEVEL_DATA.length;i++) {' +
+      'const level = LEVEL_DATA[i];' +
+      'const n = level.grid;' +
+      'assert(level.solution.length === n && level.solution.every(row => row.length === n), "Shape level " + (i+1) + " has an invalid solution grid.");' +
+      'const ids = new Set(level.pieces.map((_, index) => index + 1));' +
+      'const counts = new Map();' +
+      'for (const row of level.solution) for (const id of row) {' +
+        'assert(ids.has(id), "Shape level " + (i+1) + " contains an unknown solution piece id: " + id);' +
+        'counts.set(id, (counts.get(id) || 0) + 1);' +
+      '}' +
+      'assert(counts.size === level.pieces.length, "Shape level " + (i+1) + " does not place every piece.");' +
+      'level.pieces.forEach((key, index) => assert(counts.get(index + 1) === SHAPES[key].cells.length, "Shape level " + (i+1) + " piece " + key + " has the wrong area."));' +
+      'assert([...counts.values()].reduce((a,b)=>a+b,0) === n*n, "Shape level " + (i+1) + " does not exactly cover the board.");' +
+      'shapeStats.levels++; shapeStats.cells += n*n;' +
+    '}' +
     'const accessibility = {};' +
     'document.documentElement.style.setProperty("--font-scale", "1.5");' +
     'for (const key of ["quiz","race","sudoku","shape","slab"]) {' +
@@ -256,7 +282,7 @@ async function main() {
       'assert(accessibility[key], "Horizontal overflow at large text size in " + key);' +
     '}' +
     'document.documentElement.style.setProperty("--font-scale", "1");' +
-    'return { questionStats, sudokuStats, slabRounds: 60, accessibility };' +
+    'return { questionStats, sudokuStats, slabRounds: 180, shapeStats, accessibility };' +
   '})()');
 
   if (!generatorResult) throw new Error('Generator and accessibility audit did not complete.');
