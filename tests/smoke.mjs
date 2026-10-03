@@ -83,7 +83,7 @@ async function main() {
     },
     stdio: ['ignore', 'pipe', 'pipe']
   });
-  server.stdout.on('data', chunk => { const text = String(chunk).trim(); if (text) serverErrors.push('stdout: ' + text); });
+  server.stdout.on('data', () => {});
   server.stderr.on('data', chunk => { const text = String(chunk).trim(); if (text) serverErrors.push('stderr: ' + text); });
 
   browser = spawn(process.env.CHROMIUM || 'chromium', [
