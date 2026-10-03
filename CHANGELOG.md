@@ -10,6 +10,12 @@
 
 ## Unreleased
 
+### Responsive game layout follow-up
+- Kept Sudoku action buttons compact while preserving the larger left-side board.
+- Kept the Shape Fitting level buttons visually large for easier reading and selection.
+- Added regression coverage for Sudoku action-button sizing and Shape Fitting target sizing.
+
+
 ### Responsive game layout
 - Restored natural vertical scrolling when game content exceeds the viewport.
 - Reduced oversized Sudoku board cells and keypad controls.
