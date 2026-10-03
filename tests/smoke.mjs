@@ -385,6 +385,8 @@ async function main() {
     'const sudokuControls = document.querySelector(".sudoku-controls");' +
     'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
     'assert(sudokuControls && sudokuKeypad, "Sudoku side controls are missing.");' +
+    'const sudokuAction = document.querySelector("#screen-sudoku .sudoku-controls .btn-sudoku");' +
+    'assert(sudokuAction && sudokuAction.getBoundingClientRect().height <= 52, "Sudoku action buttons are oversized.");' +
     'assert(getComputedStyle(document.querySelector("#screen-sudoku .play-panel")).gridTemplateColumns !== "none", "Sudoku board/control split layout is missing.");' +
     'assert(getComputedStyle(document.documentElement).overflowY === "auto", "Vertical page scrolling is not available.");' +
     'assert(getComputedStyle(document.querySelector(".screen.active")).overflowY !== "hidden", "Active game screen is clipping vertical content.");' +
