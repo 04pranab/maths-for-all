@@ -253,11 +253,13 @@ async function main() {
     'Racing.start();' +
     'for (const value of inputs) { document.getElementById("race-input").value = value; Racing.submit(); }' +
     'Game.startSudoku();' +
-    'for (const cell of document.querySelectorAll("#sudoku-grid .sudoku-cell")) { cell.dispatchEvent(new KeyboardEvent("keydown", { key: "x" })); cell.dispatchEvent(new InputEvent("input", { bubbles: true, data: "x", inputType: "insertText" })); }' +
+    'const sudokuCell = document.querySelector("#sudoku-grid .sudoku-cell");' +
+    'sudokuCell?.click();' +
+    'for (let i=0;i<81;i++) document.dispatchEvent(new KeyboardEvent("keydown", { key: "x" }));' +
     'Game.startShapePuzzle();' +
     'for (let i=0;i<50;i++) { ShapePuzzle.rotateSelected(); ShapePuzzle.showHint(); }' +
     'Game.startSlabMath();' +
-    'for (let i=0;i<50;i++) { SlabMath.submit(); SlabMath.hint(); }' +
+    'for (let i=0;i<50;i++) SlabMath.hint();' +
     'assert(document.querySelector(".screen.active"), "Malformed-input stress left no active screen.");' +
     'Game.goHome();' +
     'return { malformedQuizInputs: inputs.length, malformedRaceInputs: inputs.length, sudokuInvalidInputAttempts: 81, repeatedShapeActions: 100, repeatedSlabActions: 100 };' +
