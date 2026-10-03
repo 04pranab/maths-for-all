@@ -3110,8 +3110,9 @@ textarea {
 
 html,
 body {
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 body {
@@ -3120,13 +3121,11 @@ body {
 }
 
 .screen {
-  height: calc(100dvh - 68px);
-  min-height: 0;
-  max-height: calc(100dvh - 68px);
-  overflow: hidden;
+  min-height: calc(100dvh - 68px);
   margin: 0;
   padding-top: 0;
   padding-bottom: 8px;
+  overflow: visible;
 }
 
 .site-header {
@@ -3283,9 +3282,8 @@ body {
 }
 
 #screen-menu {
-  height: calc(100dvh - 68px);
-  max-height: calc(100dvh - 68px);
-  overflow: hidden;
+  min-height: calc(100dvh - 68px);
+  overflow: visible;
 }
 
 #screen-menu .arcade-header {
@@ -3312,7 +3310,7 @@ body {
 
 .modal-box {
   max-height: calc(100dvh - 24px);
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 @media (max-width: 900px) {
@@ -3321,8 +3319,8 @@ body {
   }
 
   .screen {
-    height: calc(100dvh - 68px);
-    max-height: calc(100dvh - 68px);
+    min-height: calc(100dvh - 68px);
+    overflow: visible;
   }
 
   .difficulty-panel {
@@ -3332,8 +3330,8 @@ body {
       "hint"
       "guide"
       "buttons";
-    max-height: calc(100dvh - 78px);
-    overflow: hidden;
+    max-height: none;
+    overflow: visible;
   }
 
   .difficulty-panel .level-guide {
