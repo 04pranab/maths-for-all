@@ -378,6 +378,16 @@ async function main() {
       'accessibility[key] = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2;' +
       'assert(accessibility[key], "Horizontal overflow at large text size in " + key);' +
     '}' +
+    'Game.startSudoku();' +
+    'const sudokuGrid = document.getElementById("sudoku-grid");' +
+    'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
+    'assert(sudokuWidth <= Math.min(500, window.innerWidth - 20), "Sudoku board is oversized for the viewport.");' +
+    'assert(getComputedStyle(document.documentElement).overflowY === "auto", "Vertical page scrolling is not available.");' +
+    'assert(getComputedStyle(document.querySelector(".screen.active")).overflowY !== "hidden", "Active game screen is clipping vertical content.");' +
+    'Game.startShapePuzzle();' +
+    'const levelButton = document.querySelector(".btn-level");' +
+    'assert(levelButton && levelButton.getBoundingClientRect().width <= 56, "Shape level buttons are oversized.");' +
+    'assert(levelButton && levelButton.getBoundingClientRect().height <= 56, "Shape level buttons are oversized.");' +
     'document.documentElement.style.setProperty("--font-scale", "1");' +
     'return { questionStats, sudokuStats, slabRounds: 180, shapeStats, accessibility };' +
   '})()');
