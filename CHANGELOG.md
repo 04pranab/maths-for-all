@@ -1,4 +1,7 @@
 ## [Unreleased]
+- Added a documented full-system stress contract covering all five games, concurrent generation, malformed browser inputs, API error paths, and 32-user HTTP stress.
+- Hardened the browser smoke harness to capture uncaught exceptions, unhandled rejections, server output, browser runtime errors, console errors, and failed resources.
+- Added explicit smoke/stress npm commands and a dedicated stress-audit document.
 - Follow-up gameplay concurrency audit: stale Quiz/Racing callbacks and background game timers are now cancelled when sessions end or screens change.
 - Slab Maths target generation now uses only mathematically constructible target ranges under the two-copy rule and fails explicitly instead of recursively retrying an impossible target.
 - Added concurrent generation, rapid queued navigation, stale-callback, fresh Slab round, and all-100-Shape-level structural regression checks.
