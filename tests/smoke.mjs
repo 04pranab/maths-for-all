@@ -384,7 +384,8 @@ async function main() {
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
     'const sudokuPanel = document.querySelector("#screen-sudoku .play-panel");' +
     'assert(sudokuWidth <= 620, "Sudoku board is oversized at desktop width.");' +
-    'assert(getComputedStyle(sudokuPanel).gridTemplateColumns.split(" ").length === 2, "Sudoku desktop layout did not place controls beside the board.");' +
+    'const desktopControls = document.querySelector(".sudoku-controls");' +
+    'assert(desktopControls.getBoundingClientRect().left > sudokuGrid.getBoundingClientRect().right - 10, "Sudoku desktop controls are not beside the board.");' +
     'const sudokuControls = document.querySelector(".sudoku-controls");' +
     'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
     'assert(sudokuControls && sudokuKeypad, "Sudoku side controls are missing.");' +
@@ -400,7 +401,8 @@ async function main() {
     'await cdp("Emulation.setDeviceMetricsOverride", {width: 390, height: 844, deviceScaleFactor: 1, mobile: true});' +
     'Game.startSudoku();' +
     'const mobilePanel = document.querySelector("#screen-sudoku .play-panel");' +
-    'assert(getComputedStyle(mobilePanel).gridTemplateColumns.split(" ").length === 1, "Sudoku did not collapse to a single column on mobile.");' +
+    'assert(mobilePanel.getBoundingClientRect().width <= 358, "Sudoku mobile panel exceeds the viewport.");' +
+    'assert(document.querySelector(".sudoku-controls").getBoundingClientRect().top > document.getElementById("sudoku-grid").getBoundingClientRect().bottom - 10, "Sudoku mobile controls did not move below the board.");' +
     'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Mobile layout has horizontal overflow.");' +
     'await cdp("Emulation.clearDeviceMetricsOverride");' +
     'document.documentElement.style.setProperty("--font-scale", "1");' +
