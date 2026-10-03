@@ -1,23 +1,4 @@
-/* =============================================================
-   MATH FOR ALL  —  style.css
-   गणित सबके लिए  ·  An inclusive-education math arcade
-   Built around NEP 2020's inclusive-education goals, for
-   classrooms that include children with visual, motor, hearing,
-   and cognitive differences.
 
-   DESIGN NOTES (read this before you touch the palette):
-   - Base surface is warm unbleached paper, not clinical white.
-   - Headings use 'Baloo 2' (rounded, hand-lettered feel).
-   - Body text uses 'Atkinson Hyperlegible' — a typeface designed
-     by the Braille Institute specifically for readers with low
-     vision. That's a functional choice, not decoration.
-   - "Wrong answer" states use warm amber, never alarm-red — this
-     app should never feel like it's scolding a child.
-   - The one bold, playful gesture is the home-screen menu (tilted
-     paper-cutout cards). Everything inside a game screen is calm,
-     high-contrast and undecorated on purpose — kids need to
-     concentrate there, not admire the wallpaper.
-   ============================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap');
 
@@ -28,41 +9,41 @@
 }
 
 :root {
-  /* ---- Warm, hand-picked palette (not the default AI cream+terracotta) ---- */
+  
   --paper: #F7F9F4;
-  /* base background: warm unbleached paper */
+  
   --paper-line: #DCE7DD;
-  /* notebook dotted-line color */
+  
   --card: #FFFFFF;
-  /* card surface, warmer than pure white */
+  
   --card-alt: #F2F8F3;
   --ink: #263238;
-  /* warm near-black, like pencil lead */
+  
   --ink-soft: #56666B;
-  /* dimmed text, still warm */
+  
   --marigold: #F4B942;
-  /* joy, energy — primary accent */
+  
   --marigold-deep: #B87516;
   --indigo: #765A72;
-  /* calm, trustworthy — primary brand color */
+  
   --indigo-deep: #584354;
   --clay: #C45D52;
-  /* terracotta clay — used sparingly */
+  
   --leaf: #4E8A62;
-  /* success, growth */
+  
   --leaf-deep: #376947;
   --sky: #D89B3D;
-  /* racing / motion accent */
+  
   --berry: #8767B5;
-  /* playful variety accent */
+  
   --amber-soft: #F0A85E;
-  /* gentle "try again" — never red */
+  
   --amber-bg: #FCEBD4;
   --leaf-bg: #E9F2E0;
   --border: #D5E0D8;
   --border-strong: #B9CCBF;
   --focus: #4E8A62;
-  /* keyboard-focus ring — functional, stays cool/blue on purpose */
+  
 
   --radius: 18px;
   --radius-sm: 12px;
@@ -72,7 +53,7 @@
   --font-head: 'Baloo 2', 'Segoe UI Rounded', system-ui, sans-serif;
   --font-body: 'Atkinson Hyperlegible', -apple-system, 'Segoe UI', Verdana, sans-serif;
 
-  /* Accessible font scaling — cycled by the toolbar, saved per device */
+  
   --font-scale: 1;
 }
 
@@ -124,7 +105,6 @@ h3,
   font-family: var(--font-head);
 }
 
-/* Visible, generous keyboard focus everywhere — never suppressed */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -145,7 +125,6 @@ input:focus-visible,
   }
 }
 
-/* ---------- Screen switching ---------- */
 .screen {
   display: none;
   min-height: 100vh;
@@ -177,9 +156,6 @@ button {
   font-family: inherit;
 }
 
-/* =============================================================
-   ACCESSIBILITY TOOLBAR  (sticky, always available)
-   ============================================================= */
 .a11y-bar {
   display: flex;
   flex-wrap: wrap;
@@ -249,10 +225,6 @@ button {
   color: #fff;
 }
 
-/* =============================================================
-   MAIN MENU  — playful, calm, and easy to scan
-   ============================================================= */
-
 #screen-menu {
   position: relative;
 }
@@ -318,9 +290,6 @@ button {
   }
 }
 
-/* =============================================================
-   MAIN MENU  — the one bold, playful moment on the whole site
-   ============================================================= */
 .arcade-header {
   text-align: center;
   padding: 28px 20px 10px;
@@ -390,7 +359,7 @@ button {
   border-radius: 26px 14px 26px 14px;
   padding: 24px 16px;
   flex: 0 1 30%;
-  /* 3 cards per row by default, incomplete row centers itself */
+  
   min-width: 200px;
   max-width: 300px;
   cursor: pointer;
@@ -405,7 +374,7 @@ button {
     flex-basis: 18%;
   }
 
-  /* wide screens: all 5 fit in one row */
+  
 }
 
 @media (max-width: 680px) {
@@ -414,7 +383,7 @@ button {
     min-width: 150px;
   }
 
-  /* 2 per row on tablets */
+  
 }
 
 @media (max-width: 420px) {
@@ -515,9 +484,6 @@ button {
   opacity: 0.85;
 }
 
-/* =============================================================
-   SHARED TOP BAR
-   ============================================================= */
 .game-topbar {
   display: flex;
   align-items: center;
@@ -585,9 +551,6 @@ button {
   background: rgba(255, 255, 255, 0.26);
 }
 
-/* =============================================================
-   DIFFICULTY / SETUP PANELS (shared)
-   ============================================================= */
 .difficulty-panel {
   text-align: center;
   padding: 24px 20px;
@@ -693,9 +656,6 @@ button {
   outline-offset: 3px;
 }
 
-/* =============================================================
-   ARITHMETIC QUIZ / RACE PLAY PANEL
-   ============================================================= */
 .play-panel {
   padding: 24px 20px 40px;
   max-width: 640px;
@@ -854,7 +814,6 @@ button {
   color: var(--indigo);
 }
 
-/* ---------- Race setup ---------- */
 #race-setup-panel {
   display: flex;
   gap: 24px;
@@ -1031,7 +990,6 @@ button {
   border-color: var(--clay);
 }
 
-/* ---------- Race HUD ---------- */
 .race-hud {
   display: flex;
   justify-content: space-around;
@@ -1161,9 +1119,6 @@ button {
   flex-wrap: wrap;
 }
 
-/* =============================================================
-   SUDOKU
-   ============================================================= */
 .sudoku-top-row {
   display: flex;
   justify-content: space-between;
@@ -1367,9 +1322,6 @@ button {
   }
 }
 
-/* =============================================================
-   MODALS  (shared shell: dare / pin / controls-overlay / progress)
-   ============================================================= */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1602,7 +1554,6 @@ button {
   margin-top: 8px;
 }
 
-/* ---- Controls overlay ---- */
 .controls-box {
   border-color: var(--sky);
   text-align: left;
@@ -1673,7 +1624,6 @@ button {
   color: #fff;
 }
 
-/* ---- Progress dashboard ---- */
 .progress-box {
   max-width: 560px;
   text-align: left;
@@ -1773,9 +1723,6 @@ button {
   color: var(--ink);
 }
 
-/* =============================================================
-   SHAPE FITTING
-   ============================================================= */
 .card-shape-icon {}
 
 .shape-level-panel {
@@ -1950,9 +1897,6 @@ button {
   }
 }
 
-/* All shapes to place live here, on the right — sized to fit
-   without an inner scrollbar, even on the busiest levels
-   (up to ~21 pieces on the largest 8×8 boards). */
 .shape-right-col {
   flex: 1 1 320px;
   min-width: 240px;
@@ -2206,7 +2150,6 @@ button {
   }
 }
 
-/* ---------- Quiz reflection controls ---------- */
 .quiz-actions {
   display: flex;
   gap: 10px;
@@ -2253,8 +2196,6 @@ button {
   line-height: 1.55;
 }
 
-
-/* ---------- Learning mastery meter ---------- */
 .quiz-mastery {
   max-width: 620px;
   margin: 18px auto 8px;
@@ -2299,10 +2240,6 @@ button {
   line-height: 1.4;
 }
 
-
-/* =============================================================
-   AUTHENTICATION + RESEARCH CONSENT
-   ============================================================= */
 .a11y-auth-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; }
 .a11y-account-btn {
   border: 1px solid rgba(0,0,0,0.14);
@@ -2450,12 +2387,6 @@ button {
   .a11y-auth-actions { width: 100%; }
 }
 
-
-/* =============================================================
-   PRIMARY SITE NAVIGATION
-   Keeps the playful learning surface while giving the website
-   a clear, predictable structure.
-   ============================================================= */
 .site-header {
   position: sticky;
   top: 0;
@@ -2800,10 +2731,6 @@ button {
   }
 }
 
-
-/* =============================================================
-   ACCOUNT PROFILE
-   ============================================================= */
 .account-profile-box {
   position: relative;
   max-width: 620px;
@@ -2935,10 +2862,6 @@ button {
   }
 }
 
-
-/* =============================================================
-   MOBILE + ACCESSIBILITY POLISH
-   ============================================================= */
 :focus-visible {
   outline: 3px solid var(--indigo);
   outline-offset: 3px;
@@ -3114,8 +3037,6 @@ textarea {
   }
 }
 
-
-/* ---------- Large-text resilience ---------- */
 .difficulty-panel,
 .setup-card,
 .play-panel,
@@ -3186,13 +3107,6 @@ textarea {
     grid-column: 1 / -1;
   }
 }
-
-
-/* =============================================================
-   COMPACT NO-SCROLL GAME LAYOUT
-   Keep core game controls inside the viewport. Desktop uses the
-   available width; narrow screens collapse only when necessary.
-   ============================================================= */
 
 html,
 body {
