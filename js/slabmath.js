@@ -384,7 +384,7 @@ const SlabMath = (function () {
       if (e.defaultPrevented || e.ctrlKey || e.altKey || e.metaKey) return;
 
       const target = e.target;
-      if (target && target.matches('input, textarea, select, button, a')) return;
+      if (target instanceof Element && target.matches('input, textarea, select, button, a')) return;
 
       if (e.key >= '1' && e.key <= '9') {
         const index = Number(e.key) - 1;
