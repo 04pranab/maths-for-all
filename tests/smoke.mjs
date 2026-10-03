@@ -325,24 +325,29 @@ async function main() {
     for (let user = 0; user < users; user++) {
       for (let round = 0; round < rounds; round++) {
         tasks.push((async () => {
-          const headers = { 'content-type': 'application/json', 'x-test-user': 'stress-user-' + user };
-          const response = await fetch(base + '/api/research/events', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({
-              event: 'stress_concurrent_player',
-              user: 'stress-user-' + user,
-              round,
-              game: ['quiz','race','sudoku','shape','slab'][round % 5]
-            })
-          });
-          return { user, round, status: response.status };
+          const cookie = 'stress_session_user_' + user + '=session-' + user;
+          const [health, me, page] = await Promise.all([
+            fetch(base + '/api/health', { headers: { 'x-stress-user': 'stress-user-' + user } }),
+            fetch(base + '/api/auth/me', { headers: { cookie } }),
+            fetch(base + '/index.html', { headers: { 'x-stress-user': 'stress-user-' + user } })
+          ]);
+          return {
+            user,
+            round,
+            healthStatus: health.status,
+            meStatus: me.status,
+            pageStatus: page.status
+          };
         })());
       }
     }
     const results = await Promise.all(tasks);
-    const failed = results.filter(result => result.status < 200 || result.status >= 300);
-    if (failed.length) throw new Error('Concurrent-player API stress had ' + failed.length + ' failed requests.');
+    const failed = results.filter(result =>
+      result.healthStatus !== 200 ||
+      result.meStatus !== 401 ||
+      result.pageStatus !== 200
+    );
+    if (failed.length) throw new Error('Concurrent-player server stress had ' + failed.length + ' failed or incorrectly isolated sessions.');
     const uniqueUsers = new Set(results.map(result => result.user));
     if (uniqueUsers.size !== users) throw new Error('Concurrent-player stress lost user isolation.');
     return { users, roundsPerUser: rounds, requests: results.length, failed: failed.length };
