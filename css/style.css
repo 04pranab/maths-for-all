@@ -79,23 +79,49 @@ body {
 }
 
 body::before {
-  content: "∑  π  √  ∞  +  −  ×  ÷  =  ≈  ≠  ≤  ≥  ∆  θ  α  β  γ  x²  y²  1  2  3  5  8  13  21  34";
+  content: "π     √       ∑          +      −      ×       ÷        △      ○     x²\\A\\A     3      5          8       13       21          ∞      ≈       ≠      θ\\A\\A  A     B       C        1/2       3/4        90°       f(x)       y=x²\\A\\A      ◇        □       ⌁       ∫       ∂       %       =       <       >       ≤       ≥\\A\\A  7       11       17          23       31          πr²       a²+b²=c²       Σn";
   position: fixed;
-  inset: -12%;
+  inset: -8%;
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
   color: var(--indigo);
-  opacity: 0.055;
-  font-family: var(--font-head);
-  font-size: clamp(1.45rem, 3.2vw, 3rem);
+  opacity: 0.075;
+  font-family: "Segoe Print", "Comic Sans MS", var(--font-head);
+  font-size: clamp(1.35rem, 2.7vw, 2.65rem);
   font-weight: 700;
-  line-height: 2.45;
-  letter-spacing: 0.22em;
-  word-spacing: 0.4em;
+  line-height: 3.8;
+  letter-spacing: 0.16em;
+  word-spacing: 0.45em;
+  white-space: pre;
   text-align: center;
-  transform: rotate(-8deg) scale(1.15);
-  white-space: normal;
+  transform: rotate(-5deg) scale(1.08);
+  transform-origin: center;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 46px,
+      rgba(118, 90, 114, 0.045) 47px,
+      transparent 48px
+    ),
+    radial-gradient(circle at 12% 18%, rgba(196, 93, 82, 0.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 82% 31%, rgba(78, 138, 98, 0.07) 0 3px, transparent 4px),
+    radial-gradient(circle at 68% 78%, rgba(216, 155, 61, 0.08) 0 2px, transparent 3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    transform: none;
+  }
 }
 
 h1,
