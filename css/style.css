@@ -3325,6 +3325,7 @@ body {
 #screen-sudoku .play-panel {
   width: min(1180px, calc(100vw - 32px));
   max-width: none;
+  padding-top: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
   grid-template-areas:
