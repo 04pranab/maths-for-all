@@ -10,6 +10,11 @@
 
 ## Unreleased
 
+### Hand-drawn mathematics background
+- Reworked the decorative page background into an original CSS-only mathematics doodle field inspired by hand-drawn study notes.
+- Added faint ruled-paper texture and scattered mathematical marks without importing or embedding the supplied reference artwork.
+- Kept the decoration behind the interface and low-contrast so it does not compete with learning content.
+
 ### Responsive game layout follow-up
 - Kept Sudoku action buttons compact while preserving the larger left-side board.
 - Kept the Shape Fitting level buttons visually large for easier reading and selection.
