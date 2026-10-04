@@ -271,6 +271,8 @@ async function main() {
 
   if (!malformedInputResult) throw new Error('Malformed-input stress did not complete.');
 
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
+
   const generatorResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const questionStats = {};' +
@@ -378,7 +380,6 @@ async function main() {
       'accessibility[key] = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2;' +
       'assert(accessibility[key], "Horizontal overflow at large text size in " + key);' +
     '}' +
-    'await cdp("Emulation.setDeviceMetricsOverride", {width: 1366, height: 768, deviceScaleFactor: 1, mobile: false});' +
     'Game.startSudoku();' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
@@ -398,19 +399,28 @@ async function main() {
     'const levelButton = document.querySelector(".btn-level");' +
     'assert(levelButton && levelButton.getBoundingClientRect().width >= 60, "Shape level buttons are too small for visibility.");' +
     'assert(levelButton && levelButton.getBoundingClientRect().height >= 60, "Shape level buttons are too small for visibility.");' +
-    'await cdp("Emulation.setDeviceMetricsOverride", {width: 390, height: 844, deviceScaleFactor: 1, mobile: true});' +
-    'Game.startSudoku();' +
-    'const mobilePanel = document.querySelector("#screen-sudoku .play-panel");' +
-    'assert(mobilePanel.getBoundingClientRect().width <= 358, "Sudoku mobile panel exceeds the viewport.");' +
-    'assert(document.querySelector(".sudoku-controls").getBoundingClientRect().top > document.getElementById("sudoku-grid").getBoundingClientRect().bottom - 10, "Sudoku mobile controls did not move below the board.");' +
-    'assert(document.getElementById("sudoku-keypad").getBoundingClientRect().top > document.getElementById("sudoku-grid").getBoundingClientRect().bottom - 10, "Sudoku mobile keypad did not move below the board.");' +
-    'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Mobile layout has horizontal overflow.");' +
-    'await cdp("Emulation.clearDeviceMetricsOverride");' +
     'document.documentElement.style.setProperty("--font-scale", "1");' +
     'return { questionStats, sudokuStats, slabRounds: 180, shapeStats, accessibility };' +
   '})()');
 
   if (!generatorResult) throw new Error('Generator and accessibility audit did not complete.');
+
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  const mobileLayoutResult = await evaluate('(() => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'Game.startSudoku();' +
+    'const mobilePanel = document.querySelector("#screen-sudoku .play-panel");' +
+    'const sudokuGrid = document.getElementById("sudoku-grid");' +
+    'const sudokuControls = document.querySelector("#screen-sudoku .sudoku-controls");' +
+    'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
+    'assert(mobilePanel && mobilePanel.getBoundingClientRect().width <= 358, "Sudoku mobile panel exceeds the viewport.");' +
+    'assert(sudokuGrid && sudokuControls && sudokuControls.getBoundingClientRect().top > sudokuGrid.getBoundingClientRect().bottom - 10, "Sudoku mobile controls did not move below the board.");' +
+    'assert(sudokuKeypad && sudokuKeypad.getBoundingClientRect().top > sudokuGrid.getBoundingClientRect().bottom - 10, "Sudoku mobile keypad did not move below the board.");' +
+    'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Mobile layout has horizontal overflow.");' +
+    'return { width: mobilePanel.getBoundingClientRect().width, horizontalOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };' +
+  '})()');
+  await cdp('Emulation.clearDeviceMetricsOverride');
+  if (!mobileLayoutResult) throw new Error('Mobile responsive layout audit did not complete.');
 
   const concurrencyResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
