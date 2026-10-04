@@ -3324,7 +3324,9 @@ body {
 }
 
 #screen-sudoku .sudoku-keypad {
-  grid-area: side;
+  grid-area: auto;
+  grid-column: 2;
+  grid-row: 1 / span 2;
   width: 100%;
   max-width: none;
   margin: 10px 0;
@@ -3332,13 +3334,15 @@ body {
 }
 
 #screen-sudoku .sudoku-controls {
-  grid-area: side;
+  grid-area: auto;
+  grid-column: 2;
+  grid-row: 3;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   gap: 8px;
   padding: 0;
-  margin-top: 248px;
+  margin: 0;
 }
 
 #screen-sudoku .sudoku-controls .btn-sudoku {
@@ -3371,8 +3375,8 @@ body {
 }
 
 #screen-shape .btn-level {
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   border-radius: 14px;
   font-size: 1.08rem;
 }
@@ -3456,6 +3460,48 @@ body {
 
   #race-setup-panel {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  #screen-sudoku .play-panel {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "top"
+      "board"
+      "side"
+      "message";
+    row-gap: 8px;
+  }
+
+  #screen-sudoku .sudoku-top-row {
+    max-width: none;
+  }
+
+  #screen-sudoku .sudoku-grid {
+    width: min(620px, 100%);
+  }
+
+  #screen-sudoku .sudoku-keypad {
+    grid-area: auto;
+    grid-column: 1;
+    grid-row: 3;
+    width: min(480px, 100%);
+    margin: 8px auto;
+  }
+
+  #screen-sudoku .sudoku-controls {
+    grid-area: auto;
+    grid-column: 1;
+    grid-row: 4;
+    margin: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #screen-sudoku .sudoku-controls .btn-sudoku {
+    width: auto;
   }
 }
 
