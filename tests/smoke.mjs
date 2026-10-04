@@ -387,6 +387,8 @@ async function main() {
     'assert(desktopControls.getBoundingClientRect().left > sudokuGrid.getBoundingClientRect().right - 10, "Sudoku desktop controls are not beside the board.");' +
     'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
     'assert(desktopControls && sudokuKeypad, "Sudoku side controls are missing.");' +
+    'assert(sudokuKeypad.getBoundingClientRect().left > sudokuGrid.getBoundingClientRect().right - 10, "Sudoku keypad is not beside the board.");' +
+    'assert(sudokuKeypad.getBoundingClientRect().bottom <= desktopControls.getBoundingClientRect().top + 2, "Sudoku keypad overlaps the action controls.");' +
     'const sudokuAction = document.querySelector("#screen-sudoku .sudoku-controls .btn-sudoku");' +
     'assert(sudokuAction && sudokuAction.getBoundingClientRect().height <= 52, "Sudoku action buttons are oversized.");' +
     'assert(getComputedStyle(document.querySelector("#screen-sudoku .play-panel")).gridTemplateColumns !== "none", "Sudoku board/control split layout is missing.");' +
@@ -401,6 +403,7 @@ async function main() {
     'const mobilePanel = document.querySelector("#screen-sudoku .play-panel");' +
     'assert(mobilePanel.getBoundingClientRect().width <= 358, "Sudoku mobile panel exceeds the viewport.");' +
     'assert(document.querySelector(".sudoku-controls").getBoundingClientRect().top > document.getElementById("sudoku-grid").getBoundingClientRect().bottom - 10, "Sudoku mobile controls did not move below the board.");' +
+    'assert(document.getElementById("sudoku-keypad").getBoundingClientRect().top > document.getElementById("sudoku-grid").getBoundingClientRect().bottom - 10, "Sudoku mobile keypad did not move below the board.");' +
     'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Mobile layout has horizontal overflow.");' +
     'await cdp("Emulation.clearDeviceMetricsOverride");' +
     'document.documentElement.style.setProperty("--font-scale", "1");' +
