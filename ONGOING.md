@@ -29,7 +29,7 @@ The mandatory first-run research-consent rule remains unchanged: Escape cannot d
 
 The home screen no longer displays the removed introductory sentence beginning with “Explore numbers, shapes and patterns...”.
 
-The page background now uses a very faint mathematical-symbol field rather than the previous dotted pattern. The symbols are decorative only and remain behind the interface.
+The page background uses an original CSS-only hand-drawn mathematics motif with faint ruled-paper lines and scattered mathematical marks. It takes visual inspiration from notebook-style math doodles without using or embedding the supplied reference artwork. The decoration remains behind the interface and intentionally low-contrast.
 
 ---
 
