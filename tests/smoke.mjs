@@ -271,6 +271,8 @@ async function main() {
 
   if (!malformedInputResult) throw new Error('Malformed-input stress did not complete.');
 
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
+
   const generatorResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const questionStats = {};' +
@@ -381,18 +383,44 @@ async function main() {
     'Game.startSudoku();' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
-    'assert(sudokuWidth <= Math.min(500, window.innerWidth - 20), "Sudoku board is oversized for the viewport.");' +
+    'assert(sudokuWidth <= 620, "Sudoku board is oversized at desktop width.");' +
+    'const desktopControls = document.querySelector(".sudoku-controls");' +
+    'assert(desktopControls.getBoundingClientRect().left > sudokuGrid.getBoundingClientRect().right - 10, "Sudoku desktop controls are not beside the board.");' +
+    'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
+    'assert(desktopControls && sudokuKeypad, "Sudoku side controls are missing.");' +
+    'assert(sudokuKeypad.getBoundingClientRect().left > sudokuGrid.getBoundingClientRect().right - 10, "Sudoku keypad is not beside the board.");' +
+    'assert(sudokuKeypad.getBoundingClientRect().bottom <= desktopControls.getBoundingClientRect().top + 2, "Sudoku keypad overlaps the action controls.");' +
+    'const sudokuAction = document.querySelector("#screen-sudoku .sudoku-controls .btn-sudoku");' +
+    'assert(sudokuAction && sudokuAction.getBoundingClientRect().height <= 52, "Sudoku action buttons are oversized.");' +
+    'assert(getComputedStyle(document.querySelector("#screen-sudoku .play-panel")).gridTemplateColumns !== "none", "Sudoku board/control split layout is missing.");' +
     'assert(getComputedStyle(document.documentElement).overflowY === "auto", "Vertical page scrolling is not available.");' +
     'assert(getComputedStyle(document.querySelector(".screen.active")).overflowY !== "hidden", "Active game screen is clipping vertical content.");' +
     'Game.startShapePuzzle();' +
     'const levelButton = document.querySelector(".btn-level");' +
-    'assert(levelButton && levelButton.getBoundingClientRect().width <= 56, "Shape level buttons are oversized.");' +
-    'assert(levelButton && levelButton.getBoundingClientRect().height <= 56, "Shape level buttons are oversized.");' +
+    'assert(levelButton && levelButton.getBoundingClientRect().width >= 60, "Shape level buttons are too small for visibility.");' +
+    'assert(levelButton && levelButton.getBoundingClientRect().height >= 60, "Shape level buttons are too small for visibility.");' +
     'document.documentElement.style.setProperty("--font-scale", "1");' +
     'return { questionStats, sudokuStats, slabRounds: 180, shapeStats, accessibility };' +
   '})()');
 
   if (!generatorResult) throw new Error('Generator and accessibility audit did not complete.');
+
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  const mobileLayoutResult = await evaluate('(() => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'Game.startSudoku();' +
+    'const mobilePanel = document.querySelector("#screen-sudoku .play-panel");' +
+    'const sudokuGrid = document.getElementById("sudoku-grid");' +
+    'const sudokuControls = document.querySelector("#screen-sudoku .sudoku-controls");' +
+    'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
+    'assert(mobilePanel && mobilePanel.getBoundingClientRect().width <= 358, "Sudoku mobile panel exceeds the viewport.");' +
+    'assert(sudokuGrid && sudokuControls && sudokuControls.getBoundingClientRect().top > sudokuGrid.getBoundingClientRect().bottom - 10, "Sudoku mobile controls did not move below the board.");' +
+    'assert(sudokuKeypad && sudokuKeypad.getBoundingClientRect().top > sudokuGrid.getBoundingClientRect().bottom - 10, "Sudoku mobile keypad did not move below the board.");' +
+    'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Mobile layout has horizontal overflow.");' +
+    'return { width: mobilePanel.getBoundingClientRect().width, horizontalOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };' +
+  '})()');
+  await cdp('Emulation.clearDeviceMetricsOverride');
+  if (!mobileLayoutResult) throw new Error('Mobile responsive layout audit did not complete.');
 
   const concurrencyResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +

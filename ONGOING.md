@@ -29,7 +29,7 @@ The mandatory first-run research-consent rule remains unchanged: Escape cannot d
 
 The home screen no longer displays the removed introductory sentence beginning with “Explore numbers, shapes and patterns...”.
 
-The page background now uses a very faint mathematical-symbol field rather than the previous dotted pattern. The symbols are decorative only and remain behind the interface.
+The page background uses an original CSS-only hand-drawn mathematics motif with faint ruled-paper lines and scattered mathematical marks. It takes visual inspiration from notebook-style math doodles without using or embedding the supplied reference artwork. The decoration remains behind the interface and intentionally low-contrast.
 
 ---
 
@@ -76,7 +76,7 @@ No research infrastructure is required for these checks.
 
 ## Current layout work
 
-The physical-testing line now allows vertical page scrolling whenever content exceeds the viewport instead of clipping game screens. Sudoku boards, keypads, and Shape Fitting level controls are kept compact while preserving usable interaction sizes across desktop and smaller devices.
+The physical-testing line allows vertical scrolling whenever content exceeds the viewport instead of clipping game screens. Sudoku uses a large left-side board with a separate right-side keypad and compact action controls; Shape Fitting uses larger level-selection targets for visibility. Smaller devices fall back to a single-column layout when needed.
 
 ---
 

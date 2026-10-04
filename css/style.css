@@ -79,23 +79,49 @@ body {
 }
 
 body::before {
-  content: "∑  π  √  ∞  +  −  ×  ÷  =  ≈  ≠  ≤  ≥  ∆  θ  α  β  γ  x²  y²  1  2  3  5  8  13  21  34";
+  content: "π     √       ∑          +      −      ×       ÷        △      ○     x²\\A\\A     3      5          8       13       21          ∞      ≈       ≠      θ\\A\\A  A     B       C        1/2       3/4        90°       f(x)       y=x²\\A\\A      ◇        □       ⌁       ∫       ∂       %       =       <       >       ≤       ≥\\A\\A  7       11       17          23       31          πr²       a²+b²=c²       Σn";
   position: fixed;
-  inset: -12%;
+  inset: -8%;
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
   color: var(--indigo);
-  opacity: 0.055;
-  font-family: var(--font-head);
-  font-size: clamp(1.45rem, 3.2vw, 3rem);
+  opacity: 0.075;
+  font-family: "Segoe Print", "Comic Sans MS", var(--font-head);
+  font-size: clamp(1.35rem, 2.7vw, 2.65rem);
   font-weight: 700;
-  line-height: 2.45;
-  letter-spacing: 0.22em;
-  word-spacing: 0.4em;
+  line-height: 3.8;
+  letter-spacing: 0.16em;
+  word-spacing: 0.45em;
+  white-space: pre;
   text-align: center;
-  transform: rotate(-8deg) scale(1.15);
-  white-space: normal;
+  transform: rotate(-5deg) scale(1.08);
+  transform-origin: center;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 46px,
+      rgba(118, 90, 114, 0.045) 47px,
+      transparent 48px
+    ),
+    radial-gradient(circle at 12% 18%, rgba(196, 93, 82, 0.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 82% 31%, rgba(78, 138, 98, 0.07) 0 3px, transparent 4px),
+    radial-gradient(circle at 68% 78%, rgba(216, 155, 61, 0.08) 0 2px, transparent 3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    transform: none;
+  }
 }
 
 h1,
@@ -1306,6 +1332,42 @@ button {
 .sudoku-message.info {
   background: #F4EAD8;
   color: var(--indigo);
+}
+
+@media (max-width: 900px) {
+  #screen-sudoku .play-panel {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "top"
+      "board"
+      "side"
+      "message";
+    row-gap: 8px;
+  }
+
+  #screen-sudoku .sudoku-top-row {
+    max-width: none;
+  }
+
+  #screen-sudoku .sudoku-grid {
+    width: min(620px, 100%);
+  }
+
+  #screen-sudoku .sudoku-keypad {
+    width: min(480px, 100%);
+    margin: 8px auto;
+  }
+
+  #screen-sudoku .sudoku-controls {
+    margin-top: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #screen-sudoku .sudoku-controls .btn-sudoku {
+    width: auto;
+  }
 }
 
 @media (max-width: 520px) {
@@ -3261,8 +3323,88 @@ body {
 }
 
 #screen-sudoku .play-panel {
-  width: min(1120px, calc(100vw - 32px));
+  width: min(1180px, calc(100vw - 32px));
   max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-areas:
+    "top side"
+    "board side"
+    "message side";
+  align-items: start;
+  column-gap: 28px;
+}
+
+#screen-sudoku .sudoku-top-row {
+  grid-area: top;
+  width: 100%;
+  max-width: 620px;
+  padding: 10px 0 0;
+}
+
+#screen-sudoku .sudoku-grid {
+  grid-area: board;
+  width: min(620px, 100%);
+  max-width: 620px;
+  margin: 10px auto 18px;
+}
+
+#screen-sudoku .sudoku-keypad {
+  grid-area: auto;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 100%;
+  max-width: none;
+  margin: 10px 0;
+  align-self: start;
+}
+
+#screen-sudoku .sudoku-controls {
+  grid-area: auto;
+  grid-column: 2;
+  grid-row: 3;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+#screen-sudoku .sudoku-controls .btn-sudoku {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  font-size: 0.95rem;
+}
+
+#screen-sudoku .sudoku-message {
+  grid-area: message;
+  width: min(620px, 100%);
+  max-width: 620px;
+}
+
+#screen-sudoku .btn-key,
+#screen-sudoku .btn-key-erase {
+  min-height: 54px;
+  font-size: 1.2rem;
+}
+
+#screen-shape #shape-level-panel {
+  max-width: 980px;
+  padding: 18px 12px;
+}
+
+#screen-shape .shape-level-grid {
+  gap: 9px;
+  margin-top: 18px;
+}
+
+#screen-shape .btn-level {
+  width: 68px;
+  height: 68px;
+  border-radius: 14px;
+  font-size: 1.08rem;
 }
 
 #screen-slab .slab-puzzle-area {
@@ -3344,6 +3486,48 @@ body {
 
   #race-setup-panel {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  #screen-sudoku .play-panel {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "top"
+      "board"
+      "side"
+      "message";
+    row-gap: 8px;
+  }
+
+  #screen-sudoku .sudoku-top-row {
+    max-width: none;
+  }
+
+  #screen-sudoku .sudoku-grid {
+    width: min(620px, 100%);
+  }
+
+  #screen-sudoku .sudoku-keypad {
+    grid-area: auto;
+    grid-column: 1;
+    grid-row: 3;
+    width: min(480px, 100%);
+    margin: 8px auto;
+  }
+
+  #screen-sudoku .sudoku-controls {
+    grid-area: auto;
+    grid-column: 1;
+    grid-row: 4;
+    margin: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #screen-sudoku .sudoku-controls .btn-sudoku {
+    width: auto;
   }
 }
 
