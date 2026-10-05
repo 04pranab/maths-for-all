@@ -3327,13 +3327,14 @@ body {
   max-width: none;
   padding-top: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 620px) minmax(260px, 320px);
   grid-template-areas:
     "top side"
     "board side"
     "message side";
   align-items: start;
-  column-gap: 28px;
+  justify-content: center;
+  column-gap: 16px;
 }
 
 #screen-sudoku .sudoku-top-row {
