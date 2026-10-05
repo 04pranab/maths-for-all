@@ -389,7 +389,10 @@ async function main() {
     'const desktopControls = document.querySelector(".sudoku-controls");' +
     'assert(desktopControls.getBoundingClientRect().left > sudokuGrid.getBoundingClientRect().right - 10, "Sudoku desktop controls are not beside the board.");' +
     'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
-    'assert(desktopControls && sudokuKeypad, "Sudoku side controls are missing.");' +
+    'const sudokuSideColumn = document.querySelector("#screen-sudoku .sudoku-side-column");' +
+    'assert(desktopControls && sudokuKeypad && sudokuSideColumn, "Sudoku side column controls are missing.");' +
+    'assert(sudokuSideColumn.contains(sudokuKeypad) && sudokuSideColumn.contains(desktopControls), "Sudoku keypad and actions are not grouped in the side column.");' +
+    'assert(Math.abs(sudokuSideColumn.getBoundingClientRect().left - desktopControls.getBoundingClientRect().left) <= 2, "Sudoku side column is not aligned with its controls.");' +
     'const sudokuBoardToKeypadGap = sudokuKeypad.getBoundingClientRect().left - sudokuGrid.getBoundingClientRect().right;' +
     'assert(sudokuBoardToKeypadGap >= 0 && sudokuBoardToKeypadGap <= 32, "Sudoku board-to-keypad gap is too large.");' +
     'assert(sudokuKeypad.getBoundingClientRect().bottom <= desktopControls.getBoundingClientRect().top + 2, "Sudoku keypad overlaps the action controls.");' +
