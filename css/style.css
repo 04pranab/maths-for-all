@@ -1334,7 +1334,7 @@ button {
   color: var(--indigo);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 920px) {
   #screen-sudoku .play-panel {
   width: min(876px, calc(100vw - 32px));
   max-width: none;
