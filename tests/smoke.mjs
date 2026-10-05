@@ -355,13 +355,15 @@ async function main() {
       'previousSlabSignature = signature;' +
     '}' +
     'const shapeStats = { levels: 0, cells: 0 };' +
+    'assert(typeof ShapeArchitectGrid !== "undefined", "Shape Architect grid module is missing.");' +
     'const architectLevels = ShapeArchitect.getLevels();' +
     'assert(architectLevels.length === 100, "Shape Architect must contain exactly 100 levels.");' +
     'for (const level of architectLevels) {' +
       'assert(ShapeArchitectLevels.validate(level), "Shape Architect level " + level.number + " failed exact target validation.");' +
       'assert(ShapeArchitectSolver.hasExactSolution(level), "Shape Architect level " + level.number + " has no exact-cover solution.");' +
-      'assert(level.pieces.length > level.requiredCount && level.pieces.length - level.requiredCount >= 2, "Shape Architect level " + level.number + " has insufficient distractor pieces.");' +
-      'assert(level.requiredCount >= 2 && level.requiredCount <= 7, "Shape Architect level " + level.number + " has an invalid required-piece count.");' +
+      'assert(level.pieces.length > level.requiredCount && level.pieces.length - level.requiredCount >= 3, "Shape Architect level " + level.number + " has insufficient distractor pieces.");' +
+      'assert(level.requiredCount === 3, "Shape Architect level " + level.number + " must start with exactly three required pieces.");' +
+      'assert(level.pieces.slice(0, level.requiredCount).some(piece => piece.startRot !== 0), "Shape Architect level " + level.number + " starts too many required pieces in the solved orientation.");' +
     '}' +
     'for (let i=0;i<LEVEL_DATA.length;i++) {' +
       'const level = LEVEL_DATA[i];' +
