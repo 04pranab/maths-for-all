@@ -5,7 +5,7 @@
   display: grid;
   grid-template-columns: 600px 260px;
   grid-template-areas:
-    "top side"
+    "top top"
     "board side"
     "message side";
   align-items: start;
@@ -31,7 +31,7 @@
 #screen-sudoku .sudoku-side-column {
   grid-area: side;
   grid-column: 2;
-  grid-row: 1 / span 3;
+  grid-row: 2 / span 2;
   width: 260px;
   min-width: 260px;
   display: flex;
