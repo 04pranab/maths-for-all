@@ -2,171 +2,99 @@
 
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
-**Current stable release:** `v2.0.2`  
-**Current focus:** physical game-mechanics testing, navigation reliability, and presentation validation  
+**Current stable release:** `v2.0.3`  
+**Current focus:** physical game-mechanics testing and baseline hardening  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 5 October 2026
 
 ---
 
-## 1. Current fix stack
+## 1. Stable physical-testing baseline
 
+`v2.0.3` is the current hardened baseline before the next generation of educational games.
 
-### Learner visibility and physical readability
+The existing five games are:
+- Arithmetic Quiz
+- Math Racing
+- Sudoku
+- Shape Fitting
+- Slab Maths
 
-**Status: PR in review**
+The baseline retains:
+- keyboard-friendly controls and visible focus states;
+- game-specific help and Escape handling for dismissible overlays;
+- explicit research consent;
+- privacy/data policy access without login;
+- no SVG decorative assets;
+- browser smoke/stress, authentication, PostgreSQL, and research-gateway checks.
 
-Issue #61 addresses a physical-testing visibility problem for younger learners. Sudoku numbers are being enlarged without changing the established large desktop board and right-side keypad layout. Shape Fitting tray pieces are being enlarged at the card, mini-cell, and label levels so the pieces can be identified more comfortably. The regression suite checks the new minimum sizes and preserves responsive scrolling/no-horizontal-overflow behaviour.
-
-### Context-sensitive help and overlay keyboard handling
-
-**Status: PR in review**
-
-This fix line addresses two concrete interaction defects found during the physical-prototype audit:
-
-1. Navigation **How to play** was hard-coded to Arithmetic Quiz.
-2. Escape did not close the dismissible Controls/How to play overlay.
-
-The fix keeps the existing game-specific help content unchanged. Only the selection logic and overlay dismissal path are changed.
-
-The mandatory first-run research-consent rule remains unchanged: Escape cannot dismiss it before an explicit choice.
-
-### Home presentation
-
-The home screen no longer displays the removed introductory sentence beginning with “Explore numbers, shapes and patterns...”.
-
-The page background uses an original CSS-only hand-drawn mathematics motif with faint ruled-paper lines and scattered mathematical marks. It takes visual inspiration from notebook-style math doodles without using or embedding the supplied reference artwork. The decoration remains behind the interface and intentionally low-contrast.
+Sudoku now uses a 640px desktop board with a separate 260px keypad/action column. Smaller layouts fall back to a single-column presentation with natural vertical scrolling and no horizontal overflow.
 
 ---
 
-## 2. Robustness audit backlog
+## 2. Hardening boundary
 
-### Full-system stress audit
-
-**Status: PR in review**
-
-Issue #46 defines the bounded high-stress regression contract. The browser smoke suite now captures uncaught Node exceptions, unhandled rejections, server output, browser runtime errors, console errors, failed resources, malformed input handling, HTTP error paths, and multi-user request stress.
-
-Current bounded stress includes:
-- 960 HTTP multi-user workloads / 2,880 requests;
-- concurrent generator calls;
-- all 100 Shape Fitting levels;
-- repeated Sudoku, Slab Maths, Arithmetic Quiz, and Math Racing actions;
-- rapid cross-game switching and stale callback checks;
-- malformed browser input values;
-- API unknown-route, malformed-JSON, cross-origin, and rate-limit checks.
-
-The full contract is documented in docs/testing/full-system-stress-audit.md.
-
-
-
-The project should improve reliability without introducing unnecessary architectural changes.
-
-Track these separately:
-
-- repeated game switching and state reset;
-- Math Racing timer cleanup when leaving or restarting;
-- stale event/listener detection after repeated game starts;
-- malformed localStorage recovery;
-- focus return after every dismissible overlay;
-- touch and keyboard parity;
-- slow-load navigation;
-- offline/static-resource validation;
-- console and network-error detection;
-- reduced-motion and large-text layout regression;
-- long-run repeated gameplay stress.
-
-No research infrastructure is required for these checks.
-
----
-
-## Current layout work
-
-The physical-testing line allows vertical scrolling whenever content exceeds the viewport instead of clipping game screens. Sudoku uses a large left-side board with a separate right-side keypad and compact action controls; the desktop layout uses a 600px board column and a 260px side column, with three-column keypad targets sized for comfortable physical use. Smaller devices fall back to a single-column layout with natural vertical scrolling. Shape Fitting uses larger level-selection targets for visibility.
-
----
-
-## 3. Release line
-
-### v2.0.0 · Stable educational baseline
-
-**Status: COMPLETE / FROZEN**
-
-The v2.0.0 tag remains the regression reference for the educational experience.
-
-### v2.0.2 · Physical-testing baseline
-
-**Status: CURRENT STABLE BASELINE**
-
-Scope:
-- all five educational games;
-- responsive and keyboard-accessible controls;
-- privacy and research-data policy available without login;
-- explicit research-consent boundary;
-- authentication/account controls temporarily disabled for physical prototype testing;
-- SVG decorative assets removed;
-- browser smoke/stress validation retained.
-
-### v2.5.0 · Authenticated milestone
-
-**Status: DEFERRED DURING PHYSICAL PROTOTYPE TESTING**
-
-### v3.0.0 · Research-enabled release
-
-**Status: PLANNED**
-
-Research infrastructure begins only after the authentication milestone.
-
----
-
-## 4. Privacy contract
-
-1. Login is not research consent.
-2. Account creation is not research consent.
-3. Silence is not consent.
-4. Closing the initial consent prompt is not consent.
-5. Only explicit Yes enables research collection.
-6. No means no.
-7. Selecting No blocks future research events.
-8. Selecting No removes locally stored research events.
-9. Users can change the preference later.
-10. The privacy/data policy remains reachable without login.
-11. Game modules must not bypass the consent-aware research gateway.
-12. Authentication data and research data remain separate.
-
-Full policy:
-
-`docs/v3/research-data-policy.html`
-
----
-
-## 5. Validation boundary
-
-The automated suite covers:
+The automated regression suite checks:
 - JavaScript syntax;
-- bounded full-system stress and failure capture;
 - required DOM nodes;
 - static-resource availability;
 - authentication/session paths;
 - research-consent enforcement;
-- modal keyboard behaviour;
-- game-specific help behaviour;
-- repeated gameplay transitions;
-- browser runtime and console errors.
+- malformed browser inputs;
+- game-specific help and modal keyboard behaviour;
+- Sudoku uniqueness and repeated puzzle generation;
+- Slab Maths constructibility and repeated generation;
+- all 100 Shape Fitting levels;
+- concurrent question and Slab generation;
+- rapid cross-game starts;
+- stale timer/callback behaviour;
+- repeated gameplay stress across all five games;
+- large-text and responsive horizontal-overflow behaviour;
+- browser runtime/console errors;
+- server/process failures;
+- multi-user HTTP stress and API error paths.
 
 Headless automation does not replace real assistive-technology testing or physical learner testing.
 
 ---
 
-## 6. Development rule
+## 3. New game sequence
 
-Do not add unrelated features to the physical-testing line.
+No new game is being implemented in the hardening release.
 
-The current sequence remains:
+The agreed implementation order is fixed:
 
-`v2.0.2 physical baseline → interaction robustness → v2.5.0 production authentication → v3.0.0 research infrastructure`
+1. **Shape Architect**
+2. **Probability Carnival 🎪**
+3. **Fraction Bakery**
+4. **Little Shop**
+5. **Number Maze**
 
-Each stage should be implemented and tested separately.
+`2048` is intentionally deferred until these five are designed, implemented, tested, animated/fine-tuned, and physically reviewed.
+
+Each game will be handled independently. A game is not advanced to the next one until the current game is satisfactory.
 
 ---
+
+## 4. Development rule
+
+Human values remain the background, the game is the medium, and mathematics is the learning.
+
+Do not add unrelated features while a game is being designed or tuned. Finish the current game, test it thoroughly, gather physical-testing feedback, and only then begin the next game.
+
+---
+
+## 5. Release line
+
+### v2.0.0
+Stable educational reference.
+
+### v2.0.3
+Current hardened physical-testing baseline.
+
+### v2.5.0
+Deferred production authentication milestone.
+
+### v3.0.0
+Planned research-enabled milestone after authentication.

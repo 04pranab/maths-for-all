@@ -1,9 +1,9 @@
 #screen-sudoku .play-panel {
-  width: min(876px, calc(100vw - 32px));
+  width: min(916px, calc(100vw - 32px));
   max-width: none;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: 600px 260px;
+  grid-template-columns: 640px 260px;
   grid-template-areas:
     "top top"
     "board side"
@@ -16,16 +16,16 @@
 
 #screen-sudoku .sudoku-top-row {
   grid-area: top;
-  width: 600px;
-  max-width: 600px;
+  width: 640px;
+  max-width: 640px;
   padding: 10px 0 0;
   margin: 10px 0 0;
 }
 
 #screen-sudoku .sudoku-grid {
   grid-area: board;
-  width: 600px;
-  max-width: 600px;
+  width: 640px;
+  max-width: 640px;
   margin: 10px 0 18px;
 }
 
@@ -77,8 +77,8 @@
 
 #screen-sudoku .sudoku-message {
   grid-area: message;
-  width: 600px;
-  max-width: 600px;
+  width: 640px;
+  max-width: 640px;
 }
 
 @media (max-width: 920px) {
@@ -94,13 +94,13 @@
   }
 
   #screen-sudoku .sudoku-top-row {
-    width: min(600px, 100%);
-    max-width: 600px;
+    width: min(640px, 100%);
+    max-width: 640px;
   }
 
   #screen-sudoku .sudoku-grid {
-    width: min(600px, 100%);
-    max-width: 600px;
+    width: min(640px, 100%);
+    max-width: 640px;
   }
 
   #screen-sudoku .sudoku-side-column {
@@ -132,24 +132,24 @@
   }
 
   #screen-sudoku .sudoku-message {
-    width: min(600px, 100%);
-    max-width: 600px;
+    width: min(640px, 100%);
+    max-width: 640px;
   }
 }
 
 
 /* Issue #62: enlarge key visual elements for children with visual-accessibility needs. */
 #screen-sudoku .play-panel {
-  width: min(876px, calc(100vw - 32px));
-  grid-template-columns: 600px 260px;
+  width: min(916px, calc(100vw - 32px));
+  grid-template-columns: 640px 260px;
   column-gap: 16px;
 }
 
 #screen-sudoku .sudoku-top-row,
 #screen-sudoku .sudoku-grid,
 #screen-sudoku .sudoku-message {
-  width: 600px;
-  max-width: 600px;
+  width: 640px;
+  max-width: 640px;
 }
 
 #screen-sudoku .sudoku-grid {
@@ -157,7 +157,7 @@
 }
 
 #screen-sudoku .sudoku-cell {
-  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 800;
 }
 
@@ -176,8 +176,8 @@
   #screen-sudoku .sudoku-top-row,
   #screen-sudoku .sudoku-grid,
   #screen-sudoku .sudoku-message {
-    width: min(620px, 100%);
-    max-width: 620px;
+    width: min(640px, 100%);
+    max-width: 640px;
   }
 
   #screen-sudoku .sudoku-side-column,
@@ -188,13 +188,13 @@
   }
 
   #screen-sudoku .sudoku-cell {
-    font-size: clamp(1.55rem, 6vw, 2.2rem);
+    font-size: clamp(1.6rem, 6vw, 2.3rem);
   }
 }
 
 @media (max-width: 520px) {
   #screen-sudoku .sudoku-cell {
-    font-size: clamp(1.4rem, 8vw, 2rem);
+    font-size: clamp(1.45rem, 8vw, 2.1rem);
   }
 }
 
