@@ -1,5 +1,5 @@
 const ShapeArchitect = (() => {
-  const state={level:0,data:null,selected:null,placements:new Map(),startedAt:0,timer:null,drag:null,history:[],hints:0,raf:0};
+  const state={level:0,data:null,selected:null,placements:new Map(),startedAt:0,timer:null,drag:null,history:[],hints:0,raf:0,suppressClick:false};
   const els=id=>document.getElementById(id);
   const keyFor=(id,rot)=>id+':'+rot;
   function progressKey(){return 'mfa_shape_architect_v1';}
@@ -19,7 +19,7 @@ const ShapeArchitect = (() => {
     el.className='architect-piece'+(piece.required?' required':' extra');el.type='button';el.dataset.id=piece.id;el.dataset.rot=rot;
     el.setAttribute('aria-label',(piece.required?'Puzzle piece ':'Extra piece ')+(piece.id+1));
     el.innerHTML='<span class="architect-piece-label">'+(piece.required?'Piece ':'Extra ')+(piece.id+1)+'</span><span class="architect-mini" style="--rows:'+b.rows+';--cols:'+b.cols+'">'+cells.map(c=>'<i style="grid-row:'+(c[0]+1)+';grid-column:'+(c[1]+1)+'"></i>').join('')+'</span>';
-    el.addEventListener('click',()=>select(piece.id));
+    el.addEventListener('click',()=>{if(state.suppressClick){state.suppressClick=false;return}select(piece.id);});
     el.addEventListener('pointerdown',e=>startDrag(e,piece.id));
     return el;
   }
@@ -42,20 +42,30 @@ const ShapeArchitect = (() => {
 
   function startDrag(e,id){
     if(state.placements.has(id))return;
-    e.preventDefault();select(id);
+    e.preventDefault();select(id);state.suppressClick=true;
     const piece=state.data.pieces[id],rot=piece.rotation||0;
-    const ghost=ShapeArchitectGrid.createDragGhost(piece.cells,r=>ShapeArchitectLibrary.orientations(piece.cells)[r%ShapeArchitectLibrary.orientations(piece.cells).length],id);
-    state.drag={id,rot,pointerId:e.pointerId,ghost,lastCell:null,lastX:e.clientX,lastY:e.clientY,target:e.currentTarget};
-    ShapeArchitectGrid.moveDragGhost(ghost,e.clientX,e.clientY);
+    state.drag={id,rot,pointerId:e.pointerId,ghost:null,lastCell:null,lastX:e.clientX,lastY:e.clientY,target:e.currentTarget,startX:e.clientX,startY:e.clientY,active:false};
     e.currentTarget.setPointerCapture?.(e.pointerId);
     e.currentTarget.addEventListener('pointermove',dragMove);
     e.currentTarget.addEventListener('pointerup',endDrag,{once:true});
     e.currentTarget.addEventListener('pointercancel',cancelDrag,{once:true});
   }
 
+  function activateDrag(){
+    if(!state.drag||state.drag.active)return;
+    const d=state.drag;d.active=true;
+    const piece=state.data.pieces[d.id];
+    d.ghost=ShapeArchitectGrid.createDragGhost(piece.cells,r=>ShapeArchitectLibrary.orientations(piece.cells)[r%ShapeArchitectLibrary.orientations(piece.cells).length],d.id);
+    ShapeArchitectGrid.moveDragGhost(d.ghost,d.lastX,d.lastY);
+    d.target.classList.add('dragging');
+  }
+
   function dragMove(e){
     if(!state.drag)return;
     state.drag.lastX=e.clientX;state.drag.lastY=e.clientY;
+    const dx=e.clientX-state.drag.startX,dy=e.clientY-state.drag.startY;
+    if(!state.drag.active&&Math.hypot(dx,dy)>6)activateDrag();
+    if(!state.drag.active)return;
     ShapeArchitectGrid.moveDragGhost(state.drag.ghost,e.clientX,e.clientY);
     if(state.raf)return;
     state.raf=requestAnimationFrame(()=>{
@@ -73,22 +83,11 @@ const ShapeArchitect = (() => {
     const d=state.drag;state.drag=null;
     if(state.raf){cancelAnimationFrame(state.raf);state.raf=0;}
     ShapeArchitectGrid.clearPreview(els('architect-board'));ShapeArchitectGrid.removeDragGhost(d.ghost);
-    d.target?.removeEventListener('pointermove',dragMove);
+    d.target?.classList.remove('dragging');d.target?.removeEventListener('pointermove',dragMove);
     const target=event&&typeof event.clientX==='number'?pointerCell(event):d.lastCell;
-    if(shouldPlace&&target&&!place(d.id,target[0],target[1],d.rot))announce('That piece does not fit there yet. Try another place or rotate it.');
+    if(shouldPlace&&d.active&&target&&!place(d.id,target[0],target[1],d.rot))announce('That piece does not fit there yet. Try another place or rotate it.');
+    setTimeout(()=>{state.suppressClick=false},0);
   }
   function endDrag(e){finishDrag(e,true)}
   function cancelDrag(){finishDrag(null,false)}
-  function rotateSelected(){
-    if(state.selected===null)return;
-    const p=state.data.pieces[state.selected],current=state.placements.get(state.selected);
-    const oldRot=current?.rot??p.rotation??0;
-    const count=ShapeArchitectLibrary.orientations(p.cells).length;
-    const rot=(oldRot+1)%count;
-    if(current){
-      state.placements.set(state.selected,{...current,rot});renderTarget();
-      if(!canPlacementMap())state.placements.set(state.selected,current);
-      renderTarget();
-    }else{p.rotation=rot;renderTray();}
-  }
 ;
