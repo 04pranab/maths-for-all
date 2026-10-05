@@ -170,7 +170,7 @@
 
 @media (max-width: 900px) {
   #screen-sudoku .play-panel {
-    width: calc(100vw - 20px);
+    width: calc(100vw - 32px);
   }
 
   #screen-sudoku .sudoku-top-row,
