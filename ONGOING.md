@@ -3,7 +3,7 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.3`  
-**Current focus:** physical game-mechanics testing and baseline hardening  
+**Current focus:** Shape Architect implementation and physical game-mechanics testing  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 5 October 2026
@@ -77,7 +77,17 @@ Each game will be handled independently. A game is not advanced to the next one 
 
 ---
 
-## 4. Development rule
+## 4. Shape Architect
+
+Shape Architect is the first game in the new five-game sequence. Its current implementation target is 100 deterministic levels built from recognizable geometric pictures.
+
+The generator constructs a target mask first, partitions that mask into connected required pieces, then adds extra pieces as controlled distractors. The exact-cover validator and solver are used as the correctness boundary so a generated picture is not merely visually plausible: it has a mathematical solution.
+
+The game is timed, but the timer is a measure of time spent rather than a punishment. Undo, restart and hints support experimentation. Pointer/touch dragging, keyboard placement, large targets, visible focus, responsive layout and reduced-motion behavior are part of the initial implementation.
+
+The first physical-testing question is not “Can a child finish quickly?” It is “Can a child understand what to do, manipulate the pieces comfortably, and learn something about space, shape, rotation and planning while playing?”
+
+## 5. Development rule
 
 Human values remain the background, the game is the medium, and mathematics is the learning.
 
@@ -85,7 +95,7 @@ Do not add unrelated features while a game is being designed or tuned. Finish th
 
 ---
 
-## 5. Release line
+## 6. Release line
 
 ### v2.0.0
 Stable educational reference.
