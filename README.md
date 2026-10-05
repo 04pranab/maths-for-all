@@ -16,6 +16,7 @@ This is the physical game-testing baseline. Authentication and account controls 
 - 🏁 Math Racing
 - 🔢 Sudoku
 - 🔷 Shape Fitting
+- 🏗️ Shape Architect with 100 validated, timed picture-building levels
 - 🧺 Slab Maths
 - 📱 Responsive desktop and mobile layouts
 - ⌨️ Keyboard-friendly controls and visible focus states
