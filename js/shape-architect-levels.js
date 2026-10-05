@@ -24,28 +24,46 @@ const ShapeArchitectLevels = (() => {
     if(k<2||k>Math.floor(target.length/2))return null;
     const key=(r,c)=>r+','+c;
     const targetKeys=new Set(target.map(x=>key(x[0],x[1])));
-    for(let attempt=0;attempt<2000;attempt++){
-      const seeds=Utils.seededShuffle(target,rng).slice(0,k);
-      const owner=new Map();
-      const queues=Array.from({length:k},()=>[]);
-      seeds.forEach((cell,i)=>{const id=key(cell[0],cell[1]);owner.set(id,i);queues[i].push(cell);});
-      const frontier=[];
-      for(let i=0;i<k;i++)frontier.push(...queues[i].map(cell=>({cell,p:i})));
-      let cursor=0;
-      while(cursor<frontier.length){
-        const current=frontier[cursor++];
-        const options=Utils.seededShuffle(neighbors(current.cell[0],current.cell[1]),rng);
-        for(const next of options){
-          const id=key(next[0],next[1]);
-          if(!targetKeys.has(id)||owner.has(id))continue;
-          owner.set(id,current.p);
-          frontier.push({cell:next,p:current.p});
-        }
+    const visited=new Set(), treeEdges=[];
+    function visit(cell){
+      const id=key(cell[0],cell[1]);
+      visited.add(id);
+      const options=Utils.seededShuffle(neighbors(cell[0],cell[1]),rng);
+      for(const next of options){
+        const nextId=key(next[0],next[1]);
+        if(!targetKeys.has(nextId)||visited.has(nextId))continue;
+        treeEdges.push([cell,next]);
+        visit(next);
       }
-      if(owner.size!==target.length)continue;
-      const groups=Array.from({length:k},()=>[]);
-      for(const cell of target)groups[owner.get(key(cell[0],cell[1]))].push(cell);
-      if(groups.every(group=>group.length>=2))return groups;
+    }
+    visit(target[0]);
+    if(visited.size!==target.length)return null;
+
+    for(let attempt=0;attempt<5000;attempt++){
+      const cuts=new Set();
+      while(cuts.size<k-1)cuts.add(Math.floor(rng()*treeEdges.length));
+      const adjacency=new Map(target.map(x=>[key(x[0],x[1]),[]]));
+      treeEdges.forEach((edge,i)=>{
+        if(cuts.has(i))return;
+        const a=edge[0],b=edge[1],ak=key(a[0],a[1]),bk=key(b[0],b[1]);
+        adjacency.get(ak).push(b);
+        adjacency.get(bk).push(a);
+      });
+      const groups=[], seen=new Set();
+      for(const root of target){
+        const rk=key(root[0],root[1]);
+        if(seen.has(rk))continue;
+        const group=[], stack=[root];seen.add(rk);
+        while(stack.length){
+          const node=stack.pop();group.push(node);
+          for(const next of adjacency.get(key(node[0],node[1]))){
+            const nk=key(next[0],next[1]);
+            if(!seen.has(nk)){seen.add(nk);stack.push(next);}
+          }
+        }
+        groups.push(group);
+      }
+      if(groups.length===k&&groups.every(group=>group.length>=2))return groups;
     }
     return null;
   }
