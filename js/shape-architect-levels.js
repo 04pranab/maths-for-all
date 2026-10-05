@@ -27,25 +27,57 @@ const ShapeArchitectLevels = (() => {
     return seen.size===group.length;
   }
   function partition(mask,k,rng){
+    if(k !== 3) return null;
     const target=cells(mask);
-    if(k!==2||target.length<4)return null;
-    for(let cut=1;cut<R;cut++){
-      const top=target.filter(([r])=>r<cut),bottom=target.filter(([r])=>r>=cut);
-      if(top.length>=2&&bottom.length>=2&&connected(top)&&connected(bottom))return [top,bottom];
-      const left=target.filter(([,c])=>c<cut),right=target.filter(([,c])=>c>=cut);
-      if(left.length>=2&&right.length>=2&&connected(left)&&connected(right))return [left,right];
-    }
-    const key=(r,c)=>r+','+c,targetKeys=new Set(target.map(x=>key(x[0],x[1])));
-    for(let attempt=0;attempt<1000;attempt++){
-      const first=Utils.pick(target), firstId=key(first[0],first[1]);
-      const groupA=[first], setA=new Set([firstId]);
-      const candidates=Utils.seededShuffle(target.filter(x=>key(x[0],x[1])!==firstId),rng);
-      for(const cell of candidates){
-        const neighborsOfA=neighbors(cell[0],cell[1]).some(([r,c])=>setA.has(key(r,c)));
-        if(neighborsOfA&&groupA.length<target.length-2){groupA.push(cell);setA.add(key(cell[0],cell[1]));}
+    if(target.length < k*2) return null;
+    const key=(r,c)=>r+','+c;
+    const targetSet=new Set(target.map(x=>key(x[0],x[1])));
+    const neighborsOf=([r,c])=>neighbors(r,c).filter(([rr,cc])=>targetSet.has(key(rr,cc)));
+
+    /* A randomized spanning tree gives a simple guarantee: every component
+       remains connected after tree edges are cut. We test pairs of cuts and
+       keep only useful pieces with at least two cells. */
+    const root=Utils.pick(target), seen=new Set([key(root[0],root[1])]), stack=[root], edges=[];
+    while(stack.length){
+      const current=stack.pop();
+      const next=Utils.seededShuffle(neighborsOf(current),rng);
+      for(const n of next){
+        const id=key(n[0],n[1]);
+        if(seen.has(id))continue;
+        seen.add(id);
+        edges.push([current,n]);
+        stack.push(n);
       }
-      const groupB=target.filter(x=>!setA.has(key(x[0],x[1])));
-      if(groupA.length>=2&&groupB.length>=2&&connected(groupA)&&connected(groupB))return [groupA,groupB];
+    }
+    if(edges.length !== target.length-1)return null;
+
+    for(let a=0;a<edges.length;a++){
+      for(let b=a+1;b<edges.length;b++){
+        const blocked=new Set([a,b]);
+        const groups=[];
+        const unvisited=new Set(target.map(x=>key(x[0],x[1])));
+        while(unvisited.size){
+          const seedId=unvisited.values().next().value;
+          const seed=seedId.split(',').map(Number);
+          const group=[], todo=[seed];
+          unvisited.delete(seedId);
+          while(todo.length){
+            const current=todo.pop();
+            group.push(current);
+            for(let i=0;i<edges.length;i++){
+              if(blocked.has(i))continue;
+              const [u,v]=edges[i];
+              const same=(u[0]===current[0]&&u[1]===current[1])||(v[0]===current[0]&&v[1]===current[1]);
+              if(!same)continue;
+              const next=(u[0]===current[0]&&u[1]===current[1])?v:u;
+              const nextId=key(next[0],next[1]);
+              if(unvisited.has(nextId)){unvisited.delete(nextId);todo.push(next);}
+            }
+          }
+          groups.push(group);
+        }
+        if(groups.length===3&&groups.every(group=>group.length>=2))return groups;
+      }
     }
     return null;
   }
@@ -56,10 +88,11 @@ const ShapeArchitectLevels = (() => {
   }
 
   function choosePartition(mask,k,rng){
-    for(let tries=0;tries<500;tries++){const p=partition(mask,k,rng);if(p&&p.every(x=>x.length>=2))return p;}
-    if(k>2) return choosePartition(mask,k-1,rng);
-    for(let tries=0;tries<500;tries++){const p=partition(mask,2,rng);if(p&&p.every(x=>x.length>=2))return p;}
-    throw new Error('Unable to partition Shape Architect target into connected pieces.');
+    for(let tries=0;tries<80;tries++){
+      const p=partition(mask,k,rng);
+      if(p&&p.length===k&&p.every(x=>x.length>=2))return p;
+    }
+    throw new Error('Unable to partition Shape Architect target into three connected pieces.');
   }
   function makeDistractors(rng,count){
     const keys=[];
@@ -70,17 +103,17 @@ const ShapeArchitectLevels = (() => {
     const rng=Utils.mulberry32(0x51A7C000+index*7919);
     const t=TARGETS[index%TARGETS.length];
     const target=cells(t.mask);
-    const minPieces=2;
-    const k=2;
+    const k=3;
     let parts; try { parts=choosePartition(t.mask,k,rng); } catch(error) { throw new Error('Shape Architect target '+t.name+' level '+(index+1)+': '+error.message); }
     if(!parts)throw new Error('Shape Architect target '+t.name+' level '+(index+1)+' could not be partitioned.');
     const required=parts.map(p=>localize(p));
     const requiredKeys=required.map(p=>({cells:p,name:'required'}));
-    const distractorCount=Math.min(4,2+Math.floor(index/30));
+    const distractorCount=3;
     const distractors=makeDistractors(rng,distractorCount).map(key=>({key,cells:ShapeArchitectLibrary.SHAPES[key].cells}));
     const pieces=[...requiredKeys,...distractors].map((p,i)=>({
       id:i,key:p.key||null,cells:p.cells,required:i<required.length,
-      label:p.key?ShapeArchitectLibrary.SHAPES[p.key].name:'Puzzle piece'
+      label:p.key?ShapeArchitectLibrary.SHAPES[p.key].name:'Puzzle piece',
+      startRot:p.key?((index+i+1)%4):((index*2+i)%4)
     }));
     const solution=parts.map((p,i)=>({piece:i,anchor:[0,0],cells:p.map(x=>[x[0],x[1]])}));
     return {number:index+1,name:t.name,hint:t.hint,grid:R,mask:t.mask,requiredCount:required.length,pieces,solution,seed:(0x51A7C000+index*7919)>>>0};
