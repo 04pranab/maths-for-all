@@ -354,15 +354,15 @@ async function main() {
       'assert(signature !== previousSlabSignature, "Slab Maths repeated the same target and tile multiset immediately.");' +
       'previousSlabSignature = signature;' +
     '}' +
-    'const shapeStats = { levels: 0, cells: 0 };
-    const architectLevels = ShapeArchitect.getLevels();
-    assert(architectLevels.length === 100, "Shape Architect must contain exactly 100 levels.");
-    for (const level of architectLevels) {
-      assert(ShapeArchitectLevels.validate(level), "Shape Architect level " + level.number + " failed exact target validation.");
-      assert(ShapeArchitectSolver.hasExactSolution(level), "Shape Architect level " + level.number + " has no exact-cover solution.");
-      assert(level.pieces.length > level.requiredCount && level.pieces.length - level.requiredCount >= 2, "Shape Architect level " + level.number + " has insufficient distractor pieces.");
-      assert(level.requiredCount >= 2 && level.requiredCount <= 7, "Shape Architect level " + level.number + " has an invalid required-piece count.");
-    }' +
+    'const shapeStats = { levels: 0, cells: 0 };' +
+    'const architectLevels = ShapeArchitect.getLevels();' +
+    'assert(architectLevels.length === 100, "Shape Architect must contain exactly 100 levels.");' +
+    'for (const level of architectLevels) {' +
+      'assert(ShapeArchitectLevels.validate(level), "Shape Architect level " + level.number + " failed exact target validation.");' +
+      'assert(ShapeArchitectSolver.hasExactSolution(level), "Shape Architect level " + level.number + " has no exact-cover solution.");' +
+      'assert(level.pieces.length > level.requiredCount && level.pieces.length - level.requiredCount >= 2, "Shape Architect level " + level.number + " has insufficient distractor pieces.");' +
+      'assert(level.requiredCount >= 2 && level.requiredCount <= 7, "Shape Architect level " + level.number + " has an invalid required-piece count.");' +
+    '}' +
     'for (let i=0;i<LEVEL_DATA.length;i++) {' +
       'const level = LEVEL_DATA[i];' +
       'const n = level.grid;' +
@@ -382,7 +382,7 @@ async function main() {
     'document.documentElement.style.setProperty("--font-scale", "1.5");' +
     'for (const key of ["quiz","race","sudoku","shape","slab","architect"]) {' +
       'Game.goHome();' +
-      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath }[key];' +
+      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath, architect: Game.startShapeArchitect }[key];' +
       'start();' +
       'await new Promise(r => setTimeout(r, 20));' +
       'accessibility[key] = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2;' +
