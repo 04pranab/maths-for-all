@@ -6,7 +6,7 @@ Maths for All is designed around a learner-first loop: **try → understand → 
 
 ## Current release
 
-**v2.0.2**
+**v2.0.3**
 
 This is the physical game-testing baseline. Authentication and account controls are temporarily disabled while the game mechanics are tested.
 
