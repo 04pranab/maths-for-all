@@ -1,3 +1,11 @@
+## Unreleased
+
+### Learner visibility pass
+- Increased Sudoku number typography on the large desktop board and keypad for easier reading.
+- Increased Shape Fitting tray cards, mini-piece cells, and labels so the available pieces are easier for young learners to identify.
+- Added browser regression checks for the larger Sudoku text and Shape Fitting piece targets.
+- Preserved responsive vertical scrolling and the existing Sudoku board/side-column geometry.
+
 ## [Unreleased]
 - Added a documented full-system stress contract covering all five games, concurrent generation, malformed browser inputs, API error paths, and 32-user HTTP stress.
 - Hardened the browser smoke harness to capture uncaught exceptions, unhandled rejections, server output, browser runtime errors, console errors, and failed resources.
