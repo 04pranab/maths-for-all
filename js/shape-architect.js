@@ -38,6 +38,30 @@ const ShapeArchitect = (() => {
     for(const [rr,cc] of cells){const R=r+rr,C=c+cc;if(R<0||C<0||R>=8||C>=8||state.data.mask[R][C]!== '#'||used.has(R+','+C))return false}
     return true;
   }
+  function select(id){if(state.placements.has(id))return;state.selected=state.selected===id?null:id;document.querySelectorAll('.architect-piece').forEach(x=>x.classList.toggle('selected',Number(x.dataset.id)===state.selected));announce(state.selected===null?'Piece deselected':'Piece '+(id+1)+' selected. Move it to the picture.')}
+  function rotateSelected(){
+    if(state.selected===null)return;
+    const p=state.data.pieces[state.selected],current=state.placements.get(state.selected);
+    const oldRot=current?.rot??p.rotation??0;
+    const count=ShapeArchitectLibrary.orientations(p.cells).length;
+    const rot=(oldRot+1)%count;
+    if(current){
+      const previous=current;
+      state.placements.set(state.selected,{...current,rot});renderTarget();
+      if(!canPlacementMap())state.placements.set(state.selected,previous);
+      renderTarget();
+    }else{p.rotation=rot;renderTray();}
+  }
+  function canPlacementMap(){for(const [id,pl] of state.placements)if(!canPlaceIgnoringSelf(id,pl))return false;return true}
+  function canPlaceIgnoringSelf(id,pl){
+    const cells=selectedOrientation(state.data.pieces[id],pl.rot), seen=new Set();
+    for(const [oid,opl] of state.placements)if(oid!==id)for(const [rr,cc] of selectedOrientation(state.data.pieces[oid],opl.rot))seen.add((opl.r+rr)+','+(opl.c+cc));
+    return cells.every(([rr,cc])=>{const R=pl.r+rr,C=pl.c+cc;return R>=0&&C>=0&&R<8&&C<8&&state.data.mask[R][C]==='#'&&!seen.has(R+','+C)});
+  }
+  function place(id,r,c,rot=0){
+    if(!canPlace(id,rot,r,c))return false;
+    state.placements.set(id,{r,c,rot});state.history.push(id);state.selected=null;renderTarget();renderTray();checkComplete();return true;
+  }
   function pointerCell(e){return ShapeArchitectGrid.pointerCell(els('architect-board'),e)}
 
   function startDrag(e,id){
