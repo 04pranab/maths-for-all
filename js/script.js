@@ -367,6 +367,7 @@ const Game = (function () {
     sudoku: 'screen-sudoku',
     shape:  'screen-shape',
     slab:   'screen-slab',
+    architect: 'screen-architect',
   };
 
   function stopBackgroundGames() {
