@@ -24,7 +24,7 @@ const ShapeArchitectLibrary = (() => {
     return normalize(cells.map(([r,c])=>[c,-r]));
   }
   function orientations(cells) {
-    const out=[], seen=new Set(), cur=normalize(cells);
+    const out=[], seen=new Set(); let cur=normalize(cells);
     for(let i=0;i<4;i++){
       const key=cur.map(c=>c.join(',')).join(';');
       if(!seen.has(key)){seen.add(key);out.push(cur);}
