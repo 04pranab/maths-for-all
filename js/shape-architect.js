@@ -30,7 +30,7 @@ const ShapeArchitect = (() => {
   }
   function renderTarget(){
     const board=els('architect-board');board.innerHTML='';
-    for(let r=0;r<8;r++)for(let c=0;c<8;c++){const cell=document.createElement('div');cell.className='architect-cell'+(state.data.mask[r][c]==='#'?' target':' empty');cell.dataset.r=r;cell.dataset.c=c;board.appendChild(cell);}
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){const cell=document.createElement('div');cell.className='architect-cell'+(state.data.mask[r][c]==='#'?' target':' empty');cell.dataset.r=r;cell.dataset.c=c;if(state.data.mask[r][c]==='#'){cell.tabIndex=0;cell.setAttribute('role','gridcell');cell.setAttribute('aria-label','Picture square '+(r+1)+', '+(c+1));}board.appendChild(cell);}
     for(const [id,pl] of state.placements){paintPlacement(id,pl,false)}
   }
   function selectedOrientation(piece,rot){const os=ShapeArchitectLibrary.orientations(piece.cells);return os[rot%os.length]}
@@ -91,9 +91,18 @@ const ShapeArchitect = (() => {
   }
   function restart(){if(state.data)load(state.level)}
   function complete(){stop();const seconds=now();const p=progress();p.done[state.level+1]=true;p.best[state.level+1]=Math.min(p.best[state.level+1]||Infinity,seconds);p.unlocked=Math.max(p.unlocked,Math.min(100,state.level+2));saveProgress(p);els('architect-complete-time').textContent=fmt(seconds);els('architect-complete-name').textContent=state.data.name;els('architect-complete').classList.remove('hidden');els('architect-play-panel').classList.add('hidden');Analytics.log('shape_architect','complete',{level:state.level+1,time:Math.round(seconds),hints:state.hints});}
-  function checkComplete(){if(state.placements.size!==state.data.requiredCount)return;const target=new Set();for(const s of state.data.solution)for(const c of s.cells)target.add(c.join(','));const got=new Set();for(const [id,pl] of state.placements)for(const [rr,cc] of selectedOrientation(state.data.pieces[id],pl.rot))got.add((pl.r+rr)+','+(pl.c+cc));if(got.size===target.size&&[...got].every(x=>target.has(x)))complete();}
+  function checkComplete(){if(state.placements.size!==state.data.requiredCount)return;if([...state.placements.keys()].some(id=>id>=state.data.requiredCount))return;const target=new Set();for(const s of state.data.solution)for(const c of s.cells)target.add(c.join(','));const got=new Set();for(const [id,pl] of state.placements)for(const [rr,cc] of selectedOrientation(state.data.pieces[id],pl.rot))got.add((pl.r+rr)+','+(pl.c+cc));if(got.size===target.size&&[...got].every(x=>target.has(x)))complete();}
   function next(){if(state.level<99)load(state.level+1);else{backToLevels();announce('You built all 100 pictures!')}}
   function backToLevels(){stop();hide('architect-play-panel');hide('architect-complete');show('architect-level-panel');renderLevels()}
   function init(){renderLevels();show('architect-level-panel');hide('architect-play-panel');hide('architect-complete')}
+  function keyboard(event){
+    if(!document.getElementById('screen-architect')?.classList.contains('active')||isTypingTarget(event.target))return;
+    if(event.key.toLowerCase()==='r'){event.preventDefault();rotateSelected();return}
+    if(event.key==='Escape'){state.selected=null;document.querySelectorAll('.architect-piece.selected').forEach(x=>x.classList.remove('selected'));announce('Piece deselected.');return}
+    const cell=event.target.closest?.('.architect-cell');if(!cell)return;
+    if(event.key==='Enter'&&state.selected!==null){event.preventDefault();const id=state.selected;const rot=Number(document.querySelector('.architect-piece[data-id="'+id+'"]')?.dataset.rot||0);const r=Number(cell.dataset.r),c=Number(cell.dataset.c);if(!place(id,r,c,rot))announce('That piece does not fit here. Try another square or rotate it.');return}
+    const r=Number(cell.dataset.r),c=Number(cell.dataset.c),dr=event.key==='ArrowDown'?1:event.key==='ArrowUp'?-1:0,dc=event.key==='ArrowRight'?1:event.key==='ArrowLeft'?-1:0;if(dr||dc){event.preventDefault();const nr=Math.max(0,Math.min(7,r+dr)),nc=Math.max(0,Math.min(7,c+dc));document.querySelector('#architect-board .architect-cell[data-r="'+nr+'"][data-c="'+nc+'"]')?.focus();}
+  }
+  document.addEventListener('keydown',keyboard);
   return {init,load,restart,stop,next,backToLevels,rotateSelected,undo,hint,getLevels:()=>ShapeArchitectLevels.getAll(),canPlace};
 })();
