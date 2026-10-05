@@ -76,7 +76,7 @@ No research infrastructure is required for these checks.
 
 ## Current layout work
 
-The physical-testing line allows vertical scrolling whenever content exceeds the viewport instead of clipping game screens. Sudoku uses a large left-side board with a separate right-side keypad and compact action controls; the desktop layout uses a board-sized first column and an explicit second-side wrapper containing the number keypad and compact action controls, preventing an empty centered area between them. Shape Fitting uses larger level-selection targets for visibility. Smaller devices fall back to a single-column layout when needed.
+The physical-testing line allows vertical scrolling whenever content exceeds the viewport instead of clipping game screens. Sudoku uses a large left-side board with a separate right-side keypad and compact action controls; the desktop layout uses a 600px board column and a 260px side column, with three-column keypad targets sized for comfortable physical use. Smaller devices fall back to a single-column layout with natural vertical scrolling. Shape Fitting uses larger level-selection targets for visibility.
 
 ---
 
