@@ -316,8 +316,19 @@ const Sudoku = (function () {
 
   /** Build the on-screen number keypad (1–9 + erase). */
   function buildKeypad() {
+    const oldSide = document.querySelector('#sudoku-play-panel .sudoku-side-column');
+    const controls = document.querySelector('#sudoku-play-panel .sudoku-controls');
+
+    if (oldSide && controls) {
+      oldSide.parentNode.insertBefore(controls, oldSide);
+      oldSide.remove();
+    }
+
     const old = document.getElementById('sudoku-keypad');
     if (old) old.remove();
+
+    const side = document.createElement('div');
+    side.className = 'sudoku-side-column';
 
     const kp = document.createElement('div');
     kp.id        = 'sudoku-keypad';
@@ -338,8 +349,9 @@ const Sudoku = (function () {
     erase.addEventListener('click', () => enterNumber(0));
     kp.appendChild(erase);
 
-    const controls = document.querySelector('.sudoku-controls');
-    controls.parentNode.insertBefore(kp, controls);
+    side.appendChild(kp);
+    side.appendChild(controls);
+    document.getElementById('sudoku-play-panel').appendChild(side);
   }
 
   /** Select a cell and refresh highlights. */
