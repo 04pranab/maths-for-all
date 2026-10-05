@@ -83,7 +83,7 @@ const ShapeArchitectLevels = (() => {
     const rng=Utils.mulberry32(0x51A7C000+index*7919);
     const t=TARGETS[index%TARGETS.length];
     const target=cells(t.mask);
-    const minPieces=Math.min(2+Math.floor(index/18),7);
+    const minPieces=2;
     const k=Math.min(minPieces,Math.floor(target.length/2));
     const parts=choosePartition(target,k,rng);
     const required=parts.map(p=>localize(p));
