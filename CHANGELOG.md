@@ -10,6 +10,11 @@
 
 ## Unreleased
 
+### Sudoku side-column correction
+- Grouped the dynamically generated number keypad and action buttons inside one explicit side column.
+- Removed the remaining layout ambiguity between the board column and the control column.
+- Bumped the stylesheet cache version so the corrected layout is loaded by deployed clients.
+
 ### Sudoku column alignment
 - Made the desktop Sudoku board its own fixed first grid column instead of centering a smaller board inside an oversized column.
 - Kept the number keypad and compact action controls together in the second grid column.
