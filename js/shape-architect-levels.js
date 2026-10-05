@@ -19,51 +19,33 @@ const ShapeArchitectLevels = (() => {
   const PIECE_KEYS=Object.keys(ShapeArchitectLibrary.SHAPES);
   function cells(mask){const out=[];for(let r=0;r<R;r++)for(let c=0;c<R;c++)if(mask[r][c]==='#')out.push([r,c]);return out;}
   function neighbors(r,c){return [[r-1,c],[r+1,c],[r,c-1],[r,c+1]];}
+  function connected(group){
+    if(!group.length)return false;
+    const key=(r,c)=>r+','+c, set=new Set(group.map(x=>key(x[0],x[1])));
+    const seen=new Set([key(group[0][0],group[0][1])]), stack=[group[0]];
+    while(stack.length){const cell=stack.pop();for(const n of neighbors(cell[0],cell[1])){const id=key(n[0],n[1]);if(set.has(id)&&!seen.has(id)){seen.add(id);stack.push(n);}}}
+    return seen.size===group.length;
+  }
   function partition(mask,k,rng){
     const target=cells(mask);
-    if(k<2||k>Math.floor(target.length/2))return null;
-    const key=(r,c)=>r+','+c;
-    const targetKeys=new Set(target.map(x=>key(x[0],x[1])));
-    const visited=new Set(), treeEdges=[];
-    function visit(cell){
-      const id=key(cell[0],cell[1]);
-      visited.add(id);
-      const options=Utils.seededShuffle(neighbors(cell[0],cell[1]),rng);
-      for(const next of options){
-        const nextId=key(next[0],next[1]);
-        if(!targetKeys.has(nextId)||visited.has(nextId))continue;
-        treeEdges.push([cell,next]);
-        visit(next);
-      }
+    if(k!==2||target.length<4)return null;
+    for(let cut=1;cut<R;cut++){
+      const top=target.filter(([r])=>r<cut),bottom=target.filter(([r])=>r>=cut);
+      if(top.length>=2&&bottom.length>=2&&connected(top)&&connected(bottom))return [top,bottom];
+      const left=target.filter(([,c])=>c<cut),right=target.filter(([,c])=>c>=cut);
+      if(left.length>=2&&right.length>=2&&connected(left)&&connected(right))return [left,right];
     }
-    visit(target[0]);
-    if(visited.size!==target.length)return null;
-
-    for(let attempt=0;attempt<5000;attempt++){
-      const cuts=new Set();
-      while(cuts.size<k-1)cuts.add(Math.floor(rng()*treeEdges.length));
-      const adjacency=new Map(target.map(x=>[key(x[0],x[1]),[]]));
-      treeEdges.forEach((edge,i)=>{
-        if(cuts.has(i))return;
-        const a=edge[0],b=edge[1],ak=key(a[0],a[1]),bk=key(b[0],b[1]);
-        adjacency.get(ak).push(b);
-        adjacency.get(bk).push(a);
-      });
-      const groups=[], seen=new Set();
-      for(const root of target){
-        const rk=key(root[0],root[1]);
-        if(seen.has(rk))continue;
-        const group=[], stack=[root];seen.add(rk);
-        while(stack.length){
-          const node=stack.pop();group.push(node);
-          for(const next of adjacency.get(key(node[0],node[1]))){
-            const nk=key(next[0],next[1]);
-            if(!seen.has(nk)){seen.add(nk);stack.push(next);}
-          }
-        }
-        groups.push(group);
+    const key=(r,c)=>r+','+c,targetKeys=new Set(target.map(x=>key(x[0],x[1])));
+    for(let attempt=0;attempt<1000;attempt++){
+      const first=Utils.pick(target), firstId=key(first[0],first[1]);
+      const groupA=[first], setA=new Set([firstId]);
+      const candidates=Utils.seededShuffle(target.filter(x=>key(x[0],x[1])!==firstId),rng);
+      for(const cell of candidates){
+        const neighborsOfA=neighbors(cell[0],cell[1]).some(([r,c])=>setA.has(key(r,c)));
+        if(neighborsOfA&&groupA.length<target.length-2){groupA.push(cell);setA.add(key(cell[0],cell[1]));}
       }
-      if(groups.length===k&&groups.every(group=>group.length>=2))return groups;
+      const groupB=target.filter(x=>!setA.has(key(x[0],x[1])));
+      if(groupA.length>=2&&groupB.length>=2&&connected(groupA)&&connected(groupB))return [groupA,groupB];
     }
     return null;
   }
@@ -84,7 +66,7 @@ const ShapeArchitectLevels = (() => {
     const t=TARGETS[index%TARGETS.length];
     const target=cells(t.mask);
     const minPieces=2;
-    const k=Math.min(minPieces,Math.floor(target.length/2));
+    const k=2;
     let parts; try { parts=choosePartition(target,k,rng); } catch(error) { throw new Error('Shape Architect target '+t.name+' level '+(index+1)+': '+error.message); }
     if(!parts)throw new Error('Shape Architect target '+t.name+' level '+(index+1)+' could not be partitioned.');
     const required=parts.map(p=>localize(p));
