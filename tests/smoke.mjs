@@ -185,7 +185,7 @@ async function main() {
   await sleep(500);
 
   const baseline = await evaluate('(() => {' +
-    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
+    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","screen-architect","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
     'const missing = required.filter(id => !document.getElementById(id));' +
     'const resources = [...Array.from(document.scripts).map(s => s.src), ...Array.from(document.querySelectorAll("link[rel=stylesheet]")).map(l => l.href)];' +
     'return { missing, resources };' +
@@ -231,10 +231,10 @@ async function main() {
 
   const helpResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
-    'const cases = [["screen-quiz","quiz","How to play: Arithmetic Quiz"],["screen-race","race","How to play: Math Racing"],["screen-sudoku","sudoku","How to play: Sudoku Challenge"],["screen-shape","shape","How to play: Shape Fitting"],["screen-slab","slab","How to play: Slab Maths"]];' +
+    'const cases = [["screen-quiz","quiz","How to play: Arithmetic Quiz"],["screen-race","race","How to play: Math Racing"],["screen-sudoku","sudoku","How to play: Sudoku Challenge"],["screen-shape","shape","How to play: Shape Fitting"],["screen-slab","slab","How to play: Slab Maths"],["screen-architect","architect","How to play: Shape Architect"]];' +
     'for (const [screenId, key, title] of cases) {' +
       'Game.goHome();' +
-      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath }[key];' +
+      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath, architect: Game.startShapeArchitect }[key];' +
       'start();' +
       'Navigation.howToPlay();' +
       'await new Promise(r => setTimeout(r, 20));' +
@@ -355,6 +355,14 @@ async function main() {
       'previousSlabSignature = signature;' +
     '}' +
     'const shapeStats = { levels: 0, cells: 0 };' +
+    'const architectLevels = ShapeArchitect.getLevels();' +
+    'assert(architectLevels.length === 100, "Shape Architect must contain exactly 100 levels.");' +
+    'for (const level of architectLevels) {' +
+      'assert(ShapeArchitectLevels.validate(level), "Shape Architect level " + level.number + " failed exact target validation.");' +
+      'assert(ShapeArchitectSolver.hasExactSolution(level), "Shape Architect level " + level.number + " has no exact-cover solution.");' +
+      'assert(level.pieces.length > level.requiredCount && level.pieces.length - level.requiredCount >= 2, "Shape Architect level " + level.number + " has insufficient distractor pieces.");' +
+      'assert(level.requiredCount >= 2 && level.requiredCount <= 7, "Shape Architect level " + level.number + " has an invalid required-piece count.");' +
+    '}' +
     'for (let i=0;i<LEVEL_DATA.length;i++) {' +
       'const level = LEVEL_DATA[i];' +
       'const n = level.grid;' +
@@ -372,9 +380,9 @@ async function main() {
     '}' +
     'const accessibility = {};' +
     'document.documentElement.style.setProperty("--font-scale", "1.5");' +
-    'for (const key of ["quiz","race","sudoku","shape","slab"]) {' +
+    'for (const key of ["quiz","race","sudoku","shape","slab","architect"]) {' +
       'Game.goHome();' +
-      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath }[key];' +
+      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath, architect: Game.startShapeArchitect }[key];' +
       'start();' +
       'await new Promise(r => setTimeout(r, 20));' +
       'accessibility[key] = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2;' +
