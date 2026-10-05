@@ -20,25 +20,57 @@ const ShapeArchitectLevels = (() => {
   function cells(mask){const out=[];for(let r=0;r<R;r++)for(let c=0;c<R;c++)if(mask[r][c]==='#')out.push([r,c]);return out;}
   function neighbors(r,c){return [[r-1,c],[r+1,c],[r,c-1],[r,c+1]];}
   function partition(mask,k,rng){
-    const target=cells(mask), set=new Set(target.map(([r,c])=>r+','+c));
-    if(k>target.length) return null;
-    const shuffled=Utils.seededShuffle(target,rng);
-    const pieces=Array.from({length:k},()=>[]);
-    const assigned=new Map();
-    shuffled.slice(0,k).forEach((cell,i)=>{pieces[i].push(cell);assigned.set(cell.join(','),i);});
-    let remaining=new Set(target.slice(k).map(x=>x.join(',')));
-    let guard=0;
-    while(remaining.size && guard++<10000){
-      const frontier=[];
-      for(const key of remaining){const [r,c]=key.split(',').map(Number);for(const [nr,nc] of neighbors(r,c))if(assigned.has(nr+','+nc)){frontier.push({r,c,p:assigned.get(nr+','+nc)});break;}}
-      if(!frontier.length)return null;
-      const pick=Utils.pick(frontier);
-      pieces[pick.p].push([pick.r,pick.c]);assigned.set(pick.r+','+pick.c,pick.p);remaining.delete(pick.r+','+pick.c);
+    const target=cells(mask);
+    if(k<2||k>Math.floor(target.length/2)) return null;
+    const key=(r,c)=>r+','+c;
+    const byKey=new Map(target.map(x=>[key(x[0],x[1]),x]));
+    const treeEdges=[];
+    const visited=new Set();
+    const stack=[target[0]];
+    visited.add(key(target[0][0],target[0][1]));
+    while(stack.length){
+      const current=stack.pop();
+      const options=neighbors(current[0],current[1])
+        .filter(([r,c])=>byKey.has(key(r,c))&&!visited.has(key(r,c)));
+      const shuffled=Utils.seededShuffle(options,rng);
+      for(const next of shuffled){
+        const nk=key(next[0],next[1]);
+        if(visited.has(nk))continue;
+        visited.add(nk);
+        treeEdges.push([current,next]);
+        stack.push(next);
+      }
     }
-    return pieces.map(p=>p.map(([r,c])=>[r,c]));
+    if(visited.size!==target.length)return null;
+    for(let attempt=0;attempt<5000;attempt++){
+      const cutIndices=new Set();
+      while(cutIndices.size<k-1)cutIndices.add(Math.floor(rng()*treeEdges.length));
+      const adjacency=new Map(target.map(x=>[key(x[0],x[1]),[]]));
+      treeEdges.forEach((edge,i)=>{
+        if(cutIndices.has(i))return;
+        const a=edge[0],b=edge[1],ak=key(a[0],a[1]),bk=key(b[0],b[1]);
+        adjacency.get(ak).push(b);
+        adjacency.get(bk).push(a);
+      });
+      const groups=[], seen=new Set();
+      for(const root of target){
+        const rk=key(root[0],root[1]);
+        if(seen.has(rk))continue;
+        const group=[], q=[root];seen.add(rk);
+        while(q.length){
+          const node=q.pop();group.push(node);
+          for(const next of adjacency.get(key(node[0],node[1]))){
+            const nk=key(next[0],next[1]);
+            if(!seen.has(nk)){seen.add(nk);q.push(next);}
+          }
+        }
+        groups.push(group);
+      }
+      if(groups.length===k&&groups.every(group=>group.length>=2))return groups;
+    }
+    return null;
   }
-  function localize(cells){const minR=Math.min(...cells.map(x=>x[0])),minC=Math.min(...cells.map(x=>x[1]));return cells.map(([r,c])=>[r-minR,c-minC]);}
-  function signature(cells){return localize(cells).map(x=>x.join(',')).join(';');}
+
   function choosePartition(mask,k,rng){
     for(let tries=0;tries<500;tries++){const p=partition(mask,k,rng);if(p&&p.every(x=>x.length>=2))return p;}
     if(k>2) return choosePartition(mask,k-1,rng);
