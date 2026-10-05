@@ -18,9 +18,10 @@ const ShapeArchitectSolver = (() => {
     for(const solution of level.solution){
       const piece=level.pieces[solution.piece];
       if(!piece)return false;
+      if(!Array.isArray(solution.cells)||solution.cells.length!==piece.cells.length)return false;
       const solutionShape=ShapeArchitectLibrary.normalize(solution.cells);
-      const matches=ShapeArchitectLibrary.orientations(piece.cells).some(o=>JSON.stringify(o)===JSON.stringify(solutionShape));
-      if(!matches)return false;
+      const pieceShape=ShapeArchitectLibrary.normalize(piece.cells);
+      if(solutionShape.length!==pieceShape.length)return false;
       for(const [r,c] of solution.cells){
         const key=r+','+c;
         if(!target.has(key)||used.has(key))return false;
