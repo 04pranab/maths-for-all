@@ -118,17 +118,4 @@ const ShapeArchitect = (() => {
   }
   document.addEventListener('keydown',keyboard);
   return {init,load,restart,stop,next,backToLevels,rotateSelected,undo,hint,getLevels:()=>ShapeArchitectLevels.getAll(),canPlace};
-})()  function rotateSelected(){
-    if(state.selected===null)return;
-    const p=state.data.pieces[state.selected],current=state.placements.get(state.selected);
-    const oldRot=current?.rot??p.rotation??0;
-    const count=ShapeArchitectLibrary.orientations(p.cells).length;
-    const rot=(oldRot+1)%count;
-    if(current){
-      const previous=current;
-      state.placements.set(state.selected,{...current,rot});renderTarget();
-      if(!canPlacementMap())state.placements.set(state.selected,previous);
-      renderTarget();
-    }else{p.rotation=rot;renderTray();}
-  }
-;
+})()
