@@ -39,7 +39,8 @@
   flex-direction: column;
   align-items: stretch;
   gap: 8px;
-  padding-top: 10px;
+  padding-top: 0;
+  margin: 10px 0 0;
 }
 
 #screen-sudoku .sudoku-keypad {
