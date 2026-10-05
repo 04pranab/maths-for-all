@@ -385,7 +385,7 @@ async function main() {
     'await new Promise(r => setTimeout(r, 20));' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
-    'assert(sudokuWidth >= 590 && sudokuWidth <= 610, "Sudoku desktop board is not large enough for comfortable use.");' +
+    'assert(sudokuWidth >= 630 && sudokuWidth <= 650, "Sudoku desktop board is not large enough for comfortable use.");' +
     'const sudokuTopRow = document.querySelector("#screen-sudoku .sudoku-top-row");' +
     'assert(sudokuTopRow && Math.abs(sudokuTopRow.getBoundingClientRect().left - sudokuGrid.getBoundingClientRect().left) <= 2, "Sudoku top row and board are not aligned in column one.");' +
     'const desktopControls = document.querySelector(".sudoku-controls");' +
