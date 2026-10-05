@@ -10,6 +10,11 @@
 
 ## Unreleased
 
+### Sudoku desktop spacing
+- Reduced the excessive horizontal gap between the large Sudoku board and its right-side keypad/actions.
+- Kept the desktop board large and the compact action controls separate from the keypad.
+- Added regression coverage for the board-to-keypad spacing.
+
 ### Hand-drawn mathematics background
 - Reworked the decorative page background into an original CSS-only mathematics doodle field inspired by hand-drawn study notes.
 - Added faint ruled-paper texture and scattered mathematical marks without importing or embedding the supplied reference artwork.
