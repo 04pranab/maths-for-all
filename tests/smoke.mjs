@@ -383,7 +383,9 @@ async function main() {
     'Game.startSudoku();' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
-    'assert(sudokuWidth <= 620, "Sudoku board is oversized at desktop width.");' +
+    'assert(sudokuWidth >= 470 && sudokuWidth <= 490, "Sudoku desktop board is not using the intended board column width.");' +
+    'const sudokuTopRow = document.querySelector("#screen-sudoku .sudoku-top-row");' +
+    'assert(sudokuTopRow && Math.abs(sudokuTopRow.getBoundingClientRect().left - sudokuGrid.getBoundingClientRect().left) <= 2, "Sudoku top row and board are not aligned in column one.");' +
     'const desktopControls = document.querySelector(".sudoku-controls");' +
     'assert(desktopControls.getBoundingClientRect().left > sudokuGrid.getBoundingClientRect().right - 10, "Sudoku desktop controls are not beside the board.");' +
     'const sudokuKeypad = document.getElementById("sudoku-keypad");' +

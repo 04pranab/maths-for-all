@@ -10,6 +10,11 @@
 
 ## Unreleased
 
+### Sudoku column alignment
+- Made the desktop Sudoku board its own fixed first grid column instead of centering a smaller board inside an oversized column.
+- Kept the number keypad and compact action controls together in the second grid column.
+- Added regression checks for board width, column alignment, and board-to-keypad spacing.
+
 ### Sudoku desktop spacing
 - Reduced the excessive horizontal gap between the large Sudoku board and its right-side keypad/actions.
 - Kept the desktop board large and the compact action controls separate from the keypad.

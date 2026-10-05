@@ -3323,11 +3323,11 @@ body {
 }
 
 #screen-sudoku .play-panel {
-  width: min(1180px, calc(100vw - 32px));
+  width: min(760px, calc(100vw - 32px));
   max-width: none;
   padding-top: 0;
   display: grid;
-  grid-template-columns: minmax(0, 620px) minmax(260px, 320px);
+  grid-template-columns: 480px 240px;
   grid-template-areas:
     "top side"
     "board side"
@@ -3340,15 +3340,15 @@ body {
 #screen-sudoku .sudoku-top-row {
   grid-area: top;
   width: 100%;
-  max-width: 620px;
+  max-width: 480px;
   padding: 10px 0 0;
 }
 
 #screen-sudoku .sudoku-grid {
   grid-area: board;
-  width: min(620px, 100%);
-  max-width: 620px;
-  margin: 10px auto 18px;
+  width: 480px;
+  max-width: 480px;
+  margin: 10px 0 18px;
 }
 
 #screen-sudoku .sudoku-keypad {
@@ -3382,8 +3382,8 @@ body {
 
 #screen-sudoku .sudoku-message {
   grid-area: message;
-  width: min(620px, 100%);
-  max-width: 620px;
+  width: 480px;
+  max-width: 480px;
 }
 
 #screen-sudoku .btn-key,
