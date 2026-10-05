@@ -261,8 +261,6 @@ async function main() {
     'sudokuCell?.click();' +
     'for (let i=0;i<81;i++) document.dispatchEvent(new KeyboardEvent("keydown", { key: "x" }));' +
     'Game.startShapePuzzle();' +
-     'ShapePuzzle.loadLevel(0);' +
-     'await new Promise(r => setTimeout(r, 20));' +
     'for (let i=0;i<50;i++) { ShapePuzzle.rotateSelected(); ShapePuzzle.showHint(); }' +
     'Game.startSlabMath();' +
     'for (let i=0;i<50;i++) SlabMath.hint();' +
