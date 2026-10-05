@@ -67,7 +67,7 @@ const ShapeArchitectLevels = (() => {
     const target=cells(t.mask);
     const minPieces=2;
     const k=2;
-    let parts; try { parts=choosePartition(target,k,rng); } catch(error) { throw new Error('Shape Architect target '+t.name+' level '+(index+1)+': '+error.message); }
+    let parts; try { parts=choosePartition(t.mask,k,rng); } catch(error) { throw new Error('Shape Architect target '+t.name+' level '+(index+1)+': '+error.message); }
     if(!parts)throw new Error('Shape Architect target '+t.name+' level '+(index+1)+' could not be partitioned.');
     const required=parts.map(p=>localize(p));
     const requiredKeys=required.map(p=>({cells:p,name:'required'}));
