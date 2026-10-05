@@ -381,6 +381,8 @@ async function main() {
       'assert(accessibility[key], "Horizontal overflow at large text size in " + key);' +
     '}' +
     'Game.startSudoku();' +
+    'Sudoku.newPuzzle("easy");' +
+    'await new Promise(r => setTimeout(r, 20));' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
     'assert(sudokuWidth >= 590 && sudokuWidth <= 610, "Sudoku desktop board is not large enough for comfortable use.");' +
@@ -418,6 +420,7 @@ async function main() {
   const mobileLayoutResult = await evaluate('(() => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'Game.startSudoku();' +
+    'Sudoku.newPuzzle("easy");' +
     'const mobilePanel = document.querySelector("#screen-sudoku .play-panel");' +
     'const sudokuGrid = document.getElementById("sudoku-grid");' +
     'const sudokuControls = document.querySelector("#screen-sudoku .sudoku-controls");' +
