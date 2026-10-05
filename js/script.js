@@ -135,6 +135,16 @@ const ControlsOverlay = (function () {
         'Fill every square on the board to win the level — Hint is there if you need it.',
       ],
     },
+    architect: {
+      icon: '🏗️', title: 'How to play: Shape Architect',
+      bullets: [
+        'Choose an unlocked picture. Every picture has a real solution.',
+        'Drag pieces onto the highlighted picture. The pieces must cover the picture exactly.',
+        'Extra pieces are included on purpose. Look carefully before choosing.',
+        'Rotate a piece with R or the Rotate button. Undo lets you experiment safely.',
+        'The clock measures your time, but speed is not the goal. Notice how shapes fit.'
+      ],
+    },
     slab: {
       icon: '🧺', title: 'How to play: Slab Maths',
       bullets: [
@@ -213,7 +223,8 @@ const Analytics = (function () {
     race: 'Math Racing',
     sudoku: 'Sudoku',
     shape: 'Shape Fitting',
-    slab: 'Slab Maths'
+    slab: 'Slab Maths',
+    architect: 'Shape Architect'
   };
 
   function events() {
@@ -363,6 +374,7 @@ const Game = (function () {
     if (window.Racing && typeof Racing.stop === 'function') Racing.stop();
     if (window.ShapePuzzle && typeof ShapePuzzle.stop === 'function') ShapePuzzle.stop();
     if (window.SlabMath && typeof SlabMath.stop === 'function') SlabMath.stop();
+    if (window.ShapeArchitect && typeof ShapeArchitect.stop === 'function') ShapeArchitect.stop();
   }
 
   function showScreen(name) {
@@ -383,8 +395,9 @@ const Game = (function () {
   function startSudoku()     { Analytics.log('sudoku','open',{}); showScreen('sudoku'); Sudoku.init(); ControlsOverlay.maybeShow('sudoku'); }
   function startShapePuzzle(){ Analytics.log('shape','open',{}); showScreen('shape'); ShapePuzzle.init(); ControlsOverlay.maybeShow('shape'); }
   function startSlabMath()   { Analytics.log('slab','open',{}); showScreen('slab'); SlabMath.init(); ControlsOverlay.maybeShow('slab'); }
+  function startShapeArchitect(){ Analytics.log('shape_architect','open',{}); showScreen('architect'); ShapeArchitect.init(); ControlsOverlay.maybeShow('architect'); }
 
-  return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath };
+  return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect };
 })();
 
 /* =============================================================
