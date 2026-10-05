@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20261005-3" />
   <link rel="stylesheet" href="css/sudoku-comfort.css?v=20261005-1" />
   <link rel="stylesheet" href="css/slabmath.css" />
+  <link rel="stylesheet" href="css/shape-architect.css" />
 </head>
 <body>
 
@@ -93,6 +94,12 @@
         <div class="card-title">Slab Maths</div>
         <div class="card-desc">Drag number slabs into the basket until it reaches zero. Plays forever.</div>
         <div class="card-tag">Solo · Endless</div>
+      </button>
+      <button class="menu-card card-architect" onclick="Game.startShapeArchitect()">
+        <div class="card-badge-icon">🏗️</div>
+        <div class="card-title">Shape Architect</div>
+        <div class="card-desc">Build a picture from pieces. Explore geometry, space, rotation and planning.</div>
+        <div class="card-tag">Solo · 100 levels · Timed</div>
       </button>
 
     </div>
@@ -370,6 +377,68 @@
 
 
   <!-- ===================================================
+       SCREEN 6: SHAPE ARCHITECT
+       =================================================== -->
+  <div id="screen-architect" class="screen">
+    <div class="game-topbar">
+      <button class="btn-back" onclick="Game.goHome()">← Back</button>
+      <h2 class="topbar-title">🏗️ Shape Architect</h2>
+      <button class="btn-help" onclick="ControlsOverlay.forceShow('architect')" aria-label="How to play">?</button>
+      <div class="score-box"><span id="architect-level-badge">100 levels</span></div>
+    </div>
+
+    <div id="architect-level-panel" class="architect-level-panel">
+      <h3>Build a picture, one piece at a time</h3>
+      <p class="architect-intro">Every picture has a solution. Use the shapes to cover the highlighted picture exactly. Extra pieces are there to make you look, plan and experiment.</p>
+      <div class="architect-progress" id="architect-progress">0 / 100 pictures built</div>
+      <div class="architect-level-grid" id="architect-level-grid"></div>
+    </div>
+
+    <div id="architect-play-panel" class="architect-play-panel hidden">
+      <div class="architect-hud">
+        <div class="architect-stat"><small>LEVEL</small><strong id="architect-level-num">1</strong></div>
+        <div class="architect-stat"><small>PICTURE</small><strong id="architect-target-name">House</strong></div>
+        <div class="architect-stat"><small>TIME</small><strong id="architect-timer">0:00</strong></div>
+        <div class="architect-stat"><small>PIECES</small><strong id="architect-placed">0/0</strong></div>
+      </div>
+      <p class="architect-target-hint" id="architect-target-hint">Build the picture.</p>
+
+      <div class="architect-layout">
+        <div class="architect-board-wrap">
+          <div id="architect-board" class="architect-board" role="grid" aria-label="Shape Architect target board"></div>
+          <div class="architect-instructions">Drag a piece onto the picture. <kbd>R</kbd> rotates · <kbd>Esc</kbd> deselects · <kbd>Enter</kbd> places on the focused square.</div>
+        </div>
+        <div>
+          <div class="architect-tray" id="architect-tray" aria-label="Shape pieces"></div>
+          <div class="architect-controls">
+            <button class="primary" onclick="ShapeArchitect.rotateSelected()">⟲ Rotate <kbd>R</kbd></button>
+            <button onclick="ShapeArchitect.undo()">↶ Undo last piece</button>
+            <button onclick="ShapeArchitect.hint()">💡 Hint</button>
+            <button onclick="ShapeArchitect.restart()">🔄 Restart level</button>
+            <button onclick="ShapeArchitect.backToLevels()">☰ All levels</button>
+          </div>
+          <div id="architect-message" class="architect-message hidden" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="architect-complete" class="architect-complete hidden">
+      <div class="architect-complete-card">
+        <div class="emoji">🎉</div>
+        <h2>Picture complete!</h2>
+        <p>You built <strong id="architect-complete-name">House</strong>.</p>
+        <p>Your time: <strong id="architect-complete-time">0:00</strong></p>
+        <p>There is no need to be fast. The important part is noticing how the pieces fit.</p>
+        <div class="architect-complete-actions">
+          <button class="next" onclick="ShapeArchitect.next()">▶ Next level</button>
+          <button onclick="ShapeArchitect.restart()">🔄 Build it again</button>
+          <button onclick="ShapeArchitect.backToLevels()">☰ All levels</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
        SCREEN 6: SLAB MATHS  (new)
        =================================================== -->
   <div id="screen-slab" class="screen">
@@ -560,6 +629,9 @@
   <script src="js/sudoku.js?v=20260924-2"></script>
   <script src="js/shapes.js?v=20260924-2"></script>
   <script src="js/slabmath.js?v=20260924-2"></script>
+  <script src="js/shape-architect-library.js?v=20261005-1"></script>
+  <script src="js/shape-architect-levels.js?v=20261005-1"></script>
+  <script src="js/shape-architect.js?v=20261005-1"></script>
   <script src="js/consent.js?v=20261001-1"></script>
   <script>
     /* Prototype compatibility shim. Production authentication remains disabled. */
