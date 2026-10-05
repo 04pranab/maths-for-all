@@ -21,52 +21,31 @@ const ShapeArchitectLevels = (() => {
   function neighbors(r,c){return [[r-1,c],[r+1,c],[r,c-1],[r,c+1]];}
   function partition(mask,k,rng){
     const target=cells(mask);
-    if(k<2||k>Math.floor(target.length/2)) return null;
+    if(k<2||k>Math.floor(target.length/2))return null;
     const key=(r,c)=>r+','+c;
-    const byKey=new Map(target.map(x=>[key(x[0],x[1]),x]));
-    const treeEdges=[];
-    const visited=new Set();
-    const stack=[target[0]];
-    visited.add(key(target[0][0],target[0][1]));
-    while(stack.length){
-      const current=stack.pop();
-      const options=neighbors(current[0],current[1])
-        .filter(([r,c])=>byKey.has(key(r,c))&&!visited.has(key(r,c)));
-      const shuffled=Utils.seededShuffle(options,rng);
-      for(const next of shuffled){
-        const nk=key(next[0],next[1]);
-        if(visited.has(nk))continue;
-        visited.add(nk);
-        treeEdges.push([current,next]);
-        stack.push(next);
-      }
-    }
-    if(visited.size!==target.length)return null;
-    for(let attempt=0;attempt<5000;attempt++){
-      const cutIndices=new Set();
-      while(cutIndices.size<k-1)cutIndices.add(Math.floor(rng()*treeEdges.length));
-      const adjacency=new Map(target.map(x=>[key(x[0],x[1]),[]]));
-      treeEdges.forEach((edge,i)=>{
-        if(cutIndices.has(i))return;
-        const a=edge[0],b=edge[1],ak=key(a[0],a[1]),bk=key(b[0],b[1]);
-        adjacency.get(ak).push(b);
-        adjacency.get(bk).push(a);
-      });
-      const groups=[], seen=new Set();
-      for(const root of target){
-        const rk=key(root[0],root[1]);
-        if(seen.has(rk))continue;
-        const group=[], q=[root];seen.add(rk);
-        while(q.length){
-          const node=q.pop();group.push(node);
-          for(const next of adjacency.get(key(node[0],node[1]))){
-            const nk=key(next[0],next[1]);
-            if(!seen.has(nk)){seen.add(nk);q.push(next);}
-          }
+    const targetKeys=new Set(target.map(x=>key(x[0],x[1])));
+    for(let attempt=0;attempt<2000;attempt++){
+      const seeds=Utils.seededShuffle(target,rng).slice(0,k);
+      const owner=new Map();
+      const queues=Array.from({length:k},()=>[]);
+      seeds.forEach((cell,i)=>{const id=key(cell[0],cell[1]);owner.set(id,i);queues[i].push(cell);});
+      const frontier=[];
+      for(let i=0;i<k;i++)frontier.push(...queues[i].map(cell=>({cell,p:i})));
+      let cursor=0;
+      while(cursor<frontier.length){
+        const current=frontier[cursor++];
+        const options=Utils.seededShuffle(neighbors(current.cell[0],current.cell[1]),rng);
+        for(const next of options){
+          const id=key(next[0],next[1]);
+          if(!targetKeys.has(id)||owner.has(id))continue;
+          owner.set(id,current.p);
+          frontier.push({cell:next,p:current.p});
         }
-        groups.push(group);
       }
-      if(groups.length===k&&groups.every(group=>group.length>=2))return groups;
+      if(owner.size!==target.length)continue;
+      const groups=Array.from({length:k},()=>[]);
+      for(const cell of target)groups[owner.get(key(cell[0],cell[1]))].push(cell);
+      if(groups.every(group=>group.length>=2))return groups;
     }
     return null;
   }
