@@ -17,6 +17,7 @@ const ShapeArchitectSolver = (() => {
     const pieces=level.pieces.slice(0,level.requiredCount);
     const options=pieces.map(p=>placementsFor(p,target,level.grid));
     if(options.some(x=>!x.length))return false;
+    options.sort((a,b)=>a.length-b.length);
     function search(i,used){
       if(i===options.length)return used.size===target.size;
       for(const p of options[i]){
