@@ -401,7 +401,7 @@ const ShapePuzzle = (function () {
 
     const grid  = document.createElement('div');
     grid.className = 'piece-mini-grid';
-    grid.style.gridTemplateColumns = `repeat(${cols}, 14px)`;
+    grid.style.gridTemplateColumns = `repeat(${cols}, 20px)`;
 
     const filled = new Set(cells.map(c => `${c[0] - minR},${c[1] - minC}`));
 
