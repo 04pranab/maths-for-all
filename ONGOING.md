@@ -12,6 +12,13 @@
 
 ## 1. Current fix stack
 
+
+### Learner visibility and physical readability
+
+**Status: PR in review**
+
+Issue #61 addresses a physical-testing visibility problem for younger learners. Sudoku numbers are being enlarged without changing the established large desktop board and right-side keypad layout. Shape Fitting tray pieces are being enlarged at the card, mini-cell, and label levels so the pieces can be identified more comfortably. The regression suite checks the new minimum sizes and preserves responsive scrolling/no-horizontal-overflow behaviour.
+
 ### Context-sensitive help and overlay keyboard handling
 
 **Status: PR in review**
