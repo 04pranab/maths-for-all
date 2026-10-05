@@ -50,6 +50,11 @@ const ShapeArchitectLevels = (() => {
     return null;
   }
 
+  function localize(cells){
+    const minR=Math.min(...cells.map(x=>x[0])),minC=Math.min(...cells.map(x=>x[1]));
+    return cells.map(([r,c])=>[r-minR,c-minC]);
+  }
+
   function choosePartition(mask,k,rng){
     for(let tries=0;tries<500;tries++){const p=partition(mask,k,rng);if(p&&p.every(x=>x.length>=2))return p;}
     if(k>2) return choosePartition(mask,k-1,rng);
