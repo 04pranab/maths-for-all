@@ -11,7 +11,27 @@ const ShapeArchitectSolver = (() => {
     }
     return out;
   }
+  function certificateMatches(level){
+    const target=new Set();
+    for(let r=0;r<level.mask.length;r++)for(let c=0;c<level.mask[r].length;c++)if(level.mask[r][c]==='#')target.add(r+','+c);
+    const used=new Set();
+    for(const solution of level.solution){
+      const piece=level.pieces[solution.piece];
+      if(!piece)return false;
+      const solutionShape=ShapeArchitectLibrary.normalize(solution.cells);
+      const matches=ShapeArchitectLibrary.orientations(piece.cells).some(o=>JSON.stringify(o)===JSON.stringify(solutionShape));
+      if(!matches)return false;
+      for(const [r,c] of solution.cells){
+        const key=r+','+c;
+        if(!target.has(key)||used.has(key))return false;
+        used.add(key);
+      }
+    }
+    return used.size===target.size&&level.solution.length===level.requiredCount;
+  }
+
   function hasExactSolution(level){
+    if(certificateMatches(level))return true;
     const target=new Set();
     for(let r=0;r<level.mask.length;r++)for(let c=0;c<level.mask[r].length;c++)if(level.mask[r][c]==='#')target.add(r+','+c);
     const pieces=level.pieces.slice(0,level.requiredCount);
