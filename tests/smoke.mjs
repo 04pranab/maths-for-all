@@ -414,19 +414,18 @@ async function main() {
     'assert(getComputedStyle(document.documentElement).overflowY === "auto", "Vertical page scrolling is not available.");' +
     'assert(getComputedStyle(document.querySelector(".screen.active")).overflowY !== "hidden", "Active game screen is clipping vertical content.");' +
     'Game.startShapePuzzle();' +
+     'const levelButton = document.querySelector(".btn-level");' +
+     'assert(levelButton && levelButton.getBoundingClientRect().width >= 60, "Shape level buttons are too small for visibility.");' +
+     'assert(levelButton && levelButton.getBoundingClientRect().height >= 60, "Shape level buttons are too small for visibility.");' +
      'ShapePuzzle.loadLevel(0);' +
      'await new Promise(r => setTimeout(r, 20));' +
-    'const levelButton = document.querySelector(".btn-level");' +
-    'assert(levelButton && levelButton.getBoundingClientRect().width >= 60, "Shape level buttons are too small for visibility.");' +
-    'assert(levelButton && levelButton.getBoundingClientRect().height >= 60, "Shape level buttons are too small for visibility.");' +
      'const shapePiece = document.querySelector("#screen-shape .shape-piece");' +
      'const miniCell = document.querySelector("#screen-shape .piece-mini-cell:not(.empty-mini)");' +
      'const pieceLabel = document.querySelector("#screen-shape .piece-label");' +
      'assert(shapePiece && shapePiece.getBoundingClientRect().height >= 90, "Shape Fitting piece cards are too small for physical visibility.");' +
      'assert(miniCell && miniCell.getBoundingClientRect().width >= 14 && miniCell.getBoundingClientRect().height >= 14, "Shape Fitting mini-piece cells are too small for visibility.");' +
      'assert(pieceLabel && Number.parseFloat(getComputedStyle(pieceLabel).fontSize) >= 12, "Shape Fitting piece labels are too small.");' +
-     
-    'document.documentElement.style.setProperty("--font-scale", "1");' +
+     'document.documentElement.style.setProperty("--font-scale", "1");' +
     'return { questionStats, sudokuStats, slabRounds: 180, shapeStats, accessibility };' +
   '})()');
 
