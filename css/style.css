@@ -1531,18 +1531,24 @@ button {
     width: min(620px, 100%);
   }
 
-  #screen-sudoku .sudoku-keypad {
-    grid-area: auto;
+  #screen-sudoku .sudoku-side-column {
+    grid-area: side;
     grid-column: 1;
     grid-row: 3;
     width: min(480px, 100%);
+    min-width: 0;
+    margin: 0 auto;
+    padding-top: 0;
+  }
+
+  #screen-sudoku .sudoku-keypad {
+    width: min(480px, 100%);
+    max-width: 480px;
     margin: 8px auto;
   }
 
   #screen-sudoku .sudoku-controls {
-    grid-area: auto;
-    grid-column: 1;
-    grid-row: 4;
+    width: 100%;
     margin: 0;
     flex-direction: row;
     flex-wrap: wrap;
