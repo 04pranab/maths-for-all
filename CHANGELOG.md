@@ -55,6 +55,7 @@
 - Increased the desktop Sudoku board from the compact 480px layout to a 600px play board.
 - Kept the keypad immediately beside the board in a dedicated 260px side column.
 - Changed the keypad to three columns with larger touch targets while keeping action buttons compact.
+- Aligned the side keypad column with the top edge of the Sudoku board instead of the status row.
 - Added regression checks for board size, side-column width, keypad target size, spacing, overflow, and scrolling.
 - Added a focused Sudoku stylesheet so the existing global stylesheet remains unchanged.
 
