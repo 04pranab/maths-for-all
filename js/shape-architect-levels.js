@@ -32,9 +32,7 @@ const ShapeArchitectLevels = (() => {
       const frontier=[];
       for(const key of remaining){const [r,c]=key.split(',').map(Number);for(const [nr,nc] of neighbors(r,c))if(assigned.has(nr+','+nc)){frontier.push({r,c,p:assigned.get(nr+','+nc)});break;}}
       if(!frontier.length)return null;
-      const maxSize=Math.ceil(target.length/k)+3;
-      const candidates=frontier.filter(x=>pieces[x.p].length<maxSize);
-      const pick=Utils.pick(candidates.length?candidates:frontier);
+      const pick=Utils.pick(frontier);
       pieces[pick.p].push([pick.r,pick.c]);assigned.set(pick.r+','+pick.c,pick.p);remaining.delete(pick.r+','+pick.c);
     }
     return pieces.map(p=>p.map(([r,c])=>[r,c]));
@@ -42,8 +40,10 @@ const ShapeArchitectLevels = (() => {
   function localize(cells){const minR=Math.min(...cells.map(x=>x[0])),minC=Math.min(...cells.map(x=>x[1]));return cells.map(([r,c])=>[r-minR,c-minC]);}
   function signature(cells){return localize(cells).map(x=>x.join(',')).join(';');}
   function choosePartition(mask,k,rng){
-    for(let tries=0;tries<80;tries++){const p=partition(mask,k,rng);if(p&&p.every(x=>x.length>=2))return p;}
-    return partition(mask,Math.min(k,4),rng);
+    for(let tries=0;tries<500;tries++){const p=partition(mask,k,rng);if(p&&p.every(x=>x.length>=2))return p;}
+    if(k>2) return choosePartition(mask,k-1,rng);
+    for(let tries=0;tries<500;tries++){const p=partition(mask,2,rng);if(p&&p.every(x=>x.length>=2))return p;}
+    throw new Error('Unable to partition Shape Architect target into connected pieces.');
   }
   function makeDistractors(rng,count){
     const keys=[];
