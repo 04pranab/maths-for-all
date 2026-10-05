@@ -66,7 +66,7 @@ const ShapeArchitectLevels = (() => {
     const t=TARGETS[index%TARGETS.length];
     const target=cells(t.mask);
     const minPieces=Math.min(2+Math.floor(index/18),7);
-    const k=Math.min(minPieces,target.length);
+    const k=Math.min(minPieces,Math.floor(target.length/2));
     const parts=choosePartition(target,k,rng);
     const required=parts.map(p=>localize(p));
     const requiredKeys=required.map(p=>({cells:p,name:'required'}));
