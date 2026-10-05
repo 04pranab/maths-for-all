@@ -1,0 +1,138 @@
+#screen-sudoku .play-panel {
+  width: min(876px, calc(100vw - 32px));
+  max-width: none;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 600px 260px;
+  grid-template-areas:
+    "top top"
+    "board side"
+    "message side";
+  align-items: start;
+  justify-content: start;
+  column-gap: 16px;
+  padding-top: 0;
+}
+
+#screen-sudoku .sudoku-top-row {
+  grid-area: top;
+  width: 600px;
+  max-width: 600px;
+  padding: 10px 0 0;
+  margin: 10px 0 0;
+}
+
+#screen-sudoku .sudoku-grid {
+  grid-area: board;
+  width: 600px;
+  max-width: 600px;
+  margin: 10px 0 18px;
+}
+
+#screen-sudoku .sudoku-side-column {
+  grid-area: side;
+  grid-column: 2;
+  grid-row: 2 / span 2;
+  width: 260px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding-top: 0;
+  margin: 10px 0 0;
+}
+
+#screen-sudoku .sudoku-keypad {
+  grid-template-columns: repeat(3, 1fr);
+  width: 260px;
+  max-width: 260px;
+  margin: 0;
+  gap: 8px;
+}
+
+#screen-sudoku .btn-key,
+#screen-sudoku .btn-key-erase {
+  min-height: 58px;
+  padding: 10px 0;
+  font-size: 1.25rem;
+}
+
+#screen-sudoku .sudoku-controls {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 8px;
+  width: 260px;
+  padding: 0;
+  margin: 0;
+}
+
+#screen-sudoku .sudoku-controls .btn-sudoku {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  font-size: 0.95rem;
+}
+
+#screen-sudoku .sudoku-message {
+  grid-area: message;
+  width: 600px;
+  max-width: 600px;
+}
+
+@media (max-width: 920px) {
+  #screen-sudoku .play-panel {
+    width: calc(100vw - 32px);
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "top"
+      "board"
+      "side"
+      "message";
+    row-gap: 8px;
+  }
+
+  #screen-sudoku .sudoku-top-row {
+    width: min(600px, 100%);
+    max-width: 600px;
+  }
+
+  #screen-sudoku .sudoku-grid {
+    width: min(600px, 100%);
+    max-width: 600px;
+  }
+
+  #screen-sudoku .sudoku-side-column {
+    grid-area: side;
+    grid-column: 1;
+    grid-row: 3;
+    width: min(480px, 100%);
+    min-width: 0;
+    margin: 0 auto;
+    padding-top: 0;
+  }
+
+  #screen-sudoku .sudoku-keypad {
+    width: 100%;
+    max-width: 480px;
+    margin: 8px auto;
+  }
+
+  #screen-sudoku .sudoku-controls {
+    width: 100%;
+    margin: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #screen-sudoku .sudoku-controls .btn-sudoku {
+    width: auto;
+  }
+
+  #screen-sudoku .sudoku-message {
+    width: min(600px, 100%);
+    max-width: 600px;
+  }
+}
