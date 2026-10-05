@@ -91,3 +91,44 @@ const ShapeArchitect = (() => {
   function endDrag(e){finishDrag(e,true)}
   function cancelDrag(){finishDrag(null,false)}
 ;
+  function undo(){const id=state.history.pop();if(id===undefined)return;state.placements.delete(id);state.selected=null;renderTarget();renderTray();announce('Last piece moved back.')}
+  function hint(){const solution=state.data.solution.find(s=>!state.placements.has(s.piece));if(!solution){announce('The picture is already complete.');return}state.hints++;const piece=state.data.pieces[solution.piece];select(piece.id);const target=solution.cells[0];document.querySelector('#architect-board .architect-cell[data-r="'+target[0]+'"][data-c="'+target[1]+'"]')?.classList.add('hint');setTimeout(()=>document.querySelectorAll('.architect-cell.hint').forEach(x=>x.classList.remove('hint')),900);announce('Try placing Piece '+(piece.id+1)+' near the glowing square.');}
+  function announce(text){const el=els('architect-message');if(el){el.textContent=text;el.classList.remove('hidden');}}
+  function tick(){els('architect-timer').textContent=fmt(now())}
+  function stop(){clearInterval(state.timer);state.timer=null}
+  function load(index){
+    const p=progress();if(index+1>p.unlocked)return;
+    stop();state.level=index;state.data=ShapeArchitectLevels.get(index);state.selected=null;state.placements=new Map();state.history=[];state.hints=0;state.data.pieces.forEach(p=>{p.rotation=p.startRot||0});state.startedAt=performance.now();state.timer=setInterval(tick,250);
+    hide('architect-level-panel');hide('architect-complete');show('architect-play-panel');
+    els('architect-level-num').textContent=index+1;els('architect-target-name').textContent=state.data.name;els('architect-target-hint').textContent=state.data.hint;els('architect-timer').textContent='0:00';els('architect-message').classList.add('hidden');renderTarget();renderTray();announce(state.data.hint);
+  }
+  function restart(){if(state.data)load(state.level)}
+  function complete(){stop();const seconds=now();const p=progress();p.done[state.level+1]=true;p.best[state.level+1]=Math.min(p.best[state.level+1]||Infinity,seconds);p.unlocked=Math.max(p.unlocked,Math.min(100,state.level+2));saveProgress(p);els('architect-complete-time').textContent=fmt(seconds);els('architect-complete-name').textContent=state.data.name;els('architect-complete').classList.remove('hidden');els('architect-play-panel').classList.add('hidden');Analytics.log('shape_architect','complete',{level:state.level+1,time:Math.round(seconds),hints:state.hints});}
+  function checkComplete(){if(state.placements.size!==state.data.requiredCount)return;if([...state.placements.keys()].some(id=>id>=state.data.requiredCount))return;const target=new Set();for(const s of state.data.solution)for(const c of s.cells)target.add(c.join(','));const got=new Set();for(const [id,pl] of state.placements)for(const [rr,cc] of selectedOrientation(state.data.pieces[id],pl.rot))got.add((pl.r+rr)+','+(pl.c+cc));if(got.size===target.size&&[...got].every(x=>target.has(x)))complete();}
+  function next(){if(state.level<99)load(state.level+1);else{backToLevels();announce('You built all 100 pictures!')}}
+  function backToLevels(){stop();hide('architect-play-panel');hide('architect-complete');show('architect-level-panel');renderLevels()}
+  function init(){renderLevels();show('architect-level-panel');hide('architect-play-panel');hide('architect-complete')}
+  function keyboard(event){
+    if(!document.getElementById('screen-architect')?.classList.contains('active')||isTypingTarget(event.target))return;
+    if(event.key.toLowerCase()==='r'){event.preventDefault();rotateSelected();return}
+    if(event.key==='Escape'){state.selected=null;document.querySelectorAll('.architect-piece.selected').forEach(x=>x.classList.remove('selected'));announce('Piece deselected.');return}
+    const cell=event.target.closest?.('.architect-cell');if(!cell)return;
+    if(event.key==='Enter'&&state.selected!==null){event.preventDefault();const id=state.selected;const rot=Number(document.querySelector('.architect-piece[data-id="'+id+'"]')?.dataset.rot||0);const r=Number(cell.dataset.r),c=Number(cell.dataset.c);if(!place(id,r,c,rot))announce('That piece does not fit here. Try another square or rotate it.');return}
+    const r=Number(cell.dataset.r),c=Number(cell.dataset.c),dr=event.key==='ArrowDown'?1:event.key==='ArrowUp'?-1:0,dc=event.key==='ArrowRight'?1:event.key==='ArrowLeft'?-1:0;if(dr||dc){event.preventDefault();const nr=Math.max(0,Math.min(7,r+dr)),nc=Math.max(0,Math.min(7,c+dc));document.querySelector('#architect-board .architect-cell[data-r="'+nr+'"][data-c="'+nc+'"]')?.focus();}
+  }
+  document.addEventListener('keydown',keyboard);
+  return {init,load,restart,stop,next,backToLevels,rotateSelected,undo,hint,getLevels:()=>ShapeArchitectLevels.getAll(),canPlace};
+})()  function rotateSelected(){
+    if(state.selected===null)return;
+    const p=state.data.pieces[state.selected],current=state.placements.get(state.selected);
+    const oldRot=current?.rot??p.rotation??0;
+    const count=ShapeArchitectLibrary.orientations(p.cells).length;
+    const rot=(oldRot+1)%count;
+    if(current){
+      const previous=current;
+      state.placements.set(state.selected,{...current,rot});renderTarget();
+      if(!canPlacementMap())state.placements.set(state.selected,previous);
+      renderTarget();
+    }else{p.rotation=rot;renderTray();}
+  }
+;
