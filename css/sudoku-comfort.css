@@ -136,3 +136,102 @@
     max-width: 600px;
   }
 }
+
+
+/* Issue #62: enlarge key visual elements for children with visual-accessibility needs. */
+#screen-sudoku .play-panel {
+  width: min(876px, calc(100vw - 32px));
+  grid-template-columns: 600px 260px;
+  column-gap: 16px;
+}
+
+#screen-sudoku .sudoku-top-row,
+#screen-sudoku .sudoku-grid,
+#screen-sudoku .sudoku-message {
+  width: 600px;
+  max-width: 600px;
+}
+
+#screen-sudoku .sudoku-grid {
+  margin: 10px 0 18px;
+}
+
+#screen-sudoku .sudoku-cell {
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-weight: 800;
+}
+
+#screen-sudoku .sudoku-side-column,
+#screen-sudoku .sudoku-keypad,
+#screen-sudoku .sudoku-controls {
+  width: 260px;
+  max-width: 260px;
+}
+
+@media (max-width: 900px) {
+  #screen-sudoku .play-panel {
+    width: calc(100vw - 20px);
+  }
+
+  #screen-sudoku .sudoku-top-row,
+  #screen-sudoku .sudoku-grid,
+  #screen-sudoku .sudoku-message {
+    width: min(620px, 100%);
+    max-width: 620px;
+  }
+
+  #screen-sudoku .sudoku-side-column,
+  #screen-sudoku .sudoku-keypad,
+  #screen-sudoku .sudoku-controls {
+    width: min(520px, 100%);
+    max-width: 520px;
+  }
+
+  #screen-sudoku .sudoku-cell {
+    font-size: clamp(1.55rem, 6vw, 2.2rem);
+  }
+}
+
+@media (max-width: 520px) {
+  #screen-sudoku .sudoku-cell {
+    font-size: clamp(1.4rem, 8vw, 2rem);
+  }
+}
+
+/* Issue #62: make Shape Fitting tray previews substantially easier to see. */
+#screen-shape .shape-piece {
+  min-width: 96px;
+  min-height: 96px;
+  padding: 10px;
+}
+
+#screen-shape .piece-mini-grid {
+  gap: 2px;
+}
+
+#screen-shape .piece-mini-cell {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+#screen-shape .piece-label {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  #screen-shape .shape-piece {
+    min-width: 104px;
+    min-height: 104px;
+    padding: 11px;
+  }
+
+  #screen-shape .piece-mini-cell {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+}
