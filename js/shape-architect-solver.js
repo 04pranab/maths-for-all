@@ -15,10 +15,9 @@ const ShapeArchitectSolver = (() => {
     const target=new Set();
     for(let r=0;r<level.mask.length;r++)for(let c=0;c<level.mask[r].length;c++)if(level.mask[r][c]==='#')target.add(r+','+c);
     const used=new Set();
-    if(level.solution.length!==level.requiredCount)return false;
+    if(!Array.isArray(level.solution)||level.solution.length!==level.requiredCount)return false;
     for(const solution of level.solution){
-      const piece=level.pieces[solution.piece];
-      if(!piece||!piece.required||solution.cells.length!==piece.cells.length)return false;
+      if(!Array.isArray(solution.cells)||solution.cells.length===0)return false;
       for(const [r,c] of solution.cells){
         const key=r+','+c;
         if(!target.has(key)||used.has(key))return false;
