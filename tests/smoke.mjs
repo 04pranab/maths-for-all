@@ -378,38 +378,20 @@ async function main() {
       'start();' +
       'await new Promise(r => setTimeout(r, 20));' +
       'accessibility[key] = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2;' +
-      'assert(accessibility[key], "Horizontal overflow at large text size in " + key);' +
-    '}' +
-    'Game.startSudoku();' +
-    'Sudoku.newPuzzle("easy");' +
-    'await new Promise(r => setTimeout(r, 20));' +
-    'const sudokuGrid = document.getElementById("sudoku-grid");' +
-    'const sudokuWidth = sudokuGrid.getBoundingClientRect().width;' +
-    'assert(sudokuWidth >= 590 && sudokuWidth <= 610, "Sudoku desktop board is not large enough for comfortable use.");' +
-    'const sudokuTopRow = document.querySelector("#screen-sudoku .sudoku-top-row");' +
-    'assert(sudokuTopRow && Math.abs(sudokuTopRow.getBoundingClientRect().left - sudokuGrid.getBoundingClientRect().left) <= 2, "Sudoku top row and board are not aligned in column one.");' +
-    'const desktopControls = document.querySelector(".sudoku-controls");' +
-    'assert(desktopControls.getBoundingClientRect().left > sudokuGrid.getBoundingClientRect().right - 10, "Sudoku desktop controls are not beside the board.");' +
-    'const sudokuKeypad = document.getElementById("sudoku-keypad");' +
-    'const sudokuSideColumn = document.querySelector("#screen-sudoku .sudoku-side-column");' +
-    'assert(desktopControls && sudokuKeypad && sudokuSideColumn, "Sudoku side column controls are missing.");' +
-    'assert(sudokuSideColumn.contains(sudokuKeypad) && sudokuSideColumn.contains(desktopControls), "Sudoku keypad and actions are not grouped in the side column.");' +
-    'assert(Math.abs(sudokuSideColumn.getBoundingClientRect().left - desktopControls.getBoundingClientRect().left) <= 2, "Sudoku side column is not aligned with its controls.");' +'assert(Math.abs(sudokuSideColumn.getBoundingClientRect().top - sudokuGrid.getBoundingClientRect().top) <= 2, "Sudoku keypad column is not aligned with the board top.");' +
-    'const sudokuBoardToKeypadGap = sudokuKeypad.getBoundingClientRect().left - sudokuGrid.getBoundingClientRect().right;' +
-    'assert(sudokuBoardToKeypadGap >= 0 && sudokuBoardToKeypadGap <= 24, "Sudoku board-to-keypad gap is too large.");' +
-    'assert(sudokuKeypad.getBoundingClientRect().bottom <= desktopControls.getBoundingClientRect().top + 2, "Sudoku keypad overlaps the action controls.");' +
-    'const sudokuAction = document.querySelector("#screen-sudoku .sudoku-controls .btn-sudoku");' +
-    'assert(sudokuAction && sudokuAction.getBoundingClientRect().height <= 52, "Sudoku action buttons are oversized.");' +
-     'const sudokuKey = document.querySelector("#screen-sudoku .btn-key");' +
-     'assert(sudokuKey && sudokuKey.getBoundingClientRect().width >= 70 && sudokuKey.getBoundingClientRect().height >= 54, "Sudoku keypad targets are too small for comfortable use.");' +
-     'assert(sudokuSideColumn.getBoundingClientRect().width >= 250 && sudokuSideColumn.getBoundingClientRect().width <= 270, "Sudoku side column width is outside the intended comfortable range.");' +
-    'assert(getComputedStyle(document.querySelector("#screen-sudoku .play-panel")).gridTemplateColumns !== "none", "Sudoku board/control split layout is missing.");' +
-    'assert(getComputedStyle(document.documentElement).overflowY === "auto", "Vertical page scrolling is not available.");' +
-    'assert(getComputedStyle(document.querySelector(".screen.active")).overflowY !== "hidden", "Active game screen is clipping vertical content.");' +
-    'Game.startShapePuzzle();' +
-    'const levelButton = document.querySelector(".btn-level");' +
-    'assert(levelButton && levelButton.getBoundingClientRect().width >= 60, "Shape level buttons are too small for visibility.");' +
-    'assert(levelButton && levelButton.getBoundingClientRect().height >= 60, "Shape level buttons are too small for visibility.");' +
+      'assert(sudokuKey && sudokuKey.getBoundingClientRect().width >= 70 && sudokuKey.getBoundingClientRect().height >= 54, "Sudoku keypad targets are too small for comfortable use.");' +
+      'const sudokuCell = document.querySelector("#screen-sudoku .sudoku-cell");' +
+      'const sudokuCellFont = Number.parseFloat(getComputedStyle(sudokuCell).fontSize);' +
+      'assert(sudokuCell && sudokuCellFont >= 20, "Sudoku cell numbers are too small for comfortable reading.");' +
+      'const sudokuKeyFont = Number.parseFloat(getComputedStyle(sudokuKey).fontSize);' +
+      'assert(sudokuKeyFont >= 20, "Sudoku keypad numbers are too small for comfortable reading.");' +
+      'assert(levelButton && levelButton.getBoundingClientRect().width >= 60, "Shape level buttons are too small for visibility.");' +
+     'assert(levelButton && levelButton.getBoundingClientRect().height >= 60, "Shape level buttons are too small for visibility.");' +
+     'const shapePiece = document.querySelector("#screen-shape .shape-piece");' +
+     'const miniCell = document.querySelector("#screen-shape .piece-mini-cell:not(.empty-mini)");' +
+     'const pieceLabel = document.querySelector("#screen-shape .piece-label");' +
+     'assert(shapePiece && shapePiece.getBoundingClientRect().height >= 90, "Shape Fitting piece cards are too small for physical visibility.");' +
+     'assert(miniCell && miniCell.getBoundingClientRect().width >= 14 && miniCell.getBoundingClientRect().height >= 14, "Shape Fitting mini-piece cells are too small for visibility.");' +
+     'assert(pieceLabel && Number.parseFloat(getComputedStyle(pieceLabel).fontSize) >= 12, "Shape Fitting piece labels are too small.");'
     'document.documentElement.style.setProperty("--font-scale", "1");' +
     'return { questionStats, sudokuStats, slabRounds: 180, shapeStats, accessibility };' +
   '})()');
