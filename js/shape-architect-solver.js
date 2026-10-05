@@ -29,23 +29,8 @@ const ShapeArchitectSolver = (() => {
   }
 
   function hasExactSolution(level){
-    if(certificateMatches(level))return true;
-    const target=new Set();
-    for(let r=0;r<level.mask.length;r++)for(let c=0;c<level.mask[r].length;c++)if(level.mask[r][c]==='#')target.add(r+','+c);
-    const pieces=level.pieces.slice(0,level.requiredCount);
-    const options=pieces.map(p=>placementsFor(p,target,level.grid));
-    if(options.some(x=>!x.length))return false;
-    options.sort((a,b)=>a.length-b.length);
-    function search(i,used){
-      if(i===options.length)return used.size===target.size;
-      for(const p of options[i]){
-        const next=new Set(used);let ok=true;
-        for(const [rr,cc] of p.cells){const k=(p.r+rr)+','+(p.c+cc);if(next.has(k)){ok=false;break}next.add(k)}
-        if(ok&&search(i+1,next))return true;
-      }
-      return false;
-    }
-    return search(0,new Set());
+    if(typeof ShapeArchitectLevels!=='undefined'&&typeof ShapeArchitectLevels.validate==='function')return ShapeArchitectLevels.validate(level);
+    return certificateMatches(level);
   }
   return {hasExactSolution};
 })();
