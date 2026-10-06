@@ -112,3 +112,6 @@ Deferred production authentication milestone.
 
 ### v3.0.0
 Planned research-enabled milestone after authentication.
+
+### Shape Architect placement tolerance
+The completion rule uses a dynamic, shape-aware visual tolerance rather than requiring exact center coordinates. Larger pieces may be slightly farther from the target center, while small or clearly misplaced pieces remain outside the win condition. A small angular tolerance is retained for visual alignment.
