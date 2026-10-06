@@ -24,14 +24,14 @@ function make(index){
     const snappedRotation=Math.round(rotation/quarterTurn)*quarterTurn;
     return{id,required:true,shape,x:clamp(.5+(x-.5)*s+ox,.06,.94),y:clamp(.5+(y-.5)*s+oy,.07,.93),w,h,rotation:snappedRotation};
   });
-  const tolerance={positionMin:.11,positionMax:.20,positionScale:.55,rotation:.50};
+  const tolerance={positionMin:.12,positionMax:.22,positionScale:.60,rotation:.82};
   const pieces=targetPieces.map(target=>{
     let x,y,rotation;
     do{
       x=.1+r()*.8;
       y=.1+r()*.8;
       rotation=target.rotation+(Math.floor(r()*7)+1)*quarterTurn;
-    }while(Math.hypot(x-target.x,y-target.y)<=tolerance.position);
+    }while(Math.hypot(x-target.x,y-target.y)<=tolerance.positionMax);
     return{...target,x,y,rotation};
   });
   return{number:index+1,name:b.name,hint:b.hint,canvas:{width:760,height:520},targetPieces,pieces,requiredCount:targetPieces.length,seed:(0xA17C000+index*104729)>>>0,tolerance,rotationStep:quarterTurn};
