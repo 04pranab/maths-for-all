@@ -2,21 +2,39 @@
 
 ## Unreleased
 
-### Shape Architect correctness
-- Added a faint outer silhouette of the complete target figure to the Build canvas so children have a clear visual placement boundary without exposing internal piece outlines.
-- Removed the background grid from the Build canvas to keep the target silhouette visually clear.
-- Made completion accept a one-step 45-degree visual rotation difference while still rejecting large orientation errors.
-- Widened the bounded placement tolerance slightly and corrected initial-piece spacing to use the configured maximum position tolerance.
-- Made Shape Architect completion visually forgiving with size-scaled position tolerance and bounded minimum/maximum placement tolerance.
-- Kept rotation validation forgiving for small visual differences while rejecting clearly misaligned orientations.
-- Made placement acceptance dynamic by shape size, while retaining a rejection boundary for clearly misplaced pieces.
-- Kept a small rotation tolerance so visually aligned pieces are not rejected for tiny angular differences.
-- Removed the separate Shape Architect piece tray; required pieces are now manipulated directly on the build canvas.
-- Removed distractor pieces from the build set.
-- Changed rotation to exact 45-degree steps and made generated starting rotations reachable with those steps.
-- Separated the reference target geometry from randomized starting pieces.
-- Fixed the REQUIRED counter and completion validator so a level cannot complete from selecting or clicking a piece alone.
-- Added regression coverage for false completion and target/build-piece separation across all 100 levels.
+No changes are currently committed after v2.0.4. The next planned work is design discussion for Probability Carnival; implementation does not begin until that design is confirmed.
+
+## 2.0.4 · 2026-10-06 · Geometry & Physical Learning Hardening
+
+### Shape Architect
+- Added 100 deterministic freeform geometry levels based on recognizable reference pictures.
+- Added real geometric primitives including circles, squares, rectangles, triangles, trapeziums, parallelograms, diamonds, pentagons, hexagons, ovals, semicircles, and right triangles.
+- Kept all 100 levels immediately available for testing.
+- Removed the separate piece tray from the physical-testing interface.
+- Kept only the required pieces in the build canvas rather than adding distractor pieces.
+- Changed rotation to reachable 45-degree steps.
+- Added a faint outer silhouette of the complete target figure to the Build canvas.
+- Removed internal construction lines from the silhouette guide.
+- Removed the Build canvas background grid so the silhouette remains visually clear.
+- Reworked completion around visual overlap with size-aware, bounded tolerance rather than exact pixel placement.
+- Kept rejection boundaries so clearly misplaced pieces do not count as correct.
+- Preserved undo, restart, hint, keyboard movement, pointer/touch dragging, visible focus, reduced-motion behavior, and a gentle timer.
+- Added regression coverage for visual completion, false completion, level availability, rendering, and the complete 100-level set.
+- Refreshed Shape Architect runtime asset versions so the deployed level selector cannot remain hidden behind stale browser assets.
+
+### Physical-learning hardening
+- Retained the enlarged 640px Sudoku board for easier physical reading.
+- Retained the separate Sudoku keypad/action column and responsive single-column fallback.
+- Preserved keyboard-friendly controls, visible focus states, and game-specific help.
+- Preserved privacy and research-data policy access without login.
+- Preserved strict opt-in research collection and No-means-no enforcement.
+- Preserved the boundary that authentication/account controls are not represented as production authentication during physical-game testing.
+
+### Engineering and documentation
+- Aligned `VERSION` and `package.json` at 2.0.4.
+- Updated the README to describe the actual current interface and Shape Architect behavior.
+- Restored an explicit AI-assisted development record for transparent project provenance.
+- Kept the responsible-use license and research-data requirements unchanged.
 
 ## 2.0.3 · 2026-10-05
 
