@@ -394,9 +394,7 @@ async function main() {
     'assert(!ShapeArchitect.isNearTarget({...targetForTolerance, x: targetForTolerance.x + dynamicTolerance * 1.25}, targetForTolerance), "A clearly displaced Shape Architect piece was accepted.");' +
     'assert(ShapeArchitect.isNearTarget({...targetForTolerance, rotation: targetForTolerance.rotation + 0.12}, targetForTolerance), "A small visual rotation difference was rejected.");' +
     'assert(!ShapeArchitect.isNearTarget({...targetForTolerance, rotation: targetForTolerance.rotation + 0.45}, targetForTolerance), "A large rotation difference was accepted.");' +
-    'const targetForTolerance = ShapeArchitect.getLevels()[99].targetPieces.find(piece => piece.w >= 0.2) || ShapeArchitect.getLevels()[99].targetPieces[0];' +
-    'const baseTolerance = ShapeArchitect.getLevels()[99].tolerance.position;' +
-    'const dynamicTolerance = Math.max(baseTolerance, Math.min(targetForTolerance.w, targetForTolerance.h) * ShapeArchitect.getLevels()[99].tolerance.positionScale);' +
+
     'assert(dynamicTolerance > baseTolerance, "Shape Architect did not apply a size-aware placement tolerance.");' +
     'assert(ShapeArchitect.isNearTarget({...targetForTolerance, x: targetForTolerance.x + dynamicTolerance * 0.8}, targetForTolerance), "A visually close Shape Architect piece was rejected.");' +
     'assert(!ShapeArchitect.isNearTarget({...targetForTolerance, x: targetForTolerance.x + dynamicTolerance * 1.25}, targetForTolerance), "A clearly displaced Shape Architect piece was accepted.");' +
