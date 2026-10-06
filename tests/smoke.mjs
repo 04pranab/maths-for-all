@@ -378,7 +378,8 @@ async function main() {
     'assert(document.getElementById("architect-build-canvas")?.getContext, "Shape Architect build canvas is missing.");' +
     'assert(document.querySelectorAll("#architect-tray .architect-piece").length === ShapeArchitect.getLevels()[99].pieces.length, "Shape Architect did not render every level-100 piece.");' +
     'document.getElementById("architect-build-canvas").focus();' +
-    'return { levels: shapeStats.levels, pieces: shapeStats.pieces, geometryTypes: shapeStats.shapeTypes.size, allLevelsOpen: architectButtons.every(button => !button.disabled) };'    'const accessibility = {};' +
+    'return { levels: shapeStats.levels, pieces: shapeStats.pieces, geometryTypes: shapeStats.shapeTypes.size, allLevelsOpen: architectButtons.every(button => !button.disabled) };' +
+    'const accessibility = {};' +
     'document.documentElement.style.setProperty("--font-scale", "1.5");' +
     'for (const key of ["quiz","race","sudoku","shape","slab","architect"]) {' +
       'Game.goHome();' +
