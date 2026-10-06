@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Shape Architect correctness
+- Made completion accept a one-step 45-degree visual rotation difference while still rejecting large orientation errors.
+- Widened the bounded placement tolerance slightly and corrected initial-piece spacing to use the configured maximum position tolerance.
 - Made Shape Architect completion visually forgiving with size-scaled position tolerance and bounded minimum/maximum placement tolerance.
 - Kept rotation validation forgiving for small visual differences while rejecting clearly misaligned orientations.
 - Made placement acceptance dynamic by shape size, while retaining a rejection boundary for clearly misplaced pieces.
