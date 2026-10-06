@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Shape Architect correctness
+- Made placement acceptance dynamic by shape size, while retaining a rejection boundary for clearly misplaced pieces.
+- Kept a small rotation tolerance so visually aligned pieces are not rejected for tiny angular differences.
 - Removed the separate Shape Architect piece tray; required pieces are now manipulated directly on the build canvas.
 - Removed distractor pieces from the build set.
 - Changed rotation to exact 45-degree steps and made generated starting rotations reachable with those steps.
