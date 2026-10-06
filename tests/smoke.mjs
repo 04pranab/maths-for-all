@@ -395,11 +395,6 @@ async function main() {
     'assert(ShapeArchitect.isNearTarget({...targetForTolerance, rotation: targetForTolerance.rotation + 0.12}, targetForTolerance), "A small visual rotation difference was rejected.");' +
     'assert(!ShapeArchitect.isNearTarget({...targetForTolerance, rotation: targetForTolerance.rotation + 0.45}, targetForTolerance), "A large rotation difference was accepted.");' +
 
-    'assert(dynamicTolerance > baseTolerance, "Shape Architect did not apply a size-aware placement tolerance.");' +
-    'assert(ShapeArchitect.isNearTarget({...targetForTolerance, x: targetForTolerance.x + dynamicTolerance * 0.8}, targetForTolerance), "A visually close Shape Architect piece was rejected.");' +
-    'assert(!ShapeArchitect.isNearTarget({...targetForTolerance, x: targetForTolerance.x + dynamicTolerance * 1.25}, targetForTolerance), "A clearly displaced Shape Architect piece was accepted.");' +
-    'assert(ShapeArchitect.isNearTarget({...targetForTolerance, rotation: targetForTolerance.rotation + 0.12}, targetForTolerance), "A small visual rotation difference was rejected.");' +
-    'assert(!ShapeArchitect.isNearTarget({...targetForTolerance, rotation: targetForTolerance.rotation + 0.45}, targetForTolerance), "A large rotation difference was accepted.");' +
     'const architectControls = [...document.querySelectorAll(".architect-controls button")].map(button => button.textContent);' +
     '["Rotate","Undo","Hint","Restart","All levels"].forEach(label => assert(architectControls.some(text => text.includes(label)), "Shape Architect control is missing: " + label));' +
     'document.getElementById("architect-build-canvas").focus();' +
