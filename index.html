@@ -388,8 +388,8 @@
     </div>
 
     <div id="architect-level-panel" class="architect-level-panel">
-      <h3>Build a picture, one piece at a time</h3>
-      <p class="architect-intro">Every picture has a solution. Use the shapes to cover the highlighted picture exactly. Extra pieces are there to make you look, plan and experiment.</p>
+      <h3>See it. Build it. Arrange the shapes.</h3>
+      <p class="architect-intro">A picture is shown on the left. On the build canvas, arrange the real geometric pieces so they match the picture. All 100 levels are open for testing.</p>
       <div class="architect-progress" id="architect-progress">0 / 100 pictures built</div>
       <div class="architect-level-grid" id="architect-level-grid"></div>
     </div>
@@ -399,27 +399,34 @@
         <div class="architect-stat"><small>LEVEL</small><strong id="architect-level-num">1</strong></div>
         <div class="architect-stat"><small>PICTURE</small><strong id="architect-target-name">House</strong></div>
         <div class="architect-stat"><small>TIME</small><strong id="architect-timer">0:00</strong></div>
-        <div class="architect-stat"><small>PIECES</small><strong id="architect-placed">0/0</strong></div>
+        <div class="architect-stat"><small>REQUIRED</small><strong id="architect-placed">0/0</strong></div>
       </div>
-      <p class="architect-target-hint" id="architect-target-hint">Build the picture.</p>
+      <p class="architect-target-hint" id="architect-target-hint">Arrange the shapes to match the picture.</p>
 
-      <div class="architect-layout">
-        <div class="architect-board-wrap">
-          <div id="architect-board" class="architect-board" role="grid" aria-label="Shape Architect target board"></div>
-          <div class="architect-instructions">Drag a piece onto the picture. <kbd>R</kbd> rotates · <kbd>Esc</kbd> deselects · <kbd>Enter</kbd> places on the focused square.</div>
-        </div>
-        <div>
-          <div class="architect-tray" id="architect-tray" aria-label="Shape pieces"></div>
-          <div class="architect-controls">
-            <button class="primary" onclick="ShapeArchitect.rotateSelected()">⟲ Rotate <kbd>R</kbd></button>
-            <button onclick="ShapeArchitect.undo()">↶ Undo last piece</button>
-            <button onclick="ShapeArchitect.hint()">💡 Hint</button>
-            <button onclick="ShapeArchitect.restart()">🔄 Restart level</button>
-            <button onclick="ShapeArchitect.backToLevels()">☰ All levels</button>
-          </div>
-          <div id="architect-message" class="architect-message hidden" role="status" aria-live="polite"></div>
-        </div>
+      <div class="architect-canvas-layout">
+        <section class="architect-canvas-card">
+          <h3>👀 Reference picture</h3>
+          <canvas id="architect-reference-canvas" class="architect-canvas" width="760" height="520" aria-label="Reference picture" role="img"></canvas>
+        </section>
+        <section class="architect-canvas-card">
+          <h3>🧩 Build canvas</h3>
+          <canvas id="architect-build-canvas" class="architect-canvas" width="760" height="520" tabindex="0" aria-label="Build canvas. Select a piece, then use arrow keys to move it. Press R to rotate."></canvas>
+        </section>
       </div>
+
+      <div class="architect-tray-wrap">
+        <div class="architect-tray-title">Pieces in this picture</div>
+        <div class="architect-tray" id="architect-tray" aria-label="Shape pieces"></div>
+      </div>
+      <div class="architect-controls">
+        <button class="primary" onclick="ShapeArchitect.rotateSelected()">⟲ Rotate <kbd>R</kbd></button>
+        <button onclick="ShapeArchitect.undo()">↶ Undo</button>
+        <button onclick="ShapeArchitect.hint()">💡 Hint</button>
+        <button onclick="ShapeArchitect.restart()">🔄 Restart</button>
+        <button onclick="ShapeArchitect.backToLevels()">☰ All levels</button>
+      </div>
+      <div id="architect-message" class="architect-message hidden" role="status" aria-live="polite"></div>
+      <div class="architect-instructions">Drag shapes freely on the build canvas. Select a piece below and use <kbd>← ↑ ↓ →</kbd> to move it. <kbd>R</kbd> rotates · <kbd>Esc</kbd> deselects.</div>
     </div>
 
     <div id="architect-complete" class="architect-complete hidden">
@@ -428,7 +435,7 @@
         <h2>Picture complete!</h2>
         <p>You built <strong id="architect-complete-name">House</strong>.</p>
         <p>Your time: <strong id="architect-complete-time">0:00</strong></p>
-        <p>There is no need to be fast. The important part is noticing how the pieces fit.</p>
+        <p>There is no need to be fast. The important part is noticing how the shapes relate.</p>
         <div class="architect-complete-actions">
           <button class="next" onclick="ShapeArchitect.next()">▶ Next level</button>
           <button onclick="ShapeArchitect.restart()">🔄 Build it again</button>
@@ -437,7 +444,6 @@
       </div>
     </div>
   </div>
-
   <!-- ===================================================
        SCREEN 6: SLAB MATHS  (new)
        =================================================== -->
@@ -629,11 +635,11 @@
   <script src="js/sudoku.js?v=20260924-2"></script>
   <script src="js/shapes.js?v=20260924-2"></script>
   <script src="js/slabmath.js?v=20260924-2"></script>
-  <script src="js/shape-architect-library.js?v=20261005-2"></script>
-  <script src="js/shape-architect-grid.js?v=20261005-1"></script>
-  <script src="js/shape-architect-solver.js?v=20261005-2"></script>
-  <script src="js/shape-architect-levels.js?v=20261005-2"></script>
-  <script src="js/shape-architect.js?v=20261005-2"></script>
+  <script src="js/shape-architect-library.js?v=20261006-1"></script>
+  <script src="js/shape-architect-canvas.js?v=20261006-1"></script>
+  <script src="js/shape-architect-solver.js?v=20261006-1"></script>
+  <script src="js/shape-architect-levels.js?v=20261006-1"></script>
+  <script src="js/shape-architect.js?v=20261006-1"></script>
   <script src="js/consent.js?v=20261001-1"></script>
   <script>
     /* Prototype compatibility shim. Production authentication remains disabled. */

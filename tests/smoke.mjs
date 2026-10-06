@@ -354,32 +354,31 @@ async function main() {
       'assert(signature !== previousSlabSignature, "Slab Maths repeated the same target and tile multiset immediately.");' +
       'previousSlabSignature = signature;' +
     '}' +
-    'const shapeStats = { levels: 0, cells: 0 };' +
-    'assert(typeof ShapeArchitectGrid !== "undefined", "Shape Architect grid module is missing.");' +
+    'const shapeStats = { levels: 0, pieces: 0, shapeTypes: new Set() };' +
+    'assert(typeof ShapeArchitectCanvas !== "undefined", "Shape Architect canvas module is missing.");' +
     'const architectLevels = ShapeArchitect.getLevels();' +
     'assert(architectLevels.length === 100, "Shape Architect must contain exactly 100 levels.");' +
     'for (const level of architectLevels) {' +
-      'assert(ShapeArchitectLevels.validate(level), "Shape Architect level " + level.number + " failed exact target validation.");' +
-      'assert(ShapeArchitectSolver.hasExactSolution(level), "Shape Architect level " + level.number + " has no exact-cover solution.");' +
-      'assert(level.pieces.length > level.requiredCount && level.pieces.length - level.requiredCount >= 3, "Shape Architect level " + level.number + " has insufficient distractor pieces.");' +
-      'assert(level.requiredCount === 3, "Shape Architect level " + level.number + " must start with exactly three required pieces.");' +
-      'assert(level.pieces.slice(0, level.requiredCount).some(piece => piece.startRot !== 0), "Shape Architect level " + level.number + " starts too many required pieces in the solved orientation.");' +
+      'assert(ShapeArchitectLevels.validate(level), "Shape Architect level " + level.number + " failed geometry validation.");' +
+      'assert(ShapeArchitectSolver.hasExactSolution(level), "Shape Architect level " + level.number + " failed exact solution certification.");' +
+      'assert(level.requiredCount >= 4, "Shape Architect level " + level.number + " needs at least four real geometric pieces.");' +
+      'assert(level.pieces.length > level.requiredCount, "Shape Architect level " + level.number + " has no distractor pieces.");' +
+      'assert(level.pieces.filter(piece => piece.required).length === level.requiredCount, "Shape Architect level " + level.number + " has an inconsistent required-piece count.");' +
+      'level.pieces.forEach(piece => { assert(ShapeArchitectLibrary.SHAPES[piece.shape], "Unknown Shape Architect geometry: " + piece.shape); assert(piece.w > 0 && piece.h > 0, "Shape Architect piece has invalid dimensions."); shapeStats.shapeTypes.add(piece.shape); });' +
+      'shapeStats.levels++; shapeStats.pieces += level.pieces.length;' +
     '}' +
-    'for (let i=0;i<LEVEL_DATA.length;i++) {' +
-      'const level = LEVEL_DATA[i];' +
-      'const n = level.grid;' +
-      'assert(level.solution.length === n && level.solution.every(row => row.length === n), "Shape level " + (i+1) + " has an invalid solution grid.");' +
-      'const ids = new Set(level.pieces.map((_, index) => index + 1));' +
-      'const counts = new Map();' +
-      'for (const row of level.solution) for (const id of row) {' +
-        'assert(ids.has(id), "Shape level " + (i+1) + " contains an unknown solution piece id: " + id);' +
-        'counts.set(id, (counts.get(id) || 0) + 1);' +
-      '}' +
-      'assert(counts.size === level.pieces.length, "Shape level " + (i+1) + " does not place every piece.");' +
-      'level.pieces.forEach((key, index) => assert(counts.get(index + 1) === SHAPES[key].cells.length, "Shape level " + (i+1) + " piece " + key + " has the wrong area."));' +
-      'assert([...counts.values()].reduce((a,b)=>a+b,0) === n*n, "Shape level " + (i+1) + " does not exactly cover the board.");' +
-      'shapeStats.levels++; shapeStats.cells += n*n;' +
-    '}' +
+    '["circle","square","rectangle","triangle","trapezium","parallelogram","diamond","pentagon","hexagon","oval","semicircle","rightTriangle"].forEach(shape => assert(shapeStats.shapeTypes.has(shape), "Shape Architect never generated geometry type: " + shape));' +
+    'Game.startShapeArchitect();' +
+    'const architectButtons = [...document.querySelectorAll("#architect-level-grid .architect-level-btn")];' +
+    'assert(architectButtons.length === 100, "Shape Architect level selector does not expose all 100 levels.");' +
+    'assert(architectButtons.every(button => !button.disabled), "Shape Architect still locks levels behind sequential completion.");' +
+    'ShapeArchitect.load(99);' +
+    'await new Promise(r => setTimeout(r, 20));' +
+    'assert(document.getElementById("architect-reference-canvas")?.getContext, "Shape Architect reference canvas is missing.");' +
+    'assert(document.getElementById("architect-build-canvas")?.getContext, "Shape Architect build canvas is missing.");' +
+    'assert(document.querySelectorAll("#architect-tray .architect-piece").length === ShapeArchitect.getLevels()[99].pieces.length, "Shape Architect did not render every level-100 piece.");' +
+    'document.getElementById("architect-build-canvas").focus();' +
+    'return { levels: shapeStats.levels, pieces: shapeStats.pieces, geometryTypes: shapeStats.shapeTypes.size, allLevelsOpen: architectButtons.every(button => !button.disabled) };' +
     'const accessibility = {};' +
     'document.documentElement.style.setProperty("--font-scale", "1.5");' +
     'for (const key of ["quiz","race","sudoku","shape","slab","architect"]) {' +

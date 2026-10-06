@@ -1,136 +1,20 @@
-/* Deterministic 100-level generator. Every level is created from a target mask and
-   a connected partition of that mask, so the supplied solution is exact by construction. */
-const ShapeArchitectLevels = (() => {
-  const R=8;
-  const TARGETS=[
-    {name:'House',hint:'Build a little house.',mask:['........','....#...','...###..','..#####.','..#####.','..##.##.','..#####.','........']},
-    {name:'Tree',hint:'Build a tree with a trunk.',mask:['....#...','...###..','..#####.','...###..','..#####.','....#...','....#...','...###..']},
-    {name:'Fish',hint:'Build a swimming fish.',mask:['........','..###...','.#####..','######..','.#####..','..###...','....#...','........']},
-    {name:'Boat',hint:'Build a boat.',mask:['........','....#...','...###..','..#####.','.#######','..#####.','...###..','........']},
-    {name:'Flower',hint:'Build a flower.',mask:['....#...','...###..','..#####.','...###..','....#...','...###..','..#####.','...#....']},
-    {name:'Rocket',hint:'Build a rocket.',mask:['....#...','...###..','..#####.','..#####.','...###..','...###..','..#####.','..#.#...']},
-    {name:'Star',hint:'Build a star.',mask:['...#....','..###...','.#####..','#######.','..###...','...#....','...#....','...#....']},
-    {name:'Heart',hint:'Build a heart.',mask:['.##.##..','######..','######..','.####...','..##....','..##....','..#.....','........']},
-    {name:'Bird',hint:'Build a bird.',mask:['........','..#.....','.###....','#####...','..###...','...#....','..##....','........']},
-    {name:'Mountain',hint:'Build a mountain landscape.',mask:['........','.......#','......##.','.....####','....#####','...######','..#######','.########']},
-    {name:'Bridge',hint:'Build a bridge.',mask:['........','..######','..#....#','..#....#','########','..######','........','........']},
-    {name:'Arrow',hint:'Build an arrow.',mask:['...#....','...##...','...###..','########','...###..','...##...','...#....','........']}
-  ];
-  const PIECE_KEYS=Object.keys(ShapeArchitectLibrary.SHAPES);
-  function cells(mask){const out=[];for(let r=0;r<R;r++)for(let c=0;c<R;c++)if(mask[r][c]==='#')out.push([r,c]);return out;}
-  function neighbors(r,c){return [[r-1,c],[r+1,c],[r,c-1],[r,c+1]];}
-  function connected(group){
-    if(!group.length)return false;
-    const key=(r,c)=>r+','+c, set=new Set(group.map(x=>key(x[0],x[1])));
-    const seen=new Set([key(group[0][0],group[0][1])]), stack=[group[0]];
-    while(stack.length){const cell=stack.pop();for(const n of neighbors(cell[0],cell[1])){const id=key(n[0],n[1]);if(set.has(id)&&!seen.has(id)){seen.add(id);stack.push(n);}}}
-    return seen.size===group.length;
-  }
-  function partition(mask,k,rng){
-    if(k !== 3) return null;
-    const target=cells(mask);
-    if(target.length < k*2) return null;
-    const key=(r,c)=>r+','+c;
-    const targetSet=new Set(target.map(x=>key(x[0],x[1])));
-    const neighborsOf=([r,c])=>neighbors(r,c).filter(([rr,cc])=>targetSet.has(key(rr,cc)));
-
-    /* A randomized spanning tree gives a simple guarantee: every component
-       remains connected after tree edges are cut. We test pairs of cuts and
-       keep only useful pieces with at least two cells. */
-    const root=Utils.pick(target), seen=new Set([key(root[0],root[1])]), stack=[root], edges=[];
-    while(stack.length){
-      const current=stack.pop();
-      const next=Utils.seededShuffle(neighborsOf(current),rng);
-      for(const n of next){
-        const id=key(n[0],n[1]);
-        if(seen.has(id))continue;
-        seen.add(id);
-        edges.push([current,n]);
-        stack.push(n);
-      }
-    }
-    if(edges.length !== target.length-1)return null;
-
-    for(let a=0;a<edges.length;a++){
-      for(let b=a+1;b<edges.length;b++){
-        const blocked=new Set([a,b]);
-        const groups=[];
-        const unvisited=new Set(target.map(x=>key(x[0],x[1])));
-        while(unvisited.size){
-          const seedId=unvisited.values().next().value;
-          const seed=seedId.split(',').map(Number);
-          const group=[], todo=[seed];
-          unvisited.delete(seedId);
-          while(todo.length){
-            const current=todo.pop();
-            group.push(current);
-            for(let i=0;i<edges.length;i++){
-              if(blocked.has(i))continue;
-              const [u,v]=edges[i];
-              const same=(u[0]===current[0]&&u[1]===current[1])||(v[0]===current[0]&&v[1]===current[1]);
-              if(!same)continue;
-              const next=(u[0]===current[0]&&u[1]===current[1])?v:u;
-              const nextId=key(next[0],next[1]);
-              if(unvisited.has(nextId)){unvisited.delete(nextId);todo.push(next);}
-            }
-          }
-          groups.push(group);
-        }
-        if(groups.length===3&&groups.every(group=>group.length>=2))return groups;
-      }
-    }
-    return null;
-  }
-
-  function localize(cells){
-    const minR=Math.min(...cells.map(x=>x[0])),minC=Math.min(...cells.map(x=>x[1]));
-    return cells.map(([r,c])=>[r-minR,c-minC]);
-  }
-
-  function choosePartition(mask,k,rng){
-    for(let tries=0;tries<80;tries++){
-      const p=partition(mask,k,rng);
-      if(p&&p.length===k&&p.every(x=>x.length>=2))return p;
-    }
-    throw new Error('Unable to partition Shape Architect target into three connected pieces.');
-  }
-  function makeDistractors(rng,count){
-    const keys=[];
-    for(let i=0;i<count;i++)keys.push(Utils.pick(PIECE_KEYS));
-    return keys;
-  }
-  function makeLevel(index){
-    const rng=Utils.mulberry32(0x51A7C000+index*7919);
-    const t=TARGETS[index%TARGETS.length];
-    const target=cells(t.mask);
-    const k=3;
-    let parts; try { parts=choosePartition(t.mask,k,rng); } catch(error) { throw new Error('Shape Architect target '+t.name+' level '+(index+1)+': '+error.message); }
-    if(!parts)throw new Error('Shape Architect target '+t.name+' level '+(index+1)+' could not be partitioned.');
-    const required=parts.map(p=>localize(p));
-    const requiredKeys=required.map(p=>({cells:p,name:'required'}));
-    const distractorCount=3;
-    const distractors=makeDistractors(rng,distractorCount).map(key=>({key,cells:ShapeArchitectLibrary.SHAPES[key].cells}));
-    const pieces=[...requiredKeys,...distractors].map((p,i)=>({
-      id:i,key:p.key||null,cells:p.cells,required:i<required.length,
-      label:p.key?ShapeArchitectLibrary.SHAPES[p.key].name:'Puzzle piece',
-      startRot:p.key?((index+i+1)%4):((index*2+i)%4)
-    }));
-    const solution=parts.map((p,i)=>({piece:i,anchor:[0,0],cells:p.map(x=>[x[0],x[1]])}));
-    return {number:index+1,name:t.name,hint:t.hint,grid:R,mask:t.mask,requiredCount:required.length,pieces,solution,seed:(0x51A7C000+index*7919)>>>0};
-  }
-  let cache=null;
-  function getAll(){if(!cache)cache=Array.from({length:100},(_,i)=>makeLevel(i));return cache;}
-  function validate(level){
-    const target=cells(level.mask), targetSet=new Set(target.map(x=>x.join(',')));
-    const covered=new Set();
-    for(const s of level.solution){
-      for(const [r,c] of s.cells){
-        if(!targetSet.has(r+','+c)||covered.has(r+','+c))return false;
-        covered.add(r+','+c);
-      }
-    }
-    return covered.size===target.length&&level.pieces.length>level.requiredCount&&level.pieces.slice(level.requiredCount).length>=2;
-  }
-  function get(index){return getAll()[Math.max(0,Math.min(99,index))];}
-  return {getAll,get,validate,TARGETS};
-})();
+/* 100 deterministic freeform geometry puzzles. */
+const ShapeArchitectLevels=(()=>{const T=[
+{name:'House',hint:'Arrange the shapes to make a house.',p:[['square',.5,.62,.3,.24,0],['triangle',.5,.37,.36,.28,0],['rectangle',.5,.79,.09,.22,0],['square',.39,.62,.07,.07,0],['square',.61,.62,.07,.07,0],['rectangle',.69,.31,.06,.15,0]]},
+{name:'Tree',hint:'Build the tree from its trunk and canopy.',p:[['rectangle',.5,.73,.1,.27,0],['triangle',.5,.55,.42,.28,0],['triangle',.5,.37,.34,.26,0],['circle',.5,.2,.14,.14,0],['triangle',.35,.67,.16,.12,-.35],['triangle',.65,.67,.16,.12,.35]]},
+{name:'Fish',hint:'Make the fish point the same way as the picture.',p:[['oval',.48,.5,.44,.25,0],['triangle',.77,.5,.25,.3,0],['circle',.39,.46,.055,.055,0],['triangle',.48,.63,.16,.12,.55],['triangle',.48,.37,.16,.12,-.55]]},
+{name:'Boat',hint:'Arrange the hull, mast and sails.',p:[['trapezium',.5,.68,.55,.22,0],['rectangle',.5,.45,.035,.4,0],['triangle',.39,.42,.23,.31,0],['triangle',.61,.38,.22,.25,0],['circle',.78,.18,.1,.1,0]]},
+{name:'Flower',hint:'Build the flower with petals, stem and leaves.',p:[['circle',.5,.28,.17,.17,0],['circle',.39,.28,.15,.15,0],['circle',.61,.28,.15,.15,0],['circle',.5,.18,.15,.15,0],['circle',.5,.39,.15,.15,0],['rectangle',.5,.68,.06,.43,0],['triangle',.39,.66,.18,.13,.35],['triangle',.61,.72,.18,.13,-.35]]},
+{name:'Rocket',hint:'Make the rocket ready for launch.',p:[['rectangle',.5,.52,.22,.46,0],['triangle',.5,.23,.23,.25,0],['triangle',.35,.72,.17,.22,-.45],['triangle',.65,.72,.17,.22,.45],['circle',.5,.48,.09,.09,0],['rectangle',.5,.8,.13,.1,0]]},
+{name:'Car',hint:'Build the car and line up its wheels.',p:[['rectangle',.5,.62,.56,.22,0],['trapezium',.5,.47,.35,.24,0],['circle',.34,.78,.13,.13,0],['circle',.66,.78,.13,.13,0],['rectangle',.5,.39,.2,.06,0],['square',.42,.48,.09,.08,0],['square',.58,.48,.09,.08,0]]},
+{name:'Butterfly',hint:'Make both sides of the butterfly balance.',p:[['oval',.39,.43,.25,.3,-.45],['oval',.61,.43,.25,.3,.45],['oval',.38,.65,.19,.22,.35],['oval',.62,.65,.19,.22,-.35],['rectangle',.5,.55,.07,.36,0],['circle',.5,.34,.09,.09,0],['triangle',.46,.2,.11,.2,-.25],['triangle',.54,.2,.11,.2,.25]]},
+{name:'Bird',hint:'Arrange the body, wing, beak and tail.',p:[['oval',.5,.54,.43,.28,0],['circle',.69,.44,.16,.16,0],['triangle',.82,.46,.17,.13,0],['triangle',.49,.51,.22,.2,-.25],['triangle',.29,.54,.2,.18,.65],['rectangle',.52,.74,.08,.22,0]]},
+{name:'Kite',hint:'Build the kite and its tail.',p:[['diamond',.5,.42,.4,.47,0],['circle',.5,.42,.07,.07,0],['triangle',.5,.69,.13,.18,0],['triangle',.5,.82,.12,.16,0],['triangle',.5,.94,.1,.12,0],['rectangle',.5,.18,.05,.2,0]]},
+{name:'Castle',hint:'Build the castle with towers and a gate.',p:[['rectangle',.5,.64,.36,.34,0],['rectangle',.27,.6,.14,.4,0],['rectangle',.73,.6,.14,.4,0],['triangle',.27,.34,.18,.22,0],['triangle',.73,.34,.18,.22,0],['triangle',.5,.41,.26,.2,0],['rectangle',.5,.77,.1,.22,0],['circle',.27,.57,.06,.06,0],['circle',.73,.57,.06,.06,0]]},
+{name:'Robot',hint:'Arrange the robot from simple geometric parts.',p:[['square',.5,.38,.27,.24,0],['rectangle',.5,.64,.35,.28,0],['rectangle',.31,.64,.09,.28,0],['rectangle',.69,.64,.09,.28,0],['rectangle',.5,.88,.1,.24,0],['circle',.45,.36,.06,.06,0],['circle',.55,.36,.06,.06,0],['rectangle',.5,.2,.05,.15,0],['circle',.5,.13,.08,.08,0]]},
+{name:'Sun',hint:'Build the sun and its rays.',p:[['circle',.5,.5,.28,.28,0],['triangle',.5,.15,.13,.22,0],['triangle',.5,.85,.13,.22,Math.PI],['triangle',.15,.5,.22,.13,-Math.PI/2],['triangle',.85,.5,.22,.13,Math.PI/2],['diamond',.25,.25,.15,.15,.78],['diamond',.75,.25,.15,.15,-.78],['diamond',.25,.75,.15,.15,-.78],['diamond',.75,.75,.15,.15,.78]]}
+];
+function rng(seed){let a=seed>>>0;return()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function make(index){const r=rng(0xA17C000+index*104729),b=T[index%T.length],v=Math.floor(index/T.length),s=.92+v*.015,ox=(r()-.5)*.03,oy=(r()-.5)*.03,required=b.p.map((q,id)=>{const[shape,x,y,w,h,rotation]=q;return{id,required:true,shape,x:clamp(.5+(x-.5)*s+ox,.06,.94),y:clamp(.5+(y-.5)*s+oy,.07,.93),w,h,rotation};}),pieces=required.map(p=>({...p,x:.1+r()*.8,y:.1+r()*.8,rotation:(r()-.5)*Math.PI*2})),types=Object.keys(ShapeArchitectLibrary.SHAPES),extra=2+Math.floor(index/34);for(let i=0;i<extra;i++){const shape=types[Math.floor(r()*types.length)],h=.075+r()*.08;pieces.push({id:required.length+i,required:false,shape,x:.08+r()*.84,y:.08+r()*.84,w:h*ShapeArchitectLibrary.SHAPES[shape].aspect,h,rotation:(r()-.5)*Math.PI*2});}return{number:index+1,name:b.name,hint:b.hint,canvas:{width:760,height:520},pieces,requiredCount:required.length,seed:(0xA17C000+index*104729)>>>0,tolerance:{position:.034,rotation:.2}};}
+let cache=null;function getAll(){if(!cache)cache=Array.from({length:100},(_,i)=>make(i));return cache;}function get(i){return getAll()[Math.max(0,Math.min(99,i))];}function angleDiff(a,b){let d=Math.abs(a-b)%(Math.PI*2);return d>Math.PI?Math.PI*2-d:d;}function validate(l){const r=l?.pieces?.filter(p=>p.required)||[];return r.length===l.requiredCount&&r.length>=4&&l.pieces.length>r.length&&r.every(p=>ShapeArchitectLibrary.SHAPES[p.shape]&&p.w>0&&p.h>0&&p.x>0&&p.x<1&&p.y>0&&p.y<1&&Number.isFinite(p.rotation));}return{getAll,get,validate,angleDiff,templates:T};})();
