@@ -6,9 +6,11 @@ Maths for All is designed around a learner-first loop: **try → understand → 
 
 ## Current release
 
-**v2.0.3**
+**v2.0.4 · Geometry & Physical Learning Hardening**
 
-This is the physical game-testing baseline. Authentication and account controls are temporarily disabled while the game mechanics are tested.
+This release hardens the physical-learning experience around the first new game, Shape Architect. The existing educational games remain the regression baseline, while Shape Architect is now ready for continued physical review before the next game is designed.
+
+Authentication and account controls remain temporarily disabled while physical game mechanics are being tested.
 
 ## Features
 
@@ -26,34 +28,47 @@ This is the physical game-testing baseline. Authentication and account controls 
 - 🚫 Strict No-means-no research collection
 - 🧪 Automated browser smoke/stress testing
 
+## Shape Architect
+
+Shape Architect is a freeform geometry-building game.
+
+Each level presents a reference picture and a separate build canvas. The learner arranges the required geometric pieces to reproduce the reference.
+
+The current release provides:
+
+- 100 deterministic levels, all open for testing;
+- real geometric primitives including circles, squares, rectangles, triangles, trapeziums, parallelograms, diamonds, polygons, ovals, semicircles, and right triangles;
+- direct manipulation on the build canvas without a separate piece tray;
+- no distractor pieces in the physical-testing build set;
+- 45-degree rotation steps;
+- keyboard movement and pointer/touch dragging;
+- undo, restart, hint, and a gentle timer;
+- a faint outer silhouette of the complete target figure on the build canvas;
+- no internal construction lines in the silhouette guide;
+- visual, size-aware completion matching rather than exact pixel placement;
+- regression coverage for false completion, level availability, rendering, and visual matching.
+
+The silhouette is a guide, not another puzzle layer. The learner still has to understand the shapes and arrange the pieces.
+
 ## Current presentation
 
 The home screen uses a calm, playful palette and a full-page field of very faint mathematical symbols instead of the previous dotted background.
-
-The home introduction no longer uses the removed sentence beginning:
-
-`Explore numbers, shapes and patterns at your own pace...`
 
 The existing game cards, learning promises, Sanskrit learning maxim, and accessible typography remain.
 
 ## How to play
 
-The navigation **How to play** control follows the active game:
-- Arithmetic Quiz → Arithmetic instructions
-- Math Racing → Racing instructions
-- Sudoku → Sudoku instructions
-- Shape Fitting → Shape instructions
-- Slab Maths → Slab Maths instructions
+Each game provides its own **?** control for instructions. The help content is specific to the active game rather than a single unrelated global instruction panel.
 
-If no game is active, the navigation does not open unrelated game instructions.
-
-The existing `?` button inside each game remains game-specific.
+For Shape Architect, the instructions explain the reference picture, build canvas, dragging, 45-degree rotation, keyboard movement, undo, restart, hints, and the completion goal.
 
 ## Keyboard and overlays
 
-Escape closes dismissible overlays, including the How to play overlay, and returns to the underlying state.
+Escape closes dismissible overlays and returns to the underlying state.
 
 The initial mandatory research-consent prompt remains non-dismissible with Escape until an explicit Yes or No choice is made.
+
+Visible focus states and keyboard controls are retained across the application.
 
 ## Privacy by design
 
@@ -95,6 +110,7 @@ The repository includes a headless Chromium smoke/stress suite covering:
 - research-consent enforcement;
 - modal keyboard behaviour;
 - game-specific help behaviour;
+- Shape Architect level availability and visual completion;
 - repeated gameplay transitions;
 - browser runtime and console errors.
 
