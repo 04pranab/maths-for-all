@@ -380,6 +380,9 @@ async function main() {
     'await new Promise(r => setTimeout(r, 20));' +
     'assert(document.getElementById("architect-reference-canvas")?.getContext, "Shape Architect reference canvas is missing.");' +
     'assert(document.getElementById("architect-build-canvas")?.getContext, "Shape Architect build canvas is missing.");' +
+    'const silhouetteGuide = ShapeArchitectCanvas.silhouetteSegments(ShapeArchitect.getLevels()[99]);' +
+    'assert(Array.isArray(silhouetteGuide) && silhouetteGuide.length > 0, "Shape Architect full-figure silhouette guide is missing.");' +
+    'assert(silhouetteGuide.every(segment => segment.length === 4 && segment.every(Number.isFinite)), "Shape Architect silhouette guide contains invalid boundary segments.");' +
     'assert(!document.getElementById("architect-tray"), "Shape Architect piece tray should not be rendered.");' +
     'assert(ShapeArchitect.getLevels()[99].pieces.length === ShapeArchitect.getLevels()[99].requiredCount, "Shape Architect level-100 build set contains an extra piece.");' +
     'assert(Number(document.getElementById("architect-placed").textContent.split("/")[0]) < ShapeArchitect.getLevels()[99].requiredCount, "Shape Architect incorrectly starts with pieces counted as placed.");' +
