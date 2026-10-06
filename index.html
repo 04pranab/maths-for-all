@@ -410,14 +410,10 @@
         </section>
         <section class="architect-canvas-card">
           <h3>🧩 Build canvas</h3>
-          <canvas id="architect-build-canvas" class="architect-canvas" width="760" height="520" tabindex="0" aria-label="Build canvas. Select a piece, then use arrow keys to move it. Press R to rotate."></canvas>
+          <canvas id="architect-build-canvas" class="architect-canvas" width="760" height="520" tabindex="0" aria-label="Build canvas. Click a shape to select it, use arrow keys to move it, and press R to rotate it 45 degrees."></canvas>
         </section>
       </div>
 
-      <div class="architect-tray-wrap">
-        <div class="architect-tray-title">Pieces in this picture</div>
-        <div class="architect-tray" id="architect-tray" aria-label="Shape pieces"></div>
-      </div>
       <div class="architect-controls">
         <button class="primary" onclick="ShapeArchitect.rotateSelected()">⟲ Rotate <kbd>R</kbd></button>
         <button onclick="ShapeArchitect.undo()">↶ Undo</button>
@@ -426,7 +422,7 @@
         <button onclick="ShapeArchitect.backToLevels()">☰ All levels</button>
       </div>
       <div id="architect-message" class="architect-message hidden" role="status" aria-live="polite"></div>
-      <div class="architect-instructions">Drag shapes freely on the build canvas. Select a piece below and use <kbd>← ↑ ↓ →</kbd> to move it. <kbd>R</kbd> rotates · <kbd>Esc</kbd> deselects.</div>
+      <div class="architect-instructions">Drag shapes freely on the build canvas. Click a shape on the build canvas to select it, then use <kbd>← ↑ ↓ →</kbd> to move it. <kbd>R</kbd> rotates it 45° · <kbd>Esc</kbd> deselects.</div>
     </div>
 
     <div id="architect-complete" class="architect-complete hidden">
