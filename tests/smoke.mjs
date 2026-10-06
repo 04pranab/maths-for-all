@@ -373,7 +373,10 @@ async function main() {
     '}' +
     '["circle","square","rectangle","triangle","trapezium","oval","diamond"].forEach(shape => assert(shapeStats.shapeTypes.has(shape), "Shape Architect target pictures never generated geometry type: " + shape));' +
     'Game.startShapeArchitect();' +
+    'await new Promise(r => setTimeout(r, 20));' +
     'const architectButtons = [...document.querySelectorAll("#architect-level-grid .architect-level-btn")];' +
+    'assert(architectButtons.length === 100, "Shape Architect level selector failed to render all 100 level buttons.");' +
+    'assert(architectButtons.every(button => getComputedStyle(button).display !== "none" && button.getBoundingClientRect().height >= 40), "Shape Architect level buttons are not visibly rendered.");' +
     'assert(architectButtons.length === 100, "Shape Architect level selector does not expose all 100 levels.");' +
     'assert(architectButtons.every(button => !button.disabled), "Shape Architect still locks levels behind sequential completion.");' +
     'ShapeArchitect.load(99);' +
