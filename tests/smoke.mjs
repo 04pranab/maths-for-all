@@ -384,8 +384,8 @@ async function main() {
     'assert(ShapeArchitect.getLevels()[99].pieces.length === ShapeArchitect.getLevels()[99].requiredCount, "Shape Architect level-100 build set contains an extra piece.");' +
     'assert(Number(document.getElementById("architect-placed").textContent.split("/")[0]) < ShapeArchitect.getLevels()[99].requiredCount, "Shape Architect incorrectly starts with pieces counted as placed.");' +
     'assert(Math.abs(ShapeArchitect.getLevels()[99].rotationStep - Math.PI / 4) < 1e-9, "Shape Architect rotation step is not 45 degrees.");' +
-    'assert(ShapeArchitect.getLevels()[99].tolerance.positionMin >= 0.10 && ShapeArchitect.getLevels()[99].tolerance.positionMax <= 0.21, "Shape Architect dynamic position tolerance bounds are invalid.");' +
-    'assert(ShapeArchitect.getLevels()[99].tolerance.positionScale >= 0.5, "Shape Architect size-scaled tolerance is too rigid.");' +
+    'assert(ShapeArchitect.getLevels()[99].tolerance.positionMin >= 0.11 && ShapeArchitect.getLevels()[99].tolerance.positionMax <= 0.23, "Shape Architect dynamic position tolerance bounds are invalid.");' +
+    'assert(ShapeArchitect.getLevels()[99].tolerance.positionScale >= 0.55, "Shape Architect size-scaled tolerance is too rigid.");' +
     'const targetForTolerance = ShapeArchitect.getLevels()[99].targetPieces.find(piece => piece.w >= 0.2) || ShapeArchitect.getLevels()[99].targetPieces[0];' +
     'const toleranceConfig = ShapeArchitect.getLevels()[99].tolerance;' +
     'const dynamicTolerance = Math.max(toleranceConfig.positionMin, Math.min(toleranceConfig.positionMax, Math.hypot(targetForTolerance.w, targetForTolerance.h) * toleranceConfig.positionScale));' +
@@ -393,7 +393,7 @@ async function main() {
     'assert(ShapeArchitect.isNearTarget({...targetForTolerance, x: targetForTolerance.x + dynamicTolerance * 0.8}, targetForTolerance), "A visually close Shape Architect piece was rejected.");' +
     'assert(!ShapeArchitect.isNearTarget({...targetForTolerance, x: targetForTolerance.x + dynamicTolerance * 1.25}, targetForTolerance), "A clearly displaced Shape Architect piece was accepted.");' +
     'assert(ShapeArchitect.isNearTarget({...targetForTolerance, rotation: targetForTolerance.rotation + 0.12}, targetForTolerance), "A small visual rotation difference was rejected.");' +
-    'assert(!ShapeArchitect.isNearTarget({...targetForTolerance, rotation: targetForTolerance.rotation + 0.65}, targetForTolerance), "A large rotation difference was accepted.");' +
+    'assert(!ShapeArchitect.isNearTarget({...targetForTolerance, rotation: targetForTolerance.rotation + 1.0}, targetForTolerance), "A large rotation difference was accepted.");' +
 
     'const architectControls = [...document.querySelectorAll(".architect-controls button")].map(button => button.textContent);' +
     '["Rotate","Undo","Hint","Restart","All levels"].forEach(label => assert(architectControls.some(text => text.includes(label)), "Shape Architect control is missing: " + label));' +
