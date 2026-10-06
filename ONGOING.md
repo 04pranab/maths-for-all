@@ -6,7 +6,7 @@
 **Current focus:** Shape Architect implementation and physical game-mechanics testing  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 5 October 2026
+**Last updated:** 6 October 2026
 
 ---
 
@@ -79,11 +79,15 @@ Each game will be handled independently. A game is not advanced to the next one 
 
 ## 4. Shape Architect
 
-Shape Architect is the first game in the new five-game sequence. Its current implementation target is 100 deterministic levels built from recognizable geometric pictures.
+Shape Architect is the first game in the new five-game sequence. It now uses 100 deterministic freeform geometry levels built from recognizable reference pictures.
 
-The generator constructs a target mask first, partitions that mask into connected required pieces, then adds extra pieces as controlled distractors. The exact-cover validator and solver are used as the correctness boundary so a generated picture is not merely visually plausible: it has a mathematical solution.
+Each level keeps two separate geometry sets:
+- an immutable **target picture** used by the reference canvas and completion validator;
+- a mutable **starting set** containing scattered required pieces plus controlled distractors.
 
-The game is timed, but the timer is a measure of time spent rather than a punishment. Undo, restart and hints support experimentation. Pointer/touch dragging, keyboard placement, large targets, visible focus, responsive layout and reduced-motion behavior are part of the initial implementation.
+The learner rebuilds the reference picture by freely dragging, rotating and moving real geometric primitives such as circles, squares, rectangles, triangles, trapeziums, parallelograms, diamonds, polygons, ovals, semicircles and right triangles. Completion is only valid when every required piece matches its corresponding target position and rotation within tolerance. Selecting a piece by itself is never a completion action.
+
+The game is timed, but the timer is a measure of time spent rather than a punishment. Undo, restart and hints support experimentation. Pointer/touch dragging, keyboard movement, large targets, visible focus, responsive layout and reduced-motion behavior are part of the implementation.
 
 The first physical-testing question is not “Can a child finish quickly?” It is “Can a child understand what to do, manipulate the pieces comfortably, and learn something about space, shape, rotation and planning while playing?”
 
