@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Shape Architect correctness
+- Added a faint outer silhouette of the complete target figure to the Build canvas so children have a clear visual placement boundary without exposing internal piece outlines.
+- Removed the background grid from the Build canvas to keep the target silhouette visually clear.
 - Made completion accept a one-step 45-degree visual rotation difference while still rejecting large orientation errors.
 - Widened the bounded placement tolerance slightly and corrected initial-piece spacing to use the configured maximum position tolerance.
 - Made Shape Architect completion visually forgiving with size-scaled position tolerance and bounded minimum/maximum placement tolerance.
