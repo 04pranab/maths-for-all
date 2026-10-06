@@ -18,9 +18,11 @@ function rng(seed){let a=seed>>>0;return()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function make(index){
   const r=rng(0xA17C000+index*104729),b=T[index%T.length],v=Math.floor(index/T.length),s=.92+v*.015,ox=(r()-.5)*.03,oy=(r()-.5)*.03;
+  const quarterTurn=Math.PI/4;
   const targetPieces=b.p.map((q,id)=>{
     const[shape,x,y,w,h,rotation]=q;
-    return{id,required:true,shape,x:clamp(.5+(x-.5)*s+ox,.06,.94),y:clamp(.5+(y-.5)*s+oy,.07,.93),w,h,rotation};
+    const snappedRotation=Math.round(rotation/quarterTurn)*quarterTurn;
+    return{id,required:true,shape,x:clamp(.5+(x-.5)*s+ox,.06,.94),y:clamp(.5+(y-.5)*s+oy,.07,.93),w,h,rotation:snappedRotation};
   });
   const tolerance={position:.034,rotation:.2};
   const pieces=targetPieces.map(target=>{
@@ -28,15 +30,10 @@ function make(index){
     do{
       x=.1+r()*.8;
       y=.1+r()*.8;
-      rotation=(r()-.5)*Math.PI*2;
-    }while(Math.hypot(x-target.x,y-target.y)<=tolerance.position && angleDiff(rotation,target.rotation)<=tolerance.rotation);
+      rotation=target.rotation+(Math.floor(r()*7)+1)*quarterTurn;
+    }while(Math.hypot(x-target.x,y-target.y)<=tolerance.position);
     return{...target,x,y,rotation};
   });
-  const types=Object.keys(ShapeArchitectLibrary.SHAPES),extra=2+Math.floor(index/34);
-  for(let i=0;i<extra;i++){
-    const shape=types[Math.floor(r()*types.length)],h=.075+r()*.08;
-    pieces.push({id:targetPieces.length+i,required:false,shape,x:.08+r()*.84,y:.08+r()*.84,w:h*ShapeArchitectLibrary.SHAPES[shape].aspect,h,rotation:(r()-.5)*Math.PI*2});
-  }
-  return{number:index+1,name:b.name,hint:b.hint,canvas:{width:760,height:520},targetPieces,pieces,requiredCount:targetPieces.length,seed:(0xA17C000+index*104729)>>>0,tolerance};
+  return{number:index+1,name:b.name,hint:b.hint,canvas:{width:760,height:520},targetPieces,pieces,requiredCount:targetPieces.length,seed:(0xA17C000+index*104729)>>>0,tolerance,rotationStep:quarterTurn};
 }
-let cache=null;function getAll(){if(!cache)cache=Array.from({length:100},(_,i)=>make(i));return cache;}function get(i){return getAll()[Math.max(0,Math.min(99,i))];}function angleDiff(a,b){let d=Math.abs(a-b)%(Math.PI*2);return d>Math.PI?Math.PI*2-d:d;}function validate(l){const r=l?.targetPieces||[];return r.length===l.requiredCount&&r.length>=4&&l.pieces.length>r.length&&r.every(p=>ShapeArchitectLibrary.SHAPES[p.shape]&&p.w>0&&p.h>0&&p.x>0&&p.x<1&&p.y>0&&p.y<1&&Number.isFinite(p.rotation))&&l.pieces.filter(p=>p.required).length===r.length;}return{getAll,get,validate,angleDiff,templates:T};})();
+let cache=null;function getAll(){if(!cache)cache=Array.from({length:100},(_,i)=>make(i));return cache;}function get(i){return getAll()[Math.max(0,Math.min(99,i))];}function angleDiff(a,b){let d=Math.abs(a-b)%(Math.PI*2);return d>Math.PI?Math.PI*2-d:d;}function validate(l){const r=l?.targetPieces||[],step=l?.rotationStep||Math.PI/4;return r.length===l.requiredCount&&r.length>=4&&l.pieces.length===r.length&&r.every((p,i)=>ShapeArchitectLibrary.SHAPES[p.shape]&&p.w>0&&p.h>0&&p.x>0&&p.x<1&&p.y>0&&p.y<1&&Number.isFinite(p.rotation)&&l.pieces[i]?.required===true&&Math.abs((p.rotation/step)-Math.round(p.rotation/step))<1e-8);}return{getAll,get,validate,angleDiff,templates:T};})();
