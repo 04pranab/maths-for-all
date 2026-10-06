@@ -361,9 +361,13 @@ async function main() {
     'for (const level of architectLevels) {' +
       'assert(ShapeArchitectLevels.validate(level), "Shape Architect level " + level.number + " failed geometry validation.");' +
       'assert(ShapeArchitectSolver.hasExactSolution(level), "Shape Architect level " + level.number + " failed exact solution certification.");' +
+      'assert(level.targetPieces.length === level.requiredCount, "Shape Architect level " + level.number + " has an inconsistent target count.");' +
+      'assert(level.targetPieces.every(target => target.required), "Shape Architect target geometry contains a non-required piece.");' +
+      'assert(level.targetPieces.every(target => level.pieces.find(piece => piece.id === target.id && piece.required)), "Shape Architect level " + level.number + " lost a target-piece id in the build set.");' +
       'assert(level.requiredCount >= 4, "Shape Architect level " + level.number + " needs at least four real geometric pieces.");' +
       'assert(level.pieces.length > level.requiredCount, "Shape Architect level " + level.number + " has no distractor pieces.");' +
       'assert(level.pieces.filter(piece => piece.required).length === level.requiredCount, "Shape Architect level " + level.number + " has an inconsistent required-piece count.");' +
+      'level.targetPieces.forEach(target => { assert(ShapeArchitectLibrary.SHAPES[target.shape], "Unknown Shape Architect target geometry: " + target.shape); assert(target.w > 0 && target.h > 0, "Shape Architect target has invalid dimensions."); });' +
       'level.pieces.forEach(piece => { assert(ShapeArchitectLibrary.SHAPES[piece.shape], "Unknown Shape Architect geometry: " + piece.shape); assert(piece.w > 0 && piece.h > 0, "Shape Architect piece has invalid dimensions."); shapeStats.shapeTypes.add(piece.shape); });' +
       'shapeStats.levels++; shapeStats.pieces += level.pieces.length;' +
     '}' +
@@ -377,6 +381,10 @@ async function main() {
     'assert(document.getElementById("architect-reference-canvas")?.getContext, "Shape Architect reference canvas is missing.");' +
     'assert(document.getElementById("architect-build-canvas")?.getContext, "Shape Architect build canvas is missing.");' +
     'assert(document.querySelectorAll("#architect-tray .architect-piece").length === ShapeArchitect.getLevels()[99].pieces.length, "Shape Architect did not render every level-100 piece.");' +
+    'assert(Number(document.getElementById("architect-placed").textContent.split("/")[0]) < ShapeArchitect.getLevels()[99].requiredCount, "Shape Architect incorrectly starts with pieces counted as placed.");' +
+    'document.querySelector("#architect-tray .architect-piece")?.click();' +
+    'await new Promise(r => setTimeout(r, 20));' +
+    'assert(document.getElementById("architect-complete").classList.contains("hidden"), "Selecting a Shape Architect piece incorrectly completed the level.");' +
     'document.getElementById("architect-build-canvas").focus();' +
     'return { levels: shapeStats.levels, pieces: shapeStats.pieces, geometryTypes: shapeStats.shapeTypes.size, allLevelsOpen: architectButtons.every(button => !button.disabled) };' +
     'const accessibility = {};' +
