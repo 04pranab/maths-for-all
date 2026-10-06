@@ -24,7 +24,7 @@ function make(index){
     const snappedRotation=Math.round(rotation/quarterTurn)*quarterTurn;
     return{id,required:true,shape,x:clamp(.5+(x-.5)*s+ox,.06,.94),y:clamp(.5+(y-.5)*s+oy,.07,.93),w,h,rotation:snappedRotation};
   });
-  const tolerance={position:.045,positionScale:.32,rotation:.26};
+  const tolerance={positionMin:.075,positionMax:.12,positionScale:.48,rotation:.34};
   const pieces=targetPieces.map(target=>{
     let x,y,rotation;
     do{

@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Shape Architect correctness
+- Made Shape Architect completion visually forgiving with size-scaled position tolerance and bounded minimum/maximum placement tolerance.
+- Kept rotation validation forgiving for small visual differences while rejecting clearly misaligned orientations.
 - Made placement acceptance dynamic by shape size, while retaining a rejection boundary for clearly misplaced pieces.
 - Kept a small rotation tolerance so visually aligned pieces are not rejected for tiny angular differences.
 - Removed the separate Shape Architect piece tray; required pieces are now manipulated directly on the build canvas.
