@@ -78,18 +78,21 @@ const ShapeArchitectCanvas = (() => {
 
   function visualMatch(level,pieces){
     const scale=.5,target=maskForPieces(level.targetPieces,scale),current=maskForPieces(pieces,scale);
-    let minTargetCoverage=1,minCurrentCoverage=1,maxSpill=0;
+    let minTargetCoverage=1,minCurrentCoverage=1,maxSpill=0,placedCount=0;
     for(let i=0;i<level.targetPieces.length;i++){
       const a=maskForPieces([level.targetPieces[i]],scale);
       const b=maskForPieces([pieces[i]],scale);
       const s=maskStats(a,b);
+      const placed=s.targetCoverage>=.62&&s.currentCoverage>=.62&&s.spill<=.38;
+      if(placed)placedCount++;
       minTargetCoverage=Math.min(minTargetCoverage,s.targetCoverage);
       minCurrentCoverage=Math.min(minCurrentCoverage,s.currentCoverage);
       maxSpill=Math.max(maxSpill,s.spill);
     }
     const union=maskStats(target,current);
     return {
-      complete:minTargetCoverage>=.62&&minCurrentCoverage>=.62&&maxSpill<=.38&&union.targetCoverage>=.88&&union.spill<=.16,
+      complete:placedCount===level.targetPieces.length&&union.targetCoverage>=.88&&union.spill<=.16,
+      placedCount,
       minTargetCoverage,
       minCurrentCoverage,
       maxSpill,
