@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Shape Architect correctness
+- Separated the reference target geometry from randomized starting pieces.
+- Fixed the REQUIRED counter and completion validator so a level cannot complete from selecting or clicking a piece alone.
+- Added regression coverage for false completion and target/build-piece separation across all 100 levels.
+
 ## 2.0.3 · 2026-10-05
 
 ### Physical-testing hardening
