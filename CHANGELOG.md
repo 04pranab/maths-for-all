@@ -3,6 +3,9 @@
 ## Unreleased
 
 ### Shape Architect correctness
+- Removed the separate Shape Architect piece tray; required pieces are now manipulated directly on the build canvas.
+- Removed distractor pieces from the build set.
+- Changed rotation to exact 45-degree steps and made generated starting rotations reachable with those steps.
 - Separated the reference target geometry from randomized starting pieces.
 - Fixed the REQUIRED counter and completion validator so a level cannot complete from selecting or clicking a piece alone.
 - Added regression coverage for false completion and target/build-piece separation across all 100 levels.
