@@ -253,115 +253,91 @@ The learner can choose levels freely rather than being forced through a fixed st
 
 # 6. Probability Carnival 🎪
 
-Probability Carnival is a world of four carnival tents.
+Probability Carnival is a 60-level probability adventure.
 
-It is designed to feel like a game world rather than a probability worksheet.
+It is designed around a changing game loop rather than a collection of probability demonstrations. The learner gradually moves from intuition to comparison, construction, experimentation, randomness and evidence-based inference.
 
-The learner earns a **Carnival Passport stamp** from each tent.
+There is no betting, gambling, money, or reward for taking risks. The excitement comes from finding out what happens.
 
-There is no betting, gambling, money, or reward for taking risks.
+The carnival's progression is:
 
-The excitement comes from finding out what happens.
+**Predict → Compare → Build → Experiment → Investigate → Deduce**
 
-The carnival's rhythm is:
+### Stage 1: Probability intuition · Levels 1–10
 
-**Make a call → play → watch → think → try again**
+The learner meets ordinary probability language first:
 
-## 🔭 The Telescope Tent: The Curious Machine
+- impossible
+- certain
+- likely
+- unlikely
+- equally likely
 
-A strange carnival machine contains Sun and Moon tokens.
+The learner makes a prediction before seeing the outcome.
 
-The learner makes a prediction and sends tokens through the machine.
+### Stage 2: Compare · Levels 11–20
 
-They can watch the results build up and compare the evidence with what they saw inside the machine.
+The learner puts two chances side by side and decides which outcome is more likely, which is less likely, or whether the chances are equal.
 
-### The idea
+### Stage 3: Build · Levels 21–30
 
-A likely result is not a guaranteed result.
+The learner becomes the machine builder and physically changes Sun and Moon tokens to construct simple probability ratios:
 
-A short run can look surprising.
+- 1:1
+- 2:1
+- 3:1
+- 1:3
 
-More trials can make a pattern easier to notice.
+### Stage 4: Experiment · Levels 31–40
 
-### What the learner practises
+The learner runs experiments of different sizes:
 
-- prediction,
-- counting,
-- comparing,
-- observation,
-- understanding chance.
+- 5 trials
+- 10 trials
+- 20 trials
 
----
+The results are visible and can be compared. The learner begins to see the difference between expectation and one actual experiment.
 
-## 🧩 The Builder Tent: The Machine Builder
+### Stage 5: Randomness · Levels 41–50
 
-Here the learner becomes the carnival machine designer.
+The learner investigates:
 
-They can switch the tokens between Sun and Moon and change the machine's balance.
+- surprising short runs
+- longer runs
+- theoretical probability
+- experimental probability
+- sample size
 
-Then they make a prediction and test their creation.
+The important idea is that randomness can produce variation. A random run does not have to reproduce the theoretical ratio exactly.
 
-### The idea
+### Stage 6: Probability Detective · Levels 51–60
 
-Changing the mixture changes the chances.
+The machine is hidden. The learner collects clues, examines the evidence and identifies the hidden configuration.
 
-If one outcome occupies more of the machine, it has a greater chance of appearing.
+The final challenge becomes:
 
-### What the learner practises
+> **What can the evidence tell me about what is hidden?**
 
-- fractions through concrete objects,
-- comparison,
-- prediction,
-- cause and effect,
-- experimentation.
-
----
-
-## 🔎 The Detective Tent: The Mystery Tent
-
-Something is hidden backstage.
-
-The learner cannot see the machine's contents.
-
-Instead, they collect clues from its results.
-
-After gathering enough clues, they make their best inference and open the mystery.
-
-### The idea
-
-Evidence can make one explanation more convincing than another.
-
-Evidence from a small sample is useful, but it does not make uncertainty disappear.
+The learner also encounters fair and unfair machine designs and practises changing their conclusion when the evidence gives them a reason to do so.
 
 ### What the learner practises
 
-- inference,
-- evidence,
-- comparison,
-- uncertainty,
-- reasoning.
+Across the six stages, Probability Carnival develops:
 
----
+- prediction
+- comparison
+- counting
+- proportional thinking
+- construction
+- experimentation
+- observation
+- sample-size reasoning
+- uncertainty
+- evidence
+- inference
+- mathematical communication
 
-## ⚖️ The Repair Tent: The Fairness Workshop
-
-Two carnival machines need checking.
-
-The learner predicts which machine gives equal chances, tests them, and then chooses the fair design.
-
-### The idea
-
-A fair chance experiment has equal chances for the possible outcomes being compared.
-
-A few results can still look uneven.
-
-### What the learner practises
-
-- fairness,
-- equal probability,
-- repeated observation,
-- comparison,
-- careful judgement.
+The player's action changes as the mathematical idea becomes more sophisticated.
 
 ---
 
@@ -601,7 +577,7 @@ It is finished when the experience works.
 The current creative sequence is:
 
 1. **Shape Architect** ✓
-2. **Probability Carnival** ✓
+2. **Probability Carnival** · in physical review
 3. **Fraction Bakery** next
 4. **Little Shop**
 5. **Number Maze**

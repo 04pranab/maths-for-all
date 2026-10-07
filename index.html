@@ -42,344 +42,71 @@
     <div class="pc-shell">
       <button class="pc-back" type="button" onclick="ProbabilityCarnival.close()">← Back to games</button>
 
-      <div id="probability-carnival-world">
-        <div class="pc-hero">
-          <div class="pc-kicker">Probability Carnival · Explore</div>
-          <h1>A carnival of what might happen.</h1>
-          <p>
-            Four tents. No levels to grind through. Choose a question, make a prediction,
-            run an experiment, notice the evidence, and carry the idea with you.
-          </p>
-          <div class="pc-passport" aria-label="Carnival passport">
-            <span class="pc-passport-label">🎟️ Carnival passport</span>
-            <span class="pc-stamp" data-passport="curious-machine" aria-label="Curious Machine stamp">🔭</span>
-            <span class="pc-stamp" data-passport="machine-builder" aria-label="Machine Builder stamp">🧩</span>
-            <span class="pc-stamp" data-passport="mystery-tent" aria-label="Mystery Tent stamp">🔎</span>
-            <span class="pc-stamp" data-passport="fairness-workshop" aria-label="Fairness Workshop stamp">⚖️</span>
-            <span class="pc-completion"><strong id="pc-completed-count">0</strong>/4 tents explored</span>
-          </div>
+      <section class="pc-hero">
+        <div class="pc-kicker">Probability Carnival · 60-level adventure</div>
+        <h1>Can you figure out what chance is doing?</h1>
+        <p>Start with intuition, then compare, build, experiment, investigate, and become the probability detective.</p>
+        <div class="pc-progress-line">
+          <strong><span id="pc-current-level">1</span>/60</strong>
+          <span id="pc-stage-name">Probability intuition</span>
+          <span><span id="pc-completed-count">0</span>/60 complete</span>
         </div>
+      </section>
 
-        <div class="pc-world">
-          <aside class="pc-map">
-            <h2>The Carnival</h2>
-            <p class="pc-muted">
-              Visit the tents in any order. Each one is a small mathematical story.
-            </p>
-            <div id="probability-carnival-story-grid" class="pc-story-grid"></div>
-          </aside>
+      <section class="pc-stage-strip" aria-label="Probability Carnival stages">
+        <button type="button" data-stage="1" onclick="ProbabilityCarnival.selectStage(1)">1 · Intuition</button>
+        <button type="button" data-stage="2" onclick="ProbabilityCarnival.selectStage(2)">2 · Compare</button>
+        <button type="button" data-stage="3" onclick="ProbabilityCarnival.selectStage(3)">3 · Build</button>
+        <button type="button" data-stage="4" onclick="ProbabilityCarnival.selectStage(4)">4 · Experiment</button>
+        <button type="button" data-stage="5" onclick="ProbabilityCarnival.selectStage(5)">5 · Randomness</button>
+        <button type="button" data-stage="6" onclick="ProbabilityCarnival.selectStage(6)">6 · Detective</button>
+      </section>
 
-          <section class="pc-story-panel">
-            <div class="pc-world-note">
-              <span class="pc-kicker">How the carnival works</span>
-              <h2>Pick a tent. Take the challenge.</h2>
-              <p>
-                Every tent gives you something to do, not a worksheet to read. Make a
-                prediction, press the big action buttons, watch the carnival machine move,
-                and collect your passport stamp.
-              </p>
-              <p>
-                Surprises are clues. There is nothing to lose when your prediction is wrong.
-              </p>
-              <div class="pc-story-meta">
-                <span class="pc-chip">Predict</span>
-                <span class="pc-chip">Experiment</span>
-                <span class="pc-chip">Observe</span>
-                <span class="pc-chip">Reason</span>
-                <span class="pc-chip">Try again</span>
-              </div>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <div id="probability-carnival-story" hidden>
-        <div class="pc-hero">
-          <div class="pc-kicker" id="pc-story-kicker">The observation tent</div>
-          <h1 id="pc-story-title">The Curious Machine</h1>
-          <p id="pc-story-intro"></p>
-          <div class="pc-story-meta">
-            <span class="pc-chip">🎯 Make a call</span>
-            <span class="pc-chip">🎡 Play the machine</span>
-            <span class="pc-chip">🏅 Earn a stamp</span>
-          </div>
-        </div>
-
-        <section class="pc-story-panel">
-          <h2>Your carnival challenge</h2>
-          <p id="pc-story-objective" class="pc-muted"></p>
-        </section>
-
-        <section data-story-panel="curious-machine" class="pc-story-panel" hidden>
-          <div class="pc-machine-layout">
-            <section class="pc-machine">
-              <canvas id="pc-machine-canvas" aria-label="Probability machine"></canvas>
-              <p id="pc-canvas-description" class="pc-canvas-description">
-                A visible machine contains three Sun tokens and one Moon token.
-              </p>
-            </section>
-
-            <aside class="pc-control">
-              <h2>Make your prediction</h2>
-              <div class="pc-predictions">
-                <button type="button" class="pc-prediction" data-prediction="sun" onclick="ProbabilityCarnival.setPrediction('sun')">
-                  ☀️ Sun will appear more
-                </button>
-                <button type="button" class="pc-prediction" data-prediction="moon" onclick="ProbabilityCarnival.setPrediction('moon')">
-                  🌙 Moon will appear more
-                </button>
-                <button type="button" class="pc-prediction" data-prediction="equal" onclick="ProbabilityCarnival.setPrediction('equal')">
-                  ⚖️ About equally
-                </button>
-              </div>
-
-              <div id="pc-feedback" class="pc-feedback pc-feedback-neutral" aria-live="polite">
-                What do you think will happen more often?
-              </div>
-
-              <div class="pc-actions">
-                <button type="button" onclick="ProbabilityCarnival.runMachine(1)">🎯 One spin</button>
-                <button type="button" onclick="ProbabilityCarnival.runMachine(10)">🎡 Ten spins</button>
-              </div>
-
-              <div class="pc-evidence">
-                <strong>Evidence</strong>
-                <div class="pc-bar">
-                  <span>Sun</span>
-                  <div class="pc-bar-track"><div id="pc-sun-bar" class="pc-bar-fill"></div></div>
-                  <b id="pc-sun-count">0</b>
-                </div>
-                <div class="pc-bar">
-                  <span>Moon</span>
-                  <div class="pc-bar-track"><div id="pc-moon-bar" class="pc-bar-fill moon"></div></div>
-                  <b id="pc-moon-count">0</b>
-                </div>
-                <p id="pc-evidence" class="pc-muted">No evidence yet.</p>
-                <p class="pc-muted">Trials: <span id="pc-total-count">0</span></p>
-              </div>
-
-              <button type="button" onclick="ProbabilityCarnival.openLearning()">🏅 Claim my discovery</button>
-            </aside>
-          </div>
-        </section>
-
-        <section data-story-panel="machine-builder" class="pc-story-panel" hidden>
-          <div class="pc-builder">
+      <main class="pc-game">
+        <aside class="pc-level-panel">
+          <div class="pc-panel-heading">
             <div>
-              <h2>🧩 Build your machine</h2>
-              <p class="pc-muted">
-                Tap a token to switch it between Sun and Moon. Then predict which outcome
-                will appear more often.
-              </p>
-              <div id="pc-builder-slots" class="pc-builder-slots" aria-label="Eight probability machine tokens"></div>
+              <span class="pc-kicker">Choose a level</span>
+              <h2 id="pc-level-range">Levels 1–10</h2>
             </div>
+            <span class="pc-stage-badge" id="pc-stage-badge">1</span>
+          </div>
+          <div id="pc-level-grid" class="pc-level-grid" aria-label="Probability Carnival levels"></div>
+          <p class="pc-muted pc-stage-note" id="pc-stage-note"></p>
+        </aside>
 
-            <div class="pc-builder-summary">
-              <div class="pc-stat-card">
-                <span>Sun tokens</span>
-                <strong id="pc-builder-sun-tokens">8</strong>
-                <span>Chance: <b id="pc-builder-sun-chance">100%</b></span>
-              </div>
-              <div class="pc-stat-card">
-                <span>Moon tokens</span>
-                <strong id="pc-builder-moon-tokens">0</strong>
-                <span>Chance: <b id="pc-builder-moon-chance">0%</b></span>
-              </div>
+        <section class="pc-play-panel" aria-live="polite">
+          <div class="pc-play-heading">
+            <div>
+              <span class="pc-kicker" id="pc-level-kicker">Stage 1</span>
+              <h2 id="pc-level-title">Probability intuition</h2>
+              <p id="pc-level-prompt" class="pc-prompt"></p>
             </div>
+            <div class="pc-level-number" id="pc-level-number">1</div>
+          </div>
 
-            <div class="pc-machine-layout">
-              <section class="pc-machine">
-                <canvas id="pc-builder-canvas" aria-label="Your probability machine"></canvas>
-                <p id="pc-builder-canvas-description" class="pc-canvas-description"></p>
-              </section>
+          <div id="pc-scene" class="pc-scene"></div>
 
-              <aside class="pc-control">
-                <h2>Predict, then test</h2>
-                <div class="pc-predictions">
-                  <button type="button" class="pc-prediction" data-prediction="sun" onclick="ProbabilityCarnival.setPrediction('sun')">
-                    ☀️ Sun will appear more
-                  </button>
-                  <button type="button" class="pc-prediction" data-prediction="moon" onclick="ProbabilityCarnival.setPrediction('moon')">
-                    🌙 Moon will appear more
-                  </button>
-                  <button type="button" class="pc-prediction" data-prediction="equal" onclick="ProbabilityCarnival.setPrediction('equal')">
-                    ⚖️ About equally
-                  </button>
-                </div>
+          <div id="pc-choice-area" class="pc-choice-area"></div>
 
-                <div class="pc-actions">
-                  <button type="button" onclick="ProbabilityCarnival.runBuilder()">🎡 Send 20 tokens through</button>
-                  <button type="button" onclick="ProbabilityCarnival.resetCurrentStory()">↻ Rebuild</button>
-                </div>
+          <div id="pc-feedback" class="pc-feedback" aria-live="polite">
+            Make your move.
+          </div>
 
-                <div class="pc-evidence">
-                  <strong>Evidence from your machine</strong>
-                  <div class="pc-bar">
-                    <span>Sun</span>
-                    <div class="pc-bar-track"><div id="pc-builder-sun-bar" class="pc-bar-fill"></div></div>
-                    <b id="pc-builder-sun-count">0</b>
-                  </div>
-                  <div class="pc-bar">
-                    <span>Moon</span>
-                    <div class="pc-bar-track"><div id="pc-builder-moon-bar" class="pc-bar-fill moon"></div></div>
-                    <b id="pc-builder-moon-count">0</b>
-                  </div>
-                  <p class="pc-muted">Trials: <span id="pc-builder-total-count">0</span></p>
-                </div>
-
-                <button type="button" onclick="ProbabilityCarnival.openLearning()">What did I discover?</button>
-              </aside>
-            </div>
+          <div class="pc-play-actions">
+            <button type="button" id="pc-check" onclick="ProbabilityCarnival.check()">✓ Check</button>
+            <button type="button" id="pc-next" onclick="ProbabilityCarnival.next()" disabled>Next level →</button>
+            <button type="button" onclick="ProbabilityCarnival.resetLevel()">↻ Reset</button>
           </div>
         </section>
+      </main>
 
-        <section data-story-panel="mystery-tent" class="pc-story-panel" hidden>
-          <div class="pc-machine-layout">
-            <section class="pc-machine">
-              <canvas id="pc-mystery-canvas" aria-label="Hidden probability machine"></canvas>
-              <p id="pc-mystery-canvas-description" class="pc-canvas-description">
-                The machine is hidden. Its results will be your clues.
-              </p>
-            </section>
-
-            <aside class="pc-control">
-              <h2>What might be inside?</h2>
-              <div class="pc-predictions">
-                <button type="button" class="pc-mystery-prediction" data-mystery-prediction="sun" onclick="ProbabilityCarnival.setMysteryPrediction('sun')">
-                  ☀️ Mostly Sun
-                </button>
-                <button type="button" class="pc-mystery-prediction" data-mystery-prediction="balanced" onclick="ProbabilityCarnival.setMysteryPrediction('balanced')">
-                  ⚖️ Balanced
-                </button>
-                <button type="button" class="pc-mystery-prediction" data-mystery-prediction="moon" onclick="ProbabilityCarnival.setMysteryPrediction('moon')">
-                  🌙 Mostly Moon
-                </button>
-              </div>
-
-              <div class="pc-actions">
-                <button type="button" onclick="ProbabilityCarnival.runMystery()">🔎 Collect 12 clues</button>
-                <button type="button" id="pc-mystery-reveal" onclick="ProbabilityCarnival.revealMystery()" disabled>
-                  🎁 Open the mystery box
-                </button>
-              </div>
-
-              <div class="pc-evidence">
-                <strong>Clues</strong>
-                <div class="pc-bar">
-                  <span>Sun</span>
-                  <div class="pc-bar-track"><div id="pc-mystery-sun-bar" class="pc-bar-fill"></div></div>
-                  <b id="pc-mystery-sun-count">0</b>
-                </div>
-                <div class="pc-bar">
-                  <span>Moon</span>
-                  <div class="pc-bar-track"><div id="pc-mystery-moon-bar" class="pc-bar-fill moon"></div></div>
-                  <b id="pc-mystery-moon-count">0</b>
-                </div>
-                <p class="pc-muted">Clues collected: <span id="pc-mystery-total-count">0</span></p>
-              </div>
-
-              <div id="pc-mystery-reveal-text" class="pc-reveal" aria-live="polite">
-                The machine is still hidden.
-              </div>
-
-              <button type="button" onclick="ProbabilityCarnival.openLearning()">What did I discover?</button>
-            </aside>
-          </div>
-        </section>
-
-        <section data-story-panel="fairness-workshop" class="pc-story-panel" hidden>
-          <div class="pc-machine-layout">
-            <section class="pc-machine">
-              <canvas id="pc-fairness-canvas" aria-label="Comparison of two probability machines"></canvas>
-              <p id="pc-fairness-canvas-description" class="pc-canvas-description">
-                Two machines are waiting to be compared.
-              </p>
-            </section>
-
-            <aside class="pc-control">
-              <h2>Which machine is fair?</h2>
-              <div class="pc-predictions">
-                <button type="button" class="pc-fairness-prediction" data-fairness-prediction="a" onclick="ProbabilityCarnival.setFairnessPrediction('a')">
-                  A · equal chances
-                </button>
-                <button type="button" class="pc-fairness-prediction" data-fairness-prediction="b" onclick="ProbabilityCarnival.setFairnessPrediction('b')">
-                  B · equal chances
-                </button>
-                <button type="button" class="pc-fairness-prediction" data-fairness-prediction="neither" onclick="ProbabilityCarnival.setFairnessPrediction('neither')">
-                  Neither
-                </button>
-              </div>
-
-              <div class="pc-actions">
-                <button type="button" onclick="ProbabilityCarnival.runFairness()">🎡 Test both machines</button>
-                <button type="button" id="pc-fairness-judge" onclick="ProbabilityCarnival.judgeFairness()" disabled>
-                  ⚖️ Choose the fair one
-                </button>
-              </div>
-
-              <div class="pc-fairness-grid">
-                <div class="pc-machine-card">
-                  <h3>Machine A</h3>
-                  <div class="pc-bar">
-                    <span>Sun</span>
-                    <div class="pc-bar-track"><div id="pc-fair-a-sun-bar" class="pc-bar-fill"></div></div>
-                    <b id="pc-fair-a-sun">0</b>
-                  </div>
-                  <div class="pc-bar">
-                    <span>Moon</span>
-                    <div class="pc-bar-track"><div id="pc-fair-a-moon-bar" class="pc-bar-fill moon"></div></div>
-                    <b id="pc-fair-a-moon">0</b>
-                  </div>
-                  <p class="pc-muted">Trials: <span id="pc-fair-a-total">0</span></p>
-                </div>
-
-                <div class="pc-machine-card">
-                  <h3>Machine B</h3>
-                  <div class="pc-bar">
-                    <span>Sun</span>
-                    <div class="pc-bar-track"><div id="pc-fair-b-sun-bar" class="pc-bar-fill"></div></div>
-                    <b id="pc-fair-b-sun">0</b>
-                  </div>
-                  <div class="pc-bar">
-                    <span>Moon</span>
-                    <div class="pc-bar-track"><div id="pc-fair-b-moon-bar" class="pc-bar-fill moon"></div></div>
-                    <b id="pc-fair-b-moon">0</b>
-                  </div>
-                  <p class="pc-muted">Trials: <span id="pc-fair-b-total">0</span></p>
-                </div>
-              </div>
-
-              <div id="pc-fairness-judge-text" class="pc-reveal" aria-live="polite">
-                The machine designs stay hidden until you make your call.
-              </div>
-
-              <button type="button" onclick="ProbabilityCarnival.openLearning()">What did I discover?</button>
-            </aside>
-          </div>
-        </section>
-
-        <section id="pc-learning" class="pc-learning" hidden>
-          <h2 id="pc-learning-title">What did the experiment show?</h2>
-          <p id="pc-learning-text"></p>
-        </section>
-
-        <section id="pc-reflection" class="pc-reflection">
-          <h2>🎟️ Keep your carnival memory</h2>
-          <p class="pc-muted">Choose what you noticed. Every answer is welcome.</p>
-          <div class="pc-reflection-options">
-            <button type="button" onclick="ProbabilityCarnival.reflect('surprised')">😮 Something surprised me</button>
-            <button type="button" onclick="ProbabilityCarnival.reflect('pattern')">🔎 I noticed a pattern</button>
-            <button type="button" onclick="ProbabilityCarnival.reflect('question')">💭 I have another question</button>
-          </div>
-          <div id="pc-reflection-response" class="pc-reflection-response" aria-live="polite">
-            Your reflection will appear here.
-          </div>
-        </section>
-
-        <button type="button" class="pc-back-to-tents" onclick="ProbabilityCarnival.showWorld()">🎪 Return to the carnival</button>
-      </div>
+      <section class="pc-footer-note">
+        <strong>Predict → Compare → Build → Experiment → Investigate → Deduce</strong>
+        <span>Wrong answers are clues. Try again.</span>
+      </section>
     </div>
-  </section>
+  </section>>
 
 <!-- ===================================================
        SCREEN 1: MAIN MENU
@@ -978,9 +705,9 @@
   <!-- Scripts — order matters: shared helpers first -->
   <script src="js/research-gateway.js?v=20260926-1"></script>
   <script src="js/probability-carnival-library.js?v=20261007-2"></script>
-  <script src="js/probability-carnival-stories.js?v=20261007-3"></script>
-  <script src="js/probability-carnival-canvas.js?v=20261007-3"></script>
-  <script src="js/probability-carnival.js?v=20261007-3"></script>
+  <script src="js/probability-carnival-stories.js?v=20261007-4"></script>
+  <script src="js/probability-carnival-canvas.js?v=20261007-4"></script>
+  <script src="js/probability-carnival.js?v=20261007-4"></script>
   <script src="js/script.js?v=20261006-4"></script>
   <script src="js/questions.js?v=20260924-2"></script>
   <script src="js/sudoku.js?v=20260924-2"></script>

@@ -3,7 +3,7 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Probability Carnival complete; next work begins with Fraction Bakery  
+**Current focus:** Probability Carnival six-stage rebuild; physical review pending  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 7 October 2026
@@ -127,14 +127,22 @@ The agreed implementation order remains fixed:
 
 `2048` is intentionally deferred until these five are designed, implemented, tested, animated/fine-tuned, and physically reviewed.
 
-Probability Carnival is now implemented as a complete four-tent playable world:
+Probability Carnival is being rebuilt as a 60-level probability game with six stages:
 
-- The Curious Machine
-- The Machine Builder
-- The Mystery Tent
-- The Fairness Workshop
+1. Probability intuition · Levels 1–10
+2. Compare · Levels 11–20
+3. Build · Levels 21–30
+4. Experiment · Levels 31–40
+5. Randomness · Levels 41–50
+6. Probability Detective · Levels 51–60
 
-It uses the agreed activity loop of prediction, experiment, observation, reasoning and retry. The game has no betting or gambling mechanics. Browser stress coverage exercises all four tents, and the repository-owned wiki documents the accepted learning and technical design.
+The player progression is **Predict → Compare → Build → Experiment → Investigate → Deduce**. The interaction changes across stages so the game is not a sequence of explanatory click-through screens.
+
+The desktop layout is intentionally compact to reduce unnecessary scrolling. Content is not force-fitted; when a screen genuinely needs more vertical room, normal page scrolling remains available. Mobile uses natural vertical flow and avoids horizontal overflow.
+
+The game has no betting or gambling mechanics. Local progress remains available, and the existing authentication prototype remains disabled.
+
+This game is not considered finished until it passes automated checks and is physically played and accepted.
 
 Each game is handled independently. A game is not advanced to the next one until the current game is satisfactory.
 
@@ -173,4 +181,4 @@ Planned research-enabled milestone after authentication.
 
 The v2.0.4 release is frozen at the current acceptance boundary.
 
-The next product step is **Fraction Bakery** design and implementation. Probability Carnival is now the accepted completed game in the current sequence.
+The next product step remains **Probability Carnival physical review**. **Fraction Bakery** begins only after Probability Carnival is accepted.
