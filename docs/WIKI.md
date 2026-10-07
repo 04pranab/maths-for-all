@@ -257,9 +257,7 @@ Probability Carnival is a 60-level probability adventure.
 
 It is designed around a changing game loop rather than a collection of probability demonstrations. The learner gradually moves from intuition to comparison, construction, experimentation, randomness and evidence-based inference.
 
-There is no betting, gambling, money, or reward for taking risks.
-
-The excitement comes from finding out what happens.
+There is no betting, gambling, money, or reward for taking risks. The excitement comes from finding out what happens.
 
 The carnival's progression is:
 
@@ -269,72 +267,56 @@ The carnival's progression is:
 
 The learner meets ordinary probability language first:
 
-- impossible,
-- certain,
-- likely,
-- unlikely,
-- equally likely.
+- impossible
+- certain
+- likely
+- unlikely
+- equally likely
 
 The learner makes a prediction before seeing the outcome.
 
 ### Stage 2: Compare · Levels 11–20
 
-The learner puts two chances side by side and decides:
-
-- which outcome is more likely,
-- which outcome is less likely,
-- or whether the chances are equal.
-
-The goal is to notice the relationship between the possible outcomes rather than simply memorising a rule.
+The learner puts two chances side by side and decides which outcome is more likely, which is less likely, or whether the chances are equal.
 
 ### Stage 3: Build · Levels 21–30
 
-The learner becomes the machine builder.
+The learner becomes the machine builder and physically changes Sun and Moon tokens to construct simple probability ratios:
 
-They physically change the Sun and Moon tokens to construct simple probability ratios:
-
-- 1:1,
-- 2:1,
-- 3:1,
-- 1:3.
-
-The machine's chance changes because its composition changes.
+- 1:1
+- 2:1
+- 3:1
+- 1:3
 
 ### Stage 4: Experiment · Levels 31–40
 
 The learner runs experiments of different sizes:
 
-- 5 trials,
-- 10 trials,
-- 20 trials.
+- 5 trials
+- 10 trials
+- 20 trials
 
-The results are visible and can be compared.
-
-The learner begins to see the difference between what we expect and what one actual experiment produces.
+The results are visible and can be compared. The learner begins to see the difference between expectation and one actual experiment.
 
 ### Stage 5: Randomness · Levels 41–50
 
 The learner investigates:
 
-- surprising short runs,
-- longer runs,
-- theoretical probability,
-- experimental probability,
-- sample size.
+- surprising short runs
+- longer runs
+- theoretical probability
+- experimental probability
+- sample size
 
 The important idea is that randomness can produce variation. A random run does not have to reproduce the theoretical ratio exactly.
 
 ### Stage 6: Probability Detective · Levels 51–60
 
-The machine is hidden.
+The machine is hidden. The learner collects clues, examines the evidence and identifies the hidden configuration.
 
-The learner collects clues, examines the evidence and identifies the hidden configuration.
+The final challenge becomes:
 
-The final challenge is not simply “What happened?”
-
-It becomes:
-
-> **“What can the evidence tell me about what is hidden?”**
+> **What can the evidence tell me about what is hidden?**
 
 The learner also encounters fair and unfair machine designs and practises changing their conclusion when the evidence gives them a reason to do so.
 
@@ -342,21 +324,20 @@ The learner also encounters fair and unfair machine designs and practises changi
 
 Across the six stages, Probability Carnival develops:
 
-- prediction,
-- comparison,
-- counting,
-- proportional thinking,
-- construction,
-- experimentation,
-- observation,
-- sample-size reasoning,
-- uncertainty,
-- evidence,
-- inference,
-- and mathematical communication.
+- prediction
+- comparison
+- counting
+- proportional thinking
+- construction
+- experimentation
+- observation
+- sample-size reasoning
+- uncertainty
+- evidence
+- inference
+- mathematical communication
 
-The game is intentionally designed so that the player's action changes as the mathematical idea becomes more sophisticated.
-
+The player's action changes as the mathematical idea becomes more sophisticated.
 
 ---
 
