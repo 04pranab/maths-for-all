@@ -268,10 +268,10 @@ async function main() {
     document.querySelector("#pc-choice-area .pc-choice[data-value='A']").click();
     ProbabilityCarnival.check();
     assert(document.getElementById("pc-completed-count").textContent === "2", "Stage 2 representative level did not complete.");
-    ProbabilityCarnival.selectLevel(21);
+    ProbabilityCarnival.selectLevel(22);
     const targetTokens = [...document.querySelectorAll(".pc-build-token")];
     assert(targetTokens.length === 12, "Build levels must expose twelve editable token slots.");
-    targetTokens.slice(3).forEach(button => button.click());
+    targetTokens.slice(6, 9).forEach(button => button.click());
     ProbabilityCarnival.check();
     assert(document.getElementById("pc-completed-count").textContent === "3", "Stage 3 representative level did not complete.");
     ProbabilityCarnival.selectLevel(31);
