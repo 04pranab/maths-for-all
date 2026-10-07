@@ -211,10 +211,10 @@ window.ProbabilityCarnival = (() => {
       return;
     }
     state.experimentResults = library.drawMany(level.bag, level.trials);
-    renderLevel();
-    feedback("Experiment complete. You saw " + state.experimentResults.filter(x => x === "sun").length + " Sun and " + state.experimentResults.filter(x => x === "moon").length + " Moon results.", "success");
     state.checked = true;
     markComplete(level.id);
+    renderLevel();
+    feedback("Experiment complete. You saw " + state.experimentResults.filter(x => x === "sun").length + " Sun and " + state.experimentResults.filter(x => x === "moon").length + " Moon results.", "success");
   }
 
   function renderRandomness(level, scene, choices) {
