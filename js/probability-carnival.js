@@ -117,7 +117,12 @@ window.ProbabilityCarnival = (() => {
     const choices = $("pc-choice-area");
     scene.innerHTML = "";
     choices.innerHTML = "";
+    scene.className = "pc-scene pc-scene-" + level.type + " pc-scene-variant-" + (((level.id - 1) % 6) + 1);
     $("pc-next").disabled = !state.completed.has(level.id) || level.id === 60;
+    const machinePanel = document.createElement("div");
+    machinePanel.className = "pc-machine-panel";
+    machinePanel.innerHTML = '<div class="pc-machine-lights"><i class="pc-machine-light"></i><i class="pc-machine-light"></i><i class="pc-machine-light"></i></div><div class="pc-machine-label">PROBABILITY ENGINE · UNIT ' + String(level.id).padStart(2, "0") + '</div><span class="pc-machine-stage">READY</span>';
+    scene.appendChild(machinePanel);
     $("pc-feedback").textContent = state.completed.has(level.id) ? "⭐ Discovery collected. Replay it or move to the next level." : "Your move.";
     if (level.type === "intuition") renderIntuition(level, scene, choices);
     if (level.type === "compare") renderCompare(level, scene, choices);
@@ -165,11 +170,11 @@ window.ProbabilityCarnival = (() => {
     const wheel = document.createElement("div");
     wheel.className = "pc-arcade-intuition";
     wheel.innerHTML =
-      '<div class="pc-wheel-wrap"><div class="pc-pointer"></div><div class="pc-wheel" style="--sun:' + counts.sun + ';--moon:' + counts.moon + '"><span>☀</span><span>☾</span></div><div class="pc-wheel-label">CHANCE WHEEL</div></div>' +
-      '<div class="pc-arcade-copy"><strong>' + level.scenario + '</strong><span>' + level.outcome + '</span><small>Pick your prediction, then pull the carnival lever.</small></div>';
+      '<div class="pc-wheel-wrap"><div class="pc-pointer"></div><div class="pc-wheel" style="--sun:' + counts.sun + ';--moon:' + counts.moon + '"><span>☀</span><span>☾</span></div><div class="pc-wheel-label">PROBABILITY DIAL</div></div>' +
+      '<div class="pc-arcade-copy"><strong>' + level.scenario + '</strong><span>' + level.outcome + '</span><small>Make your prediction, then activate the machine.</small></div>';
     scene.appendChild(wheel);
     level.choices.forEach(choice => addChoice(choices, choice, choice));
-    actionButton(choices, "🎡 Pull the lever", () => spinIntuition(level), "pc-main-action");
+    actionButton(choices, "⚙ Activate machine", () => spinIntuition(level), "pc-main-action");
   }
 
   function spinIntuition(level) {
@@ -183,8 +188,8 @@ window.ProbabilityCarnival = (() => {
     wheel?.classList.add("pc-spin");
     window.setTimeout(() => {
       state.revealed = true;
-      if (state.selected === level.answer) complete(level.id, "🎟️ Great call! The wheel agrees with your prediction.");
-      else feedback("The wheel surprised you. That is useful evidence. Try the prediction again.", "notice");
+      if (state.selected === level.answer) complete(level.id, "⚡ Good prediction. The machine produced evidence that fits your idea.");
+      else feedback("The machine surprised you. That is useful evidence. Reconsider the chance and try again.", "notice");
     }, 480);
   }
 
@@ -216,7 +221,7 @@ window.ProbabilityCarnival = (() => {
     addChoice(choices, "A", "A has the greater chance");
     addChoice(choices, "equal", "They have equal chances");
     addChoice(choices, "B", "B has the greater chance");
-    actionButton(choices, "🚀 Launch a token", () => check(level), "pc-main-action");
+    actionButton(choices, "⚙ Run machine", () => check(level), "pc-main-action");
   }
 
   function renderBuild(level, scene, choices) {
@@ -275,7 +280,7 @@ window.ProbabilityCarnival = (() => {
     scene.appendChild(stat);
     addChoice(choices, "sun", "☀ Predict Sun will lead");
     addChoice(choices, "moon", "☾ Predict Moon will lead");
-    actionButton(choices, "🎠 Pull " + total + " times", () => runExperiment(level), "pc-main-action");
+    actionButton(choices, "⚙ Run " + total + " times", () => runExperiment(level), "pc-main-action");
   }
 
   function runExperiment(level) {
@@ -285,7 +290,7 @@ window.ProbabilityCarnival = (() => {
     }
     state.experimentResults = library.drawMany(level.bag, level.trials);
     renderLevel();
-    window.setTimeout(() => complete(level.id, "🎠 Experiment complete. Your prediction met real random results."), 80);
+    window.setTimeout(() => complete(level.id, "⚙ Machine cycle complete. Compare the prediction with the evidence."), 80);
   }
 
   function renderRandomness(level, scene, choices) {
@@ -402,7 +407,7 @@ window.ProbabilityCarnival = (() => {
         feedback("Choose a machine or answer below before launching.", "notice");
         return;
       }
-      if (state.selected === level.answer) complete(level.id, "🚀 Launch successful. You chose using the machine design.");
+      if (state.selected === level.answer) complete(level.id, "⚙ Machine run complete. You chose from the machine's design.");
       else {
         state.streak = 0;
         saveProgress();
