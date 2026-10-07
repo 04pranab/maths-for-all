@@ -44,6 +44,14 @@
 
 
 
+      <section class="pc-machine-status" aria-label="Probability Machine status">
+        <div><span>UNIT</span><strong id="pc-current-level">01</strong></div>
+        <div><span>STAGE</span><strong id="pc-stage-name">Probability intuition</strong></div>
+        <div><span>DISCOVERIES</span><strong id="pc-completed-count">0</strong></div>
+        <div><span>SCORE</span><strong id="pc-score">0</strong></div>
+        <div><span>STREAK</span><strong id="pc-streak">0</strong></div>
+      </section>
+
       <section class="pc-stage-strip" aria-label="Probability Machine stages">
         <button type="button" data-stage="1" onclick="ProbabilityCarnival.selectStage(1)">1 · Intuition</button>
         <button type="button" data-stage="2" onclick="ProbabilityCarnival.selectStage(2)">2 · Compare</button>
@@ -62,7 +70,7 @@
             </div>
             <span class="pc-stage-badge" id="pc-stage-badge">1</span>
           </div>
-          <div id="pc-level-grid" class="pc-level-grid" aria-label="Probability Carnival levels"></div>
+          <div id="pc-level-grid" class="pc-level-grid" aria-label="Probability Machine levels"></div>
           <p class="pc-muted pc-stage-note" id="pc-stage-note"></p>
         </aside>
 
@@ -85,7 +93,6 @@
           </div>
 
           <div class="pc-play-actions">
-            <button type="button" id="pc-check" onclick="ProbabilityCarnival.check()">✓ Check</button>
             <button type="button" id="pc-next" onclick="ProbabilityCarnival.next()" disabled>Next level →</button>
             <button type="button" onclick="ProbabilityCarnival.resetLevel()">↻ Reset</button>
           </div>
@@ -97,7 +104,7 @@
         <span>Wrong answers are clues. Try again.</span>
       </section>
     </div>
-  </section>>
+  </section>
 
 <!-- ===================================================
        SCREEN 1: MAIN MENU
@@ -165,7 +172,7 @@
         <div class="card-tag">Solo · 100 levels · Timed</div>
       </button>
       <button class="menu-card card-probability" onclick="ProbabilityCarnival.open()">
-        <div class="card-badge-icon">🎪</div>
+        <div class="card-badge-icon">⚙️</div>
         <div class="card-title">Probability Machine</div>
         <div class="card-desc">Operate a six-stage probability machine: predict, compare, build, experiment, test randomness and solve mysteries.</div>
         <div class="card-tag">Solo · 60 levels</div>
