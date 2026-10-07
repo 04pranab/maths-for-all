@@ -246,6 +246,45 @@ async function main() {
     'return { ok: true };' +
   '})()');
 
+
+  const probabilityResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'Game.goHome();' +
+    'ProbabilityCarnival.open();' +
+    'await new Promise(r => setTimeout(r, 20));' +
+    'assert(document.getElementById("screen-probability-carnival") && !document.getElementById("screen-probability-carnival").hidden, "Probability Carnival screen did not open.");' +
+    'assert(document.querySelectorAll("#probability-carnival-story-grid .pc-story-card").length === 4, "Probability Carnival must expose four playable tents.");' +
+    'assert(document.querySelectorAll("#probability-carnival-story-grid .pc-story-card:disabled").length === 0, "Probability Carnival must not lock tents behind levels.");' +
+    'ProbabilityCarnival.openStory("curious-machine");' +
+    'ProbabilityCarnival.setPrediction("sun");' +
+    'ProbabilityCarnival.runMachine(20);' +
+    'assert(document.getElementById("pc-total-count").textContent === "20", "Curious Machine did not record twenty trials.");' +
+    'assert(document.getElementById("pc-sun-count").textContent !== "0" || document.getElementById("pc-moon-count").textContent !== "0", "Curious Machine recorded no results.");' +
+    'ProbabilityCarnival.openStory("machine-builder");' +
+    'ProbabilityCarnival.setPrediction("sun");' +
+    'ProbabilityCarnival.toggleBuilderSlot(0);' +
+    'ProbabilityCarnival.runBuilder();' +
+    'assert(document.getElementById("pc-builder-total-count").textContent === "20", "Machine Builder did not record twenty trials.");' +
+    'ProbabilityCarnival.openStory("mystery-tent");' +
+    'ProbabilityCarnival.setMysteryPrediction("sun");' +
+    'ProbabilityCarnival.runMystery();' +
+    'assert(document.getElementById("pc-mystery-total-count").textContent === "12", "Mystery Tent did not collect twelve clues.");' +
+    'ProbabilityCarnival.revealMystery();' +
+    'assert(document.getElementById("pc-mystery-reveal-text").textContent.includes("Inside were"), "Mystery Tent did not reveal the machine.");' +
+    'ProbabilityCarnival.openStory("fairness-workshop");' +
+    'ProbabilityCarnival.setFairnessPrediction("a");' +
+    'ProbabilityCarnival.runFairness();' +
+    'assert(document.getElementById("pc-fair-a-total").textContent === "12", "Fairness Workshop first comparison did not record twelve A trials.");' +
+    'ProbabilityCarnival.runFairness();' +
+    'assert(document.getElementById("pc-fair-a-total").textContent === "24", "Fairness Workshop did not accumulate twenty-four A trials.");' +
+    'ProbabilityCarnival.judgeFairness();' +
+    'assert(document.getElementById("pc-fairness-judge-text").textContent.includes("Machine A is balanced"), "Fairness Workshop did not expose the learning result.");' +
+    'ProbabilityCarnival.showWorld();' +
+    'assert(document.getElementById("pc-completed-count").textContent === "4", "Completing all Probability Carnival tents did not update the discovery count.");' +
+    'Game.goHome();' +
+    'return { tents: 4, machineTrials: 20, builderTrials: 20, mysteryClues: 12, fairnessTrialsPerMachine: 24, discoveries: 4 };' +
+  '})()');
+
   if (!helpResult?.ok) throw new Error('Context-sensitive help and Escape overlay checks did not complete.');
 
   const malformedInputResult = await evaluate('(async () => {' +
