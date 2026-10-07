@@ -57,11 +57,14 @@ An open-ended number activity where number slabs are moved into a basket until t
 A freeform geometry activity where children build pictures from geometric pieces. The current design has 100 deterministic, independently selectable levels, a full-figure silhouette guide and visual completion matching.
 
 ### 🎪 Probability Carnival
-**Next game in development.**
+**Now in development.**
 
-It will not be a numbered staircase like Shape Architect. It is being designed as a small carnival world made of connected stories and experiments: prediction, observation, building, mystery and fairness.
+It is not a numbered staircase like Shape Architect. It is being built as a small carnival world made of connected stories and experiments.
 
-There is **no betting or gambling mechanic**. The excitement comes from discovering what happens.
+The first story is **The Curious Machine**:
+**predict → investigate → observe → collect evidence → try again**.
+
+Future tents are planned around building, mystery and fairness. There is **no betting or gambling mechanic**. The excitement comes from discovery, not risk.
 
 ## 4. The Probability Carnival rule
 
