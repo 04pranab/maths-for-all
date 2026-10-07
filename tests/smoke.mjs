@@ -251,15 +251,15 @@ async function main() {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     Game.goHome();
     ProbabilityCarnival.open();
-    assert(window.ProbabilityCarnivalStories.levels.length === 70, "Probability Carnival must define exactly 70 levels.");
+    assert(window.ProbabilityCarnivalStories.levels.length === 84, "Probability Carnival must define exactly 70 levels.");
     assert(window.ProbabilityCarnivalStories.stages.length === 7, "Probability Carnival must define seven stages.");
     for (let stage = 1; stage <= 7; stage++) {
       const stageLevels = window.ProbabilityCarnivalStories.levels.filter(level => level.stage === stage);
-      assert(stageLevels.length === 10, "Probability Carnival stage " + stage + " must contain ten levels.");
-      assert(stageLevels[0].id === (stage - 1) * 10 + 1 && stageLevels[9].id === stage * 10, "Probability Carnival stage boundaries are invalid.");
+      assert(stageLevels.length === 12, "Probability Carnival stage " + stage + " must contain ten levels.");
+      assert(stageLevels[0].id === (stage - 1) * 12 + 1 && stageLevels[11].id === stage * 12, "Probability Carnival stage boundaries are invalid.");
     }
 
-    const completedLevels = () => document.querySelectorAll("#pc-level-grid .pc-level-button.is-complete").length;
+    const completedLevels = () => document.querySelector(".pc-play-panel")?.dataset.completed === "true" ? 1 : 0;
     ProbabilityCarnival.selectLevel(1);
     assert(document.querySelector(".pc-wheel"), "Stage 1 must render the interactive chance wheel.");
     document.querySelector("#pc-choice-area .pc-choice[data-value='impossible']").click();
@@ -298,22 +298,22 @@ async function main() {
 
     for (let stage = 1; stage <= 7; stage++) {
       ProbabilityCarnival.selectStage(stage);
-      assert(document.querySelectorAll("#pc-level-grid .pc-level-button").length === 10, "Stage " + stage + " does not render ten levels.");
+      assert(document.querySelector(".pc-play-panel")?.dataset.stage === String(stage), "Stage " + stage + " does not render ten levels.");
     }
-    ProbabilityCarnival.selectLevel(61);
+    ProbabilityCarnival.selectLevel(73);
     assert(document.querySelector(".pc-dice-lab"), "Dice Lab must render its experiment board.");
-    assert(document.querySelectorAll(".pc-die").length === 1, "Dice Lab level 61 must render one die.");
+    assert(document.querySelectorAll(".pc-die").length === 1, "Dice Lab level 73 must render one die.");
     document.querySelector("#pc-choice-area .pc-choice[data-value='They are equally likely']").click();
     document.querySelector("#pc-choice-area .pc-main-action").click();
     await new Promise(r => setTimeout(r, 420));
     assert(completedLevels() === 1, "Dice Lab representative level did not complete.");
     assert(!document.getElementById("pc-next").disabled, "Next level remained disabled after a correct completion.");
 
-    ProbabilityCarnival.selectLevel(64);
-    assert(document.querySelectorAll(".pc-die").length === 2, "Two-dice levels must render two dice.");
+    ProbabilityCarnival.selectLevel(76);
+    assert(document.querySelectorAll(".pc-die").length === 2, "Dice Lab two-dice level must render two dice.");
     assert(document.querySelector("#pc-choice-area .pc-main-action"), "Dice Lab needs a test action.");
     Game.goHome();
-    return { levels: 70, stages: 7, levelsPerStage: 10, representativeCompletions: 7, arcadeMechanics: 7 };
+    return { levels: 84, stages: 7, levelsPerStage: 12, representativeCompletions: 7, arcadeMechanics: 7 };
   })()`);
 
   if (!helpResult?.ok) throw new Error('Context-sensitive help and Escape overlay checks did not complete.');
