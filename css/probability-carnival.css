@@ -16,3 +16,74 @@
 @media(max-width:900px){.pc-game{grid-template-columns:1fr}.pc-level-panel{order:2}.pc-level-grid{grid-template-columns:repeat(10,1fr)}}
 @media(max-width:620px){#screen-probability-carnival{padding:8px 7px 22px}.pc-hero{padding:14px}.pc-stage-strip{grid-template-columns:repeat(2,1fr)}.pc-level-grid{grid-template-columns:repeat(5,1fr)}.pc-choice-area,.pc-machine-pair,.pc-play-actions,.pc-sample-runs{grid-template-columns:1fr}.pc-build-slots{grid-template-columns:repeat(4,1fr)}.pc-footer-note{flex-direction:column}.pc-arcade-intuition{grid-template-columns:1fr;gap:8px}.pc-wheel-wrap{width:185px;height:185px}.pc-wheel{width:165px;height:165px}.pc-experiment-board{grid-template-columns:1fr}.pc-experiment-count{margin:auto}}
 @media(prefers-reduced-motion:reduce){.pc-stage-strip button,.pc-level-button,.pc-choice,.pc-build-token,.pc-machine-choice,.pc-sample-run,.pc-main-action{transition:none}.pc-wheel.pc-spin,.pc-token-flip,.pc-result-dot,.pc-celebrate{animation:none}}
+/* Probability Machine play-feel pass */
+#screen-probability-carnival{padding-top:10px;background:
+  radial-gradient(circle at 12% 15%,rgba(227,154,45,.12),transparent 22%),
+  radial-gradient(circle at 88% 20%,rgba(80,92,100,.10),transparent 25%),
+  linear-gradient(180deg,#f4f0e7 0%,#e7ece8 52%,#dfe6e2 100%)}
+.pc-shell{width:min(1240px,100%)}
+.pc-stage-strip{margin:4px 0 10px}
+.pc-stage-strip button{min-height:50px;font-size:.92rem;border-radius:14px;background:#f8f6f0;box-shadow:0 3px 0 rgba(38,50,56,.08)}
+.pc-game{grid-template-columns:232px minmax(0,1fr);gap:14px}
+.pc-level-panel,.pc-play-panel{border:3px solid #39464b;border-radius:18px;box-shadow:0 6px 0 rgba(38,50,56,.12)}
+.pc-level-panel{padding:14px;background:linear-gradient(180deg,#f9f7f0,#e8ede9)}
+.pc-panel-heading h2{font-size:1.5rem}
+.pc-level-button{min-height:46px;font-size:1rem;border-radius:11px}
+.pc-play-panel{padding:18px;background:linear-gradient(145deg,#fcfbf6,#edf1ee)}
+.pc-play-heading h2{font-size:clamp(1.65rem,3vw,2.35rem)}
+.pc-prompt{font-size:1.05rem;line-height:1.45}
+.pc-level-number{width:58px;height:58px;font-size:1.45rem;border:3px solid #39464b}
+.pc-scene{min-height:250px;margin:12px 0 10px;padding:16px;border:3px solid #39464b;border-radius:18px;
+  background:linear-gradient(145deg,#e9eee9,#f8f5eb);position:relative}
+.pc-scene::before{content:"";position:absolute;inset:8px;border:1px solid rgba(57,70,75,.18);border-radius:12px;pointer-events:none}
+.pc-choice-area{gap:9px}
+.pc-choice{min-height:56px;padding:10px 12px;font-size:1rem;border-width:3px;border-radius:13px}
+.pc-feedback{min-height:50px;font-size:1rem;border-width:3px}
+.pc-play-actions{gap:9px}
+.pc-play-actions button{min-height:52px;font-size:1rem;border-width:3px}
+.pc-main-action,.pc-secondary-action{min-height:58px;font-size:1.05rem}
+.pc-token{width:34px;height:34px;border-radius:50%;font-size:1.05rem;border:2px solid rgba(38,50,56,.16);box-shadow:0 2px 0 rgba(38,50,56,.12)}
+.pc-machine-card{padding:14px;border-width:3px;border-radius:16px}
+.pc-machine-card h3{font-size:1.15rem}
+.pc-machine-card p{font-size:.95rem}
+.pc-build-token{min-height:56px;font-size:1.5rem;border-width:3px}
+.pc-machine-mini{padding:14px;border-width:3px}
+.pc-machine-mini strong{font-size:1.15rem}
+.pc-result-track{min-height:88px;border-width:3px}
+.pc-result-dot{width:31px;height:31px;font-size:1rem}
+.pc-experiment-count{width:62px;height:62px;font-size:1rem}
+.pc-sample-run{min-height:135px;font-size:1rem;border-width:3px}
+.pc-sample-run b{font-size:1.05rem}
+.pc-vault{min-height:110px}
+.pc-vault-icon{font-size:3.2rem}
+.pc-footer-note{font-size:.9rem;border-width:2px}
+.pc-scene-variant-1{background:linear-gradient(145deg,#eef3e8,#f8efd9)}
+.pc-scene-variant-2{background:linear-gradient(145deg,#e8edf3,#f4eadc)}
+.pc-scene-variant-3{background:linear-gradient(145deg,#eee8f2,#e8f0e8)}
+.pc-scene-variant-4{background:linear-gradient(145deg,#e8f1ef,#f5e8e1)}
+.pc-scene-variant-5{background:linear-gradient(145deg,#f2eee2,#e6edf1)}
+.pc-scene-variant-6{background:linear-gradient(145deg,#e9e9e9,#f1e8dc)}
+.pc-scene-variant-1 .pc-machine-card,.pc-scene-variant-4 .pc-machine-card{box-shadow:inset 0 -5px 0 rgba(227,154,45,.22)}
+.pc-scene-variant-2 .pc-machine-card,.pc-scene-variant-5 .pc-machine-card{box-shadow:inset 0 -5px 0 rgba(116,101,141,.18)}
+.pc-scene-variant-3 .pc-machine-card,.pc-scene-variant-6 .pc-machine-card{box-shadow:inset 0 -5px 0 rgba(70,100,84,.18)}
+.pc-machine-panel{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin-bottom:12px;padding:9px 12px;border:3px solid #39464b;border-radius:13px;background:#343f43;color:#fff}
+.pc-machine-lights{display:flex;gap:6px}.pc-machine-light{width:11px;height:11px;border-radius:50%;background:#dca23a;box-shadow:0 0 8px rgba(220,162,58,.55)}
+.pc-machine-lights .pc-machine-light:nth-child(2){background:#8ba58f}.pc-machine-lights .pc-machine-light:nth-child(3){background:#8d7ba2}
+.pc-machine-label{text-align:center;font-size:.82rem;letter-spacing:.12em;font-weight:900}
+.pc-machine-stage{font-size:.78rem;font-weight:800;opacity:.8}
+.pc-mechanical-control{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px}
+.pc-lever{width:54px;height:54px;border-radius:50%;border:4px solid #39464b;background:#d59b39;box-shadow:0 4px 0 #39464b;font-size:1.4rem;cursor:pointer}
+.pc-lever:active{transform:translateY(3px);box-shadow:0 1px 0 #39464b}
+.pc-wheel-wrap{filter:drop-shadow(0 5px 0 rgba(38,50,56,.16))}
+.pc-wheel-label{font-size:.78rem}
+.pc-arcade-copy strong{font-size:1.3rem}.pc-arcade-copy small{font-size:1rem}
+@media(max-width:900px){.pc-game{grid-template-columns:1fr}.pc-level-panel{order:2}.pc-level-grid{grid-template-columns:repeat(10,1fr)}}
+@media(max-width:620px){
+  .pc-stage-strip{grid-template-columns:repeat(2,1fr)}
+  .pc-level-grid{grid-template-columns:repeat(5,1fr)}
+  .pc-choice-area,.pc-machine-pair,.pc-play-actions,.pc-sample-runs{grid-template-columns:1fr}
+  .pc-build-slots{grid-template-columns:repeat(4,1fr)}
+  .pc-scene{min-height:300px}
+  .pc-play-heading h2{font-size:1.75rem}
+  .pc-prompt{font-size:1rem}
+}
