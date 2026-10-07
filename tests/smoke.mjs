@@ -274,7 +274,6 @@ async function main() {
     'const targetTokens = [...document.querySelectorAll(".pc-build-token")];' +
     'assert(targetTokens.length === 12, "Build levels must expose twelve editable token slots.");' +
     'targetTokens.slice(0, 3).forEach(button => button.click());' +
-    'targetTokens.slice(9).forEach(button => button.click());' +
     'ProbabilityCarnival.check();' +
     'assert(document.getElementById("pc-completed-count").textContent === "3", "Stage 3 representative level did not complete.");' +
     'ProbabilityCarnival.selectLevel(31);' +
