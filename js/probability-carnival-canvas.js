@@ -20,7 +20,7 @@ window.ProbabilityCarnivalCanvas = (() => {
   }
 
   function roundedRect(ctx, x, y, width, height, radius) {
-    const r = Math.min(radius, width / 2, height / 2);
+    const r = Math.max(0, Math.min(radius, Math.abs(width) / 2, Math.abs(height) / 2));
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.arcTo(x + width, y, x + width, y + height, r);
@@ -72,8 +72,8 @@ window.ProbabilityCarnivalCanvas = (() => {
 
   function drawMachine(ctx, width, height, tokens, result) {
     const centerX = width / 2;
-    const machineWidth = Math.min(width * 0.78, 430);
-    const machineHeight = Math.min(height * 0.68, 250);
+    const machineWidth = Math.max(260, Math.min(width * 0.78, 430));
+    const machineHeight = Math.max(170, Math.min(height * 0.68, 250));
     const machineX = centerX - machineWidth / 2;
     const machineY = height * 0.18;
 
