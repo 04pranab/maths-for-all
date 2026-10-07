@@ -247,51 +247,60 @@ async function main() {
   '})()');
 
 
-  const probabilityResult = await evaluate(`(() => {
+  const probabilityResult = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     Game.goHome();
     ProbabilityCarnival.open();
     assert(window.ProbabilityCarnivalStories.levels.length === 60, "Probability Carnival must define exactly 60 levels.");
     assert(window.ProbabilityCarnivalStories.stages.length === 6, "Probability Carnival must define six stages.");
     for (let stage = 1; stage <= 6; stage++) {
-      const levels = window.ProbabilityCarnivalStories.levels.filter(level => level.stage === stage);
-      assert(levels.length === 10, "Probability Carnival stage " + stage + " must contain ten levels.");
-      assert(levels[0].id === (stage - 1) * 10 + 1 && levels[9].id === stage * 10, "Probability Carnival stage boundaries are invalid.");
+      const stageLevels = window.ProbabilityCarnivalStories.levels.filter(level => level.stage === stage);
+      assert(stageLevels.length === 10, "Probability Carnival stage " + stage + " must contain ten levels.");
+      assert(stageLevels[0].id === (stage - 1) * 10 + 1 && stageLevels[9].id === stage * 10, "Probability Carnival stage boundaries are invalid.");
     }
+
     ProbabilityCarnival.selectLevel(1);
-    assert(document.querySelectorAll("#pc-level-grid .pc-level-button").length === 10, "Stage 1 must show ten level buttons.");
-    assert(document.getElementById("pc-stage-name").textContent === "Probability intuition", "Stage 1 title is incorrect.");
+    assert(document.querySelector(".pc-wheel"), "Stage 1 must render the interactive chance wheel.");
     document.querySelector("#pc-choice-area .pc-choice[data-value='impossible']").click();
-    ProbabilityCarnival.check();
-    assert(document.getElementById("pc-completed-count").textContent === "1", "Stage 1 level did not complete.");
+    document.querySelector("#pc-choice-area .pc-main-action").click();
+    await new Promise(r => setTimeout(r, 540));
+    assert(document.getElementById("pc-completed-count").textContent === "1", "Stage 1 representative level did not complete.");
+
     ProbabilityCarnival.selectLevel(11);
+    document.querySelector(".pc-machine-choice").click();
     document.querySelector("#pc-choice-area .pc-choice[data-value='A']").click();
-    ProbabilityCarnival.check();
+    document.querySelector("#pc-choice-area .pc-main-action").click();
     assert(document.getElementById("pc-completed-count").textContent === "2", "Stage 2 representative level did not complete.");
+
     ProbabilityCarnival.selectLevel(21);
-    const targetTokens = [...document.querySelectorAll(".pc-build-token")];
-    assert(targetTokens.length === 12, "Build levels must expose twelve editable token slots.");
-    ProbabilityCarnival.check();
+    assert(document.querySelectorAll(".pc-build-token").length === 12, "Build levels must expose twelve editable token slots.");
+    document.querySelector("#pc-choice-area .pc-main-action").click();
     assert(document.getElementById("pc-completed-count").textContent === "3", "Stage 3 representative level did not complete.");
+
     ProbabilityCarnival.selectLevel(31);
     document.querySelector("#pc-choice-area .pc-choice[data-value='sun']").click();
-    document.querySelector("#pc-choice-area .pc-run-button").click();
+    document.querySelector("#pc-choice-area .pc-main-action").click();
+    await new Promise(r => setTimeout(r, 100));
     assert(document.getElementById("pc-completed-count").textContent === "4", "Stage 4 representative experiment did not complete.");
+
     ProbabilityCarnival.selectLevel(41);
-    document.querySelector("#pc-choice-area .pc-choice").click();
-    ProbabilityCarnival.check();
+    document.querySelectorAll(".pc-sample-run")[2].click();
+    document.querySelector("#pc-choice-area .pc-choice[data-value='surprising']").click();
+    document.querySelector("#pc-choice-area .pc-main-action").click();
     assert(document.getElementById("pc-completed-count").textContent === "5", "Stage 5 representative level did not complete.");
+
     ProbabilityCarnival.selectLevel(51);
-    document.querySelector("#pc-choice-area .pc-run-button").click();
+    document.querySelector("#pc-choice-area .pc-main-action").click();
     document.querySelector("#pc-choice-area .pc-choice[data-value='Fair']").click();
-    ProbabilityCarnival.check();
+    document.querySelector("#pc-choice-area .pc-main-action").click();
     assert(document.getElementById("pc-completed-count").textContent === "6", "Stage 6 representative level did not complete.");
+
     for (let stage = 1; stage <= 6; stage++) {
       ProbabilityCarnival.selectStage(stage);
       assert(document.querySelectorAll("#pc-level-grid .pc-level-button").length === 10, "Stage " + stage + " does not render ten levels.");
     }
     Game.goHome();
-    return { levels: 60, stages: 6, levelsPerStage: 10, representativeCompletions: 6 };
+    return { levels: 60, stages: 6, levelsPerStage: 10, representativeCompletions: 6, arcadeMechanics: 6 };
   })()`);
 
   if (!helpResult?.ok) throw new Error('Context-sensitive help and Escape overlay checks did not complete.');
