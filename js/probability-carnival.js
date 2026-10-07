@@ -13,6 +13,7 @@ window.ProbabilityCarnival = (() => {
     revealed: false,
     randomRun: null,
     busy: false,
+    session: 0,
     score: readNumber("score"),
     streak: readNumber("streak")
   };
@@ -86,6 +87,7 @@ window.ProbabilityCarnival = (() => {
     state.revealed = false;
     state.randomRun = null;
     state.busy = false;
+    state.session += 1;
     if (level?.type === "build") {
       state.builtTokens = Array.from({ length: 12 }, (_, i) => i < 6 ? "sun" : "moon");
     }
@@ -216,6 +218,7 @@ window.ProbabilityCarnival = (() => {
       return;
     }
     state.busy = true;
+    const session = state.session;
     const action = document.querySelector("#pc-choice-area .pc-main-action");
     if (action) action.disabled = true;
     const wheel = document.querySelector(".pc-wheel");
@@ -223,6 +226,7 @@ window.ProbabilityCarnival = (() => {
     void wheel?.offsetWidth;
     wheel?.classList.add("pc-spin");
     window.setTimeout(() => {
+      if (session !== state.session) return;
       state.revealed = true;
       state.busy = false;
       if (state.selected === level.answer) {
@@ -335,7 +339,7 @@ window.ProbabilityCarnival = (() => {
     state.busy = true;
     state.experimentResults = library.drawMany(level.bag, level.trials);
     renderLevel();
-    window.setTimeout(() => complete(level.id, "⚙ Machine cycle complete. Compare the prediction with the evidence."), 120);
+    complete(level.id, "⚙ Machine cycle complete. Compare the prediction with the evidence.");
   }
 
   function renderRandomness(level, scene, choices) {
