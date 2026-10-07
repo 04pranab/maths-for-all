@@ -535,9 +535,9 @@ async function main() {
     'assert(generated.every(q => q && Number.isFinite(q.answer) && typeof q.text === "string"), "Concurrent question generation returned an invalid question.");' +
     'const slabRounds = await Promise.all(Array.from({length: 30}, () => Promise.resolve().then(() => { SlabMath.newRound(); return Number(document.getElementById("slab-basket-number").textContent); })));' +
     'assert(slabRounds.length === 30 && slabRounds.every(Number.isFinite), "Concurrent Slab Maths generation failed.");' +
-    'const queuedStarts = ["quiz","race","sudoku","shape","slab"];' +
-    'await Promise.all(queuedStarts.map((key, index) => new Promise(resolve => setTimeout(() => { Game.goHome(); ({ quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath }[key])(); resolve(); }, index))));' +
-    'assert(document.querySelector(".screen.active")?.id === "screen-slab", "Rapid queued game starts did not leave the last requested game active.");' +
+    'const rapidStarts = [["quiz", Game.startArithmetic], ["race", Game.startRacing], ["sudoku", Game.startSudoku], ["shape", Game.startShapePuzzle], ["slab", Game.startSlabMath]];' +
+    'for (const [, start] of rapidStarts) { Game.goHome(); start(); }' +
+    'assert(document.querySelector(".screen.active")?.id === "screen-slab", "Rapid game starts did not leave the last requested game active.");' +
     'Game.startShapePuzzle();' +
     'const shapeTimerBeforeSwitch = document.getElementById("shape-timer")?.textContent;' +
     'Game.startArithmetic();' +
@@ -552,7 +552,7 @@ async function main() {
     'assert(document.getElementById("race-setup-panel")?.classList.contains("hidden") === false, "Racing did not remain on setup after immediate back.");' +
     'assert(document.getElementById("race-play-panel")?.classList.contains("hidden") === true, "A stale Racing callback modified the play panel after back.");' +
     'Game.goHome();' +
-    'return { concurrentQuestions: generated.length, concurrentSlabRounds: slabRounds.length, queuedStarts: queuedStarts.length, staleTimerChecks: 2 };' +
+    'return { concurrentQuestions: generated.length, concurrentSlabRounds: slabRounds.length, rapidStarts: rapidStarts.length, staleTimerChecks: 2 };' +
   '})()');
 
   if (!concurrencyResult) throw new Error('Concurrency audit did not complete.');
