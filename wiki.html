@@ -1,46 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Maths for All · Wiki</title>
-<meta name="description" content="The Maths for All project wiki: purpose, learning principles, games, accessibility, privacy and development.">
-<link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
-<link rel="stylesheet" href="css/style.css?v=20261005-3">
-<link rel="stylesheet" href="css/wiki.css?v=20261006-1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maths for All · Wiki</title>
+  <meta
+    name="description"
+    content="The Maths for All project wiki: purpose, learning principles, games, accessibility, privacy, technical architecture and development."
+  >
+  <link
+    rel="icon"
+    href="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+  >
+  <link rel="stylesheet" href="css/style.css?v=20261005-3">
+  <link rel="stylesheet" href="css/wiki.css?v=20261007-2">
 </head>
 <body>
-<header class="site-header wiki-header">
-<nav class="site-nav" aria-label="Main navigation">
-<a class="brand-mark wiki-brand" href="index.html" aria-label="Maths for All home"><span class="brand-icon">∑</span><span class="brand-name"><strong>Math</strong> For All</span></a>
-<div class="wiki-nav-links"><a href="index.html">🎮 Games</a><a class="active" href="wiki.html">📚 Wiki</a></div>
-<div class="nav-right"><a class="nav-policy" href="index.html">Privacy &amp; data</a></div>
-</nav>
-</header>
-<main class="wiki-shell">
-<section class="wiki-hero">
-<div class="wiki-kicker">Maths for All · Project Wiki</div>
-<h1>A little map of the project.</h1>
-<p>Why we build it. How the activities should feel. What we protect while we build them.</p>
-<div class="wiki-search"><label for="wiki-search-input">Find a topic</label><input id="wiki-search-input" type="search" placeholder="Try “accessibility”, “games” or “privacy”" autocomplete="off"></div>
-</section>
-<div class="wiki-layout">
-<aside class="wiki-index" aria-label="Wiki sections">
-<a href="#idea">The idea</a><a href="#design">How we design</a><a href="#games">The games</a><a href="#accessibility">Accessibility</a><a href="#privacy">Privacy</a><a href="#ai">Responsible AI</a><a href="#development">Development</a><a href="#direction">Current direction</a>
-</aside>
-<div class="wiki-content">
-<section id="idea" class="wiki-card" data-search="idea purpose philosophy children mathematics play human values"><span class="wiki-tag">01 · WHY</span><h2>The idea</h2><p class="wiki-quote">Games are the medium. Mathematics is the learning. Human values are the background.</p><p>Maths for All is a free learning space for children with different ways of seeing, hearing, moving, reading, concentrating and learning. We do not want to make mathematics smaller. We want to make it easier to enter.</p></section>
-<section id="design" class="wiki-card" data-search="design activity explanation mistakes pressure values accessibility"><span class="wiki-tag">02 · FEEL</span><h2>How we design</h2><div class="wiki-points"><div><strong>Act first.</strong><span>Let the child encounter the mathematics through an activity.</span></div><div><strong>Mistakes are information.</strong><span>A wrong attempt opens another path instead of closing the door.</span></div><div><strong>Don't manufacture pressure.</strong><span>Speed matters only when the mathematics genuinely calls for it.</span></div><div><strong>Let values emerge.</strong><span>Patience, fairness, curiosity and perseverance live inside the mechanics.</span></div></div></section>
-<section id="games" class="wiki-card" data-search="games arithmetic racing sudoku shape fitting slab maths shape architect probability carnival"><span class="wiki-tag">03 · PLAYGROUND</span><h2>The games</h2><div class="game-list"><article><b>🧮 Arithmetic Quiz</b><span>Arithmetic practice with fresh questions.</span></article><article><b>🏁 Math Racing</b><span>A friendly personal challenge around mathematics.</span></article><article><b>🔢 Sudoku Challenge</b><span>Logic, deduction and persistence.</span></article><article><b>🔷 Shape Fitting</b><span>Visual geometry through fitting and rotation.</span></article><article><b>🧺 Slab Maths</b><span>Number manipulation with an open-ended loop.</span></article><article><b>🏗️ Shape Architect</b><span>Freeform geometry, picture building and planning.</span></article><article class="next-game"><b>🎪 Probability Carnival</b><span>The next world: experiments, evidence, mystery and fairness.</span></article></div></section>
-<section id="accessibility" class="wiki-card" data-search="accessibility inclusive large keyboard text motion pointer repetition"><span class="wiki-tag">04 · FOR EVERYONE</span><h2>Accessibility</h2><p>Large targets, clear structure, keyboard access, readable text, calm feedback, repetition and reduced-motion support are design requirements.</p><div class="pill-row"><span>Large targets</span><span>Keyboard friendly</span><span>No tiny essentials</span><span>Reduced motion</span><span>Repeat freely</span></div></section>
-<section id="privacy" class="wiki-card" data-search="privacy research consent data password location camera microphone files advertising fingerprinting"><span class="wiki-tag">05 · TRUST</span><h2>Privacy &amp; research</h2><p>Playing is not permission to collect research data. Research participation is explicitly opt-in.</p><div class="boundary-grid"><div><b>Collected only with consent</b><span>Research events inside the agreed research boundary.</span></div><div><b>Not part of research collection</b><span>Passwords, precise location, camera or microphone data, uploaded files, advertising identifiers and fingerprinting.</span></div></div></section>
-<section id="ai" class="wiki-card" data-search="AI responsible artificial intelligence ChatGPT Claude human review correctness accessibility privacy"><span class="wiki-tag">06 · RESPONSIBILITY</span><h2>Responsible AI</h2><p>AI can help with design, implementation, debugging, tests, documentation and review. It does not become the authority for correctness, accessibility, privacy or educational quality.</p><p class="wiki-note">Human review and physical testing remain part of the build.</p></section>
-<section id="development" class="wiki-card" data-search="development issue pull request testing physical testing modular game"><span class="wiki-tag">07 · BUILD</span><h2>How we build</h2><div class="steps"><span>01 · Discuss</span><span>02 · Design</span><span>03 · Prototype</span><span>04 · Implement</span><span>05 · Test</span><span>06 · Physically use</span><span>07 · Harden</span></div><p>One planned change at a time. Existing games should remain stable while a new game is being built.</p></section>
-<section id="direction" class="wiki-card" data-search="roadmap current version probability carnival fraction bakery little shop number maze 2048"><span class="wiki-tag">08 · NOW</span><h2>Current direction</h2><div class="roadmap"><div class="done"><b>✓ Shape Architect</b><span>Completed and hardened.</span></div><div class="current"><b>→ Probability Carnival</b><span>Designing the next mathematical world.</span></div><div><b>03 · Fraction Bakery</b><span>Planned.</span></div><div><b>04 · Little Shop</b><span>Planned.</span></div><div><b>05 · Number Maze</b><span>Planned.</span></div><div><b>Later · 2048</b><span>Deferred until the foundation is broader.</span></div></div></section>
-</div>
-</div>
-<footer class="wiki-footer"><span>Maths for All · a small effort toward a kinder learning world.</span><a href="index.html">← Return to the games</a></footer>
-</main>
-<script src="js/wiki.js?v=20261006-1"></script>
+  <header class="site-header wiki-header">
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="brand-mark wiki-brand" href="index.html" aria-label="Maths for All home">
+        <span class="brand-icon">∑</span>
+        <span class="brand-name"><strong>Math</strong> For All</span>
+      </a>
+
+      <div class="wiki-nav-links">
+        <a href="index.html">🎮 Games</a>
+        <a class="active" href="wiki.html">📚 Wiki</a>
+      </div>
+
+      <div class="nav-right">
+        <a class="nav-policy" href="index.html">Privacy &amp; data</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wiki-shell">
+    <section class="wiki-hero">
+      <div class="wiki-kicker">Maths for All · Project Wiki</div>
+      <h1>A map of the project.</h1>
+      <p>
+        Why we build it, how the activities should feel, how the code is organised,
+        and what we protect while we build.
+      </p>
+
+      <div class="wiki-search">
+        <label for="wiki-search-input">Find a topic</label>
+        <input
+          id="wiki-search-input"
+          type="search"
+          placeholder="Try “probability”, “accessibility”, “privacy” or “testing”"
+          autocomplete="off"
+        >
+      </div>
+    </section>
+
+    <div class="wiki-layout">
+      <aside class="wiki-index" aria-label="Wiki sections">
+        <a href="#idea">The idea</a>
+        <a href="#design">Learning philosophy</a>
+        <a href="#games">Game map</a>
+        <a href="#probability">Probability Carnival</a>
+        <a href="#accessibility">Accessibility</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#testing">Testing</a>
+        <a href="#ai">Responsible AI</a>
+        <a href="#development">Development</a>
+        <a href="#direction">Roadmap</a>
+      </aside>
+
+      <div class="wiki-content">
+        <section
+          id="idea"
+          class="wiki-card"
+          data-search="idea purpose philosophy children mathematics play human values agency"
+        >
+          <span class="wiki-tag">01 · WHY</span>
+          <h2>The idea</h2>
+          <p class="wiki-quote">
+            Games are the medium. Mathematics is the learning. Human values are the background.
+          </p>
+          <p>
+            Maths for All is a free learning space for children with different ways
+            of seeing, hearing, moving, reading, concentrating and learning.
+          </p>
+          <p>
+            We are not trying to remove the mathematics. We are trying to make
+            mathematics easier to enter.
+          </p>
+        </section>
+
+        <section
+          id="design"
+          class="wiki-card"
+          data-search="design learning philosophy activity explanation mistakes pressure values agency"
+        >
+          <span class="wiki-tag">02 · FEEL</span>
+          <h2>Learning philosophy</h2>
+
+          <div class="wiki-points">
+            <div>
+              <strong>Act first.</strong>
+              <span>Let the learner encounter the mathematical idea through an activity.</span>
+            </div>
+            <div>
+              <strong>Mistakes are information.</strong>
+              <span>A surprising or wrong attempt opens another path instead of closing the door.</span>
+            </div>
+            <div>
+              <strong>Do not manufacture pressure.</strong>
+              <span>Speed matters only when the mathematics genuinely calls for it.</span>
+            </div>
+            <div>
+              <strong>Let values emerge.</strong>
+              <span>Patience, fairness, curiosity and perseverance live inside the mechanics.</span>
+            </div>
+            <div>
+              <strong>Protect agency.</strong>
+              <span>Retrying, changing an idea and inspecting evidence should be normal actions.</span>
+            </div>
+            <div>
+              <strong>Explain after experience.</strong>
+              <span>Give the learner something real to reason about before adding formal language.</span>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="games"
+          class="wiki-card"
+          data-search="games arithmetic racing sudoku shape fitting slab maths shape architect probability carnival roadmap"
+        >
+          <span class="wiki-tag">03 · PLAYGROUND</span>
+          <h2>Game map</h2>
+
+          <div class="game-list">
+            <article>
+              <b>🧮 Arithmetic Quiz</b>
+              <span>Number sense and arithmetic practice.</span>
+            </article>
+            <article>
+              <b>🏁 Math Racing</b>
+              <span>Fluent arithmetic and personal speed practice.</span>
+            </article>
+            <article>
+              <b>🔢 Sudoku Challenge</b>
+              <span>Logic, deduction and persistence.</span>
+            </article>
+            <article>
+              <b>🔷 Shape Fitting</b>
+              <span>Spatial reasoning, fitting and rotation.</span>
+            </article>
+            <article>
+              <b>🧺 Slab Maths</b>
+              <span>Number decomposition and multiple routes to zero.</span>
+            </article>
+            <article>
+              <b>🏗️ Shape Architect</b>
+              <span>Freeform geometry, picture building and planning.</span>
+            </article>
+            <article class="next-game">
+              <b>🎪 Probability Carnival</b>
+              <span>Probability through prediction, evidence, mystery and fairness.</span>
+            </article>
+          </div>
+        </section>
+
+        <section
+          id="probability"
+          class="wiki-card"
+          data-search="probability carnival machine builder mystery fairness prediction experiment evidence chance"
+        >
+          <span class="wiki-tag">04 · CURRENT GAME</span>
+          <h2>Probability Carnival</h2>
+          <p>
+            Probability Carnival is a story-driven probability world rather than
+            a numbered staircase.
+          </p>
+
+          <div class="wiki-points">
+            <div>
+              <strong>🔭 The Curious Machine</strong>
+              <span>Three Sun tokens and one Moon token. Predict, run trials and watch evidence grow.</span>
+            </div>
+            <div>
+              <strong>🧩 The Machine Builder</strong>
+              <span>Build eight tokens and see how the token share changes the chance.</span>
+            </div>
+            <div>
+              <strong>🔎 The Mystery Tent</strong>
+              <span>Infer a hidden machine from twelve experimental clues.</span>
+            </div>
+            <div>
+              <strong>⚖️ The Fairness Workshop</strong>
+              <span>Compare a balanced machine with an unbalanced one using repeated evidence.</span>
+            </div>
+          </div>
+
+          <p class="wiki-note">
+            The carnival has no betting, gambling, money or reward-for-risk mechanic.
+            Discovery is the source of excitement.
+          </p>
+
+          <div class="steps">
+            <span>01 · Predict</span>
+            <span>02 · Experiment</span>
+            <span>03 · Observe</span>
+            <span>04 · Reason</span>
+            <span>05 · Try again</span>
+          </div>
+        </section>
+
+        <section
+          id="accessibility"
+          class="wiki-card"
+          data-search="accessibility inclusive large keyboard focus labels contrast motion canvas pointer text"
+        >
+          <span class="wiki-tag">05 · FOR EVERYONE</span>
+          <h2>Accessibility</h2>
+          <p>
+            Accessibility is a design requirement. Important state is not communicated
+            by colour or canvas alone.
+          </p>
+
+          <div class="pill-row">
+            <span>Large targets</span>
+            <span>Keyboard friendly</span>
+            <span>Meaningful labels</span>
+            <span>Visible focus</span>
+            <span>Readable text</span>
+            <span>Reduced motion</span>
+            <span>Responsive layouts</span>
+            <span>Repeat freely</span>
+          </div>
+
+          <p>
+            Canvas is used for visual drawing, while important results are also exposed
+            as ordinary HTML text. Small animations respect the user's reduced-motion
+            preference.
+          </p>
+        </section>
+
+        <section
+          id="privacy"
+          class="wiki-card"
+          data-search="privacy research consent data password location camera microphone files advertising fingerprinting authentication"
+        >
+          <span class="wiki-tag">06 · TRUST</span>
+          <h2>Privacy &amp; research</h2>
+          <p>
+            Playing is not permission to collect research data. Research participation
+            is explicitly opt-in.
+          </p>
+
+          <div class="boundary-grid">
+            <div>
+              <b>Research collection</b>
+              <span>Only inside the agreed, consent-aware research boundary.</span>
+            </div>
+            <div>
+              <b>Never part of research collection</b>
+              <span>Passwords, precise location, camera, microphone, uploaded files, advertising identifiers and fingerprinting.</span>
+            </div>
+          </div>
+
+          <p class="wiki-note">
+            Privacy information remains available without requiring an account.
+            Authentication is disabled for the current physical-game prototype.
+          </p>
+        </section>
+
+        <section
+          id="architecture"
+          class="wiki-card"
+          data-search="architecture technical modules javascript css html canvas library stories renderer game state localstorage"
+        >
+          <span class="wiki-tag">07 · ENGINEERING</span>
+          <h2>Technical architecture</h2>
+          <p>
+            The project uses browser-native HTML, CSS and JavaScript with modular
+            game-specific files.
+          </p>
+
+          <div class="architecture-list">
+            <div>
+              <code>probability-carnival-library.js</code>
+              <span>Probability primitives and repeated trials.</span>
+            </div>
+            <div>
+              <code>probability-carnival-stories.js</code>
+              <span>Story catalogue, objectives and learning outcomes.</span>
+            </div>
+            <div>
+              <code>probability-carnival-canvas.js</code>
+              <span>Machine drawing, evidence visuals and small animations.</span>
+            </div>
+            <div>
+              <code>probability-carnival.js</code>
+              <span>Story state, interactions, completion and reflection.</span>
+            </div>
+            <div>
+              <code>probability-carnival.css</code>
+              <span>Responsive visual system and accessibility rules.</span>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="testing"
+          class="wiki-card"
+          data-search="testing smoke browser static malformed input concurrency mobile desktop physical test acceptance"
+        >
+          <span class="wiki-tag">08 · RELIABILITY</span>
+          <h2>Testing</h2>
+
+          <div class="wiki-points">
+            <div>
+              <strong>Static checks</strong>
+              <span>Required files, scripts, stylesheets and DOM mount points must exist.</span>
+            </div>
+            <div>
+              <strong>Browser smoke</strong>
+              <span>All four Probability Carnival stories are opened and exercised.</span>
+            </div>
+            <div>
+              <strong>Responsive checks</strong>
+              <span>Large text, narrow screens and mobile layouts are checked.</span>
+            </div>
+            <div>
+              <strong>Concurrency checks</strong>
+              <span>Repeated and queued game actions should not leave stale state behind.</span>
+            </div>
+            <div>
+              <strong>Physical testing</strong>
+              <span>Real interaction is still required for size, clarity, wording and comfort.</span>
+            </div>
+            <div>
+              <strong>Acceptance</strong>
+              <span>The game is not finished merely because the JavaScript executes.</span>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="ai"
+          class="wiki-card"
+          data-search="AI responsible artificial intelligence ChatGPT Claude human review correctness accessibility privacy educational quality"
+        >
+          <span class="wiki-tag">09 · RESPONSIBILITY</span>
+          <h2>Responsible AI</h2>
+          <p>
+            AI tools may assist with design, implementation, debugging, tests,
+            documentation and review.
+          </p>
+          <p>
+            AI output is not the authority for correctness, accessibility, privacy,
+            educational quality or legal compliance.
+          </p>
+          <p class="wiki-note">
+            Human review, automated tests and physical use remain part of the build.
+          </p>
+        </section>
+
+        <section
+          id="development"
+          class="wiki-card"
+          data-search="development workflow issue pull request prototype physical testing modular documentation no random features"
+        >
+          <span class="wiki-tag">10 · BUILD</span>
+          <h2>Development workflow</h2>
+
+          <div class="steps">
+            <span>01 · Discuss</span>
+            <span>02 · Design</span>
+            <span>03 · Prototype</span>
+            <span>04 · Implement</span>
+            <span>05 · Test</span>
+            <span>06 · Physically use</span>
+            <span>07 · Harden</span>
+            <span>08 · Document</span>
+          </div>
+
+          <p>
+            One planned change at a time. Existing games should remain stable while
+            a new game is being built.
+          </p>
+          <p>
+            Unrelated improvements do not belong in a game change unless they are
+            required for correctness, accessibility or stability.
+          </p>
+        </section>
+
+        <section
+          id="direction"
+          class="wiki-card"
+          data-search="roadmap current version shape architect probability carnival fraction bakery little shop number maze 2048"
+        >
+          <span class="wiki-tag">11 · ROADMAP</span>
+          <h2>Current direction</h2>
+
+          <div class="roadmap">
+            <div class="done">
+              <b>✓ Shape Architect</b>
+              <span>Completed and hardened.</span>
+            </div>
+            <div class="current">
+              <b>✓ Probability Carnival</b>
+              <span>Four-tent playable world implemented.</span>
+            </div>
+            <div>
+              <b>03 · Fraction Bakery</b>
+              <span>Planned.</span>
+            </div>
+            <div>
+              <b>04 · Little Shop</b>
+              <span>Planned.</span>
+            </div>
+            <div>
+              <b>05 · Number Maze</b>
+              <span>Planned.</span>
+            </div>
+            <div>
+              <b>Later · 2048</b>
+              <span>Deferred until the foundation is broader.</span>
+            </div>
+          </div>
+
+          <p>
+            The project baseline is currently v2.0.4. The next planned game after
+            Probability Carnival is Fraction Bakery.
+          </p>
+        </section>
+
+        <section
+          id="standard"
+          class="wiki-card"
+          data-search="acceptance standard finished game quality completion"
+        >
+          <span class="wiki-tag">12 · DEFINITION OF DONE</span>
+          <h2>When is a game actually finished?</h2>
+
+          <div class="pill-row">
+            <span>Mathematics is clear</span>
+            <span>Interaction is understandable</span>
+            <span>Mistakes are constructive</span>
+            <span>Controls are physically usable</span>
+            <span>Keyboard works where applicable</span>
+            <span>Reduced motion works</span>
+            <span>Mobile works</span>
+            <span>Automated tests pass</span>
+            <span>Physical testing completed</span>
+            <span>Wiki updated</span>
+          </div>
+
+          <p class="wiki-quote">
+            The website is the artifact. The child is the reason.
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <footer class="wiki-footer">
+      <span>Maths for All · a small effort toward a kinder learning world.</span>
+      <a href="index.html">← Return to the games</a>
+    </footer>
+  </main>
+
+  <script src="js/wiki.js?v=20261007-2"></script>
 </body>
 </html>
