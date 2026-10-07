@@ -56,11 +56,15 @@ window.ProbabilityCarnival = (() => {
 
   function open() {
     document.getElementById("screen-menu")?.classList.remove("active");
+    const screen = $("screen-probability-carnival");
+    screen?.classList.add("active");
     setHidden("screen-probability-carnival", false);
     showWorld();
   }
 
   function close() {
+    const screen = $("screen-probability-carnival");
+    screen?.classList.remove("active");
     setHidden("screen-probability-carnival", true);
     document.getElementById("screen-menu")?.classList.add("active");
   }
