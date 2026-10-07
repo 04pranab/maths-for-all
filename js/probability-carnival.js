@@ -199,7 +199,7 @@ window.ProbabilityCarnival = (() => {
     wheel.className = "pc-arcade-intuition";
     wheel.innerHTML =
       '<div class="pc-wheel-wrap"><div class="pc-pointer"></div><div class="pc-wheel" style="--sun:' + counts.sun + ';--moon:' + counts.moon + '"><span>☀</span><span>☾</span></div><div class="pc-wheel-label">PROBABILITY DIAL</div></div>' +
-      '<div class="pc-arcade-copy"><strong>' + level.scenario + '</strong><span>' + level.outcome + '</span><small>Make your prediction, then activate the machine.</small></div>';
+      '<div class="pc-arcade-copy"><strong>' + level.scenario + '</strong><span>' + level.outcome + '</span><div class="pc-probability-legend"><span>☀ Sun: ' + counts.sun + '</span><span>☾ Moon: ' + counts.moon + '</span></div><small>Make your prediction, then activate the machine.</small></div>';
     scene.appendChild(wheel);
     level.choices.forEach(choice => addChoice(choices, choice, choice));
     actionButton(choices, "⚙ Activate machine", () => spinIntuition(level), "pc-main-action");
