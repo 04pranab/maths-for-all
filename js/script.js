@@ -391,16 +391,18 @@ const Game = (function () {
 
   function showScreen(name) {
     stopBackgroundGames();
-    Object.values(SCREENS).forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('active');
-    });
+    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
     const target = document.getElementById(SCREENS[name]);
     if (target) target.classList.add('active');
     window.scrollTo(0, 0);
   }
 
-  function goHome() { Analytics.log('nav','go_home',{}); showScreen('menu'); }
+  function goHome() {
+    Analytics.log('nav', 'go_home', {});
+    showScreen('menu');
+    const probabilityScreen = document.getElementById('screen-probability-carnival');
+    if (probabilityScreen) probabilityScreen.hidden = true;
+  }
 
   function startArithmetic() { Analytics.log('quiz','open',{}); showScreen('quiz'); Quiz.init(); ControlsOverlay.maybeShow('quiz'); }
   function startRacing()     { Analytics.log('race','open',{}); showScreen('race'); Racing.init(); ControlsOverlay.maybeShow('race'); }
