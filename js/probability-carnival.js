@@ -110,6 +110,18 @@ window.ProbabilityCarnival = (() => {
     });
 
     $("pc-completed-count").textContent = String(state.completed.size);
+    updatePassport();
+  }
+
+  function updatePassport() {
+    document.querySelectorAll("[data-passport]").forEach(stamp => {
+      const earned = state.completed.has(stamp.dataset.passport);
+      stamp.classList.toggle("is-earned", earned);
+      stamp.setAttribute(
+        "aria-label",
+        (earned ? "Earned " : "Not yet earned ") + stamp.getAttribute("aria-label").replace(/^Earned |Not yet earned /, "")
+      );
+    });
   }
 
   function openStory(id) {
@@ -580,6 +592,7 @@ window.ProbabilityCarnival = (() => {
       state.completed.add(id);
       saveCompleted();
       renderStoryCards();
+      setFeedback("Stamp earned! Your carnival passport just gained a new mark.", "success");
     }
   }
 

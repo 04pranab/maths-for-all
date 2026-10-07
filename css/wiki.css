@@ -351,3 +351,44 @@
     padding-left: 2px;
   }
 }
+
+
+.wiki-nav-links a {
+  text-decoration: none;
+  border-bottom: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.wiki-nav-links a::after {
+  display: none;
+}
+
+.wiki-card h3 {
+  font-family: var(--font-head);
+  margin: 20px 0 10px;
+  color: var(--ink);
+}
+
+.wiki-card a {
+  text-decoration: none;
+}
+
+.wiki-card a:hover,
+.wiki-card a:focus-visible {
+  text-decoration: underline;
+}
+
+.wiki-card .wiki-quote {
+  margin-top: 12px;
+}
+
+.wiki-card .game-list article {
+  min-height: 82px;
+}
+
+@media (max-width: 800px) {
+  .wiki-nav-links a {
+    border-bottom: 0;
+  }
+}

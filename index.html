@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/sudoku-comfort.css?v=20261005-1" />
   <link rel="stylesheet" href="css/slabmath.css" />
   <link rel="stylesheet" href="css/shape-architect.css" />
-  <link rel="stylesheet" href="css/probability-carnival.css" />
+  <link rel="stylesheet" href="css/probability-carnival.css?v=20261007-3" />
 </head>
 <body>
 
@@ -50,9 +50,13 @@
             Four tents. No levels to grind through. Choose a question, make a prediction,
             run an experiment, notice the evidence, and carry the idea with you.
           </p>
-          <div class="pc-completion">
-            🔎 Discoveries completed:
-            <strong id="pc-completed-count">0</strong>/4
+          <div class="pc-passport" aria-label="Carnival passport">
+            <span class="pc-passport-label">🎟️ Carnival passport</span>
+            <span class="pc-stamp" data-passport="curious-machine" aria-label="Curious Machine stamp">🔭</span>
+            <span class="pc-stamp" data-passport="machine-builder" aria-label="Machine Builder stamp">🧩</span>
+            <span class="pc-stamp" data-passport="mystery-tent" aria-label="Mystery Tent stamp">🔎</span>
+            <span class="pc-stamp" data-passport="fairness-workshop" aria-label="Fairness Workshop stamp">⚖️</span>
+            <span class="pc-completion"><strong id="pc-completed-count">0</strong>/4 tents explored</span>
           </div>
         </div>
 
@@ -68,13 +72,14 @@
           <section class="pc-story-panel">
             <div class="pc-world-note">
               <span class="pc-kicker">How the carnival works</span>
-              <h2>Prediction is the doorway. Evidence is the guide.</h2>
+              <h2>Pick a tent. Take the challenge.</h2>
               <p>
-                Nothing here asks you to bet, win money, or risk anything. The excitement
-                comes from finding out whether your idea survives the experiment.
+                Every tent gives you something to do, not a worksheet to read. Make a
+                prediction, press the big action buttons, watch the carnival machine move,
+                and collect your passport stamp.
               </p>
               <p>
-                A surprising result is not a failure. It is another clue.
+                Surprises are clues. There is nothing to lose when your prediction is wrong.
               </p>
               <div class="pc-story-meta">
                 <span class="pc-chip">Predict</span>
@@ -94,14 +99,14 @@
           <h1 id="pc-story-title">The Curious Machine</h1>
           <p id="pc-story-intro"></p>
           <div class="pc-story-meta">
-            <span class="pc-chip">Question first</span>
-            <span class="pc-chip">Evidence over guessing</span>
-            <span class="pc-chip">No penalty for surprises</span>
+            <span class="pc-chip">🎯 Make a call</span>
+            <span class="pc-chip">🎡 Play the machine</span>
+            <span class="pc-chip">🏅 Earn a stamp</span>
           </div>
         </div>
 
         <section class="pc-story-panel">
-          <h2>What are you investigating?</h2>
+          <h2>Your carnival challenge</h2>
           <p id="pc-story-objective" class="pc-muted"></p>
         </section>
 
@@ -133,8 +138,8 @@
               </div>
 
               <div class="pc-actions">
-                <button type="button" onclick="ProbabilityCarnival.runMachine(1)">Try once</button>
-                <button type="button" onclick="ProbabilityCarnival.runMachine(10)">Try ten times</button>
+                <button type="button" onclick="ProbabilityCarnival.runMachine(1)">🎯 One spin</button>
+                <button type="button" onclick="ProbabilityCarnival.runMachine(10)">🎡 Ten spins</button>
               </div>
 
               <div class="pc-evidence">
@@ -153,7 +158,7 @@
                 <p class="pc-muted">Trials: <span id="pc-total-count">0</span></p>
               </div>
 
-              <button type="button" onclick="ProbabilityCarnival.openLearning()">What did I discover?</button>
+              <button type="button" onclick="ProbabilityCarnival.openLearning()">🏅 Claim my discovery</button>
             </aside>
           </div>
         </section>
@@ -161,7 +166,7 @@
         <section data-story-panel="machine-builder" class="pc-story-panel" hidden>
           <div class="pc-builder">
             <div>
-              <h2>Build eight tokens</h2>
+              <h2>🧩 Build your machine</h2>
               <p class="pc-muted">
                 Tap a token to switch it between Sun and Moon. Then predict which outcome
                 will appear more often.
@@ -203,8 +208,8 @@
                 </div>
 
                 <div class="pc-actions">
-                  <button type="button" onclick="ProbabilityCarnival.runBuilder()">Run 20 trials</button>
-                  <button type="button" onclick="ProbabilityCarnival.resetCurrentStory()">Build again</button>
+                  <button type="button" onclick="ProbabilityCarnival.runBuilder()">🎡 Send 20 tokens through</button>
+                  <button type="button" onclick="ProbabilityCarnival.resetCurrentStory()">↻ Rebuild</button>
                 </div>
 
                 <div class="pc-evidence">
@@ -252,9 +257,9 @@
               </div>
 
               <div class="pc-actions">
-                <button type="button" onclick="ProbabilityCarnival.runMystery()">Collect 12 clues</button>
+                <button type="button" onclick="ProbabilityCarnival.runMystery()">🔎 Collect 12 clues</button>
                 <button type="button" id="pc-mystery-reveal" onclick="ProbabilityCarnival.revealMystery()" disabled>
-                  Reveal the machine
+                  🎁 Open the mystery box
                 </button>
               </div>
 
@@ -306,9 +311,9 @@
               </div>
 
               <div class="pc-actions">
-                <button type="button" onclick="ProbabilityCarnival.runFairness()">Compare 12 + 12 trials</button>
+                <button type="button" onclick="ProbabilityCarnival.runFairness()">🎡 Test both machines</button>
                 <button type="button" id="pc-fairness-judge" onclick="ProbabilityCarnival.judgeFairness()" disabled>
-                  Make the call
+                  ⚖️ Choose the fair one
                 </button>
               </div>
 
@@ -359,8 +364,8 @@
         </section>
 
         <section id="pc-reflection" class="pc-reflection">
-          <h2>Carry the idea with you</h2>
-          <p class="pc-muted">Choose what you noticed. There is no best answer.</p>
+          <h2>🎟️ Keep your carnival memory</h2>
+          <p class="pc-muted">Choose what you noticed. Every answer is welcome.</p>
           <div class="pc-reflection-options">
             <button type="button" onclick="ProbabilityCarnival.reflect('surprised')">😮 Something surprised me</button>
             <button type="button" onclick="ProbabilityCarnival.reflect('pattern')">🔎 I noticed a pattern</button>
@@ -371,7 +376,7 @@
           </div>
         </section>
 
-        <button type="button" class="pc-back-to-tents" onclick="ProbabilityCarnival.showWorld()">← Return to the carnival tents</button>
+        <button type="button" class="pc-back-to-tents" onclick="ProbabilityCarnival.showWorld()">🎪 Return to the carnival</button>
       </div>
     </div>
   </section>
@@ -444,7 +449,7 @@
       <button class="menu-card card-probability" onclick="ProbabilityCarnival.open()">
         <div class="card-badge-icon">🎪</div>
         <div class="card-title">Probability Carnival</div>
-        <div class="card-desc">Make predictions, run experiments, and discover what the evidence says.</div>
+        <div class="card-desc">Play four carnival challenges: predict, build, investigate and find the fair machine.</div>
         <div class="card-tag">Solo · Explore</div>
       </button>
 
@@ -973,9 +978,9 @@
   <!-- Scripts — order matters: shared helpers first -->
   <script src="js/research-gateway.js?v=20260926-1"></script>
   <script src="js/probability-carnival-library.js?v=20261007-2"></script>
-  <script src="js/probability-carnival-stories.js?v=20261007-2"></script>
-  <script src="js/probability-carnival-canvas.js?v=20261007-2"></script>
-  <script src="js/probability-carnival.js?v=20261007-2"></script>
+  <script src="js/probability-carnival-stories.js?v=20261007-3"></script>
+  <script src="js/probability-carnival-canvas.js?v=20261007-3"></script>
+  <script src="js/probability-carnival.js?v=20261007-3"></script>
   <script src="js/script.js?v=20261006-4"></script>
   <script src="js/questions.js?v=20260924-2"></script>
   <script src="js/sudoku.js?v=20260924-2"></script>

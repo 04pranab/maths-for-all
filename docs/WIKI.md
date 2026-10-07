@@ -1,522 +1,643 @@
 # Maths for All Wiki
 
-Maths for All is a free, browser-based learning space where mathematics is explored through play, making, observation and small discoveries.
-
-This wiki is the project's source of truth for the learning philosophy, game architecture, accessibility boundaries, privacy commitments, development process and current roadmap.
-
 > **Games are the medium. Mathematics is the learning. Human values are the background.**
 
-## 1. Why this project exists
+Maths for All is a free learning space where children meet mathematics through play, making, noticing, experimenting and trying again.
 
-Maths for All is built for children with different ways of seeing, hearing, moving, reading, concentrating and learning.
+This wiki explains what Maths for All is, why it exists, how the games are meant to feel, what children can learn from them, and the values that guide the project.
 
-The goal is not to make mathematics smaller or easier by removing the mathematics. The goal is to make mathematics easier to enter.
+---
 
-A good activity should give a learner room to:
+## 1. Why Maths for All exists
 
-- try without fear,
-- notice something,
-- change an idea,
+Mathematics can become difficult long before the mathematics itself becomes difficult.
+
+A child may understand an idea but struggle with:
+
+- small controls,
+- crowded screens,
+- confusing instructions,
+- fear of getting an answer wrong,
+- activities that move too quickly,
+- being compared with other children,
+- or simply not finding a way into the question.
+
+Maths for All tries to remove those unnecessary barriers.
+
+The aim is **not** to remove mathematical challenge.
+
+The aim is to make the challenge inviting enough that a learner wants to explore it.
+
+---
+
+## 2. Who it is for
+
+Maths for All is designed with children who have different ways of:
+
+- seeing,
+- hearing,
+- moving,
+- reading,
+- concentrating,
+- remembering,
+- communicating,
+- and learning.
+
+That means accessibility is not a special mode added at the end.
+
+A good game should already feel welcoming.
+
+Children should be able to:
+
+- understand what they can do,
+- make mistakes without embarrassment,
 - try again,
-- explain what they noticed,
-- build confidence through understanding.
+- work at a comfortable pace,
+- use clear and generous controls,
+- and notice their own progress.
 
-The project treats the child as a participant in mathematics, not as a score waiting to be produced.
+---
 
-## 2. The learning philosophy
+## 3. Our learning philosophy
 
-### Activity before explanation
+### Play before explanation
 
-Whenever possible, the learner encounters the mathematical idea through an action first.
+A child should often meet an idea through an action before meeting its formal definition.
 
-Instead of starting with a long definition, the activity should create a question:
+Instead of beginning with:
 
-> What do you think will happen?
+> “Probability is...”
 
-The explanation comes after the learner has something real to think about.
+we can begin with:
+
+> “What do you think will happen?”
+
+The question creates something worth thinking about.
 
 ### Mistakes are information
 
-A wrong answer, unexpected result or failed arrangement should create another opportunity to observe.
+A wrong answer is not a verdict.
 
-The interface should not shame the learner or make a single mistake feel final.
+A surprising result is not a failure.
 
-### No unnecessary pressure
+A misplaced shape, unexpected number or unusual experiment can become the next clue.
 
-Speed is useful only when speed is genuinely part of the mathematical idea.
+### Curiosity is valuable
 
-Otherwise the game should provide time to inspect, reason, repeat and ask another question.
+The best mathematical question is sometimes:
 
-### Values through mechanics
+> “What happens if I change this?”
 
-The project does not want to turn games into moral lectures.
+Games should leave room for that question.
 
-Values should emerge naturally from the mechanics:
+### Patience matters
 
-- patience through repeated observation,
-- perseverance through retrying,
-- fairness through comparing evidence,
-- honesty through recording what actually happened,
-- curiosity through open questions,
-- responsibility through careful choices,
-- creativity through construction,
-- planning through arranging and testing.
+Not every mathematical idea becomes clear immediately.
 
-### Agency matters
+The learner should be allowed to look again, try again and change their mind.
 
-The learner should usually be able to retry, change an idea, inspect evidence and continue without being trapped by an irreversible mistake.
+### Perseverance matters
 
-## 3. Game map
+Trying again should feel like part of the game rather than punishment for failing.
 
-The current game sequence is deliberately broad. Each activity explores a different mathematical way of thinking.
+### Fairness matters
+
+When a game explores fairness, the learner should investigate it rather than simply being told the answer.
+
+### Honesty matters
+
+If an experiment gives an unexpected result, the game should show it.
+
+We should never quietly change the evidence to make the learner's prediction look correct.
+
+### Creativity matters
+
+Some mathematical questions have many good paths.
+
+Games such as Shape Architect and the future construction activities should give children room to make choices rather than forcing one tiny route.
+
+---
+
+## 4. What makes a Maths for All game different
+
+A Maths for All game should have a reason to play beyond collecting points.
+
+A good activity gives the learner something to:
+
+- build,
+- arrange,
+- predict,
+- compare,
+- discover,
+- investigate,
+- solve,
+- or improve.
+
+The mathematics should be inside the action.
+
+The learner should not have to stop playing every few seconds to read a textbook.
+
+Explanation still matters, but it should arrive at the right moment.
+
+---
+
+## 5. The games
 
 ### 🧮 Arithmetic Quiz
 
-Fresh arithmetic questions with clear feedback.
+**What happens:**  
+The learner receives fresh arithmetic questions and works them out.
 
-Focus:
+**Mathematical focus:**
 
+- counting,
 - number sense,
-- arithmetic operations,
-- mental calculation,
-- interpreting short mathematical situations.
+- addition,
+- subtraction,
+- multiplication,
+- division,
+- simple mathematical situations.
+
+**Human value:**  
+Confidence without fear of mistakes.
+
+---
 
 ### 🏁 Math Racing
 
-A personal speed challenge.
+**What happens:**  
+The learner answers arithmetic questions during a friendly personal race.
 
-Focus:
+**Mathematical focus:**
 
-- fluent arithmetic,
+- arithmetic fluency,
 - concentration,
-- personal improvement.
+- mental calculation.
 
-The game should not turn another child's score into the learner's definition of success.
+**Human value:**  
+Improving your own performance rather than defining yourself by someone else's score.
+
+---
 
 ### 🔢 Sudoku Challenge
 
-A logic and deduction activity.
+**What happens:**  
+The learner fills a Sudoku grid using logic and deduction.
 
-Focus:
+**Mathematical focus:**
 
-- constraint reasoning,
-- pattern recognition,
-- persistence,
-- planning.
+- patterns,
+- constraints,
+- deduction,
+- planning,
+- logical reasoning.
+
+**Human value:**  
+Patience and persistence.
+
+---
 
 ### 🔷 Shape Fitting
 
-A visual geometry activity based on fitting and rotating pieces.
+**What happens:**  
+The learner fits and rotates shapes to complete a board.
 
-Focus:
+**Mathematical focus:**
 
-- spatial reasoning,
 - shape recognition,
 - orientation,
+- spatial reasoning,
 - decomposition.
+
+**Human value:**  
+Trying different approaches when the first arrangement does not work.
+
+---
 
 ### 🧺 Slab Maths
 
-An open-ended number activity where number slabs are moved into a basket until the target reaches zero.
+**What happens:**  
+The learner moves number slabs into a basket until the target reaches zero.
 
-Focus:
+**Mathematical focus:**
 
 - subtraction,
 - decomposition,
-- multiple valid routes,
+- number relationships,
 - planning.
+
+**Human value:**  
+There can be more than one sensible route to the same destination.
+
+---
 
 ### 🏗️ Shape Architect
 
-A freeform geometry activity where the learner builds pictures from geometric pieces.
+**What happens:**  
+The learner builds recognizable pictures from geometric pieces.
 
-Current design:
+**Mathematical focus:**
 
-- 100 independently selectable levels,
-- deterministic level generation,
-- multiple geometry families,
-- real solvability checks,
-- a full-figure silhouette guide,
-- forgiving size-aware placement tolerance,
-- forgiving 45-degree rotation handling,
-- visual completion matching,
-- keyboard and pointer interaction.
+- geometry,
+- spatial relationships,
+- rotation,
+- composition,
+- planning.
 
-The design deliberately removed unnecessary distractor pieces and internal construction lines so the learner can focus on the picture and the geometry.
+**Human value:**  
+Creativity and patience.
 
-### 🎪 Probability Carnival
+The learner can choose levels freely rather than being forced through a fixed staircase.
 
-Probability Carnival is a story-driven probability world rather than a numbered level staircase.
+---
 
-The carnival contains four tents:
+# 6. Probability Carnival 🎪
 
-1. **The Curious Machine**
-2. **The Machine Builder**
-3. **The Mystery Tent**
-4. **The Fairness Workshop**
+Probability Carnival is a world of four carnival tents.
 
-The shared learning loop is:
+It is designed to feel like a game world rather than a probability worksheet.
 
-**predict → experiment → observe → reason → try again**
+The learner earns a **Carnival Passport stamp** from each tent.
 
-There is no betting, gambling, money, risk-reward system or prize-for-risk mechanic. The excitement comes from discovering whether an idea survives an experiment.
+There is no betting, gambling, money, or reward for taking risks.
 
-## 4. Probability Carnival in detail
+The excitement comes from finding out what happens.
 
-### The Curious Machine
+The carnival's rhythm is:
 
-The learner sees a machine containing three Sun tokens and one Moon token.
+**Make a call → play → watch → think → try again**
 
-The learner:
+## 🔭 The Telescope Tent: The Curious Machine
 
-1. predicts which outcome will appear more,
-2. runs one or ten trials,
-3. watches the evidence bars grow,
-4. repeats the experiment,
-5. compares the results with the machine's visible contents.
+A strange carnival machine contains Sun and Moon tokens.
 
-The intended idea is that a probability describes a chance, not a guaranteed next result.
+The learner makes a prediction and sends tokens through the machine.
 
-A short run can look surprising. A longer trail can make a pattern easier to see.
+They can watch the results build up and compare the evidence with what they saw inside the machine.
 
-### The Machine Builder
+### The idea
 
-The learner builds an eight-token machine.
+A likely result is not a guaranteed result.
 
-Each token can be switched between Sun and Moon.
+A short run can look surprising.
 
-The interface shows the mathematical consequence of the design:
+More trials can make a pattern easier to notice.
 
-- number of Sun tokens,
-- number of Moon tokens,
-- percentage chance of each outcome,
-- observed results after repeated trials.
+### What the learner practises
 
-This connects a physical-looking construction to the fraction of the machine occupied by each outcome.
+- prediction,
+- counting,
+- comparing,
+- observation,
+- understanding chance.
 
-### The Mystery Tent
+---
 
-The machine is hidden.
+## 🧩 The Builder Tent: The Machine Builder
 
-The learner chooses a hypothesis:
+Here the learner becomes the carnival machine designer.
 
-- mostly Sun,
-- balanced,
-- mostly Moon.
+They can switch the tokens between Sun and Moon and change the machine's balance.
 
-The machine then supplies twelve results as clues.
+Then they make a prediction and test their creation.
 
-Only after the evidence is collected can the learner reveal the hidden composition.
+### The idea
 
-The important lesson is inference: evidence can support an idea without making a small sample certain.
+Changing the mixture changes the chances.
 
-### The Fairness Workshop
+If one outcome occupies more of the machine, it has a greater chance of appearing.
 
-Two machines are compared.
+### What the learner practises
 
-Machine A contains four Sun and four Moon tokens.
+- fractions through concrete objects,
+- comparison,
+- prediction,
+- cause and effect,
+- experimentation.
 
-Machine B contains six Sun and two Moon tokens.
+---
 
-The learner predicts which machine gives equal chances, collects repeated evidence, then makes a final call.
+## 🔎 The Detective Tent: The Mystery Tent
 
-The activity is about fairness as a property of the underlying design, not about whether one short run happens to look balanced.
+Something is hidden backstage.
 
-## 5. Probability vocabulary
+The learner cannot see the machine's contents.
 
-The project should use plain language first.
+Instead, they collect clues from its results.
 
-| Idea | Child-friendly explanation |
-| --- | --- |
-| Outcome | What happens in one trial |
-| Trial | One run of the experiment |
-| Chance | How likely an outcome is |
-| Evidence | What the experiments actually showed |
-| Pattern | Something that keeps appearing in the results |
-| Prediction | What you think may happen before testing |
-| Fair | Outcomes have equal chances in the experiment |
-| Sample | The results collected from a set of trials |
+After gathering enough clues, they make their best inference and open the mystery.
 
-The interface should introduce formal terminology gradually rather than turning every game into a vocabulary test.
+### The idea
 
-## 6. Accessibility
+Evidence can make one explanation more convincing than another.
 
-Accessibility is part of the game design, not a final decoration pass.
+Evidence from a small sample is useful, but it does not make uncertainty disappear.
 
-The project aims to support learners who may:
+### What the learner practises
 
-- need larger visual targets,
-- prefer keyboard input,
-- need repeated attempts,
-- process information more slowly,
-- have difficulty with precise pointer movement,
-- benefit from strong visual grouping,
-- use reduced-motion settings,
-- need clear and predictable controls.
+- inference,
+- evidence,
+- comparison,
+- uncertainty,
+- reasoning.
 
-### Interaction rules
+---
 
-Essential controls should:
+## ⚖️ The Repair Tent: The Fairness Workshop
 
-- use real buttons or links where appropriate,
-- have meaningful labels,
-- remain keyboard reachable,
-- expose visible focus,
-- provide enough physical space between targets,
-- avoid relying on colour alone,
-- avoid requiring unnecessary speed,
-- provide text feedback for important visual events.
+Two carnival machines need checking.
 
-Canvas is used only where visual drawing is useful. Important state is also exposed through normal HTML text so that the game does not depend on the canvas alone.
+The learner predicts which machine gives equal chances, tests them, and then chooses the fair design.
 
-The project follows the principle that semantic HTML provides useful accessibility behaviour by default, while JavaScript should enhance rather than replace basic interaction. citeturn0search1turn0search0
+### The idea
 
-### Motion
+A fair chance experiment has equal chances for the possible outcomes being compared.
 
-Probability Carnival uses small, event-triggered animation for experiment results.
+A few results can still look uneven.
 
-The game checks the user's reduced-motion preference and removes the non-essential movement when reduced motion is requested. This follows the browser accessibility mechanism provided by `prefers-reduced-motion`. citeturn1search0turn1search2
+### What the learner practises
 
-## 7. Privacy and research
+- fairness,
+- equal probability,
+- repeated observation,
+- comparison,
+- careful judgement.
 
-Playing a game is not the same thing as consenting to research.
+---
+
+## 7. Probability words
+
+The project prefers ordinary language first.
+
+| Word | What it means |
+|---|---|
+| **Prediction** | What you think may happen |
+| **Trial** | One run of an experiment |
+| **Outcome** | What happened in that trial |
+| **Chance** | How likely something is to happen |
+| **Evidence** | What the experiment actually showed |
+| **Pattern** | Something that appears repeatedly |
+| **Fair** | The possible outcomes have equal chances in the chosen comparison |
+| **Sample** | The collection of results we have observed |
+| **Inference** | A conclusion we make from clues or evidence |
+
+Formal mathematical vocabulary can be introduced gradually.
+
+The first job is to make the idea understandable.
+
+---
+
+## 8. Accessibility
+
+Accessibility is part of the experience.
+
+The games aim to provide:
+
+- large, clear controls,
+- readable text,
+- visible focus,
+- keyboard-friendly interaction where appropriate,
+- clear grouping,
+- enough space between important controls,
+- feedback that does not depend only on colour,
+- comfortable layouts on smaller screens,
+- repeated attempts without unnecessary penalties,
+- and reduced-motion support.
+
+The project also avoids making speed the centre of every activity.
+
+A learner who needs more time should still be able to think.
+
+### Accessibility is not only about disability
+
+Clear design helps everyone.
+
+Large targets help a child who has difficulty with precise movement.
+
+They also help a child using a touchscreen.
+
+Clear wording helps a child with reading difficulties.
+
+It also helps a child who is learning a new concept.
+
+Calm feedback helps a child who becomes overwhelmed.
+
+It also makes the whole experience easier to understand.
+
+---
+
+## 9. What we want children to feel
+
+We want the games to encourage:
+
+### “I can try.”
+
+The first interaction should feel approachable.
+
+### “I can change my mind.”
+
+A prediction is allowed to be wrong.
+
+### “I can find out.”
+
+Questions should lead somewhere.
+
+### “I can try another way.”
+
+A failed attempt should open another possibility.
+
+### “I noticed something.”
+
+Observation is part of mathematical thinking.
+
+### “I understand why.”
+
+The final goal is not merely producing an answer.
+
+It is building understanding.
+
+---
+
+## 10. What we do not want
+
+Maths for All should not become:
+
+- a punishment machine,
+- a collection of endless worksheets,
+- a leaderboard where children are ranked against one another,
+- a place where speed is always treated as intelligence,
+- a place where wrong answers are embarrassing,
+- a gambling-style probability game,
+- or a screen filled with unnecessary decoration.
+
+Fun matters.
+
+But fun should help the mathematics breathe rather than bury it.
+
+---
+
+## 11. For parents, teachers and facilitators
+
+Adults do not need to turn every game into a lesson.
+
+Sometimes the most useful questions are small:
+
+- “What do you notice?”
+- “Why did you choose that?”
+- “What surprised you?”
+- “What would happen if we changed this?”
+- “Would you try it again?”
+- “Is there another way?”
+- “What evidence made you think that?”
+
+Try not to rush to the answer.
+
+Give the child room to explain their own reasoning.
+
+A child's explanation can reveal much more than a correct button press.
+
+---
+
+## 12. Using the games in a group
+
+The activities can also become shared mathematical conversations.
+
+For example:
+
+### Probability Carnival
+
+One child predicts.
+
+Another watches the results.
+
+A third child keeps track of what happened.
+
+Then the group compares their ideas.
+
+### Shape Architect
+
+One child chooses the picture.
+
+Another suggests where a piece could go.
+
+The group discusses rotation and position.
+
+### Sudoku
+
+Children can explain why a number belongs in a particular place rather than simply announcing the answer.
+
+The goal is not to turn every activity into competition.
+
+The goal is to give mathematics something to talk about.
+
+---
+
+## 13. Privacy and trust
+
+Playing a game should not automatically mean participating in research.
 
 Research participation is explicitly opt-in.
 
-If the learner or responsible user chooses not to participate:
+The project treats privacy as part of caring for learners.
 
-- research collection remains disabled,
-- future research events are blocked,
-- locally held research events are cleared according to the project's consent boundary.
+The published privacy information explains what research participation means and what is outside the research boundary.
 
-The research boundary excludes:
+The project does not treat a child's personal information as a prize to collect.
 
-- passwords,
-- precise location,
-- camera data,
-- microphone data,
-- uploaded files,
-- advertising identifiers,
-- fingerprinting.
+Privacy information should remain understandable and accessible without requiring a child or family to begin by creating an account.
 
-Privacy and research information must remain available without requiring an account.
+---
 
-Authentication is currently disabled for the physical-game prototype. It must not be presented as production authentication until that work is actually completed and tested.
+## 14. Responsible use of AI
 
-## 8. Responsible AI
+AI tools may help people working on Maths for All with:
 
-AI tools may assist with:
-
-- software design,
-- implementation,
+- ideas,
+- writing,
+- programming,
 - debugging,
-- test design,
+- testing,
 - documentation,
-- review,
-- release planning.
+- and review.
 
-AI output is not treated as authority for:
+But AI is not treated as the final authority.
 
-- correctness,
-- accessibility,
-- privacy,
-- educational quality,
-- legal compliance.
+People remain responsible for deciding whether something is:
 
-The final responsibility remains with human review, automated tests and physical use of the website.
+- mathematically correct,
+- understandable,
+- accessible,
+- appropriate for children,
+- respectful of privacy,
+- and genuinely useful.
 
-The project maintains `AI_USAGE.md` as the detailed disclosure and responsibility record.
+The project's AI-use record explains the disclosure and responsibility principles in more detail.
 
-## 9. Technical architecture
+---
 
-The project is intentionally modular and uses browser-native technologies.
+## 15. How a new game should be created
 
-### Shared layer
+Every new game follows the same human-centred path:
 
-The existing shared runtime handles:
+1. **Ask what mathematical idea deserves a game.**
+2. **Decide what the child should actually do.**
+3. **Make a small playable version.**
+4. **Play it ourselves.**
+5. **Notice what feels confusing, boring or uncomfortable.**
+6. **Change the game.**
+7. **Play it again.**
+8. **Check accessibility and correctness.**
+9. **Let the real experience decide whether it is finished.**
+10. **Record what we learned.**
 
-- screen switching,
-- accessibility settings,
-- context-sensitive help,
-- local progress,
-- privacy/research integration,
-- common keyboard behaviour.
+A game is not finished merely because it works.
 
-### Game modules
+It is finished when the experience works.
 
-Games keep their own modules where practical.
+---
 
-Shape Architect is split into separate library, canvas, level, solver and runtime modules.
-
-Probability Carnival follows the same philosophy:
-
-- `js/probability-carnival-library.js`
-  - probability-machine primitives,
-  - drawing,
-  - repeated trials,
-  - counts,
-  - dominant outcome,
-  - exact token-based probability.
-- `js/probability-carnival-stories.js`
-  - story catalogue,
-  - objectives,
-  - learning outcomes.
-- `js/probability-carnival-canvas.js`
-  - machine drawing,
-  - evidence visualisation,
-  - small result animation,
-  - reduced-motion handling.
-- `js/probability-carnival.js`
-  - story state,
-  - interaction flow,
-  - completion state,
-  - reflection,
-  - local discovery progress.
-- `css/probability-carnival.css`
-  - responsive visual system,
-  - large controls,
-  - evidence bars,
-  - story cards,
-  - reduced-motion rules.
-
-This separation keeps the mathematical data, visual renderer and game flow understandable independently.
-
-## 10. Local state
-
-Progress that belongs to the learner's device may use `localStorage`.
-
-Probability Carnival stores only its local discovery-completion state:
-
-`mfa_probability_carnival_v1`
-
-It does not require an account to play.
-
-The probability experiments themselves are generated locally in the browser.
-
-## 11. Testing philosophy
-
-Testing is layered.
-
-### Static checks
-
-Verify:
-
-- required files exist,
-- script and stylesheet references resolve,
-- expected DOM mount points exist,
-- the modular game files are present.
-
-### Browser smoke tests
-
-The browser smoke suite checks:
-
-- the Probability Carnival screen opens,
-- all four tents are visible,
-- tents are not locked behind sequential levels,
-- each story can complete,
-- evidence counts update,
-- the mystery reveal works,
-- the fairness comparison works,
-- the discovery count reaches four.
-
-### Accessibility checks
-
-The wider smoke suite also checks:
-
-- large-text layouts,
-- mobile layouts,
-- keyboard-relevant controls,
-- context-sensitive help,
-- Escape behaviour for overlays,
-- absence of broken resources.
-
-### Physical testing
-
-Automated tests cannot answer everything.
-
-Before a game is considered genuinely finished, it should be played on the real device and checked for:
-
-- target size,
-- visual clarity,
-- confusing wording,
-- accidental taps,
-- scrolling,
-- animation comfort,
-- whether the mathematics is actually enjoyable,
-- whether the activity feels like Maths for All rather than a generic worksheet.
-
-## 12. Development workflow
-
-The project follows a deliberately narrow loop:
-
-1. discuss the idea,
-2. define the learning experience,
-3. build the smallest meaningful prototype,
-4. play it,
-5. identify real problems,
-6. fix those problems,
-7. test again,
-8. update the wiki,
-9. update project records,
-10. move to the next planned game.
-
-The rule is not "add everything we can think of".
-
-The rule is:
-
-> **Build the thing we agreed to build, make it good, then move on.**
-
-Unrelated improvements should not be mixed into a game PR unless they are required for correctness, accessibility or stability.
-
-## 13. Current roadmap
+## 16. Current roadmap
 
 The current creative sequence is:
 
-1. **Shape Architect** ✓ completed and hardened
-2. **Probability Carnival** ✓ full playable world implemented
-3. **Fraction Bakery** planned
-4. **Little Shop** planned
-5. **Number Maze** planned
+1. **Shape Architect** ✓
+2. **Probability Carnival** ✓
+3. **Fraction Bakery** next
+4. **Little Shop**
+5. **Number Maze**
 6. **2048** later
 
-2048 is intentionally deferred because the first five games build a broader foundation of mathematical experiences.
+The order matters.
 
-## 14. Acceptance standard for a new game
+We want the first five new games to create a broad collection of mathematical experiences before adding more advanced activities.
 
-A new game is not finished merely because the code runs.
+---
 
-It should satisfy all of these:
+## 17. What “finished” means
 
-- the mathematical idea is clear,
-- the interaction is understandable,
-- the activity is enjoyable enough to invite another attempt,
-- mistakes are handled constructively,
-- controls are physically usable,
-- important state is readable,
-- keyboard interaction works where applicable,
-- reduced motion is respected,
-- the game works on a narrow screen,
-- automated checks pass,
-- physical testing has been done,
-- the wiki explains the accepted design,
-- unrelated features have not leaked into the work.
+A game should be considered ready when:
 
-## 15. Project records
+- the mathematics makes sense,
+- the activity is enjoyable,
+- the instructions are understandable,
+- the controls are comfortable,
+- mistakes are treated kindly,
+- important information is easy to see,
+- accessibility has been considered,
+- the activity works on different screen sizes,
+- it has been played by real people,
+- and the experience feels worthy of a child’s time.
 
-Important project records include:
+---
 
-- `README.md` for the public project overview,
-- `CHANGELOG.md` for release history,
-- `ONGOING.md` for current implementation state,
-- `AI_USAGE.md` for AI disclosure,
-- `docs/WIKI.md` for design and engineering knowledge.
+## 18. Our promise
 
-The public `wiki.html` mirrors the most useful parts of this document for visitors who want to understand the project without reading the repository.
+Maths for All is a small project.
 
-## 16. The standard we are aiming for
+It does not need to solve every problem in education.
 
-Success is not the number of levels, buttons or features.
+It can still try to make one corner of learning a little kinder.
 
-A successful Maths for All activity is one where a child can enter, understand what they can do, experiment safely, notice something mathematical, change an idea, and leave with a little more agency than they had before.
+We want mathematics to feel less like a gate that decides who belongs and more like a place where everyone can enter, look around, ask questions and make something.
 
-**The website is the artifact. The child is the reason.**
+> **The website is the artifact. The child is the reason.**

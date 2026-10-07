@@ -3651,3 +3651,17 @@ body {
     padding: 11px 10px;
   }
 }
+
+
+.nav-link.nav-wiki-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.nav-link.nav-wiki-link:hover,
+.nav-link.nav-wiki-link:focus-visible,
+.nav-link.nav-wiki-link.active {
+  text-decoration: none;
+}
