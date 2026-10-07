@@ -165,3 +165,130 @@
   .pc-dice-row{gap:10px}
 }
 @media(prefers-reduced-motion:reduce){.pc-die-roll{animation:none}}
+
+
+/* Wide machine cabinet redesign */
+#screen-probability-carnival{padding:10px 18px 30px}
+#screen-probability-carnival .pc-shell{width:calc(100vw - 28px);max-width:none}
+#screen-probability-carnival .pc-back{margin-bottom:8px}
+#screen-probability-carnival .pc-game{display:block}
+#screen-probability-carnival .pc-level-panel,
+#screen-probability-carnival .pc-stage-strip,
+#screen-probability-carnival .pc-footer-note{display:none}
+#screen-probability-carnival .pc-play-panel{
+  position:relative;
+  overflow:hidden;
+  min-height:calc(100vh - 150px);
+  padding:18px 22px 20px;
+  border:4px solid #2f393d;
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 12% 10%,rgba(255,255,255,.9),transparent 25%),
+    linear-gradient(155deg,#d8dedb 0%,#f4f1e8 42%,#cbd3d0 100%);
+  box-shadow:0 9px 0 rgba(38,50,56,.16),inset 0 0 0 2px rgba(255,255,255,.7),inset 0 0 38px rgba(38,50,56,.14);
+}
+#screen-probability-carnival .pc-play-panel::before,
+#screen-probability-carnival .pc-play-panel::after{
+  content:"";
+  position:absolute;
+  top:14px;
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff 0 12%,#6d777a 15% 58%,#343e42 62%);
+  box-shadow:0 2px 0 rgba(38,50,56,.35);
+  pointer-events:none;
+}
+#screen-probability-carnival .pc-play-panel::before{left:15px}
+#screen-probability-carnival .pc-play-panel::after{right:15px}
+.pc-machine-head{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  align-items:center;
+  gap:18px;
+  margin-bottom:16px;
+  padding:12px 16px;
+  border:3px solid #273236;
+  border-radius:16px;
+  background:linear-gradient(180deg,#3e4a4e,#252e31);
+  color:#f8f6ed;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.1),0 5px 0 rgba(38,50,56,.18);
+}
+.pc-machine-brand{display:grid;gap:2px}
+.pc-machine-eyebrow{font-size:.7rem;letter-spacing:.18em;font-weight:900;opacity:.72}
+.pc-machine-brand strong{font-size:1.18rem;letter-spacing:.08em}
+.pc-machine-readout{display:grid;gap:2px;text-align:right}
+.pc-machine-readout span{font-size:.75rem;letter-spacing:.08em;color:#cbd5d0}
+.pc-machine-readout b{font-size:1.15rem;letter-spacing:.06em}
+.pc-machine-gauge{display:flex;gap:7px}
+.pc-machine-gauge i{display:block;width:13px;height:13px;border-radius:50%;background:#c58d32;box-shadow:0 0 10px rgba(197,141,50,.55),inset 0 1px 0 rgba(255,255,255,.6)}
+.pc-machine-gauge i:nth-child(2){background:#7ca083;box-shadow:0 0 10px rgba(124,160,131,.55)}
+.pc-machine-gauge i:nth-child(3){background:#8b7ba2;box-shadow:0 0 10px rgba(139,123,162,.55)}
+#screen-probability-carnival .pc-play-heading{padding:0 4px}
+#screen-probability-carnival .pc-play-heading h2{font-size:clamp(1.7rem,3vw,2.45rem);text-transform:none;letter-spacing:0}
+#screen-probability-carnival .pc-prompt{max-width:1100px;font-size:clamp(1.18rem,2vw,1.48rem)}
+#screen-probability-carnival .pc-scene{
+  min-height:310px;
+  margin:16px 0 12px;
+  padding:20px;
+  border:4px solid #344044;
+  border-radius:20px;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.48) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.32) 1px,transparent 1px),
+    linear-gradient(145deg,#eef1ec,#f8f4e9);
+  background-size:28px 28px,28px 28px,auto;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.7),inset 0 -8px 0 rgba(52,64,68,.08),0 6px 0 rgba(38,50,56,.12);
+}
+#screen-probability-carnival .pc-scene::before{inset:9px;border:2px solid rgba(52,64,68,.16)}
+#screen-probability-carnival .pc-machine-panel{
+  grid-template-columns:auto 1fr auto auto;
+  margin:-2px -2px 14px;
+  padding:10px 14px;
+  border:3px solid #273236;
+  border-radius:13px;
+  background:linear-gradient(180deg,#4a565a,#303a3d);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.08),0 4px 0 rgba(38,50,56,.16);
+}
+#screen-probability-carnival .pc-machine-label{font-size:.86rem}
+#screen-probability-carnival .pc-machine-stage{font-size:.76rem}
+#screen-probability-carnival .pc-machine-level{font-size:.76rem;font-weight:900;letter-spacing:.08em;color:#d9dfdb}
+#screen-probability-carnival .pc-choice-area{grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+#screen-probability-carnival .pc-choice{min-height:62px;font-size:1.05rem;border-width:3px;background:rgba(255,253,248,.96)}
+#screen-probability-carnival .pc-main-action{min-height:62px;font-size:1.08rem}
+#screen-probability-carnival .pc-feedback{min-height:52px;font-size:1rem;background:rgba(255,253,248,.9)}
+#screen-probability-carnival .pc-play-actions{grid-template-columns:1fr auto;max-width:520px;margin-left:auto}
+#screen-probability-carnival .pc-play-actions button{min-height:50px}
+#screen-probability-carnival .pc-arcade-intuition{grid-template-columns:minmax(320px,390px) minmax(0,1fr);gap:42px}
+#screen-probability-carnival .pc-wheel-wrap{width:320px;height:320px}
+#screen-probability-carnival .pc-wheel{width:275px;height:275px}
+#screen-probability-carnival .pc-wheel span{font-size:2.4rem}
+#screen-probability-carnival .pc-wheel span:first-child{top:43px;left:62px}
+#screen-probability-carnival .pc-wheel span:last-child{bottom:43px;right:62px}
+#screen-probability-carnival .pc-arcade-copy strong{font-size:clamp(1.5rem,2.4vw,2rem)}
+#screen-probability-carnival .pc-arcade-copy span{font-size:1.16rem}
+#screen-probability-carnival .pc-probability-legend{max-width:620px;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#screen-probability-carnival .pc-probability-legend span{padding:12px 14px;font-size:1.05rem}
+#screen-probability-carnival .pc-dice-machine{padding:28px;border-width:4px}
+#screen-probability-carnival .pc-die{width:96px;height:96px;font-size:2.3rem;border-width:4px}
+#screen-probability-carnival .pc-dice-row{min-height:108px;gap:20px}
+@media(max-width:760px){
+  #screen-probability-carnival{padding:8px 7px 22px}
+  #screen-probability-carnival .pc-play-panel{padding:14px;min-height:0}
+  .pc-machine-head{grid-template-columns:1fr auto;gap:10px}
+  .pc-machine-gauge{grid-column:1/-1}
+  #screen-probability-carnival .pc-choice-area{grid-template-columns:1fr}
+  #screen-probability-carnival .pc-play-actions{max-width:none}
+  #screen-probability-carnival .pc-arcade-intuition{grid-template-columns:1fr;gap:16px}
+  #screen-probability-carnival .pc-wheel-wrap{width:245px;height:245px}
+  #screen-probability-carnival .pc-wheel{width:210px;height:210px}
+}
+@media(max-width:520px){
+  #screen-probability-carnival .pc-play-heading h2{font-size:1.6rem}
+  #screen-probability-carnival .pc-prompt{font-size:1.08rem}
+  #screen-probability-carnival .pc-scene{min-height:285px;padding:13px}
+  #screen-probability-carnival .pc-machine-panel{grid-template-columns:auto 1fr;gap:8px}
+  #screen-probability-carnival .pc-machine-level{grid-column:2}
+  #screen-probability-carnival .pc-die{width:72px;height:72px;font-size:1.8rem}
+  #screen-probability-carnival .pc-dice-row{gap:9px}
+}

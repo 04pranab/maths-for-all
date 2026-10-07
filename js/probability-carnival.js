@@ -65,7 +65,7 @@ window.ProbabilityCarnival = (() => {
   }
 
   function selectStage(stage) {
-    selectLevel((stage - 1) * 10 + 1);
+    selectLevel((stage - 1) * 12 + 1);
   }
 
   function selectLevel(id) {
@@ -98,8 +98,8 @@ window.ProbabilityCarnival = (() => {
     const grid = $("pc-level-grid");
     if (!grid) return;
     grid.innerHTML = "";
-    const first = (state.stage - 1) * 10 + 1;
-    for (let id = first; id <= first + 9; id += 1) {
+    const first = (state.stage - 1) * 12 + 1;
+    for (let id = first; id <= first + 11; id += 1) {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "pc-level-button" + (id === state.level ? " is-current" : "") + (state.completed.has(id) ? " is-complete" : "");
@@ -123,7 +123,9 @@ window.ProbabilityCarnival = (() => {
     if (!level) return;
     const stage = stages[level.stage - 1];
     $("pc-level-number").textContent = String(level.id);
-    $("pc-level-kicker").textContent = "Stage " + level.stage + " · " + stage.name;
+    $("pc-level-range").textContent = "LEVEL " + String(level.id).padStart(2, "0") + " / " + String(levels.length).padStart(2, "0");
+    $("pc-machine-stage").textContent = "Stage " + level.stage + " · " + stage.name;
+    $("pc-system-state").textContent = state.completed.has(level.id) ? "DISCOVERY SAVED" : "SYSTEM ONLINE";
     $("pc-level-title").textContent = level.title;
     $("pc-level-prompt").textContent = level.prompt;
     const scene = $("pc-scene");
@@ -132,9 +134,15 @@ window.ProbabilityCarnival = (() => {
     choices.innerHTML = "";
     scene.className = "pc-scene pc-scene-" + level.type + " pc-scene-variant-" + (((level.id - 1) % 6) + 1);
     $("pc-next").disabled = !state.completed.has(level.id) || level.id === levels.length;
+    const playPanel = document.querySelector(".pc-play-panel");
+    if (playPanel) {
+      playPanel.dataset.completed = state.completed.has(level.id) ? "true" : "false";
+      playPanel.dataset.stage = String(level.stage);
+      playPanel.dataset.level = String(level.id);
+    }
     const machinePanel = document.createElement("div");
     machinePanel.className = "pc-machine-panel";
-    machinePanel.innerHTML = '<div class="pc-machine-lights"><i class="pc-machine-light"></i><i class="pc-machine-light"></i><i class="pc-machine-light"></i></div><div class="pc-machine-label">PROBABILITY ENGINE · UNIT ' + String(level.id).padStart(2, "0") + '</div><span class="pc-machine-stage">READY</span>';
+    machinePanel.innerHTML = '<div class="pc-machine-lights"><i class="pc-machine-light"></i><i class="pc-machine-light"></i><i class="pc-machine-light"></i></div><div class="pc-machine-label">PROBABILITY ENGINE // UNIT ' + String(level.id).padStart(2, "0") + '</div><span class="pc-machine-stage">STAGE ' + String(level.stage) + ' · READY</span><span class="pc-machine-level">LEVEL ' + String(level.id).padStart(2, "0") + ' / ' + String(levels.length).padStart(2, "0") + '</span>';
     scene.appendChild(machinePanel);
     feedback(
       state.completed.has(level.id)
@@ -475,6 +483,9 @@ window.ProbabilityCarnival = (() => {
       saveProgress();
     }
     renderLevelMap();
+    const playPanel = document.querySelector(".pc-play-panel");
+    if (playPanel) playPanel.dataset.completed = "true";
+    setText("pc-system-state", "DISCOVERY SAVED");
     const next = $("pc-next");
     if (next) next.disabled = !state.completed.has(id) || id === levels.length;
     document.querySelectorAll("#pc-choice-area button").forEach(button => { button.disabled = false; });
