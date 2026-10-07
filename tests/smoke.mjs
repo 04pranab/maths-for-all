@@ -252,6 +252,12 @@ async function main() {
     Game.goHome();
     ProbabilityCarnival.open();
     assert(window.ProbabilityCarnivalStories.levels.length === 84, "Probability Carnival must define exactly 84 levels.");
+    assert(!document.querySelector(".pc-stage-strip"), "Probability Machine should not render the old long stage-button strip.");
+    assert(!document.querySelector(".pc-level-panel"), "Probability Machine should not render the old level side panel.");
+    assert(!document.querySelector(".pc-footer-note"), "Probability Machine should not render the old instruction footer panel.");
+    const machinePanel = document.querySelector("#screen-probability-carnival .pc-play-panel");
+    assert(machinePanel && machinePanel.getBoundingClientRect().width >= 1200, "Probability Machine main cabinet is not wide enough on desktop.");
+    assert(document.getElementById("pc-level-range")?.textContent === "LEVEL 01 / 84", "Probability Machine level readout is not initialized.");
     assert(window.ProbabilityCarnivalStories.stages.length === 7, "Probability Carnival must define seven stages.");
     for (let stage = 1; stage <= 7; stage++) {
       const stageLevels = window.ProbabilityCarnivalStories.levels.filter(level => level.stage === stage);
