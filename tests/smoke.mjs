@@ -263,7 +263,7 @@ async function main() {
     'assert(document.getElementById("pc-stage-name").textContent === "Probability intuition", "Stage 1 title is incorrect.");' +
     'ProbabilityCarnival.check();' +
     'assert(document.getElementById("pc-completed-count").textContent === "0", "An unanswered level was completed.");' +
-    'document.querySelector("#pc-choice-area .pc-choice[data-value=\"certain\"]")?.click();' +
+    'document.querySelector("#pc-choice-area .pc-choice[data-value=\"impossible\"]")?.click();' +
     'ProbabilityCarnival.check();' +
     'assert(document.getElementById("pc-completed-count").textContent === "1", "Stage 1 level did not complete.");' +
     'ProbabilityCarnival.selectLevel(11);' +
