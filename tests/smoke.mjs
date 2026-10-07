@@ -535,8 +535,8 @@ async function main() {
     'assert(generated.every(q => q && Number.isFinite(q.answer) && typeof q.text === "string"), "Concurrent question generation returned an invalid question.");' +
     'const slabRounds = await Promise.all(Array.from({length: 30}, () => Promise.resolve().then(() => { SlabMath.newRound(); return Number(document.getElementById("slab-basket-number").textContent); })));' +
     'assert(slabRounds.length === 30 && slabRounds.every(Number.isFinite), "Concurrent Slab Maths generation failed.");' +
-    'const rapidStarts = [["quiz", Game.startArithmetic], ["race", Game.startRacing], ["sudoku", Game.startSudoku], ["shape", Game.startShapePuzzle], ["slab", Game.startSlabMath]];' +
-    'for (const [, start] of rapidStarts) { Game.goHome(); start(); }' +
+    'const rapidStarts = [["quiz", "screen-quiz", Game.startArithmetic], ["race", "screen-race", Game.startRacing], ["sudoku", "screen-sudoku", Game.startSudoku], ["shape", "screen-shape", Game.startShapePuzzle], ["slab", "screen-slab", Game.startSlabMath]];' +
+    'for (const [key, screenId, start] of rapidStarts) { Game.goHome(); start(); assert(document.getElementById(screenId)?.classList.contains("active"), "Rapid start did not activate " + key + "."); }' +
     'assert(document.querySelector(".screen.active")?.id === "screen-slab", "Rapid game starts did not leave the last requested game active.");' +
     'Game.startShapePuzzle();' +
     'const shapeTimerBeforeSwitch = document.getElementById("shape-timer")?.textContent;' +
