@@ -169,7 +169,7 @@
 
 /* Wide machine cabinet redesign */
 #screen-probability-carnival{padding:10px 18px 30px}
-#screen-probability-carnival .pc-shell{width:min(1420px,100%)}
+#screen-probability-carnival .pc-shell{width:calc(100vw - 28px);max-width:none}
 #screen-probability-carnival .pc-back{margin-bottom:8px}
 #screen-probability-carnival .pc-game{display:block}
 #screen-probability-carnival .pc-level-panel,
