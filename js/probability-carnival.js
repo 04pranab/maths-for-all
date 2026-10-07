@@ -131,7 +131,7 @@ window.ProbabilityCarnival = (() => {
     scene.innerHTML = "";
     choices.innerHTML = "";
     scene.className = "pc-scene pc-scene-" + level.type + " pc-scene-variant-" + (((level.id - 1) % 6) + 1);
-    $("pc-next").disabled = !state.completed.has(level.id) || level.id === 60;
+    $("pc-next").disabled = !state.completed.has(level.id) || level.id === levels.length;
     const machinePanel = document.createElement("div");
     machinePanel.className = "pc-machine-panel";
     machinePanel.innerHTML = '<div class="pc-machine-lights"><i class="pc-machine-light"></i><i class="pc-machine-light"></i><i class="pc-machine-light"></i></div><div class="pc-machine-label">PROBABILITY ENGINE · UNIT ' + String(level.id).padStart(2, "0") + '</div><span class="pc-machine-stage">READY</span>';
@@ -148,6 +148,7 @@ window.ProbabilityCarnival = (() => {
     if (level.type === "experiment") renderExperiment(level, scene, choices);
     if (level.type === "randomness") renderRandomness(level, scene, choices);
     if (level.type === "detective") renderDetective(level, scene, choices);
+    if (level.type === "dice") renderDice(level, scene, choices);
     renderLevelMap();
   }
 
@@ -384,6 +385,54 @@ window.ProbabilityCarnival = (() => {
     else feedback("Look at the counts again. A short run can wander quite far from 3:1 without changing the machine.", "notice");
   }
 
+  function renderDice(level, scene, choices) {
+    const board = document.createElement("div");
+    board.className = "pc-dice-lab";
+    board.innerHTML = '<div class="pc-dice-machine"><span class="pc-dice-label">DICE LAB · NO STAKES</span><div class="pc-dice-row"></div><small>Rolls are experiments. There are no bets, prizes, or rewards for the roll.</small></div><div class="pc-dice-lesson">' + level.lesson + '</div>';
+    const diceRow = board.querySelector(".pc-dice-row");
+    for (let index = 0; index < level.dice; index += 1) {
+      const die = document.createElement("div");
+      die.className = "pc-die";
+      die.textContent = "•";
+      die.setAttribute("aria-label", "Die " + (index + 1) + " not rolled");
+      diceRow.appendChild(die);
+    }
+    scene.appendChild(board);
+    level.choices.forEach(choice => addChoice(choices, choice, choice));
+    actionButton(choices, "🎲 Roll to test the idea", () => rollDice(level, diceRow), "pc-main-action");
+  }
+
+  function rollDice(level, diceRow) {
+    if (!state.selected || state.busy) {
+      feedback(state.busy ? "The dice are rolling..." : "Choose your prediction first, then run the experiment.", "notice");
+      return;
+    }
+    state.busy = true;
+    const dice = Array.from(diceRow.querySelectorAll(".pc-die"));
+    dice.forEach((die, index) => {
+      const value = Math.floor(Math.random() * 6) + 1;
+      die.textContent = String(value);
+      die.setAttribute("aria-label", "Die " + (index + 1) + " shows " + value);
+      die.classList.remove("pc-die-roll");
+      void die.offsetWidth;
+      die.classList.add("pc-die-roll");
+    });
+    const session = state.session;
+    window.setTimeout(() => {
+      if (session !== state.session) return;
+      state.busy = false;
+      if (state.selected === level.answer) {
+        complete(level.id, "🎲 Prediction checked. The roll is evidence, not a guarantee. " + level.lesson);
+      } else {
+        state.streak = 0;
+        saveProgress();
+        const action = document.querySelector("#pc-choice-area .pc-main-action");
+        if (action) action.disabled = false;
+        feedback("Not quite. Re-read the possible outcomes, then test the idea again.", "notice");
+      }
+    }, 360);
+  }
+
   function renderDetective(level, scene, choices) {
     const clueCount = state.clues.length;
     const card = document.createElement("div");
@@ -426,6 +475,9 @@ window.ProbabilityCarnival = (() => {
       saveProgress();
     }
     renderLevelMap();
+    const next = $("pc-next");
+    if (next) next.disabled = !state.completed.has(id) || id === levels.length;
+    document.querySelectorAll("#pc-choice-area button").forEach(button => { button.disabled = false; });
     feedback(message + (firstTime ? " +10 discovery points!" : ""), "success");
     document.querySelector(".pc-play-panel")?.classList.remove("pc-celebrate");
     void document.querySelector(".pc-play-panel")?.offsetWidth;
@@ -492,7 +544,12 @@ window.ProbabilityCarnival = (() => {
   }
 
   function next() {
-    if (state.level >= 60) return;
+    if (state.busy) return;
+    if (!state.completed.has(state.level)) {
+      feedback("Complete this level first. Your prediction is still being tested.", "notice");
+      return;
+    }
+    if (state.level >= levels.length) return;
     selectLevel(state.level + 1);
   }
 
