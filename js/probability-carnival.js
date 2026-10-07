@@ -11,6 +11,7 @@ window.ProbabilityCarnival = (() => {
     experimentResults: [],
     clues: [],
     revealed: false,
+    randomRun: null,
     score: Number(localStorage.getItem(STORAGE_KEY + "_score")) || 0,
     streak: Number(localStorage.getItem(STORAGE_KEY + "_streak")) || 0
   };
@@ -68,6 +69,7 @@ window.ProbabilityCarnival = (() => {
     state.experimentResults = [];
     state.clues = [];
     state.revealed = false;
+    state.randomRun = null;
     if (level?.type === "build") {
       state.builtTokens = Array.from({ length: 12 }, (_, i) => i < 6 ? "sun" : "moon");
     }
@@ -306,7 +308,7 @@ window.ProbabilityCarnival = (() => {
       button.dataset.value = String(index);
       button.innerHTML = '<b>Run ' + (index + 1) + '</b><span>' + "☀ ".repeat(run[0]) + "☾ ".repeat(run[1]) + '</span><small>' + run[0] + ' Sun · ' + run[1] + ' Moon</small>';
       button.addEventListener("click", () => {
-        state.selected = String(index);
+        state.randomRun = index;
         runRow.querySelectorAll(".pc-sample-run").forEach(item => item.classList.toggle("is-selected", item === button));
       });
       runRow.appendChild(button);
@@ -320,12 +322,12 @@ window.ProbabilityCarnival = (() => {
   }
 
   function checkRandomness(level, runs) {
-    if (state.selected === null) {
+    if (state.randomRun === null) {
       feedback("Pick a run first. What catches your eye?", "notice");
       return;
     }
     const choice = document.querySelector("#pc-choice-area .pc-choice.is-selected")?.dataset.value;
-    const run = runs[Number(state.selected)];
+    const run = runs[Number(state.randomRun)];
     const ratioGap = Math.abs(run[0] / Math.max(1, level.trials) - 0.75);
     const answer = ratioGap > 0.35 ? "surprising" : "close";
     if (choice === answer) complete(level.id, "🔦 Nice detective eye. Random runs can wobble around the theoretical chance.");
