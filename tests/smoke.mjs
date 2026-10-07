@@ -270,7 +270,7 @@ async function main() {
     assert(document.querySelector(".pc-wheel"), "Stage 1 must render the interactive chance wheel.");
     document.querySelector("#pc-choice-area .pc-choice[data-value='impossible']").click();
     document.querySelector("#pc-choice-area .pc-main-action").click();
-    await new Promise(r => setTimeout(r, 540));
+    await new Promise(r => setTimeout(r, 800));
     assert(completedLevels() === 1, "Stage 1 representative level did not complete.");
 
     ProbabilityCarnival.selectLevel(13);
@@ -311,7 +311,7 @@ async function main() {
     assert(document.querySelectorAll(".pc-die").length === 1, "Dice Lab level 73 must render one die.");
     document.querySelector("#pc-choice-area .pc-choice[data-value='They are equally likely']").click();
     document.querySelector("#pc-choice-area .pc-main-action").click();
-    await new Promise(r => setTimeout(r, 420));
+    await new Promise(r => setTimeout(r, 520));
     assert(completedLevels() === 1, "Dice Lab representative level did not complete.");
     assert(!document.getElementById("pc-next").disabled, "Next level remained disabled after a correct completion.");
 
