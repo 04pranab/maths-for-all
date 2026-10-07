@@ -135,6 +135,16 @@ const ControlsOverlay = (function () {
         'Fill every square on the board to win the level — Hint is there if you need it.',
       ],
     },
+    probability: {
+      icon: '🎪', title: 'How to play: Probability Carnival',
+      bullets: [
+        'Choose a tent and start with a prediction.',
+        'Run the experiment and watch the evidence grow.',
+        'A surprising result is not a failure. Use it as another clue.',
+        'Build, compare, and reason about chance. There is no betting or reward for risk.',
+        'Use the reflection and discovery cards to connect the experiment to the idea.'
+      ],
+    },
     architect: {
       icon: '🏗️', title: 'How to play: Shape Architect',
       bullets: [
@@ -224,7 +234,8 @@ const Analytics = (function () {
     sudoku: 'Sudoku',
     shape: 'Shape Fitting',
     slab: 'Slab Maths',
-    architect: 'Shape Architect'
+    architect: 'Shape Architect',
+    probability_carnival: 'Probability Carnival'
   };
 
   function events() {
@@ -324,7 +335,7 @@ const Analytics = (function () {
    PROGRESS DASHBOARD (modal UI over Analytics data)
    ============================================================= */
 const Progress = (function () {
-  const LABELS = { quiz: 'Arithmetic Quiz', race: 'Math Racing', sudoku: 'Sudoku', shape: 'Shape Fitting', slab: 'Slab Maths' };
+  const LABELS = { quiz: 'Arithmetic Quiz', race: 'Math Racing', sudoku: 'Sudoku', shape: 'Shape Fitting', slab: 'Slab Maths', probability_carnival: 'Probability Carnival' };
 
   function render() {
     const s = Analytics.summary();
