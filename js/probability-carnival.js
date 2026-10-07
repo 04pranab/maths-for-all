@@ -483,6 +483,7 @@ window.ProbabilityCarnival = (() => {
       saveProgress();
     }
     renderLevelMap();
+    setText("pc-system-state", "DISCOVERY SAVED");
     const next = $("pc-next");
     if (next) next.disabled = !state.completed.has(id) || id === levels.length;
     document.querySelectorAll("#pc-choice-area button").forEach(button => { button.disabled = false; });
