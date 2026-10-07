@@ -40,20 +40,11 @@
 
     <section id="screen-probability-carnival" class="screen" hidden>
     <div class="pc-shell">
-      <button class="pc-back" type="button" onclick="ProbabilityCarnival.close()">← Back to games</button>
+      <button class="pc-back" type="button" onclick="ProbabilityCarnival.close()">← Back to machines</button>
 
-      <section class="pc-hero">
-        <div class="pc-kicker">Probability Carnival · 60-level adventure</div>
-        <h1>Can you figure out what chance is doing?</h1>
-        <p>Start with intuition, then compare, build, experiment, investigate, and become the probability detective.</p>
-        <div class="pc-progress-line">
-          <strong><span id="pc-current-level">1</span>/60</strong>
-          <span id="pc-stage-name">Probability intuition</span>
-          <span>⭐ <span id="pc-score">0</span> discovery points</span><span>🔥 <span id="pc-streak">0</span> streak</span><span><span id="pc-completed-count">0</span>/60 complete</span>
-        </div>
-      </section>
 
-      <section class="pc-stage-strip" aria-label="Probability Carnival stages">
+
+      <section class="pc-stage-strip" aria-label="Probability Machine stages">
         <button type="button" data-stage="1" onclick="ProbabilityCarnival.selectStage(1)">1 · Intuition</button>
         <button type="button" data-stage="2" onclick="ProbabilityCarnival.selectStage(2)">2 · Compare</button>
         <button type="button" data-stage="3" onclick="ProbabilityCarnival.selectStage(3)">3 · Build</button>
@@ -101,7 +92,7 @@
         </section>
       </main>
 
-      <section class="pc-footer-note">
+      <section class="pc-footer-note" aria-label="Machine controls">
         <strong>Predict → Compare → Build → Experiment → Investigate → Deduce</strong>
         <span>Wrong answers are clues. Try again.</span>
       </section>
