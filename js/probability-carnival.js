@@ -255,9 +255,8 @@ window.ProbabilityCarnival = (() => {
     if (level.type === "build") {
       const sun = state.builtTokens.filter(x => x === "sun").length;
       const moon = state.builtTokens.length - sun;
-      const ratio = sun / Math.max(1, moon);
-      const targetRatio = level.sun / level.moon;
-      if (sun === level.sun * 3 && moon === level.moon * 3 && Math.abs(ratio - targetRatio) < 0.001) {
+      const matchesRatio = sun * level.moon === moon * level.sun;
+      if (sun + moon === state.builtTokens.length && matchesRatio) {
         markComplete(level.id);
         feedback("Machine built! You matched the requested ratio.", "success");
       } else {
