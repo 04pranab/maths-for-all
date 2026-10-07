@@ -12,11 +12,27 @@ window.ProbabilityCarnival = (() => {
     clues: [],
     revealed: false,
     randomRun: null,
-    score: Number(localStorage.getItem(STORAGE_KEY + "_score")) || 0,
-    streak: Number(localStorage.getItem(STORAGE_KEY + "_streak")) || 0
+    busy: false,
+    session: 0,
+    score: readNumber("score"),
+    streak: readNumber("streak")
   };
 
   function $(id) { return document.getElementById(id); }
+
+  function readNumber(key) {
+    try {
+      const value = Number(localStorage.getItem(STORAGE_KEY + "_" + key));
+      return Number.isFinite(value) && value >= 0 ? value : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  function setText(id, value) {
+    const node = $(id);
+    if (node) node.textContent = String(value);
+  }
 
   function loadSet(key) {
     try {
@@ -70,6 +86,8 @@ window.ProbabilityCarnival = (() => {
     state.clues = [];
     state.revealed = false;
     state.randomRun = null;
+    state.busy = false;
+    state.session += 1;
     if (level?.type === "build") {
       state.builtTokens = Array.from({ length: 12 }, (_, i) => i < 6 ? "sun" : "moon");
     }
@@ -123,7 +141,12 @@ window.ProbabilityCarnival = (() => {
     machinePanel.className = "pc-machine-panel";
     machinePanel.innerHTML = '<div class="pc-machine-lights"><i class="pc-machine-light"></i><i class="pc-machine-light"></i><i class="pc-machine-light"></i></div><div class="pc-machine-label">PROBABILITY ENGINE · UNIT ' + String(level.id).padStart(2, "0") + '</div><span class="pc-machine-stage">READY</span>';
     scene.appendChild(machinePanel);
-    $("pc-feedback").textContent = state.completed.has(level.id) ? "⭐ Discovery collected. Replay it or move to the next level." : "Your move.";
+    feedback(
+      state.completed.has(level.id)
+        ? "⭐ Discovery collected. Replay it or move to the next level."
+        : "Your move.",
+      "neutral"
+    );
     if (level.type === "intuition") renderIntuition(level, scene, choices);
     if (level.type === "compare") renderCompare(level, scene, choices);
     if (level.type === "build") renderBuild(level, scene, choices);
@@ -153,16 +176,25 @@ window.ProbabilityCarnival = (() => {
     button.className = className;
     button.textContent = label;
     button.addEventListener("click", handler);
+    button.disabled = state.busy;
     container.appendChild(button);
     return button;
   }
 
   function tokenCounts(level) {
-    if (level.answer === "impossible") return { sun: 8, moon: 0 };
-    if (level.answer === "certain") return { sun: 0, moon: 8 };
-    if (level.answer === "equally likely") return { sun: 4, moon: 4 };
-    if (level.answer === "likely") return { sun: 2, moon: 6 };
-    return { sun: 6, moon: 2 };
+    const scenarios = {
+      1: { sun: 8, moon: 0 },
+      2: { sun: 8, moon: 0 },
+      3: { sun: 7, moon: 1 },
+      4: { sun: 1, moon: 7 },
+      5: { sun: 4, moon: 4 },
+      6: { sun: 0, moon: 8 },
+      7: { sun: 8, moon: 0 },
+      8: { sun: 8, moon: 1 },
+      9: { sun: 1, moon: 8 },
+      10: { sun: 5, moon: 5 }
+    };
+    return scenarios[level.id] || { sun: 4, moon: 4 };
   }
 
   function renderIntuition(level, scene, choices) {
@@ -178,18 +210,31 @@ window.ProbabilityCarnival = (() => {
   }
 
   function spinIntuition(level) {
-    if (!state.selected) {
-      feedback("Choose your prediction first, then pull the lever.", "notice");
+    if (!state.selected || state.busy) {
+      feedback(
+        state.busy ? "The machine is running..." : "Choose your prediction first, then pull the lever.",
+        "notice"
+      );
       return;
     }
+    state.busy = true;
+    const session = state.session;
+    const action = document.querySelector("#pc-choice-area .pc-main-action");
+    if (action) action.disabled = true;
     const wheel = document.querySelector(".pc-wheel");
     wheel?.classList.remove("pc-spin");
     void wheel?.offsetWidth;
     wheel?.classList.add("pc-spin");
     window.setTimeout(() => {
+      if (session !== state.session) return;
       state.revealed = true;
-      if (state.selected === level.answer) complete(level.id, "⚡ Good prediction. The machine produced evidence that fits your idea.");
-      else feedback("The machine surprised you. That is useful evidence. Reconsider the chance and try again.", "notice");
+      state.busy = false;
+      if (state.selected === level.answer) {
+        complete(level.id, "⚡ Good prediction. The machine produced evidence that fits your idea.");
+      } else {
+        if (action) action.disabled = false;
+        feedback("The machine surprised you. That is useful evidence. Reconsider the chance and try again.", "notice");
+      }
     }, 480);
   }
 
@@ -284,22 +329,27 @@ window.ProbabilityCarnival = (() => {
   }
 
   function runExperiment(level) {
-    if (!state.selected) {
-      feedback("Make your prediction before pulling the lever.", "notice");
+    if (!state.selected || state.busy) {
+      feedback(
+        state.busy ? "The machine is already running..." : "Make your prediction before pulling the lever.",
+        "notice"
+      );
       return;
     }
+    state.busy = true;
     state.experimentResults = library.drawMany(level.bag, level.trials);
     renderLevel();
-    window.setTimeout(() => complete(level.id, "⚙ Machine cycle complete. Compare the prediction with the evidence."), 80);
+    complete(level.id, "⚙ Machine cycle complete. Compare the prediction with the evidence.");
   }
 
   function renderRandomness(level, scene, choices) {
     const trials = level.trials;
     const expected = Math.round(trials * 0.75);
+    const surprisingSun = Math.max(0, Math.round(expected - trials * 0.35));
     const runs = [
       [Math.max(0, expected - 1), trials - Math.max(0, expected - 1)],
-      [Math.min(trials, expected + 2), Math.max(0, trials - (expected + 2))],
-      [Math.max(0, expected - 3), Math.max(0, trials - Math.max(0, expected - 3))]
+      [Math.min(trials, expected + 1), Math.max(0, trials - Math.min(trials, expected + 1))],
+      [surprisingSun, Math.max(0, trials - surprisingSun)]
     ];
     const card = document.createElement("div");
     card.className = "pc-sample-board";
@@ -334,7 +384,7 @@ window.ProbabilityCarnival = (() => {
     const choice = document.querySelector("#pc-choice-area .pc-choice.is-selected")?.dataset.value;
     const run = runs[Number(state.randomRun)];
     const ratioGap = Math.abs(run[0] / Math.max(1, level.trials) - 0.75);
-    const answer = ratioGap > 0.35 ? "surprising" : "close";
+    const answer = ratioGap >= 0.30 ? "surprising" : "close";
     if (choice === answer) complete(level.id, "🔦 Nice detective eye. Random runs can wobble around the theoretical chance.");
     else feedback("Look at the counts again. A short run can wander quite far from 3:1 without changing the machine.", "notice");
   }
@@ -372,6 +422,7 @@ window.ProbabilityCarnival = (() => {
   }
 
   function complete(id, message) {
+    state.busy = false;
     const firstTime = !state.completed.has(id);
     if (firstTime) {
       state.completed.add(id);
