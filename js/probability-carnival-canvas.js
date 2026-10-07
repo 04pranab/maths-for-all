@@ -89,7 +89,7 @@ window.ProbabilityCarnivalCanvas = (() => {
     ctx.fillStyle = "#263238";
     ctx.font = "900 14px system-ui, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("CHANCE CARNIVAL", centerX, machineY + 35);
+    ctx.fillText("PROBABILITY ENGINE", centerX, machineY + 35);
 
     const chamberX = machineX + 24;
     const chamberY = machineY + 52;
