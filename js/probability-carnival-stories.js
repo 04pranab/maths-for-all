@@ -18,7 +18,9 @@ window.ProbabilityCarnivalStories = (() => {
     ["A machine has only Sun tokens.", "Sun appears.", "certain"],
     ["A machine has 8 Sun tokens and 1 Moon token.", "Moon appears.", "unlikely"],
     ["A machine has 1 Sun token and 8 Moon tokens.", "Moon appears.", "likely"],
-    ["A machine has 5 Sun tokens and 5 Moon tokens.", "Sun appears.", "equally likely"]
+    ["A machine has 5 Sun tokens and 5 Moon tokens.", "Sun appears.", "equally likely"],
+    ["A machine has 2 Sun tokens and 6 Moon tokens.", "Sun appears.", "unlikely"],
+    ["A machine has 6 Sun tokens and 2 Moon tokens.", "Sun appears.", "likely"]
   ];
   const comparePairs = [
     [[3,1],[1,3],"sun"], [[1,3],[3,1],"moon"], [[2,2],[2,2],"equal"], [[4,2],[2,4],"sun"], [[2,4],[4,2],"moon"],
@@ -26,7 +28,7 @@ window.ProbabilityCarnivalStories = (() => {
     [[6,2],[3,3],"sun"], [[3,3],[2,6],"moon"]
   ];
   const buildTargets = [[1,1,"equal"],[2,1,"sun"],[3,1,"sun"],[1,3,"moon"],[2,2,"equal"],[3,1,"sun"],[1,2,"moon"],[3,3,"equal"],[1,3,"moon"],[3,1,"sun"],[2,1,"sun"],[1,2,"moon"]];
-  const experimentTrials = [5,10,20,5,10,20,5,10,20,20];
+  const experimentTrials = [5,10,20,5,10,20,5,10,20,20,10,20];
   const randomnessSamples = [[5,"short"],[20,"long"],[5,"short"],[20,"long"],[10,"medium"],[20,"long"],[5,"short"],[20,"long"],[10,"medium"],[20,"long"],[10,"medium"],[5,"short"]];
   const mysteryConfigs = [[4,4,"fair"],[6,2,"sun"],[2,6,"moon"],[5,3,"sun"],[3,5,"moon"],[4,4,"fair"],[7,1,"sun"],[1,7,"moon"],[4,4,"fair"],[6,2,"sun"],[5,3,"sun"],[3,5,"moon"]];
   const diceLevels = [
@@ -46,12 +48,12 @@ window.ProbabilityCarnivalStories = (() => {
   function buildLevels() {
     const levels = [];
     intuitionScenarios.forEach((item,index) => levels.push({id:index+1,stage:1,type:"intuition",title:"Chance check",prompt:item[0]+" What do you think about: "+item[1],scenario:item[0],outcome:item[1],choices:["impossible","unlikely","equally likely","likely","certain"],answer:item[2]}));
-    comparePairs.forEach((item,index) => levels.push({id:11+index,stage:2,type:"compare",title:"Which chance wins?",prompt:"Compare the two machines. Choose which gives Sun the greater chance, Moon the greater chance, or whether they are equal.",machineA:item[0],machineB:item[1],choices:["A","equal","B"],answer:item[2]==="equal"?"equal":item[2]==="sun"?"A":"B"}));
-    buildTargets.forEach((item,index) => levels.push({id:21+index,stage:3,type:"build",title:"Build "+item[0]+":"+item[1],prompt:"Build a machine with "+item[0]+" Sun token"+(item[0]===1?"":"s")+" and "+item[1]+" Moon token"+(item[1]===1?"":"s")+".",sun:item[0],moon:item[1],answer:item[2]}));
-    experimentTrials.forEach((trials,index) => levels.push({id:31+index,stage:4,type:"experiment",title:"Run "+trials+" trials",prompt:"Predict which result will be more common, then run exactly "+trials+" trials.",trials,bag:["sun","sun","sun","moon"],answer:"sun"}));
-    randomnessSamples.forEach((item,index) => levels.push({id:41+index,stage:5,type:"randomness",title:"What does the sample tell us?",prompt:"A 3:1 machine is tested. Choose the best explanation for a "+item[1]+" run of "+item[0]+" trials.",trials:item[0],sampleKind:item[1],choices:["Random results can vary from the exact theoretical ratio.","A short run proves the machine has changed.","Theoretical probability guarantees every run exactly."],answer:"Random results can vary from the exact theoretical ratio."}));
-    mysteryConfigs.forEach((config,index) => levels.push({id:51+index,stage:6,type:"detective",title:"Crack the mystery",prompt:"The machine is hidden. Collect clues, then identify the hidden design.",hiddenSun:config[0],hiddenMoon:config[1],hiddenKind:config[2],choices:["Mostly Sun","Fair","Mostly Moon"],answer:config[2]==="sun"?"Mostly Sun":config[2]==="moon"?"Mostly Moon":"Fair"}));
-    diceLevels.forEach((item,index) => levels.push({id:61+index,stage:7,type:"dice",title:item.title,prompt:item.prompt,choices:item.choices,answer:item.answer,dice:item.dice,lesson:item.lesson}));
+    comparePairs.forEach((item,index) => levels.push({id:13+index,stage:2,type:"compare",title:"Which chance wins?",prompt:"Compare the two machines. Choose which gives Sun the greater chance, Moon the greater chance, or whether they are equal.",machineA:item[0],machineB:item[1],choices:["A","equal","B"],answer:item[2]==="equal"?"equal":item[2]==="sun"?"A":"B"}));
+    buildTargets.forEach((item,index) => levels.push({id:25+index,stage:3,type:"build",title:"Build "+item[0]+":"+item[1],prompt:"Build a machine with "+item[0]+" Sun token"+(item[0]===1?"":"s")+" and "+item[1]+" Moon token"+(item[1]===1?"":"s")+".",sun:item[0],moon:item[1],answer:item[2]}));
+    experimentTrials.forEach((trials,index) => levels.push({id:37+index,stage:4,type:"experiment",title:"Run "+trials+" trials",prompt:"Predict which result will be more common, then run exactly "+trials+" trials.",trials,bag:["sun","sun","sun","moon"],answer:"sun"}));
+    randomnessSamples.forEach((item,index) => levels.push({id:49+index,stage:5,type:"randomness",title:"What does the sample tell us?",prompt:"A 3:1 machine is tested. Choose the best explanation for a "+item[1]+" run of "+item[0]+" trials.",trials:item[0],sampleKind:item[1],choices:["Random results can vary from the exact theoretical ratio.","A short run proves the machine has changed.","Theoretical probability guarantees every run exactly."],answer:"Random results can vary from the exact theoretical ratio."}));
+    mysteryConfigs.forEach((config,index) => levels.push({id:61+index,stage:6,type:"detective",title:"Crack the mystery",prompt:"The machine is hidden. Collect clues, then identify the hidden design.",hiddenSun:config[0],hiddenMoon:config[1],hiddenKind:config[2],choices:["Mostly Sun","Fair","Mostly Moon"],answer:config[2]==="sun"?"Mostly Sun":config[2]==="moon"?"Mostly Moon":"Fair"}));
+    diceLevels.forEach((item,index) => levels.push({id:73+index,stage:7,type:"dice",title:item.title,prompt:item.prompt,choices:item.choices,answer:item.answer,dice:item.dice,lesson:item.lesson}));
     return levels;
   }
   return { stages, levels: buildLevels() };
