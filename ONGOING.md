@@ -3,10 +3,10 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Release hardening complete; next work begins with Probability Carnival design discussion  
+**Current focus:** Probability Carnival complete; next work begins with Fraction Bakery  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 6 October 2026
+**Last updated:** 7 October 2026
 
 ---
 
@@ -127,9 +127,16 @@ The agreed implementation order remains fixed:
 
 `2048` is intentionally deferred until these five are designed, implemented, tested, animated/fine-tuned, and physically reviewed.
 
-Probability Carnival has not been implemented yet. Its design must be discussed and confirmed before implementation begins.
+Probability Carnival is now implemented as a complete four-tent playable world:
 
-Each game will be handled independently. A game is not advanced to the next one until the current game is satisfactory.
+- The Curious Machine
+- The Machine Builder
+- The Mystery Tent
+- The Fairness Workshop
+
+It uses the agreed activity loop of prediction, experiment, observation, reasoning and retry. The game has no betting or gambling mechanics. Browser stress coverage exercises all four tents, and the repository-owned wiki documents the accepted learning and technical design.
+
+Each game is handled independently. A game is not advanced to the next one until the current game is satisfactory.
 
 ---
 
@@ -166,4 +173,4 @@ Planned research-enabled milestone after authentication.
 
 The v2.0.4 release is frozen at the current acceptance boundary.
 
-The next product step is **design discussion for Probability Carnival**, not implementation. No Probability Carnival code should be introduced until its learning objective, mechanics, accessibility behavior, mathematics, responsibility boundary, and animation plan are agreed.
+The next product step is **Fraction Bakery** design and implementation. Probability Carnival is now the accepted completed game in the current sequence.
