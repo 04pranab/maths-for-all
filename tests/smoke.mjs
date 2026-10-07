@@ -283,7 +283,7 @@ async function main() {
     assert(document.getElementById("pc-completed-count").textContent === "5", "Stage 5 representative level did not complete.");
     ProbabilityCarnival.selectLevel(51);
     document.querySelector("#pc-choice-area .pc-run-button").click();
-    document.querySelector("#pc-choice-area .pc-choice").click();
+    document.querySelector("#pc-choice-area .pc-choice[data-value='Fair']").click();
     ProbabilityCarnival.check();
     assert(document.getElementById("pc-completed-count").textContent === "6", "Stage 6 representative level did not complete.");
     for (let stage = 1; stage <= 6; stage++) {
