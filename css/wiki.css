@@ -1,2 +1,353 @@
-.nav-wiki-link{text-decoration:none}.nav-wiki-link:hover,.nav-wiki-link:focus-visible{color:var(--indigo);text-decoration:none}
-.wiki-header{position:sticky;top:0;z-index:20}.wiki-brand{text-decoration:none;color:inherit}.wiki-nav-links{display:flex;gap:6px;margin-left:18px}.wiki-nav-links a{display:inline-flex;align-items:center;min-height:44px;padding:8px 13px;border:2px solid transparent;border-radius:12px;color:var(--ink-soft);font-weight:700;text-decoration:none}.wiki-nav-links a:hover,.wiki-nav-links a.active{background:var(--card);border-color:var(--border);color:var(--indigo)}.wiki-shell{width:min(1180px,calc(100vw - 32px));margin:0 auto;padding:26px 0 42px}.wiki-hero{padding:28px;border:1px solid var(--border);border-radius:24px;background:var(--card);box-shadow:var(--shadow-soft);margin-bottom:22px}.wiki-kicker,.wiki-tag{color:var(--indigo);font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.wiki-hero h1{font-family:var(--font-head);font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:7px 0}.wiki-hero p{max-width:720px;color:var(--ink-soft);margin:0 0 20px}.wiki-search{display:flex;gap:10px;align-items:center;max-width:700px}.wiki-search label{font-weight:700;white-space:nowrap}.wiki-search input{width:100%;min-height:46px;border:2px solid var(--border-strong);border-radius:12px;padding:9px 13px;background:var(--card-alt);color:var(--ink);font:inherit}.wiki-layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:20px;align-items:start}.wiki-index{position:sticky;top:92px;display:flex;flex-direction:column;gap:5px}.wiki-index a{padding:9px 11px;border-radius:10px;color:var(--ink-soft);text-decoration:none;font-weight:700}.wiki-index a:hover{background:var(--card);color:var(--indigo)}.wiki-content{display:grid;gap:16px}.wiki-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:23px;box-shadow:var(--shadow-soft);scroll-margin-top:95px}.wiki-card h2{font-family:var(--font-head);margin:4px 0 10px;font-size:1.5rem}.wiki-card p{max-width:850px;color:var(--ink-soft);margin:8px 0}.wiki-quote{font-family:var(--font-head);font-size:1.15rem;color:var(--ink)!important;border-left:4px solid var(--indigo);padding-left:13px}.wiki-points{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.wiki-points div,.game-list article,.boundary-grid div,.roadmap div{padding:13px;border:1px solid var(--border);border-radius:14px;background:var(--card-alt)}.wiki-points strong,.game-list b,.boundary-grid b,.roadmap b{display:block}.wiki-points span,.game-list span,.boundary-grid span,.roadmap span{display:block;color:var(--ink-soft);font-size:.9rem;margin-top:3px}.game-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.game-list .next-game{border-color:var(--indigo);background:var(--leaf-bg)}.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.pill-row span{padding:7px 10px;border-radius:999px;background:var(--card-alt);border:1px solid var(--border);font-size:.9rem}.boundary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.wiki-note{padding:12px 14px!important;border-radius:12px;background:var(--leaf-bg);border:1px solid var(--leaf);color:var(--ink)!important}.steps{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.steps span{padding:8px 10px;border-radius:10px;background:var(--card-alt);border:1px solid var(--border);font-weight:700;font-size:.9rem}.roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.roadmap .done{border-color:var(--leaf)}.roadmap .current{border-color:var(--indigo);background:var(--leaf-bg)}.wiki-footer{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:22px 4px 0;color:var(--ink-soft);font-size:.9rem}.wiki-footer a{color:var(--indigo);font-weight:800;text-decoration:none}.wiki-hidden{display:none!important}@media(max-width:800px){.wiki-layout{grid-template-columns:1fr}.wiki-index{position:static;display:grid;grid-template-columns:repeat(2,1fr);background:var(--card);border:1px solid var(--border);border-radius:15px;padding:8px}.wiki-points,.game-list,.boundary-grid,.roadmap{grid-template-columns:1fr}.wiki-search{flex-direction:column;align-items:stretch}.wiki-search label{white-space:normal}.wiki-footer{flex-direction:column;align-items:flex-start}}@media(max-width:520px){.wiki-shell{width:calc(100vw - 20px);padding-top:14px}.wiki-hero,.wiki-card{padding:18px}.wiki-nav-links{margin-left:4px}.wiki-nav-links a{padding:7px 9px}.wiki-index{grid-template-columns:1fr}.wiki-footer{padding-left:2px}}
+.nav-wiki-link {
+  text-decoration: none;
+}
+
+.nav-wiki-link:hover,
+.nav-wiki-link:focus-visible {
+  color: var(--indigo);
+  text-decoration: none;
+}
+
+.wiki-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.wiki-brand {
+  color: inherit;
+  text-decoration: none;
+}
+
+.wiki-nav-links {
+  display: flex;
+  gap: 6px;
+  margin-left: 18px;
+}
+
+.wiki-nav-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 13px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  color: var(--ink-soft);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.wiki-nav-links a:hover,
+.wiki-nav-links a.active {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--indigo);
+}
+
+.wiki-shell {
+  width: min(1180px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 26px 0 42px;
+}
+
+.wiki-hero {
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 22px;
+}
+
+.wiki-kicker,
+.wiki-tag {
+  color: var(--indigo);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.wiki-hero h1 {
+  font-family: var(--font-head);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.05;
+  margin: 7px 0;
+}
+
+.wiki-hero p {
+  max-width: 760px;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+}
+
+.wiki-search {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  max-width: 760px;
+}
+
+.wiki-search label {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.wiki-search input {
+  width: 100%;
+  min-height: 46px;
+  border: 2px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 9px 13px;
+  background: var(--card-alt);
+  color: var(--ink);
+  font: inherit;
+}
+
+.wiki-layout {
+  display: grid;
+  grid-template-columns: 205px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.wiki-index {
+  position: sticky;
+  top: 92px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.wiki-index a {
+  padding: 9px 11px;
+  border-radius: 10px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.wiki-index a:hover,
+.wiki-index a:focus-visible {
+  background: var(--card);
+  color: var(--indigo);
+}
+
+.wiki-content {
+  display: grid;
+  gap: 16px;
+}
+
+.wiki-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 23px;
+  box-shadow: var(--shadow-soft);
+  scroll-margin-top: 95px;
+}
+
+.wiki-card h2 {
+  font-family: var(--font-head);
+  margin: 4px 0 10px;
+  font-size: 1.5rem;
+}
+
+.wiki-card p {
+  max-width: 900px;
+  color: var(--ink-soft);
+  margin: 8px 0;
+}
+
+.wiki-quote {
+  font-family: var(--font-head);
+  font-size: 1.15rem;
+  color: var(--ink) !important;
+  border-left: 4px solid var(--indigo);
+  padding-left: 13px;
+}
+
+.wiki-points,
+.game-list,
+.boundary-grid,
+.architecture-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.wiki-points div,
+.game-list article,
+.boundary-grid div,
+.architecture-list div,
+.roadmap div {
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card-alt);
+}
+
+.wiki-points strong,
+.game-list b,
+.boundary-grid b,
+.architecture-list code,
+.roadmap b {
+  display: block;
+}
+
+.wiki-points span,
+.game-list span,
+.boundary-grid span,
+.architecture-list span,
+.roadmap span {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin-top: 3px;
+}
+
+.game-list .next-game {
+  border-color: var(--indigo);
+  background: var(--leaf-bg);
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.pill-row span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: var(--card-alt);
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.wiki-note {
+  padding: 12px 14px !important;
+  border-radius: 12px;
+  background: var(--leaf-bg);
+  border: 1px solid var(--leaf);
+  color: var(--ink) !important;
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.steps span {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--card-alt);
+  border: 1px solid var(--border);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.roadmap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.roadmap .done {
+  border-color: var(--leaf);
+}
+
+.roadmap .current {
+  border-color: var(--indigo);
+  background: var(--leaf-bg);
+}
+
+.wiki-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+  padding: 22px 4px 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.wiki-footer a {
+  color: var(--indigo);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.wiki-hidden {
+  display: none !important;
+}
+
+@media (max-width: 800px) {
+  .wiki-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .wiki-index {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 8px;
+  }
+
+  .wiki-points,
+  .game-list,
+  .boundary-grid,
+  .architecture-list,
+  .roadmap {
+    grid-template-columns: 1fr;
+  }
+
+  .wiki-search {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .wiki-search label {
+    white-space: normal;
+  }
+
+  .wiki-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .wiki-shell {
+    width: calc(100vw - 20px);
+    padding-top: 14px;
+  }
+
+  .wiki-hero,
+  .wiki-card {
+    padding: 18px;
+  }
+
+  .wiki-nav-links {
+    margin-left: 4px;
+  }
+
+  .wiki-nav-links a {
+    padding: 7px 9px;
+  }
+
+  .wiki-index {
+    grid-template-columns: 1fr;
+  }
+
+  .wiki-footer {
+    padding-left: 2px;
+  }
+}
