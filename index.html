@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/sudoku-comfort.css?v=20261005-1" />
   <link rel="stylesheet" href="css/slabmath.css" />
   <link rel="stylesheet" href="css/shape-architect.css" />
+  <link rel="stylesheet" href="css/probability-carnival.css" />
 </head>
 <body>
 
@@ -36,6 +37,63 @@
       </div>
     </nav>
   </header>
+
+  <section id="screen-probability-carnival" class="screen" hidden>
+    <div class="pc-shell">
+      <button class="pc-back" type="button" onclick="ProbabilityCarnival.close()">← Back to games</button>
+      <div id="probability-carnival-world">
+        <div class="pc-hero">
+          <div class="pc-kicker">Probability Carnival · Explore</div>
+          <h1>A carnival of what might happen.</h1>
+          <p>Choose a story. Make a guess. Try the machine. Let the evidence surprise you.</p>
+        </div>
+        <div class="pc-world">
+          <aside class="pc-map">
+            <h2>The Carnival</h2>
+            <p class="pc-muted">No levels. Follow the tents when you are ready.</p>
+            <div id="probability-carnival-story-grid" class="pc-story-grid"></div>
+          </aside>
+          <section class="pc-story-panel">
+            <h2>Every story begins with a question.</h2>
+            <p class="pc-muted">The carnival is a place for experimenting, not guessing the teacher's answer.</p>
+          </section>
+        </div>
+      </div>
+      <div id="probability-carnival-story" hidden>
+        <div class="pc-hero">
+          <div class="pc-kicker">Story 01 · The Curious Machine</div>
+          <h1 id="pc-story-title">The Curious Machine</h1>
+          <p id="pc-story-intro"></p>
+        </div>
+        <div class="pc-machine-layout">
+          <section class="pc-machine">
+            <canvas id="pc-machine-canvas" aria-label="Interactive probability machine"></canvas>
+          </section>
+          <aside class="pc-control">
+            <h2>Your prediction</h2>
+            <div class="pc-predictions">
+              <button class="pc-prediction" data-prediction="sun" onclick="ProbabilityCarnival.predict('sun')">☀️ Sun will appear more</button>
+              <button class="pc-prediction" data-prediction="moon" onclick="ProbabilityCarnival.predict('moon')">🌙 Moon will appear more</button>
+              <button class="pc-prediction" data-prediction="equal" onclick="ProbabilityCarnival.predict('equal')">⚖️ About equally</button>
+            </div>
+            <div id="pc-feedback" class="pc-feedback" aria-live="polite">What do you think will happen more often?</div>
+            <div class="pc-actions">
+              <button type="button" onclick="ProbabilityCarnival.run(1)">Try once</button>
+              <button type="button" onclick="ProbabilityCarnival.run(10)">Try ten times</button>
+              <button type="button" onclick="ProbabilityCarnival.showWorld()">Return to tents</button>
+            </div>
+            <div class="pc-evidence">
+              <strong>Evidence</strong>
+              <div class="pc-bar"><span>Sun</span><div class="pc-bar-track"><div id="pc-sun-bar" class="pc-bar-fill"></div></div><b id="pc-sun-count">0</b></div>
+              <div class="pc-bar"><span>Moon</span><div class="pc-bar-track"><div id="pc-moon-bar" class="pc-bar-fill moon"></div></div><b id="pc-moon-count">0</b></div>
+              <p id="pc-evidence" class="pc-muted">No evidence yet. The machine is waiting.</p>
+              <p class="pc-muted">Trials: <span id="pc-total-count">0</span></p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ===================================================
        SCREEN 1: MAIN MENU
@@ -627,6 +685,10 @@
 
   <!-- Scripts — order matters: shared helpers first -->
   <script src="js/research-gateway.js?v=20260926-1"></script>
+  <script src="js/probability-carnival-library.js?v=20261007-1"></script>
+  <script src="js/probability-carnival-stories.js?v=20261007-1"></script>
+  <script src="js/probability-carnival-canvas.js?v=20261007-1"></script>
+  <script src="js/probability-carnival.js?v=20261007-1"></script>
   <script src="js/script.js?v=20261006-4"></script>
   <script src="js/questions.js?v=20260924-2"></script>
   <script src="js/sudoku.js?v=20260924-2"></script>
