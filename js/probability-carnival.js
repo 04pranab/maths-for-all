@@ -111,12 +111,8 @@ window.ProbabilityCarnival = (() => {
     }
     const stage = stages[state.stage - 1];
     $("pc-level-range").textContent = stage.range;
-    $("pc-stage-name").textContent = stage.name;
     $("pc-stage-badge").textContent = String(state.stage);
     $("pc-stage-note").textContent = stage.note;
-    $("pc-completed-count").textContent = String(state.completed.size);
-    $("pc-score").textContent = String(state.score);
-    $("pc-streak").textContent = String(state.streak);
     document.querySelectorAll("[data-stage]").forEach(button => {
       button.classList.toggle("is-active", Number(button.dataset.stage) === state.stage);
     });
@@ -126,7 +122,6 @@ window.ProbabilityCarnival = (() => {
     const level = levels.find(item => item.id === state.level);
     if (!level) return;
     const stage = stages[level.stage - 1];
-    $("pc-current-level").textContent = String(level.id);
     $("pc-level-number").textContent = String(level.id);
     $("pc-level-kicker").textContent = "Stage " + level.stage + " · " + stage.name;
     $("pc-level-title").textContent = level.title;
@@ -431,8 +426,6 @@ window.ProbabilityCarnival = (() => {
       saveProgress();
     }
     renderLevelMap();
-    $("pc-score").textContent = String(state.score);
-    $("pc-streak").textContent = String(state.streak);
     feedback(message + (firstTime ? " +10 discovery points!" : ""), "success");
     document.querySelector(".pc-play-panel")?.classList.remove("pc-celebrate");
     void document.querySelector(".pc-play-panel")?.offsetWidth;
