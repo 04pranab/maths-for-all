@@ -247,7 +247,7 @@ async function main() {
   '})()');
 
 
-  const probabilityResult = await evaluate(\`(() => {
+  const probabilityResult = await evaluate(`(() => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     Game.goHome();
     ProbabilityCarnival.open();
@@ -293,7 +293,7 @@ async function main() {
     }
     Game.goHome();
     return { levels: 60, stages: 6, levelsPerStage: 10, representativeCompletions: 6 };
-  })()\`);
+  })()`);
 
   if (!helpResult?.ok) throw new Error('Context-sensitive help and Escape overlay checks did not complete.');
 
