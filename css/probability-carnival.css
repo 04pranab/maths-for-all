@@ -89,44 +89,6 @@
 }
 
 /* Probability Machine hardening */
-.pc-machine-status{
-  display:grid;
-  grid-template-columns:auto minmax(180px,1.6fr) repeat(3,minmax(100px,1fr));
-  gap:8px;
-  margin:4px 0 10px;
-  padding:9px 12px;
-  border:3px solid #39464b;
-  border-radius:14px;
-  background:#343f43;
-  color:#fff;
-  box-shadow:0 4px 0 rgba(38,50,56,.12);
-}
-.pc-machine-status div{
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  gap:2px;
-  padding:4px 9px;
-  border-left:1px solid rgba(255,255,255,.14);
-}
-.pc-machine-status div:first-child{border-left:0}
-.pc-machine-status span{
-  font-size:.67rem;
-  letter-spacing:.1em;
-  font-weight:900;
-  opacity:.7;
-}
-.pc-machine-status strong{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  font-size:1rem;
-}
-.pc-machine-status div:first-child strong{
-  font-size:1.35rem;
-  color:#f4c45e;
-}
 .pc-play-actions{grid-template-columns:1fr auto}
 .pc-play-actions #pc-next{
   border-color:var(--indigo);
@@ -143,18 +105,29 @@
 }
 .pc-play-actions button:first-child{border-color:var(--indigo);background:var(--indigo);color:#fff}
 @media(max-width:760px){
-  .pc-machine-status{
-    grid-template-columns:repeat(4,1fr);
   }
-  .pc-machine-status div:nth-child(2){
-    grid-column:span 3;
-  }
-}
 @media(max-width:520px){
-  .pc-machine-status{
-    grid-template-columns:repeat(2,1fr);
   }
-  .pc-machine-status div:nth-child(2){grid-column:auto}
-  .pc-machine-status div{border-left:0;border-top:1px solid rgba(255,255,255,.14)}
-  .pc-machine-status div:nth-child(-n+2){border-top:0}
+
+/* Probability Machine header hierarchy */
+.pc-play-heading h2{
+  margin:2px 0 7px;
+  font-family:var(--font-head);
+  font-size:1rem;
+  line-height:1.2;
+  letter-spacing:.02em;
+  color:var(--indigo);
+  text-transform:uppercase;
+}
+.pc-prompt{
+  margin:0;
+  color:var(--ink);
+  font-size:clamp(1.3rem,2.6vw,1.8rem);
+  line-height:1.25;
+  font-weight:900;
+  max-width:900px;
+}
+@media(max-width:620px){
+  .pc-play-heading h2{font-size:.9rem}
+  .pc-prompt{font-size:clamp(1.18rem,5vw,1.45rem)}
 }
