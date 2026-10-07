@@ -42,43 +42,32 @@
     <div class="pc-shell">
       <button class="pc-back" type="button" onclick="ProbabilityCarnival.close()">← Back to machines</button>
 
-
-
-      <section class="pc-stage-strip" aria-label="Probability Machine stages">
-        <button type="button" data-stage="1" onclick="ProbabilityCarnival.selectStage(1)">1 · Intuition</button>
-        <button type="button" data-stage="2" onclick="ProbabilityCarnival.selectStage(2)">2 · Compare</button>
-        <button type="button" data-stage="3" onclick="ProbabilityCarnival.selectStage(3)">3 · Build</button>
-        <button type="button" data-stage="4" onclick="ProbabilityCarnival.selectStage(4)">4 · Experiment</button>
-        <button type="button" data-stage="5" onclick="ProbabilityCarnival.selectStage(5)">5 · Randomness</button>
-        <button type="button" data-stage="6" onclick="ProbabilityCarnival.selectStage(6)">6 · Detective</button>
-        <button type="button" data-stage="7" onclick="ProbabilityCarnival.selectStage(7)">7 · Dice Lab</button>
-      </section>
-
       <main class="pc-game">
-        <aside class="pc-level-panel">
-          <div class="pc-panel-heading">
-            <div>
-              <span class="pc-kicker">Choose a level</span>
-              <h2 id="pc-level-range">Levels 1–10</h2>
-            </div>
-            <span class="pc-stage-badge" id="pc-stage-badge">1</span>
-          </div>
-          <div id="pc-level-grid" class="pc-level-grid" aria-label="Probability Machine levels"></div>
-          <p class="pc-muted pc-stage-note" id="pc-stage-note"></p>
-        </aside>
-
         <section class="pc-play-panel" aria-live="polite">
+          <div class="pc-machine-head">
+            <div class="pc-machine-brand">
+              <span class="pc-machine-eyebrow">PROBABILITY ENGINE</span>
+              <strong>CHANCE WORKSHOP</strong>
+            </div>
+            <div class="pc-machine-readout">
+              <span id="pc-level-kicker">Stage 1 · Probability intuition</span>
+              <b id="pc-level-range">LEVEL 01 / 84</b>
+            </div>
+            <div class="pc-machine-gauge" aria-hidden="true">
+              <i></i><i></i><i></i>
+            </div>
+          </div>
+
           <div class="pc-play-heading">
             <div>
-              <span class="pc-kicker" id="pc-level-kicker">Stage 1</span>
-              <h2 id="pc-level-title">Probability intuition</h2>
+              <span class="pc-kicker" id="pc-stage-kicker">SYSTEM ONLINE</span>
+              <h2 id="pc-level-title">Chance check</h2>
               <p id="pc-level-prompt" class="pc-prompt"></p>
             </div>
             <div class="pc-level-number" id="pc-level-number">1</div>
           </div>
 
           <div id="pc-scene" class="pc-scene"></div>
-
           <div id="pc-choice-area" class="pc-choice-area"></div>
 
           <div id="pc-feedback" class="pc-feedback" aria-live="polite">
@@ -91,11 +80,6 @@
           </div>
         </section>
       </main>
-
-      <section class="pc-footer-note" aria-label="Machine controls">
-        <strong>Predict → Compare → Build → Experiment → Investigate → Deduce</strong>
-        <span>Wrong answers are clues. Try again.</span>
-      </section>
     </div>
   </section>
 
@@ -167,8 +151,8 @@
       <button class="menu-card card-probability" onclick="ProbabilityCarnival.open()">
         <div class="card-badge-icon">⚙️</div>
         <div class="card-title">Probability Machine</div>
-        <div class="card-desc">Operate a six-stage probability machine: predict, compare, build, experiment, test randomness and solve mysteries.</div>
-        <div class="card-tag">Solo · 60 levels</div>
+        <div class="card-desc">Operate an 84-level probability machine: compare chances, build ratios, run experiments, investigate randomness and crack dice puzzles.</div>
+        <div class="card-tag">Solo · 84 levels</div>
       </button>
 
     </div>
