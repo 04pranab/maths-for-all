@@ -124,7 +124,8 @@ window.ProbabilityCarnival = (() => {
     const stage = stages[level.stage - 1];
     $("pc-level-number").textContent = String(level.id);
     $("pc-level-range").textContent = "LEVEL " + String(level.id).padStart(2, "0") + " / " + String(levels.length).padStart(2, "0");
-    $("pc-level-kicker").textContent = "Stage " + level.stage + " · " + stage.name;
+    $("pc-machine-stage").textContent = "Stage " + level.stage + " · " + stage.name;
+    $("pc-system-state").textContent = state.completed.has(level.id) ? "DISCOVERY SAVED" : "SYSTEM ONLINE";
     $("pc-level-title").textContent = level.title;
     $("pc-level-prompt").textContent = level.prompt;
     const scene = $("pc-scene");
