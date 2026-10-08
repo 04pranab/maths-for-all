@@ -3,7 +3,7 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Probability Carnival six-stage rebuild; physical review pending  
+**Current focus:** Fraction Bakery physical review after implementation  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 7 October 2026
@@ -117,17 +117,19 @@ The responsible-use license requires operators who enable research collection to
 
 ## 5. New game sequence
 
-The agreed implementation order remains fixed:
+The implementation sequence remains:
 
-1. **Shape Architect**
-2. **Probability Carnival 🎪**
-3. **Fraction Bakery**
+1. **Shape Architect** ✅
+2. **Probability Machine** ✅
+3. **Fraction Bakery** ▶ physical review
 4. **Little Shop**
 5. **Number Maze**
 
 `2048` is intentionally deferred until these five are designed, implemented, tested, animated/fine-tuned, and physically reviewed.
 
-Probability Carnival is being rebuilt as a 60-level probability game with six stages:
+Probability Machine is complete at 84 levels across seven stages. Its final implementation includes probability intuition, comparison, construction, experiments, randomness investigation, probability deduction, and a non-gambling Dice Lab.
+
+Fraction Bakery is the next game and is implemented as a 72-level randomized fraction game with six stages:
 
 1. Probability intuition · Levels 1–10
 2. Compare · Levels 11–20
@@ -181,4 +183,4 @@ Planned research-enabled milestone after authentication.
 
 The v2.0.4 release is frozen at the current acceptance boundary.
 
-The next product step remains **Probability Carnival physical review**. **Fraction Bakery** begins only after Probability Carnival is accepted.
+The next product step is **Fraction Bakery physical review**. **Little Shop** begins only after Fraction Bakery is accepted.
