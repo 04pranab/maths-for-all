@@ -103,7 +103,7 @@ The full policy is available at `docs/v3/research-data-policy.html`.
 
 ## Visual assets
 
-The physical-testing prototype uses no SVG assets or external decorative image library.
+The physical-testing prototype uses no external decorative image library. Interactive game-specific SVG artwork is generated inline where it is part of the gameplay.
 
 ## Run locally
 
