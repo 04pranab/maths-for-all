@@ -12,7 +12,7 @@ const FractionBakery = (() => {
     {name:"Grand Bake", from:87, to:100, icon:"🏆"}
   ];
   const dishes=["pizza","pie","cake","tart","chocolate"];
-  const state={level:1,challenge:null,solved:false,busy:false,timer:null,startedAt:0,selected:new Set()};
+  const state={level:1,challenge:null,solved:false,busy:false,timer:null,startedAt:0,selected:new Set(),completed:new Set(),hintUsed:false};
   const el=id=>document.getElementById(id);
   const gcd=(a,b)=>{while(b){[a,b]=[b,a%b]}return Math.abs(a)};
   const reduce=(n,d)=>{const g=gcd(n,d);return[n/g,d/g]};
@@ -150,7 +150,7 @@ const FractionBakery = (() => {
         c={type:"build",dish:randomDish(),f:frac(n,d)};
       }
     }
-    state.challenge=c;state.solved=false;state.busy=false;state.selected.clear();startTimer();render();
+    state.challenge=c;state.solved=false;state.busy=false;state.selected.clear();state.hintUsed=false;startTimer();render();
   }
 
   function startTimer(){clearInterval(state.timer);state.startedAt=Date.now();state.timer=setInterval(()=>{const t=el("fb-timer");if(t)t.textContent=Math.floor((Date.now()-state.startedAt)/1000)+"s"},500)}
@@ -170,8 +170,21 @@ const FractionBakery = (() => {
   }
 
   function dishParts(dish,f){return dishSvg(dish,f.d,new Set(Array.from({length:f.n},(_,i)=>i)))}
+  function hintFor(c){
+    if(c.type==="build")return "Hint: the bottom number tells you the total equal pieces. Count them, then select the requested pieces.";
+    if(c.type==="identify")return "Hint: count every equal piece first, then count only the shaded ones.";
+    if(c.type==="compare")return "Hint: compare the part of the whole each dish represents. More pieces does not always mean more.";
+    if(c.type==="equivalent")return "Hint: multiply the numerator and denominator by the same number.";
+    if(c.type==="mix"||c.type==="bake")return "Hint: both trays use the same denominator, so count the numerator pieces together.";
+    if(c.type==="simplify")return "Hint: divide the numerator and denominator by the same factor.";
+    if(c.type==="order")return "Hint: compare the three fractions, then arrange smallest to largest.";
+    if(c.type==="missing")return "Hint: subtract the pieces already counted from the target.";
+    if(c.type==="difference")return "Hint: use a common denominator before subtracting.";
+    return "Hint: convert the whole into equal pieces, then add the extra pieces.";
+  }
+  function showHint(){state.hintUsed=true;const f=el("fb-feedback");f.textContent=hintFor(state.challenge);f.className="fb-feedback fb-hint";}
   function sceneFor(c){
-    if(c.type==="build")return `<div class="fb-dish-wrap">${dishSvg(c.dish,c.f.d,state.selected)}<div class="fb-count-readout"><strong>${state.selected.size}</strong> / ${c.f.n} portions selected</div></div><button class="fb-action" id="fb-serve">🍽️ Serve order</button>`;
+    if(c.type==="build")return `<div class="fb-dish-wrap">${dishSvg(c.dish,c.f.d,state.selected)}<div class="fb-count-readout">Tap the pieces you want, then serve.</div></div><button class="fb-action" id="fb-serve">🍽️ Serve order</button>`;
     if(c.type==="identify")return `<div class="fb-dish-wrap">${dishParts(c.dish,c.f)}<div class="fb-count-readout"><strong>${c.f.n}</strong> shaded · <strong>${c.f.d}</strong> total</div></div><div class="fb-options">${c.options.map(f=>`<button class="fb-option" data-answer="${fmt(f)}">${fmt(f)}</button>`).join("")}</div>`;
     if(c.type==="compare")return `<div class="fb-plates"><button class="fb-plate" data-compare="a">${dishParts(c.dishes[0],c.a)}<span>${fmt(c.a)}</span></button><div class="fb-vs">VS</div><button class="fb-plate" data-compare="b">${dishParts(c.dishes[1],c.b)}<span>${fmt(c.b)}</span></button></div>`;
     if(c.type==="equivalent")return `<div class="fb-equivalent-top"><div class="fb-count-card">${dishParts("pie",c.target)}<b>${fmt(c.target)}</b></div><div class="fb-equals">= ?</div><div class="fb-count-card">${dishParts("tart",c.answer)}<b>re-cut</b></div></div><div class="fb-options">${c.options.map(f=>`<button class="fb-option" data-answer="${fmt(f)}">${fmt(f)}</button>`).join("")}</div>`;
@@ -187,7 +200,7 @@ const FractionBakery = (() => {
     const c=state.challenge,s=stageFor(state.level);
     el("fb-stage").textContent=s.icon+" "+s.name;
     el("fb-level").textContent="LEVEL "+String(state.level).padStart(2,"0")+" / "+LEVELS;
-    el("fb-title").textContent=titleFor(c);el("fb-prompt").textContent=promptFor(c);
+    el("fb-title").textContent=titleFor(c);el("fb-prompt").textContent="Look at the picture, count the equal pieces, and choose your answer.";
     el("fb-workbench").innerHTML=sceneFor(c);
     el("fb-feedback").textContent=state.solved?"Order complete. The counter is ready for the next recipe.":"Count the equal portions carefully, then make your move.";
     el("fb-feedback").className="fb-feedback "+(state.solved?"success":"");
@@ -198,7 +211,7 @@ const FractionBakery = (() => {
   }
   function renderLevels(){
     const grid=el("fb-level-grid");if(!grid)return;
-    grid.innerHTML=Array.from({length:LEVELS},(_,i)=>{const n=i+1,done=n<state.level;return `<button class="fb-level-button ${n===state.level?"active":""} ${done?"complete":""}" data-level="${n}" aria-label="Level ${n}${done?" completed":""}">${n}</button>`}).join("");
+    grid.innerHTML=Array.from({length:LEVELS},(_,i)=>{const n=i+1,done=state.completed.has(n);return `<button class="fb-level-button ${n===state.level?"active":""} ${done?"complete":""}" data-level="${n}" aria-label="Level ${n}${done?" completed":""}">${n}</button>`}).join("");
     grid.querySelectorAll("[data-level]").forEach(b=>b.addEventListener("click",()=>{state.level=Number(b.dataset.level);newChallenge(state.level)}));
   }
   function bindScene(c){
@@ -208,7 +221,7 @@ const FractionBakery = (() => {
     else if(c.type==="missing")document.querySelectorAll("[data-number]").forEach(b=>b.addEventListener("click",()=>checkNumber(Number(b.dataset.number))));
     else document.querySelectorAll("[data-answer]").forEach(b=>b.addEventListener("click",()=>checkAnswer(b.dataset.answer)));
   }
-  function correct(){state.solved=true;stopTimer();Analytics.log("fraction_bakery","level_complete",{level:state.level,challenge:state.challenge.type,timeMs:Date.now()-state.startedAt});render()}
+  function correct(){state.solved=true;state.completed.add(state.level);stopTimer();Analytics.log("fraction_bakery","level_complete",{level:state.level,challenge:state.challenge.type,timeMs:Date.now()-state.startedAt});render()}
   function wrong(message){const f=el("fb-feedback");f.textContent=message;f.className="fb-feedback gentle-wrong"}
   function checkBuild(){const c=state.challenge;if(state.selected.size===c.f.n)correct();else wrong(`Count again. The order needs ${c.f.n} pieces, but you selected ${state.selected.size}.`)}
   function checkCompare(side){const c=state.challenge,chosen=side==="a"?c.a:c.b,other=side==="a"?c.b:c.a;if(value(chosen)>value(other))correct();else wrong("That dish is smaller. Count the parts and compare the fraction, not just the piece count.")}
@@ -224,6 +237,6 @@ const FractionBakery = (() => {
   function handleKey(e){if(!el("screen-fraction-bakery")?.classList.contains("active"))return;if(e.key==="Escape")close();if(e.key==="Enter"&&state.solved)next()}
   document.addEventListener("keydown",handleKey);
   function testSetLevel(level){state.level=level;newChallenge(level)}
-  return{open,close,init,stop,next,resetLevel,LEVELS,STAGES,__testSetLevel:testSetLevel,get __testChallenge(){return state.challenge}};
+  return{open,close,init,stop,next,resetLevel,showHint,LEVELS,STAGES,__testSetLevel:testSetLevel,get __testChallenge(){return state.challenge}};
 })();
 window.FractionBakery=FractionBakery;
