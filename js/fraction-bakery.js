@@ -201,8 +201,8 @@ const FractionBakery = (() => {
     newChallenge(state.level);
   }
   function resetLevel(){newChallenge(state.level)}
-  function open(){Game.goHome();document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));el("screen-fraction-bakery").classList.add("active");newChallenge(state.level);ControlsOverlay.maybeShow("fraction");}
-  function close(){stopTimer();Game.goHome()}
+  function open(){Game.goHome();const screen=el("screen-fraction-bakery");if(!screen)return;screen.hidden=false;document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));screen.classList.add("active");newChallenge(state.level);ControlsOverlay.maybeShow("fraction");}
+  function close(){stopTimer();const screen=el("screen-fraction-bakery");if(screen)screen.hidden=true;Game.goHome()}
   function stop(){stopTimer()}
   function init(){newChallenge(state.level)}
   function handleKey(e){
