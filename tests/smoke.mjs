@@ -368,6 +368,21 @@ async function main() {
       if (c.type === "difference") assert(c.answer.n >= 0 && c.answer.d > 0, "Difference challenge is invalid.");
       if (c.type === "mixed") assert(c.answer.n > c.answer.d, "Mixed-number challenge must produce an improper fraction.");
     }
+    FractionBakery.__testSetLevel(85);
+    assert(FractionBakery.__testChallenge.type === "order", "Chef's Counter level 85 must render an order challenge.");
+    const orderCards = [...document.querySelectorAll("#screen-fraction-bakery .fb-order-card")];
+    assert(orderCards.length === 3, "Fraction Bakery order challenge must render exactly three order cards.");
+    for (const card of orderCards) {
+      const cardRect = card.getBoundingClientRect();
+      const dish = card.querySelector(".fb-dish");
+      assert(dish, "Fraction Bakery order card is missing its dish illustration.");
+      const dishRect = dish.getBoundingClientRect();
+      assert(dishRect.left >= cardRect.left - 2 && dishRect.right <= cardRect.right + 2 && dishRect.top >= cardRect.top - 2 && dishRect.bottom <= cardRect.bottom + 2, "Fraction Bakery order dish escapes its card boundary.");
+      assert(getComputedStyle(card).overflow === "hidden", "Fraction Bakery order cards must contain oversized dish artwork.");
+    }
+    const titleRect = document.getElementById("fb-title").getBoundingClientRect();
+    const promptRect = document.getElementById("fb-prompt").getBoundingClientRect();
+    assert(promptRect.top <= titleRect.bottom + 2, "Fraction Bakery title and prompt have an unintended vertical gap.");
     FractionBakery.__testSetLevel(1);
     const c = FractionBakery.__testChallenge;
     assert(c.f.d >= 5 && c.f.d <= 8, "Opening counting levels must preserve the generated denominator difficulty.");
