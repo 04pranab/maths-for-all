@@ -126,3 +126,7 @@
 /* Keep title and question visually connected. */
 #screen-fraction-bakery .fb-title{margin-bottom:0!important;padding-bottom:0!important}
 #screen-fraction-bakery .fb-title + .fb-prompt{margin-top:-6px!important;padding-top:0!important}
+
+/* Keep every level's title and question flush together. */
+#screen-fraction-bakery .fb-work{row-gap:0}
+#screen-fraction-bakery .fb-title + .fb-prompt{margin-top:0!important}
