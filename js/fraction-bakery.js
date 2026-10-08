@@ -120,9 +120,8 @@ const FractionBakery = (() => {
         c={type:"simplify",target:equiv,answer:f,options:uniqueFractions(f,4,level)};
       }else if(mode%4===1){
         const a=proper(level),b=proper(level);
-        c={type:"order",items:shuffle([a,b,proper(level)]),answer:0};
-        c.items.sort((x,y)=>value(x)-value(y)); c.answer=c.items.map(fmt).join("|");
-        c.items=shuffle(c.items.slice());
+        const sorted=[a,b,proper(level)].sort((x,y)=>value(x)-value(y));
+        c={type:"order",items:shuffle(sorted.slice()),answer:sorted.map(fmt).join("|")};
       }else if(mode%4===2){
         const d=rand(q.min,q.max),n=rand(2,d-2),missing=rand(1,d-1);
         c={type:"missing",f:frac(n,d),missing,answer:n,options:shuffle([n,Math.max(1,n-1),Math.min(d-1,n+1),Math.max(1,d-n)])};
@@ -215,7 +214,7 @@ const FractionBakery = (() => {
   function checkCompare(side){const c=state.challenge,chosen=side==="a"?c.a:c.b,other=side==="a"?c.b:c.a;if(value(chosen)>value(other))correct();else wrong("That dish is smaller. Count the parts and compare the fraction, not just the piece count.")}
   function checkAnswer(answer){const c=state.challenge,expected=c.type==="identify"?c.f:c.answer;if(answer===fmt(expected))correct();else wrong("Not quite. Count the pieces again and check both numerator and denominator.")}
   function checkNumber(n){const c=state.challenge;if(n===c.f.n-c.missing)correct();else wrong("Count the gap from the pieces already on the plate to the target count.")}
-  function checkOrder(){const c=state.challenge,chosen=state.orderSelection||[];const expected=c.items.map(fmt);if(chosen.length===3&&chosen.map(i=>fmt(c.items[i])).join("|")===expected.join("|"))correct();else wrong("Not quite. Compare the actual fraction sizes, then arrange smallest to largest.")}
+  function checkOrder(){const c=state.challenge,chosen=state.orderSelection||[];if(chosen.length===3&&chosen.map(i=>fmt(c.items[i])).join("|")===c.answer.split("|").join("|"))correct();else wrong("Not quite. Compare the actual fraction sizes, then arrange smallest to largest.")}
   function next(){if(!state.solved||state.busy)return;state.busy=true;if(state.level<LEVELS)state.level++;else state.level=1;newChallenge(state.level)}
   function resetLevel(){newChallenge(state.level)}
   function open(){Game.goHome();const screen=el("screen-fraction-bakery");if(!screen)return;screen.hidden=false;document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));screen.classList.add("active");newChallenge(state.level);ControlsOverlay.maybeShow("fraction")}
