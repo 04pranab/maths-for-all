@@ -145,6 +145,16 @@ const ControlsOverlay = (function () {
         'Use the reflection and discovery cards to connect the experiment to the idea.'
       ],
     },
+    fraction: {
+      icon: '🥐', title: 'How to play: Fraction Bakery',
+      bullets: [
+        'Every order is generated from a valid fraction, so every challenge has a real solution.',
+        'Tap equal dish pieces to build the requested fraction, or choose the matching recipe.',
+        'Later orders ask you to compare fractions, find equivalent fractions, and mix like-denominator recipes.',
+        'Wrong answers are clues. Check how many equal parts make the whole and try again.',
+        'The timer is only a gentle record. There is no penalty for taking your time.'
+      ],
+    },
     architect: {
       icon: '🏗️', title: 'How to play: Shape Architect',
       bullets: [
@@ -235,7 +245,8 @@ const Analytics = (function () {
     shape: 'Shape Fitting',
     slab: 'Slab Maths',
     architect: 'Shape Architect',
-    probability_carnival: 'Probability Carnival'
+    probability_carnival: 'Probability Carnival',
+    fraction_bakery: 'Fraction Bakery'
   };
 
   function events() {
@@ -335,7 +346,7 @@ const Analytics = (function () {
    PROGRESS DASHBOARD (modal UI over Analytics data)
    ============================================================= */
 const Progress = (function () {
-  const LABELS = { quiz: 'Arithmetic Quiz', race: 'Math Racing', sudoku: 'Sudoku', shape: 'Shape Fitting', slab: 'Slab Maths', probability_carnival: 'Probability Carnival' };
+  const LABELS = { quiz: 'Arithmetic Quiz', race: 'Math Racing', sudoku: 'Sudoku', shape: 'Shape Fitting', slab: 'Slab Maths', architect: 'Shape Architect', probability_carnival: 'Probability Machine', fraction_bakery: 'Fraction Bakery' };
 
   function render() {
     const s = Analytics.summary();
@@ -379,6 +390,7 @@ const Game = (function () {
     shape:  'screen-shape',
     slab:   'screen-slab',
     architect: 'screen-architect',
+    fraction: 'screen-fraction-bakery',
   };
 
   function stopBackgroundGames() {
@@ -387,6 +399,7 @@ const Game = (function () {
     if (window.ShapePuzzle && typeof ShapePuzzle.stop === 'function') ShapePuzzle.stop();
     if (window.SlabMath && typeof SlabMath.stop === 'function') SlabMath.stop();
     if (window.ShapeArchitect && typeof ShapeArchitect.stop === 'function') ShapeArchitect.stop();
+    if (window.FractionBakery && typeof FractionBakery.stop === 'function') FractionBakery.stop();
   }
 
   function showScreen(name) {
@@ -410,8 +423,9 @@ const Game = (function () {
   function startShapePuzzle(){ Analytics.log('shape','open',{}); showScreen('shape'); ShapePuzzle.init(); ControlsOverlay.maybeShow('shape'); }
   function startSlabMath()   { Analytics.log('slab','open',{}); showScreen('slab'); SlabMath.init(); ControlsOverlay.maybeShow('slab'); }
   function startShapeArchitect(){ Analytics.log('shape_architect','open',{}); showScreen('architect'); ShapeArchitect.init(); ControlsOverlay.maybeShow('architect'); }
+  function startFractionBakery(){ Analytics.log('fraction_bakery','open',{}); showScreen('fraction'); const screen=document.getElementById('screen-fraction-bakery'); if(screen) screen.hidden=false; FractionBakery.init(); ControlsOverlay.maybeShow('fraction'); }
 
-  return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect };
+  return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect, startFractionBakery };
 })();
 
 /* =============================================================

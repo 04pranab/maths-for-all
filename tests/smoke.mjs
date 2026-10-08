@@ -185,7 +185,7 @@ async function main() {
   await sleep(500);
 
   const baseline = await evaluate('(() => {' +
-    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","screen-architect","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
+    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","screen-architect","screen-fraction-bakery","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
     'const missing = required.filter(id => !document.getElementById(id));' +
     'const resources = [...Array.from(document.scripts).map(s => s.src), ...Array.from(document.querySelectorAll("link[rel=stylesheet]")).map(l => l.href)];' +
     'return { missing, resources };' +
@@ -231,10 +231,10 @@ async function main() {
 
   const helpResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
-    'const cases = [["screen-quiz","quiz","How to play: Arithmetic Quiz"],["screen-race","race","How to play: Math Racing"],["screen-sudoku","sudoku","How to play: Sudoku Challenge"],["screen-shape","shape","How to play: Shape Fitting"],["screen-slab","slab","How to play: Slab Maths"],["screen-architect","architect","How to play: Shape Architect"]];' +
+    'const cases = [["screen-quiz","quiz","How to play: Arithmetic Quiz"],["screen-race","race","How to play: Math Racing"],["screen-sudoku","sudoku","How to play: Sudoku Challenge"],["screen-shape","shape","How to play: Shape Fitting"],["screen-slab","slab","How to play: Slab Maths"],["screen-architect","architect","How to play: Shape Architect"],["screen-fraction-bakery","fraction","How to play: Fraction Bakery"]];' +
     'for (const [screenId, key, title] of cases) {' +
       'Game.goHome();' +
-      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath, architect: Game.startShapeArchitect }[key];' +
+      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath, architect: Game.startShapeArchitect, fraction: Game.startFractionBakery }[key];' +
       'start();' +
       'Navigation.howToPlay();' +
       'await new Promise(r => setTimeout(r, 20));' +
@@ -324,6 +324,44 @@ async function main() {
 
   if (!helpResult?.ok) throw new Error('Context-sensitive help and Escape overlay checks did not complete.');
 
+  const fractionResult = await evaluate(`(async () => {
+    const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    Game.goHome();
+    FractionBakery.open();
+    assert(FractionBakery.LEVELS === 72, "Fraction Bakery must define exactly 72 levels.");
+    assert(FractionBakery.STAGES.length === 6, "Fraction Bakery must define six stages.");
+    assert(FractionBakery.STAGES.every(stage => stage.to - stage.from + 1 === 12), "Every Fraction Bakery stage must contain twelve levels.");
+    assert(document.querySelector("#screen-fraction-bakery").classList.contains("active"), "Fraction Bakery screen did not open.");
+    assert(document.querySelectorAll(".fb-dish").length >= 1, "Fraction Bakery must render an SVG dish.");
+    const randomSignatures = new Set();
+    for (let i = 0; i < 30; i++) {
+      FractionBakery.resetLevel();
+      randomSignatures.add(JSON.stringify(FractionBakery.__testChallenge));
+    }
+    assert(randomSignatures.size > 1, "Fraction Bakery did not randomize generated orders.");
+    FractionBakery.__testSetLevel(13);
+    assert(document.querySelectorAll(".fb-dish .fb-piece.is-selected").length > 0, "Fraction identification dish must visibly mark the generated fraction.");
+    FractionBakery.__testSetLevel(25);
+    assert(document.querySelectorAll(".fb-plates .fb-piece.is-selected").length > 0, "Fraction comparison plates must visibly mark their generated fractions.");
+    const stages = [1,13,25,37,49,61];
+    for (const level of stages) {
+      FractionBakery.__testSetLevel(level);
+      const c = FractionBakery.__testChallenge;
+      assert(c && c.type, "Fraction Bakery stage " + level + " generated no challenge.");
+      if (c.type === "build") assert(c.f.n >= 1 && c.f.n <= c.f.d && c.f.d >= 2, "Build fraction is invalid.");
+      if (c.type === "compare") assert(c.a.n*c.b.d !== c.b.n*c.a.d, "Compare challenge generated equal fractions.");
+      if (c.type === "equivalent") assert(c.target.n*c.answer.d === c.answer.n*c.target.d, "Equivalent challenge is mathematically invalid.");
+      if (c.type === "mix" || c.type === "bake") assert(c.answer.n > 0 && c.answer.n <= c.answer.d, "Recipe result is invalid.");
+    }
+    FractionBakery.__testSetLevel(1);
+    const c = FractionBakery.__testChallenge;
+    for (let i=0;i<c.f.n;i++) document.querySelector('.fb-piece[data-piece="'+i+'"]')?.dispatchEvent(new MouseEvent("click",{bubbles:true}));
+    document.querySelector("#fb-serve")?.click();
+    assert(document.querySelector("#fb-next").disabled === false, "Valid Fraction Bakery build was not accepted.");
+    Game.goHome();
+    return { levels:72, stages:6, levelsPerStage:12, randomizedOrders:randomSignatures.size };
+  })()`);
+
   const malformedInputResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const inputs = ["", "abc", "-999999999999999999999999", "999999999999999999999999", "\\u0000", "  "];' +
@@ -346,6 +384,8 @@ async function main() {
   '})()');
 
   if (!malformedInputResult) throw new Error('Malformed-input stress did not complete.');
+
+  if (!fractionResult?.levels) throw new Error('Fraction Bakery validation did not complete.');
 
   await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
 
