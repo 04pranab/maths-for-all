@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-No changes are currently committed after v2.0.4. The next planned work is design discussion for Probability Carnival; implementation does not begin until that design is confirmed.
+### Fraction Bakery
+- Added 72 randomized levels across six gameplay stages.
+- Added SVG-built bakery dishes including pizza, pie, cake, tart, and chocolate bar.
+- Added constructive slice-and-serve fraction building, identification, comparison, equivalent-fraction matching, and like-denominator recipe arithmetic.
+- Constrained generated dish fractions to valid equal partitions so every visual order is solvable.
+- Added regression coverage for randomization, mathematical validity, SVG rendering, stage boundaries, and representative gameplay.
 
 ## 2.0.4 · 2026-10-06 · Geometry & Physical Learning Hardening
 
