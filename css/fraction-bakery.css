@@ -101,6 +101,10 @@
 #screen-fraction-bakery .fb-workbench{flex:1 1 auto;min-height:300px;margin-top:0}
 #screen-fraction-bakery .fb-plates{gap:12px;align-items:center}
 #screen-fraction-bakery .fb-plate{min-width:0;flex:1 1 0}
+#screen-fraction-bakery .fb-order-trays{align-items:stretch;gap:12px}
+#screen-fraction-bakery .fb-order-card{display:grid;grid-template-rows:minmax(0,1fr) auto;align-items:center;justify-items:center;align-content:stretch;gap:2px;min-height:0;overflow:hidden;padding:6px}
+#screen-fraction-bakery .fb-order-card .fb-dish{width:min(220px,100%);max-width:100%;max-height:230px;object-fit:contain}
+#screen-fraction-bakery .fb-order-card b{padding:4px 6px;font-size:1.25rem}
 #screen-fraction-bakery .fb-plate .fb-dish{width:min(430px,30vw,46vh);max-width:100%}
 #screen-fraction-bakery .fb-vs{flex:0 0 auto;padding:0 2px}
 #screen-fraction-bakery .fb-level-picker{display:flex;flex-direction:column;padding:8px}
