@@ -383,6 +383,36 @@ async function main() {
     const titleRect = document.getElementById("fb-title").getBoundingClientRect();
     const promptRect = document.getElementById("fb-prompt").getBoundingClientRect();
     assert(promptRect.top <= titleRect.bottom + 2, "Fraction Bakery title and prompt have an unintended vertical gap.");
+
+    const fractionLevels = [];
+    for (let level = 1; level <= FractionBakery.LEVELS; level++) {
+      FractionBakery.__testSetLevel(level);
+      await new Promise(r => setTimeout(r, 0));
+      const screen = document.getElementById("screen-fraction-bakery");
+      const work = screen.querySelector(".fb-work");
+      const workbench = screen.querySelector(".fb-workbench");
+      assert(work && workbench, "Fraction Bakery level " + level + " is missing its work surface.");
+      const viewportWidth = document.documentElement.clientWidth;
+      assert(document.documentElement.scrollWidth <= viewportWidth + 2, "Fraction Bakery level " + level + " creates horizontal page overflow.");
+      const workRect = work.getBoundingClientRect();
+      const benchRect = workbench.getBoundingClientRect();
+      assert(benchRect.left >= workRect.left - 2 && benchRect.right <= workRect.right + 2, "Fraction Bakery level " + level + " workbench escapes the main work area.");
+      const visualSelectors = ".fb-dish,.fb-plate,.fb-order-card,.fb-equivalent-top,.fb-mixing-board,.fb-mixed-board,.fb-options,.fb-action";
+      for (const node of screen.querySelectorAll(visualSelectors)) {
+        const rect = node.getBoundingClientRect();
+        assert(rect.left >= benchRect.left - 3 && rect.right <= benchRect.right + 3, "Fraction Bakery level " + level + " has a visual element escaping the workbench: " + node.className);
+      }
+      for (const card of screen.querySelectorAll(".fb-order-card")) {
+        const cardRect = card.getBoundingClientRect();
+        const dish = card.querySelector(".fb-dish");
+        if (dish) {
+          const dishRect = dish.getBoundingClientRect();
+          assert(dishRect.left >= cardRect.left - 2 && dishRect.right <= cardRect.right + 2 && dishRect.top >= cardRect.top - 2 && dishRect.bottom <= cardRect.bottom + 2, "Fraction Bakery level " + level + " order dish escapes its card.");
+        }
+      }
+      fractionLevels.push({level, type: FractionBakery.__testChallenge.type});
+    }
+
     FractionBakery.__testSetLevel(1);
     const c = FractionBakery.__testChallenge;
     assert(c.f.d >= 5 && c.f.d <= 8, "Opening counting levels must preserve the generated denominator difficulty.");
