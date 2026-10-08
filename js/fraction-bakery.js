@@ -127,7 +127,7 @@ const FractionBakery = (() => {
     el("fb-feedback").className="fb-feedback "+(state.solved?"success":"");
     el("fb-next").disabled=!state.solved;
     el("fb-level-dot").textContent=state.level;
-    el("fb-progress").style.width=((state.level-1)/LEVELS*100)+"%";
+    el("fb-progress").style.setProperty("--fb-progress",((state.level-1)/LEVELS*100)+"%");
     bindScene(c);
   }
 
