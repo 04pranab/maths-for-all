@@ -91,3 +91,33 @@
   #screen-fraction-bakery .fb-level-grid{height:auto;max-height:260px;overflow:auto;grid-template-columns:repeat(10,minmax(28px,1fr));grid-template-rows:repeat(10,34px)}
   #screen-fraction-bakery .fb-work{min-height:570px;overflow:visible}
 }
+
+/* Fraction Bakery layout polish: keep the question attached to the work surface and make level selection feel like a real control panel. */
+#screen-fraction-bakery .fb-work{display:flex;flex-direction:column;gap:6px;padding:10px 16px 10px}
+#screen-fraction-bakery .fb-kicker{flex:0 0 auto}
+#screen-fraction-bakery .fb-title{flex:0 0 auto;line-height:1.05;margin:0}
+#screen-fraction-bakery .fb-prompt{flex:0 0 auto;margin:0;min-height:46px}
+#screen-fraction-bakery .fb-workbench{flex:1 1 auto;min-height:300px;margin-top:0}
+#screen-fraction-bakery .fb-plates{gap:12px;align-items:center}
+#screen-fraction-bakery .fb-plate{min-width:0;flex:1 1 0}
+#screen-fraction-bakery .fb-plate .fb-dish{width:min(430px,30vw,46vh);max-width:100%}
+#screen-fraction-bakery .fb-vs{flex:0 0 auto;padding:0 2px}
+#screen-fraction-bakery .fb-level-picker{display:flex;flex-direction:column;padding:8px}
+#screen-fraction-bakery .fb-level-picker-head{padding:7px 8px;border:1px solid #51463b;border-radius:7px;background:#191714;box-shadow:inset 0 0 12px #0006}
+#screen-fraction-bakery .fb-level-picker-head strong{font-size:.82rem}
+#screen-fraction-bakery .fb-level-picker-head span{font-size:.68rem}
+#screen-fraction-bakery .fb-level-grid{flex:1 1 auto;align-content:stretch}
+#screen-fraction-bakery .fb-level-button{position:relative;min-height:0}
+#screen-fraction-bakery .fb-level-button[data-stage="1"]{border-top:2px solid #d69a55}
+#screen-fraction-bakery .fb-level-button[data-stage="13"]{border-top:2px solid #c98762}
+#screen-fraction-bakery .fb-level-button[data-stage="25"]{border-top:2px solid #d2b45e}
+#screen-fraction-bakery .fb-level-button[data-stage="37"]{border-top:2px solid #8cae79}
+#screen-fraction-bakery .fb-level-button[data-stage="49"]{border-top:2px solid #8ba5c1}
+#screen-fraction-bakery .fb-level-button[data-stage="61"]{border-top:2px solid #b38db7}
+#screen-fraction-bakery .fb-level-button[data-stage="73"]{border-top:2px solid #b9784e}
+#screen-fraction-bakery .fb-level-button[data-stage="87"]{border-top:2px solid #e1b86c}
+@media(max-width:800px){
+  #screen-fraction-bakery .fb-work{display:flex;min-height:620px}
+  #screen-fraction-bakery .fb-workbench{min-height:420px}
+  #screen-fraction-bakery .fb-plate .fb-dish{width:min(55vw,360px)}
+}
