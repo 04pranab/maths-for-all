@@ -572,7 +572,7 @@
           </div>
         </header>
         <div class="fb-progress" id="fb-progress" style="--fb-progress:0%"></div>
-        <div class="fb-level-picker" aria-label="All 100 Fraction Bakery levels"><div class="fb-level-picker-head"><strong>All 100 levels</strong><span>Pick any recipe to practise</span></div><div class="fb-level-grid" id="fb-level-grid"></div></div>
+        <div class="fb-main-grid"><aside class="fb-level-picker" aria-label="All 100 Fraction Bakery levels"><div class="fb-level-picker-head"><strong>100 orders</strong><span>Choose a recipe</span></div><div class="fb-level-grid" id="fb-level-grid"></div></aside>
         <section class="fb-work" aria-live="polite">
           <div class="fb-kicker">ORDER #<span id="fb-level-dot">1</span> · <span id="fb-timer">0s</span></div>
           <h2 class="fb-title" id="fb-title">Build the order</h2>
@@ -582,11 +582,11 @@
           <div class="fb-actions">
             <div class="fb-stats"><span>🥣 Learn by making</span><span>⏱ <span id="fb-timer-copy">No race</span></span></div>
             <div>
-              <button class="fb-reset" type="button" onclick="FractionBakery.resetLevel()">↻ New recipe</button>
+              <button class="fb-reset" type="button" onclick="FractionBakery.showHint()">💡 Hint</button><button class="fb-reset" type="button" onclick="FractionBakery.resetLevel()">↻ New recipe</button>
               <button class="fb-next" id="fb-next" type="button" onclick="FractionBakery.next()" disabled>Next order →</button>
             </div>
           </div>
-        </section>
+        </section></div>
       </main>
     </div>
   </section>
