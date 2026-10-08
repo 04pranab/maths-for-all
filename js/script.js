@@ -346,7 +346,7 @@ const Analytics = (function () {
    PROGRESS DASHBOARD (modal UI over Analytics data)
    ============================================================= */
 const Progress = (function () {
-  const LABELS = { quiz: 'Arithmetic Quiz', race: 'Math Racing', sudoku: 'Sudoku', shape: 'Shape Fitting', slab: 'Slab Maths', probability_carnival: 'Probability Carnival' };
+  const LABELS = { quiz: 'Arithmetic Quiz', race: 'Math Racing', sudoku: 'Sudoku', shape: 'Shape Fitting', slab: 'Slab Maths', architect: 'Shape Architect', probability_carnival: 'Probability Machine', fraction_bakery: 'Fraction Bakery' };
 
   function render() {
     const s = Analytics.summary();
