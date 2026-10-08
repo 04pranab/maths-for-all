@@ -121,3 +121,7 @@
   #screen-fraction-bakery .fb-workbench{min-height:420px}
   #screen-fraction-bakery .fb-plate .fb-dish{width:min(55vw,360px)}
 }
+
+/* Keep title and question visually connected. */
+#screen-fraction-bakery .fb-title{margin-bottom:0!important;padding-bottom:0!important}
+#screen-fraction-bakery .fb-prompt{margin-top:0!important;padding-top:0!important}
