@@ -224,7 +224,7 @@ const FractionBakery = (() => {
   }
   function renderLevels(){
     const grid=el("fb-level-grid");if(!grid)return;
-    grid.innerHTML=Array.from({length:LEVELS},(_,i)=>{const n=i+1,done=state.completed.has(n);return `<button class="fb-level-button ${n===state.level?"active":""} ${done?"complete":""}" data-level="${n}" aria-label="Level ${n}${done?" completed":""}">${n}</button>`}).join("");
+    grid.innerHTML=Array.from({length:LEVELS},(_,i)=>{const n=i+1,done=state.completed.has(n),stage=stageFor(n);return `<button class="fb-level-button ${n===state.level?"active":""} ${done?"complete":""}" data-level="${n}" data-stage="${stage.from}" aria-label="Level ${n}, ${stage.name}${done?" completed":""}" title="Level ${n} · ${stage.name}">${n}</button>`}).join("");
     grid.querySelectorAll("[data-level]").forEach(b=>b.addEventListener("click",()=>{state.level=Number(b.dataset.level);newChallenge(state.level)}));
   }
   function bindScene(c){
