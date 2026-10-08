@@ -52,24 +52,24 @@
 #screen-fraction-bakery .fb-readout b{color:#b9e18b;font-size:1rem}
 #screen-fraction-bakery .fb-progress{height:5px;background:#25221e}
 #screen-fraction-bakery .fb-progress:before{background:#b88a43}
-#screen-fraction-bakery .fb-main-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:255px minmax(0,1fr);overflow:hidden}
-#screen-fraction-bakery .fb-level-picker{min-height:0;overflow:hidden;padding:10px;background:#211e1a;border-right:2px solid #5e4b3b}
+#screen-fraction-bakery .fb-main-grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:300px minmax(0,1fr);overflow:visible}
+#screen-fraction-bakery .fb-level-picker{min-height:0;overflow:visible;padding:10px;background:#211e1a;border-right:2px solid #5e4b3b}
 #screen-fraction-bakery .fb-level-picker-head{position:static;color:#d8d0c4;margin:0 0 7px}
 #screen-fraction-bakery .fb-level-picker-head strong{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#e4b86b;font-size:.92rem}
 #screen-fraction-bakery .fb-level-picker-head span{color:#8f8a82;font-size:.7rem}
-#screen-fraction-bakery .fb-level-grid{height:calc(100% - 43px);max-height:none;overflow:hidden;grid-template-columns:repeat(10,minmax(0,1fr));grid-template-rows:repeat(10,minmax(0,1fr));gap:4px;padding:2px}
-#screen-fraction-bakery .fb-level-button{min-height:0;border:1px solid #55483b;border-radius:4px;background:#2d2924;color:#bdb5aa;font:800 .72rem ui-monospace,SFMono-Regular,Consolas,monospace;box-shadow:none}
+#screen-fraction-bakery .fb-level-grid{height:100%;max-height:none;overflow:visible;grid-template-columns:repeat(10,minmax(0,1fr));grid-template-rows:repeat(10,minmax(0,1fr));gap:4px;padding:2px}
+#screen-fraction-bakery .fb-level-button{min-height:34px;border:1px solid #55483b;border-radius:4px;background:#2d2924;color:#bdb5aa;font:800 .72rem ui-monospace,SFMono-Regular,Consolas,monospace;box-shadow:none}
 #screen-fraction-bakery .fb-level-button:hover{transform:none;background:#3a342c}
 #screen-fraction-bakery .fb-level-button.active{background:#8c6030;border-color:#e1b86c;color:#fff4dc;box-shadow:inset 0 0 0 1px #f0c77b}
 #screen-fraction-bakery .fb-level-button.complete{background:#34543b;border-color:#78a77d;color:#e1f0d9}
 #screen-fraction-bakery .fb-level-button.active.complete{background:#47734d}
-#screen-fraction-bakery .fb-work{min-width:0;min-height:0;overflow:hidden;padding:12px 18px 12px;background:#f0e2ce;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:8px}
+#screen-fraction-bakery .fb-work{min-width:0;min-height:0;overflow:visible;padding:12px 18px 12px;background:#f0e2ce;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:8px}
 #screen-fraction-bakery .fb-kicker{font:800 .72rem ui-monospace,SFMono-Regular,Consolas,monospace;color:#76553e;letter-spacing:.1em}
-#screen-fraction-bakery .fb-title{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:clamp(1.45rem,2.5vw,2.1rem);margin:0;color:#38291f}
-#screen-fraction-bakery .fb-prompt{min-height:42px;margin:0;max-width:none;font-size:1rem;padding:6px 12px;border:2px solid #b89572;border-radius:9px;box-shadow:0 2px 0 #c8ab8d;background:#fff8ed}
+#screen-fraction-bakery .fb-title{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:clamp(1.8rem,2.8vw,2.5rem);margin:0;color:#38291f}
+#screen-fraction-bakery .fb-prompt{min-height:54px;margin:0;max-width:none;font-size:1.15rem;padding:6px 12px;border:2px solid #b89572;border-radius:9px;box-shadow:0 2px 0 #c8ab8d;background:#fff8ed}
 #screen-fraction-bakery .fb-prompt b,#screen-fraction-bakery .fb-prompt strong,#screen-fraction-bakery .fb-prompt span{font-size:1.2rem}
 #screen-fraction-bakery .fb-workbench{min-height:0;height:100%;box-sizing:border-box;overflow:hidden;gap:8px;padding:8px 14px;border:3px solid #9a7656;border-radius:12px;background:linear-gradient(145deg,#ead4b8,#f7ead7);box-shadow:inset 0 1px 0 #fff}
-#screen-fraction-bakery .fb-dish{width:min(330px,34vh,42vw);max-height:30vh}
+#screen-fraction-bakery .fb-dish{width:min(430px,42vh,48vw);max-height:40vh}
 #screen-fraction-bakery .fb-dish-wrap{min-height:0;gap:5px}
 #screen-fraction-bakery .fb-action,#screen-fraction-bakery .fb-option,#screen-fraction-bakery .fb-plate{padding:9px 14px;border-width:2px;border-radius:9px;font-size:.98rem;box-shadow:0 3px 0 #b79878}
 #screen-fraction-bakery .fb-options{gap:8px}
@@ -87,7 +87,7 @@
   #screen-fraction-bakery .fb-shell{height:auto;min-height:100vh}
   #screen-fraction-bakery .fb-machine{min-height:calc(100vh - 44px)}
   #screen-fraction-bakery .fb-main-grid{grid-template-columns:1fr;overflow:visible}
-  #screen-fraction-bakery .fb-level-picker{max-height:108px;border-right:0;border-bottom:2px solid #5e4b3b}
-  #screen-fraction-bakery .fb-level-grid{height:68px;grid-template-columns:repeat(10,minmax(28px,1fr));grid-template-rows:repeat(2,1fr)}
+  #screen-fraction-bakery .fb-level-picker{max-height:none;border-right:0;border-bottom:2px solid #5e4b3b}
+  #screen-fraction-bakery .fb-level-grid{height:auto;max-height:260px;overflow:auto;grid-template-columns:repeat(10,minmax(28px,1fr));grid-template-rows:repeat(10,34px)}
   #screen-fraction-bakery .fb-work{min-height:570px;overflow:visible}
 }
