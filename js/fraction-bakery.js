@@ -212,6 +212,8 @@ const FractionBakery = (() => {
   }
   document.addEventListener("keydown",handleKey);
 
-  return {open,close,init,stop,next,resetLevel,LEVELS,STAGES};
+  function testSetLevel(level){state.level=level;newChallenge(level)}
+  function testChallenge(){return state.challenge}
+  return {open,close,init,stop,next,resetLevel,LEVELS,STAGES,__testSetLevel:testSetLevel,get __testChallenge(){return state.challenge}};
 })();
 window.FractionBakery=FractionBakery;
