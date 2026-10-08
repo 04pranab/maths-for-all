@@ -334,6 +334,7 @@ async function main() {
     assert(document.querySelector("#screen-fraction-bakery").classList.contains("active"), "Fraction Bakery screen did not open.");
     assert(document.querySelectorAll(".fb-dish").length >= 1, "Fraction Bakery must render an SVG dish.");
     assert(document.querySelector("#fb-level-grid"), "Fraction Bakery must render the 100-level map.");
+    assert(document.querySelectorAll("#fb-level-grid .fb-level-button").length === 100, "Fraction Bakery must render all 100 level buttons.");
     assert(document.querySelector(".fb-main-grid .fb-level-picker"), "Fraction Bakery levels must use the side rail.");
     assert(!document.querySelector(".fb-count-readout")?.textContent.includes("portions selected"), "Fraction Bakery must not expose the selected-piece count.");
     assert(document.querySelector('[onclick*="FractionBakery.showHint"]'), "Fraction Bakery must provide a hint control.");
@@ -363,12 +364,13 @@ async function main() {
       if (c.type === "mix" || c.type === "bake") assert(c.answer.n > 0 && c.answer.n <= c.answer.d, "Recipe result is invalid.");
       if (c.type === "simplify") assert(c.target.n*c.answer.d === c.answer.n*c.target.d, "Simplify challenge is mathematically invalid.");
       if (c.type === "order") assert(c.items.length === 3 && c.answer.split("|").length === 3, "Order challenge must contain three fractions.");
-      if (c.type === "missing") assert(c.f.n > c.missing, "Missing-count challenge must have a positive gap.");
+      if (c.type === "missing") assert(c.f.n > c.missing && c.missing >= 1, "Missing-count challenge must have a positive gap.");
       if (c.type === "difference") assert(c.answer.n >= 0 && c.answer.d > 0, "Difference challenge is invalid.");
       if (c.type === "mixed") assert(c.answer.n > c.answer.d, "Mixed-number challenge must produce an improper fraction.");
     }
     FractionBakery.__testSetLevel(1);
     const c = FractionBakery.__testChallenge;
+    assert(c.f.d >= 5 && c.f.d <= 8, "Opening counting levels must preserve the generated denominator difficulty.");
     for (let i=0;i<c.f.n;i++) document.querySelector('.fb-piece[data-piece="'+i+'"]')?.dispatchEvent(new MouseEvent("click",{bubbles:true}));
     document.querySelector("#fb-serve")?.click();
     assert(document.querySelector("#fb-next").disabled === false, "Valid Fraction Bakery build was not accepted.");

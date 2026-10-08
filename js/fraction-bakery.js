@@ -17,6 +17,7 @@ const FractionBakery = (() => {
   const gcd=(a,b)=>{while(b){[a,b]=[b,a%b]}return Math.abs(a)};
   const reduce=(n,d)=>{const g=gcd(n,d);return[n/g,d/g]};
   const frac=(n,d)=>{const[a,b]=reduce(n,d);return{n:a,d:b}};
+  const raw=(n,d)=>({n,d});
   const same=(a,b)=>a.n*b.d===b.n*a.d;
   const value=f=>f.n/f.d;
   const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
@@ -92,28 +93,28 @@ const FractionBakery = (() => {
     const stage=stageFor(level),q=difficulty(level),mode=level%10;
     let c;
     if(stage.from===1){
-      const d=rand(q.min,q.max),f=frac(rand(2,d-2),d);
+      const d=rand(q.min,q.max),f=raw(rand(2,d-2),d);
       c={type:"build",dish:randomDish(),f};
     }else if(stage.from===13){
-      const d=rand(q.min,q.max),f=frac(rand(2,d-2),d);
+      const d=rand(q.min,q.max),f=raw(rand(2,d-2),d);
       c={type:"identify",dish:randomDish(),f,options:uniqueFractions(f,4,level)};
     }else if(stage.from===25){
       let a=proper(level),b=proper(level);
       while(same(a,b)||Math.abs(value(a)-value(b))<.08)b=proper(level);
       c={type:"compare",a,b,dishes:[randomDish(),randomDish()]};
     }else if(stage.from===37){
-      const base=frac(rand(2,Math.min(8,q.max-3)),rand(5,q.max-2)),answer=multiples(base,level);
+      const base=raw(rand(2,Math.min(8,q.max-3)),rand(5,q.max-2)),answer=multiples(base,level);
       c={type:"equivalent",target:base,answer,options:uniqueFractions(answer,4,level)};
     }else if(stage.from===49){
       const d=rand(q.min,q.max),a=rand(2,d-3),b=rand(2,d-a-1),op=mode%2?"-":"+";
       const result=op==="+"?a+b:a-b;
       if(result<=1||result>=d)return newChallenge(level);
-      c={type:"mix",a:frac(a,d),b:frac(b,d),op,answer:frac(result,d),dish:randomDish()};
+      c={type:"mix",a:raw(a,d),b:raw(b,d),op,answer:raw(result,d),dish:randomDish()};
     }else if(stage.from===61){
       const d=rand(q.min,q.max),a=rand(2,d-3),b=rand(2,d-a-1),op=mode%2?"+":"-";
       const result=op==="+"?a+b:a-b;
       if(result<=1||result>=d)return newChallenge(level);
-      c={type:"bake",a:frac(a,d),b:frac(b,d),op,answer:frac(result,d),dish:randomDish()};
+      c={type:"bake",a:raw(a,d),b:raw(b,d),op,answer:raw(result,d),dish:randomDish()};
     }else if(stage.from===73){
       if(mode%4===0){
         const f=proper(level),equiv=multiples(f,level);
@@ -123,7 +124,7 @@ const FractionBakery = (() => {
         const sorted=[a,b,proper(level)].sort((x,y)=>value(x)-value(y));
         c={type:"order",items:shuffle(sorted.slice()),answer:sorted.map(fmt).join("|")};
       }else if(mode%4===2){
-        const d=rand(q.min,q.max),n=rand(2,d-2),missing=rand(1,d-1);
+        const d=rand(q.min,q.max),n=rand(2,d-2),missing=rand(1,n-1);
         c={type:"missing",f:frac(n,d),missing,answer:n,options:shuffle([n,Math.max(1,n-1),Math.min(d-1,n+1),Math.max(1,d-n)])};
       }else{
         const a=proper(level),b=proper(level);
@@ -136,7 +137,7 @@ const FractionBakery = (() => {
         c={type:"mixed",whole,n,d,answer:frac(whole*d+n,d)};
       }else if(mode2===1){
         const d=rand(6,q.max),a=rand(2,d-2),b=rand(2,d-a-1);
-        c={type:"bake",a:frac(a,d),b:frac(b,d),op:"+",answer:frac(a+b,d),dish:randomDish()};
+        c={type:"bake",a:raw(a,d),b:raw(b,d),op:"+",answer:raw(a+b,d),dish:randomDish()};
         if(c.answer.n>=c.answer.d*2)return newChallenge(level);
       }else if(mode2===2){
         const f=proper(level),answer=multiples(f,level);
@@ -147,7 +148,7 @@ const FractionBakery = (() => {
         c={type:"compare",a,b,dishes:[randomDish(),randomDish()]};
       }else{
         const d=rand(8,q.max),n=rand(3,d-3);
-        c={type:"build",dish:randomDish(),f:frac(n,d)};
+        c={type:"build",dish:randomDish(),f:raw(n,d)};
       }
     }
     state.challenge=c;state.solved=false;state.busy=false;state.selected.clear();state.hintUsed=false;startTimer();render();
