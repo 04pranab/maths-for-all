@@ -351,7 +351,7 @@ async function main() {
     }
     FractionBakery.__testSetLevel(1);
     const c = FractionBakery.__testChallenge;
-    for (let i=0;i<c.f.n;i++) document.querySelector('.fb-piece[data-piece="'+i+'"]')?.click();
+    for (let i=0;i<c.f.n;i++) document.querySelector('.fb-piece[data-piece="'+i+'"]')?.dispatchEvent(new MouseEvent("click",{bubbles:true}));
     document.querySelector("#fb-serve")?.click();
     assert(document.querySelector("#fb-next").disabled === false, "Valid Fraction Bakery build was not accepted.");
     Game.goHome();
