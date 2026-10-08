@@ -39,7 +39,7 @@
     </nav>
   </header>
 
-    <section id="screen-probability-carnival" class="screen" hidden>
+    <section id="screen-probability-carnival" class="screen" hidden aria-hidden="true">
     <div class="pc-shell">
       <button class="pc-back" type="button" onclick="ProbabilityCarnival.close()">← Back to machines</button>
 
@@ -155,7 +155,7 @@
         <div class="card-desc">Slice, compare, match and mix randomized fraction recipes on the bakery counter.</div>
         <div class="card-tag">Solo · 72 levels · Visual</div>
       </button>
-      <button class="menu-card card-probability" onclick="ProbabilityCarnival.open()">
+      <button class="menu-card card-probability" onclick="ProbabilityCarnival.open()" hidden aria-hidden="true" tabindex="-1">
         <div class="card-badge-icon">⚙️</div>
         <div class="card-title">Probability Machine</div>
         <div class="card-desc">Operate an 84-level probability machine: compare chances, build ratios, run experiments, investigate randomness and crack dice puzzles.</div>
