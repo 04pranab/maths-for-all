@@ -8,7 +8,7 @@ Maths for All is designed around a learner-first loop: **try → understand → 
 
 **v2.0.4 · Geometry & Physical Learning Hardening**
 
-This release hardens the physical-learning experience around the first new game, Shape Architect. The existing educational games remain the regression baseline, while Shape Architect is now ready for continued physical review before the next game is designed.
+This release hardens the physical-learning experience around the first new game, Shape Architect. The existing educational games remain the regression baseline, while Shape Architect is complete at its current acceptance boundary. Probability Machine is also complete. Fraction Bakery is now the next-generation game under physical review.
 
 Authentication and account controls remain temporarily disabled while physical game mechanics are being tested.
 
@@ -19,6 +19,7 @@ Authentication and account controls remain temporarily disabled while physical g
 - 🔢 Sudoku
 - 🔷 Shape Fitting
 - 🏗️ Shape Architect with 100 validated, timed picture-building levels
+- 🥐 Fraction Bakery with 72 randomized, mathematically valid fraction orders
 - 🧺 Slab Maths
 - 📱 Responsive desktop and mobile layouts
 - ⌨️ Keyboard-friendly controls and visible focus states
@@ -27,6 +28,22 @@ Authentication and account controls remain temporarily disabled while physical g
 - 📄 Privacy and research-data policy available without login
 - 🚫 Strict No-means-no research collection
 - 🧪 Automated browser smoke/stress testing
+
+## Fraction Bakery
+
+Fraction Bakery is a visual fraction-building game with randomized, valid orders rather than a fixed worksheet sequence.
+
+The current implementation provides:
+
+- 72 levels across six changing gameplay stages;
+- SVG-built pizza, pie, cake, tart, and chocolate-bar dishes;
+- randomized proper fractions generated from valid equal partitions;
+- slice-and-serve construction challenges;
+- fraction identification and comparison;
+- equivalent-fraction matching;
+- like-denominator addition and subtraction through bakery recipes;
+- gentle timing without speed penalties;
+- browser regression coverage for randomization, mathematical validity, SVG rendering, and representative gameplay.
 
 ## Shape Architect
 
