@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/slabmath.css" />
   <link rel="stylesheet" href="css/shape-architect.css" />
   <link rel="stylesheet" href="css/probability-carnival.css?v=20261007-7" />
+  <link rel="stylesheet" href="css/fraction-bakery.css?v=20261008-1" />
 </head>
 <body>
 
@@ -147,6 +148,12 @@
         <div class="card-title">Shape Architect</div>
         <div class="card-desc">Build a picture from pieces. Explore geometry, space, rotation and planning.</div>
         <div class="card-tag">Solo · 100 levels · Timed</div>
+      </button>
+      <button class="menu-card card-fraction" onclick="FractionBakery.open()">
+        <div class="card-badge-icon">🥐</div>
+        <div class="card-title">Fraction Bakery</div>
+        <div class="card-desc">Slice, compare, match and mix randomized fraction recipes on the bakery counter.</div>
+        <div class="card-tag">Solo · 72 levels · Visual</div>
       </button>
       <button class="menu-card card-probability" onclick="ProbabilityCarnival.open()">
         <div class="card-badge-icon">⚙️</div>
@@ -550,6 +557,39 @@
   </div>
 
 
+  <section id="screen-fraction-bakery" class="screen" hidden>
+    <div class="fb-shell">
+      <button class="fb-back" type="button" onclick="FractionBakery.close()">← Back to machines</button>
+      <main class="fb-machine">
+        <header class="fb-head">
+          <div class="fb-brand">
+            <span class="fb-eyebrow">FRACTION BAKERY</span>
+            <strong>THE RECIPE COUNTER</strong>
+          </div>
+          <div class="fb-readout">
+            <span id="fb-stage">🍕 Slice &amp; Serve</span>
+            <b id="fb-level">LEVEL 01 / 72</b>
+          </div>
+        </header>
+        <div class="fb-progress" id="fb-progress" style="--fb-progress:0%"></div>
+        <section class="fb-work" aria-live="polite">
+          <div class="fb-kicker">ORDER #<span id="fb-level-dot">1</span> · <span id="fb-timer">0s</span></div>
+          <h2 class="fb-title" id="fb-title">Build the order</h2>
+          <p class="fb-prompt" id="fb-prompt"></p>
+          <div class="fb-workbench" id="fb-workbench"></div>
+          <div class="fb-feedback" id="fb-feedback">Choose, build, or mix the order.</div>
+          <div class="fb-actions">
+            <div class="fb-stats"><span>🥣 Learn by making</span><span>⏱ <span id="fb-timer-copy">No race</span></span></div>
+            <div>
+              <button class="fb-reset" type="button" onclick="FractionBakery.resetLevel()">↻ New recipe</button>
+              <button class="fb-next" id="fb-next" type="button" onclick="FractionBakery.next()" disabled>Next order →</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </section>
+
   <!-- ===================================================
        MODAL: BRAIN BREAK (shown before PIN)
        =================================================== -->
@@ -693,6 +733,7 @@
   <script src="js/shape-architect-solver.js?v=20261006-4"></script>
   <script src="js/shape-architect-levels.js?v=20261006-5"></script>
   <script src="js/shape-architect.js?v=20261006-5"></script>
+  <script src="js/fraction-bakery.js?v=20261008-1"></script>
   <script src="js/consent.js?v=20261001-1"></script>
   <script>
     /* Prototype compatibility shim. Production authentication remains disabled. */
