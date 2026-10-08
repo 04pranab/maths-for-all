@@ -93,7 +93,7 @@ const FractionBakery = (() => {
     const stage=stageFor(level),q=difficulty(level),mode=level%10;
     let c;
     if(stage.from===1){
-      const d=rand(q.min,q.max),f=frac(rand(2,d-2),d);
+      const d=rand(q.min,q.max),f=raw(rand(2,d-2),d);
       c={type:"build",dish:randomDish(),f};
     }else if(stage.from===13){
       const d=rand(q.min,q.max),f=raw(rand(2,d-2),d);
