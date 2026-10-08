@@ -339,6 +339,10 @@ async function main() {
       randomSignatures.add(JSON.stringify(FractionBakery.__testChallenge));
     }
     assert(randomSignatures.size > 1, "Fraction Bakery did not randomize generated orders.");
+    FractionBakery.__testSetLevel(13);
+    assert(document.querySelectorAll(".fb-dish .fb-piece.is-selected").length > 0, "Fraction identification dish must visibly mark the generated fraction.");
+    FractionBakery.__testSetLevel(25);
+    assert(document.querySelectorAll(".fb-plates .fb-piece.is-selected").length > 0, "Fraction comparison plates must visibly mark their generated fractions.");
     const stages = [1,13,25,37,49,61];
     for (const level of stages) {
       FractionBakery.__testSetLevel(level);
