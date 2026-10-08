@@ -328,9 +328,9 @@ async function main() {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     Game.goHome();
     FractionBakery.open();
-    assert(FractionBakery.LEVELS === 72, "Fraction Bakery must define exactly 72 levels.");
-    assert(FractionBakery.STAGES.length === 6, "Fraction Bakery must define six stages.");
-    assert(FractionBakery.STAGES.every(stage => stage.to - stage.from + 1 === 12), "Every Fraction Bakery stage must contain twelve levels.");
+    assert(FractionBakery.LEVELS === 100, "Fraction Bakery must define exactly 100 levels.");
+    assert(FractionBakery.STAGES.length === 8, "Fraction Bakery must define eight stages.");
+    assert(FractionBakery.STAGES[0].from === 1 && FractionBakery.STAGES[FractionBakery.STAGES.length - 1].to === 100, "Fraction Bakery stage range must cover all 100 levels.");
     assert(document.querySelector("#screen-fraction-bakery").classList.contains("active"), "Fraction Bakery screen did not open.");
     assert(document.querySelectorAll(".fb-dish").length >= 1, "Fraction Bakery must render an SVG dish.");
     const randomSignatures = new Set();
@@ -343,7 +343,7 @@ async function main() {
     assert(document.querySelectorAll(".fb-dish .fb-piece.is-selected").length > 0, "Fraction identification dish must visibly mark the generated fraction.");
     FractionBakery.__testSetLevel(25);
     assert(document.querySelectorAll(".fb-plates .fb-piece.is-selected").length > 0, "Fraction comparison plates must visibly mark their generated fractions.");
-    const stages = [1,13,25,37,49,61];
+    const stages = [1,13,25,37,49,61,73,87];
     for (const level of stages) {
       FractionBakery.__testSetLevel(level);
       const c = FractionBakery.__testChallenge;
@@ -352,6 +352,11 @@ async function main() {
       if (c.type === "compare") assert(c.a.n*c.b.d !== c.b.n*c.a.d, "Compare challenge generated equal fractions.");
       if (c.type === "equivalent") assert(c.target.n*c.answer.d === c.answer.n*c.target.d, "Equivalent challenge is mathematically invalid.");
       if (c.type === "mix" || c.type === "bake") assert(c.answer.n > 0 && c.answer.n <= c.answer.d, "Recipe result is invalid.");
+      if (c.type === "simplify") assert(c.target.n*c.answer.d === c.answer.n*c.target.d, "Simplify challenge is mathematically invalid.");
+      if (c.type === "order") assert(c.items.length === 3 && c.answer.split("|").length === 3, "Order challenge must contain three fractions.");
+      if (c.type === "missing") assert(c.f.n > c.missing, "Missing-count challenge must have a positive gap.");
+      if (c.type === "difference") assert(c.answer.n >= 0 && c.answer.d > 0, "Difference challenge is invalid.");
+      if (c.type === "mixed") assert(c.answer.n > c.answer.d, "Mixed-number challenge must produce an improper fraction.");
     }
     FractionBakery.__testSetLevel(1);
     const c = FractionBakery.__testChallenge;
@@ -359,7 +364,7 @@ async function main() {
     document.querySelector("#fb-serve")?.click();
     assert(document.querySelector("#fb-next").disabled === false, "Valid Fraction Bakery build was not accepted.");
     Game.goHome();
-    return { levels:72, stages:6, levelsPerStage:12, randomizedOrders:randomSignatures.size };
+    return { levels:100, stages:8, randomizedOrders:randomSignatures.size };
   })()`);
 
   const malformedInputResult = await evaluate('(async () => {' +
