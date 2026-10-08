@@ -74,8 +74,7 @@ const FractionBakery = (() => {
     }
     let decoration="";
     if(type==="pizza"){
-      decoration=`<circle cx="${cx}" cy="${cy}" r="${r+17}" fill="#d38b45" stroke="#8b512c" stroke-width="10"/><circle cx="${cx}" cy="${cy}" r="${r+5}" fill="none" stroke="#f5c86f" stroke-width="12"/>`;
-      for(let i=0;i<Math.min(d*2,18);i++){const a=i*2.399,rr=r*.55;decoration+=`<circle cx="${cx+Math.cos(a)*rr}" cy="${cy+Math.sin(a)*rr}" r="6" fill="#9b3e2f"/>`}
+      decoration=`<circle cx="${cx}" cy="${cy}" r="${r+17}" fill="#d38b45" stroke="#8b512c" stroke-width="10"/><circle cx="${cx}" cy="${cy}" r="${r+5}" fill="#f4d56f" stroke="#f5c86f" stroke-width="5"/>`
     }else if(type==="pie"){
       decoration=`<circle cx="${cx}" cy="${cy}" r="${r+17}" fill="#d89b57" stroke="#895633" stroke-width="10"/><circle cx="${cx}" cy="${cy}" r="${r+5}" fill="none" stroke="#f3c37d" stroke-width="12"/>`;
       for(let i=-2;i<=2;i++)decoration+=`<path d="M ${cx-r*.72} ${cy+i*r*.23} Q ${cx} ${cy+i*r*.23+r*.14} ${cx+r*.72} ${cy+i*r*.23}" fill="none" stroke="#fff0cf" stroke-width="5"/>`;
@@ -85,7 +84,8 @@ const FractionBakery = (() => {
       decoration=`<circle cx="${cx}" cy="${cy}" r="${r+17}" fill="#f8e6c6" stroke="#986b4e" stroke-width="9"/><circle cx="${cx}" cy="${cy}" r="${r-8}" fill="none" stroke="#e7a16e" stroke-width="7"/>`;
       for(let i=0;i<8;i++){const a=i*Math.PI/4;decoration+=`<circle cx="${cx+Math.cos(a)*r*.7}" cy="${cy+Math.sin(a)*r*.7}" r="5" fill="#995a35"/>`}
     }
-    return `<svg class="fb-dish fb-${type}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${aria}">${decoration}${body}</svg>`;
+    const toppings=type==="pizza"?Array.from({length:Math.min(d*2,18)},(_,i)=>{const a=i*2.399,rr=r*.55;return `<circle cx="${cx+Math.cos(a)*rr}" cy="${cy+Math.sin(a)*rr}" r="7" fill="#b83e2f" stroke="#8f2c23" stroke-width="2"/>`}).join(""):"";
+    return `<svg class="fb-dish fb-${type}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${aria}">${decoration}${body}${toppings}</svg>`;
   }
 
   function newChallenge(level=state.level){
