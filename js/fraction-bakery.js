@@ -31,7 +31,7 @@ const FractionBakery = (() => {
   function difficulty(level){return level<=12?2:level<=24?4:level<=36?6:level<=48?8:level<=60?10:12}
   function validFraction(level, allowWhole=false){
     const d=rand(2,Math.min(12,difficulty(level)+1));
-    const n=rand(allowWhole?1:1,d);
+    const n=rand(1,Math.max(1,d-1));
     return frac(n,d);
   }
   function randomDish(){return pick(dishes)}
