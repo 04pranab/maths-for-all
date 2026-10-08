@@ -6,7 +6,7 @@
 **Current focus:** Fraction Bakery physical review after implementation  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 7 October 2026
+**Last updated:** 8 October 2026
 
 ---
 
@@ -30,7 +30,7 @@ The release retains:
 - game-specific help and Escape handling for dismissible overlays;
 - explicit research consent;
 - privacy/data policy access without login;
-- no SVG decorative assets;
+- no external decorative image library; game-specific SVG artwork is generated inline where it is part of the interaction;
 - browser smoke/stress, authentication, PostgreSQL, and research-gateway checks.
 
 Sudoku uses a 640px desktop board with a separate 260px keypad/action column. Smaller layouts fall back to a single-column presentation with natural vertical scrolling and no horizontal overflow.
@@ -129,20 +129,18 @@ The implementation sequence remains:
 
 Probability Machine is complete at 84 levels across seven stages. Its final implementation includes probability intuition, comparison, construction, experiments, randomness investigation, probability deduction, and a non-gambling Dice Lab.
 
-Fraction Bakery is the next game and is implemented as a 72-level randomized fraction game with six stages:
+Fraction Bakery is implemented as a 72-level randomized fraction game with six stages:
 
-1. Probability intuition · Levels 1–10
-2. Compare · Levels 11–20
-3. Build · Levels 21–30
-4. Experiment · Levels 31–40
-5. Randomness · Levels 41–50
-6. Probability Detective · Levels 51–60
+1. Slice & Serve · Levels 1–12
+2. Recipe Match · Levels 13–24
+3. Bigger Bite · Levels 25–36
+4. Equal Recipe · Levels 37–48
+5. Mix the Batter · Levels 49–60
+6. Bake-off · Levels 61–72
 
-The player progression is **Predict → Compare → Build → Experiment → Investigate → Deduce**. The interaction changes across stages so the game is not a sequence of explanatory click-through screens.
+Dish fractions are generated from equal integer partitions, and recipe arithmetic is generated only when the result is valid. The game deliberately changes interaction type across stages so it does not become a multiple-choice fraction quiz.
 
-The desktop layout is intentionally compact to reduce unnecessary scrolling. Content is not force-fitted; when a screen genuinely needs more vertical room, normal page scrolling remains available. Mobile uses natural vertical flow and avoids horizontal overflow.
-
-The game has no betting or gambling mechanics. Local progress remains available, and the existing authentication prototype remains disabled.
+The game uses inline SVG artwork for its interactive pizza, pie, cake, tart, and chocolate-bar dishes. It has no betting, gambling, or reward-for-risk mechanics. Local progress remains available, and the existing authentication prototype remains disabled.
 
 This game is not considered finished until it passes automated checks and is physically played and accepted.
 
