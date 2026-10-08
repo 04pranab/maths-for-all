@@ -151,7 +151,7 @@ const FractionBakery = (() => {
       const shade=c.f.n; return `<div class="fb-dish-wrap">${svgDish(c.dish,c.f.d,new Set(Array.from({length:shade},(_,i)=>i)),new Set())}<div class="fb-recipe-label">The baker shaded ${shade} of ${c.f.d} equal pieces.</div></div><div class="fb-options">${c.options.map(f=>`<button class="fb-option" data-answer="${fmt(f)}">${fmt(f)}</button>`).join("")}</div>`;
     }
     if(c.type==="compare"){
-      return `<div class="fb-plates"><button class="fb-plate" data-compare="a">${svgDish(c.dishes[0],c.a.d,c.a.n,new Set())}<span>${fmt(c.a)}</span></button><div class="fb-vs">VS</div><button class="fb-plate" data-compare="b">${svgDish(c.dishes[1],c.b.d,c.b.n,new Set())}<span>${fmt(c.b)}</span></button></div>`;
+      return `<div class="fb-plates"><button class="fb-plate" data-compare="a">${svgDish(c.dishes[0],c.a.d,c.a.n,new Set(Array.from({length:c.a.n},(_,i)=>i)))}<span>${fmt(c.a)}</span></button><div class="fb-vs">VS</div><button class="fb-plate" data-compare="b">${svgDish(c.dishes[1],c.b.d,c.b.n,new Set(Array.from({length:c.b.n},(_,i)=>i)))}<span>${fmt(c.b)}</span></button></div>`;
     }
     if(c.type==="equivalent"){
       return `<div class="fb-equivalent-top"><div class="fb-target-fraction">${fmt(c.target)}</div><div class="fb-equals">= ?</div></div><div class="fb-options">${c.options.map(f=>`<button class="fb-option" data-answer="${fmt(f)}">${fmt(f)}</button>`).join("")}</div>`;
