@@ -333,14 +333,23 @@ async function main() {
     assert(FractionBakery.STAGES[0].from === 1 && FractionBakery.STAGES[FractionBakery.STAGES.length - 1].to === 100, "Fraction Bakery stage range must cover all 100 levels.");
     assert(document.querySelector("#screen-fraction-bakery").classList.contains("active"), "Fraction Bakery screen did not open.");
     assert(document.querySelectorAll(".fb-dish").length >= 1, "Fraction Bakery must render an SVG dish.");
+    assert(document.querySelector("#fb-level-grid"), "Fraction Bakery must render the 100-level map.");
+    assert(document.querySelector(".fb-main-grid .fb-level-picker"), "Fraction Bakery levels must use the side rail.");
+    assert(!document.querySelector(".fb-count-readout")?.textContent.includes("portions selected"), "Fraction Bakery must not expose the selected-piece count.");
+    assert(document.querySelector("[onclick*=\"FractionBakery.showHint\"]"), "Fraction Bakery must provide a hint control.");
     const randomSignatures = new Set();
     for (let i = 0; i < 30; i++) {
       FractionBakery.resetLevel();
       randomSignatures.add(JSON.stringify(FractionBakery.__testChallenge));
     }
     assert(randomSignatures.size > 1, "Fraction Bakery did not randomize generated orders.");
+    FractionBakery.__testSetLevel(30);
+    assert(!document.querySelector(".fb-level-button[data-level=\"29\"]")?.classList.contains("complete"), "Unsolved earlier levels must not become green when jumping ahead.");
+    assert(!document.querySelector(".fb-level-button[data-level=\"30\"]")?.classList.contains("complete"), "The selected unsolved level must not become green.");
     FractionBakery.__testSetLevel(13);
     assert(document.querySelectorAll(".fb-dish .fb-piece.is-selected").length > 0, "Fraction identification dish must visibly mark the generated fraction.");
+    FractionBakery.__testSetLevel(1);
+    if (FractionBakery.__testChallenge.dish === "pizza") assert(document.querySelector(".fb-pizza-toppings, .fb-dish.fb-pizza circle[fill=\"#b83e2f\"]"), "Pizza must show visible toppings.");
     FractionBakery.__testSetLevel(25);
     assert(document.querySelectorAll(".fb-plates .fb-piece.is-selected").length > 0, "Fraction comparison plates must visibly mark their generated fractions.");
     const stages = [1,13,25,37,49,61,73,87];
