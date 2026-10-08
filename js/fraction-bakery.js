@@ -170,6 +170,18 @@ const FractionBakery = (() => {
   }
 
   function dishParts(dish,f){return dishSvg(dish,f.d,new Set(Array.from({length:f.n},(_,i)=>i)))}
+  function visualQuestion(c){
+    if(c.type==="build")return `<span>🍽️</span><b>${fmt(c.f)}</b><span>→</span><b>count & select</b>`;
+    if(c.type==="identify")return `<span>👀</span><b>?</b><span>← count shaded / total</span>`;
+    if(c.type==="compare")return `<span>🍽️</span><b>${fmt(c.a)}</b><strong>VS</strong><b>${fmt(c.b)}</b><span>🍽️</span>`;
+    if(c.type==="equivalent")return `<span>🍰</span><b>${fmt(c.target)}</b><strong>＝</strong><b>?</b>`;
+    if(c.type==="mix"||c.type==="bake")return `<span>🥣</span><b>${fmt(c.a)}</b><strong>${c.op}</strong><b>${fmt(c.b)}</b><strong>＝</strong><b>?</b>`;
+    if(c.type==="simplify")return `<span>🍰</span><b>${fmt(c.target)}</b><strong>→</strong><b>?</b>`;
+    if(c.type==="order")return `<span>🥧</span><b>1</b><strong>→</strong><b>2</b><strong>→</strong><b>3</b>`;
+    if(c.type==="missing")return `<span>🍕</span><b>${c.missing}</b><strong>＋ ? ＝</strong><b>${c.f.n}</b>`;
+    if(c.type==="difference")return `<b>${fmt(c.a)}</b><strong>−</strong><b>${fmt(c.b)}</b><strong>＝</strong><b>?</b>`;
+    return `<span>🍰</span><b>${c.whole}</b><strong>＋</strong><b>${c.n}/${c.d}</b><strong>＝</strong><b>?</b>`;
+  }
   function hintFor(c){
     if(c.type==="build")return "Hint: the bottom number tells you the total equal pieces. Count them, then select the requested pieces.";
     if(c.type==="identify")return "Hint: count every equal piece first, then count only the shaded ones.";
@@ -200,7 +212,7 @@ const FractionBakery = (() => {
     const c=state.challenge,s=stageFor(state.level);
     el("fb-stage").textContent=s.icon+" "+s.name;
     el("fb-level").textContent="LEVEL "+String(state.level).padStart(2,"0")+" / "+LEVELS;
-    el("fb-title").textContent=titleFor(c);el("fb-prompt").textContent="Look at the picture, count the equal pieces, and choose your answer.";
+    el("fb-title").textContent=titleFor(c);el("fb-prompt").innerHTML=visualQuestion(c);
     el("fb-workbench").innerHTML=sceneFor(c);
     el("fb-feedback").textContent=state.solved?"Order complete. The counter is ready for the next recipe.":"Count the equal portions carefully, then make your move.";
     el("fb-feedback").className="fb-feedback "+(state.solved?"success":"");
