@@ -3,7 +3,7 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Fraction Bakery 100-level layout regression audit and physical review  
+**Current focus:** Fraction Bakery mathematical-correctness hardening, multi-viewport regression testing, and physical review  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 9 October 2026
@@ -182,8 +182,21 @@ Planned research-enabled milestone after authentication.
 
 ---
 
-## 8. Next step
+## 8. Fraction Bakery correctness audit
 
-The v2.0.4 release is frozen at the current acceptance boundary.
+The Fraction Bakery review found and corrected several challenge-generation issues before physical learner testing:
 
-The next product step is **Fraction Bakery physical review**, now backed by an automated layout audit across all 100 levels. **Little Shop** begins only after Fraction Bakery is accepted.
+- Simplification targets are now deliberately unreduced equivalent fractions, while the expected answer remains reduced.
+- Missing-count puzzles reduce the fraction before choosing the pieces already counted, then calculate the gap from the reduced numerator. Their four answer choices are distinct and include the correct gap.
+- Dish-based equivalent-fraction challenges use proper fractions and show a genuinely different partition.
+- Fraction-order puzzles regenerate duplicate values before sorting the three distinct fractions.
+- Fraction identification no longer prints the shaded numerator and total denominator beneath the dish, so the learner must count the visual.
+- Browser regression coverage validates these invariants across every level with repeated randomized generation and audits all 100 levels at desktop, tablet, and mobile viewport sizes.
+
+These automated checks are a correctness gate, not proof of educational suitability. A person must still play the game with learners and educators before it is accepted.
+
+## 9. Next step
+
+The v2.0.4 release remains the stable baseline; this focused Fraction Bakery correction is tracked separately from the release line.
+
+The next product step is **Fraction Bakery physical review**, backed by mathematical-property checks and layout audits across all 100 levels at three viewport sizes. **Little Shop** begins only after Fraction Bakery is accepted.

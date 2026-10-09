@@ -5,7 +5,11 @@
 ### Fraction Bakery
 - Expanded the game from 72 to 100 levels across eight stages: Slice & Serve, Count the Order, Bigger Bite, Equal Recipe, Mix the Batter, Bake-off, Chef's Counter, and Grand Bake.
 - Added more varied challenge types, including simplification, ordering three fractions, missing-count puzzles, differences, and mixed-number conversion.
-- Preserved generated denominators where piece-counting difficulty depends on the number of equal portions, and corrected missing-count generation so the requested count is always valid.
+- Preserved generated denominators where piece-counting difficulty depends on the number of equal portions.
+- Corrected missing-count generation to use the reduced numerator, with a valid positive gap and four distinct answer choices.
+- Made simplification targets genuinely unreduced, kept dish-based equivalent fractions proper and visibly re-cut, and rejected duplicate fractions in ordering challenges.
+- Removed the numerator/denominator answer readout from the visual fraction-identification task.
+- Expanded generator regression checks to repeat randomized challenge validation and check all 100 levels at desktop, tablet, and mobile viewport sizes.
 - Added a visible 100-level selector and cache-busted the updated game assets.
 - Improved the order-card layout so realistic SVG dish artwork stays inside its own card.
 - Added a browser regression audit that renders all 100 levels and checks horizontal overflow, workbench containment, visual-element boundaries, and dish containment.
