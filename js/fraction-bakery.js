@@ -126,7 +126,7 @@ const FractionBakery = (() => {
         c={type:"order",items:shuffle(sorted.slice()),answer:sorted.map(fmt).join("|")};
       }else if(mode%4===2){
         const d=rand(q.min,q.max),n=rand(2,d-2),f=frac(n,d);
-        if(f.n<2)return newChallenge(level);
+        if(f.n<2||f.d<4)return newChallenge(level);
         const missing=rand(1,f.n-1),answer=f.n-missing;
         const candidates=new Set([answer,answer===1?2:answer-1,answer+1,Math.max(1,f.n-answer),f.n]);
         for(let option=1;candidates.size<4&&option<=f.d;option++)candidates.add(option);
