@@ -349,6 +349,7 @@ async function main() {
     assert(!document.querySelector('.fb-level-button[data-level="30"]')?.classList.contains("complete"), "The selected unsolved level must not become green.");
     FractionBakery.__testSetLevel(13);
     assert(document.querySelectorAll(".fb-dish .fb-piece.is-selected").length > 0, "Fraction identification dish must visibly mark the generated fraction.");
+    assert(!/[0-9]/.test(document.querySelector("#screen-fraction-bakery .fb-dish-wrap .fb-count-readout")?.textContent || ""), "Fraction identification must not print the numerator or denominator as the answer.");
     FractionBakery.__testSetLevel(1);
     if (FractionBakery.__testChallenge.dish === "pizza") assert(document.querySelector('.fb-pizza-toppings, .fb-dish.fb-pizza circle[fill="#b83e2f"]'), "Pizza must show visible toppings.");
     FractionBakery.__testSetLevel(25);
@@ -360,13 +361,57 @@ async function main() {
       assert(c && c.type, "Fraction Bakery stage " + level + " generated no challenge.");
       if (c.type === "build") assert(c.f.n >= 1 && c.f.n <= c.f.d && c.f.d >= 2, "Build fraction is invalid.");
       if (c.type === "compare") assert(c.a.n*c.b.d !== c.b.n*c.a.d, "Compare challenge generated equal fractions.");
-      if (c.type === "equivalent") assert(c.target.n*c.answer.d === c.answer.n*c.target.d, "Equivalent challenge is mathematically invalid.");
-      if (c.type === "mix" || c.type === "bake") assert(c.answer.n > 0 && c.answer.n <= c.answer.d, "Recipe result is invalid.");
-      if (c.type === "simplify") assert(c.target.n*c.answer.d === c.answer.n*c.target.d, "Simplify challenge is mathematically invalid.");
-      if (c.type === "order") assert(c.items.length === 3 && c.answer.split("|").length === 3, "Order challenge must contain three fractions.");
-      if (c.type === "missing") assert(c.f.n > c.missing && c.missing >= 1, "Missing-count challenge must have a positive gap.");
+      if (c.type === "equivalent") {
+        assert(c.target.n*c.answer.d === c.answer.n*c.target.d, "Equivalent challenge is mathematically invalid.");
+        assert(c.target.n > 0 && c.target.n < c.target.d && c.answer.n > 0 && c.answer.n < c.answer.d, "Dish-based equivalent fractions must both be proper fractions.");
+        assert(c.target.n !== c.answer.n || c.target.d !== c.answer.d, "Equivalent challenge must show a genuinely different cut.");
+        assert(c.options.some(f => f.n*c.answer.d === c.answer.n*f.d), "Equivalent challenge options omit the correct value.");
+      }
+      if (c.type === "mix" || c.type === "bake") {
+        assert(c.answer.n > 0 && c.answer.d > 0, "Recipe result is invalid.");
+        if (c.type === "mix") assert(c.answer.n < c.answer.d, "Mixing challenge should remain a proper fraction.");
+        if (level >= 87 && c.type === "bake") assert(c.answer.n < 2*c.answer.d, "Grand Bake recipe result must remain below two whole dishes.");
+      }
+      if (c.type === "simplify") {
+        const gcd = (a,b) => b ? gcd(b,a%b) : a;
+        assert(c.target.n*c.answer.d === c.answer.n*c.target.d, "Simplify challenge is mathematically invalid.");
+        assert(gcd(c.target.n,c.target.d) > 1, "Simplify challenge target is already in simplest form.");
+        assert(gcd(c.answer.n,c.answer.d) === 1, "Simplify challenge answer is not in simplest form.");
+        assert(c.target.n < c.target.d, "Simplify challenge target must be a proper fraction.");
+      }
+      if (c.type === "order") {
+        assert(c.items.length === 3 && c.answer.split("|").length === 3, "Order challenge must contain three fractions.");
+        const signatures = c.items.map(f => f.n + "/" + f.d);
+        assert(new Set(signatures).size === 3, "Order challenge contains duplicate fractions.");
+        const sorted = c.items.slice().sort((a,b) => a.n/a.d-b.n/b.d).map(f => f.n + "/" + f.d).join("|");
+        assert(sorted === c.answer, "Order challenge answer is not strictly increasing.");
+      }
+      if (c.type === "missing") {
+        assert(c.f.n > c.missing && c.missing >= 1, "Missing-count challenge must have a positive gap.");
+        assert(c.answer === c.f.n-c.missing, "Missing-count answer does not match the reduced fraction.");
+        assert(c.options.length === 4 && new Set(c.options).size === 4 && c.options.includes(c.answer), "Missing-count options must be four distinct values including the answer.");
+        assert(c.options.every(n => Number.isInteger(n) && n >= 1 && n <= c.f.d), "Missing-count options contain an invalid count.");
+      }
       if (c.type === "difference") assert(c.answer.n >= 0 && c.answer.d > 0, "Difference challenge is invalid.");
       if (c.type === "mixed") assert(c.answer.n > c.answer.d, "Mixed-number challenge must produce an improper fraction.");
+    }
+    for (let pass = 0; pass < 12; pass++) {
+      for (let level = 1; level <= 100; level++) {
+        FractionBakery.__testSetLevel(level);
+        const c = FractionBakery.__testChallenge;
+        assert(c && c.type, "Fraction Bakery generated no challenge at level " + level + " pass " + pass + ".");
+        if (c.type === "compare") assert(c.a.n*c.b.d !== c.b.n*c.a.d, "Repeated compare generation produced equal fractions at level " + level + ".");
+        if (c.type === "order") {
+          assert(new Set(c.items.map(f => f.n + "/" + f.d)).size === 3, "Repeated order generation produced duplicates at level " + level + ".");
+          assert(c.items.slice().sort((a,b) => a.n/a.d-b.n/b.d).map(f => f.n + "/" + f.d).join("|") === c.answer, "Repeated order generation has an incorrect answer at level " + level + ".");
+        }
+        if (c.type === "missing") assert(c.f.n > c.missing && c.answer === c.f.n-c.missing && c.options.length === 4 && new Set(c.options).size === 4 && c.options.includes(c.answer), "Repeated missing-count generation is invalid at level " + level + ".");
+        if (c.type === "simplify") {
+          const gcd = (a,b) => b ? gcd(b,a%b) : a;
+          assert(gcd(c.target.n,c.target.d)>1 && gcd(c.answer.n,c.answer.d)===1 && c.target.n*c.answer.d===c.answer.n*c.target.d, "Repeated simplification generation is invalid at level " + level + ".");
+        }
+        if (c.type === "equivalent") assert(c.target.n*c.answer.d===c.answer.n*c.target.d && (c.target.n!==c.answer.n || c.target.d!==c.answer.d) && c.target.n<c.target.d && c.answer.n<c.answer.d, "Repeated equivalent-fraction generation is invalid at level " + level + ".");
+      }
     }
     FractionBakery.__testSetLevel(85);
     assert(FractionBakery.__testChallenge.type === "order", "Chef's Counter level 85 must render an order challenge.");
@@ -447,6 +492,29 @@ async function main() {
   if (!malformedInputResult) throw new Error('Malformed-input stress did not complete.');
 
   if (!fractionResult?.levels) throw new Error('Fraction Bakery validation did not complete.');
+
+  const fractionResponsiveResults = [];
+  for (const viewport of [{width:1366,height:768,mobile:false},{width:768,height:1024,mobile:true},{width:390,height:844,mobile:true}]) {
+    await cdp('Emulation.setDeviceMetricsOverride', { ...viewport, deviceScaleFactor: 1 });
+    const result = await evaluate('(async () => {' +
+      'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+      'Game.goHome(); FractionBakery.open();' +
+      'for (let level = 1; level <= 100; level++) {' +
+        'FractionBakery.__testSetLevel(level);' +
+        'const screen = document.getElementById("screen-fraction-bakery");' +
+        'const work = screen.querySelector(".fb-work"), bench = screen.querySelector(".fb-workbench");' +
+        'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Fraction Bakery horizontal overflow at level " + level + " and viewport " + innerWidth + "px.");' +
+        'const wr = work.getBoundingClientRect(), br = bench.getBoundingClientRect();' +
+        'assert(br.left >= wr.left - 2 && br.right <= wr.right + 2, "Fraction Bakery workbench escapes work area at level " + level + " and viewport " + innerWidth + "px.");' +
+        'for (const node of screen.querySelectorAll(".fb-dish,.fb-plate,.fb-order-card,.fb-equivalent-top,.fb-mixing-board,.fb-mixed-board,.fb-options,.fb-action")) {' +
+          'const r = node.getBoundingClientRect();' +
+          'assert(r.left >= br.left - 3 && r.right <= br.right + 3, "Fraction Bakery element escapes workbench at level " + level + " and viewport " + innerWidth + "px: " + node.className);' +
+        }' +
+      }' +
+      'Game.goHome(); return { width: innerWidth, height: innerHeight, levels: 100, horizontalOverflow: false, workbenchContainment: true };' +
+    '})()');
+    fractionResponsiveResults.push(result);
+  }
 
   await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
 
