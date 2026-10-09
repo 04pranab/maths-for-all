@@ -509,8 +509,8 @@ async function main() {
         'for (const node of screen.querySelectorAll(".fb-dish,.fb-plate,.fb-order-card,.fb-equivalent-top,.fb-mixing-board,.fb-mixed-board,.fb-options,.fb-action")) {' +
           'const r = node.getBoundingClientRect();' +
           'assert(r.left >= br.left - 3 && r.right <= br.right + 3, "Fraction Bakery element escapes workbench at level " + level + " and viewport " + innerWidth + "px: " + node.className);' +
-        }' +
-      }' +
+        '}' +
+      '}' +
       'Game.goHome(); return { width: innerWidth, height: innerHeight, levels: 100, horizontalOverflow: false, workbenchContainment: true };' +
     '})()');
     fractionResponsiveResults.push(result);
