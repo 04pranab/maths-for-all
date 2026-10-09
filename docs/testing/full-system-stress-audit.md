@@ -8,7 +8,7 @@
 
 This suite is the bounded reliability audit for the physical-testing line. It is deliberately broader than a visual smoke test: it exercises game generation, repeated gameplay, concurrent work, navigation races, malformed input, HTTP error handling, session isolation, static delivery, and browser runtime failures.
 
-The suite is intended to catch regressions without introducing test-only endpoints or changing learning mechanics.
+The suite is intended to catch regressions without introducing test-only endpoints or changing learning mechanics. Fraction Bakery's layout audit iterates through all 100 levels, not only a representative sample, so challenge-specific overflow and illustration overlap are tested at each level.
 
 ## Stress contract
 
@@ -18,6 +18,7 @@ The suite is intended to catch regressions without introducing test-only endpoin
 | Sudoku | 12 fresh puzzles × 3 difficulty levels + 100 repeated new-puzzle/hint actions |
 | Slab Maths | 60 repeated rounds + 120 fresh rounds + 30 concurrent generation calls |
 | Shape Fitting | all 100 authored levels + 100 repeated actions |
+| Fraction Bakery | all 100 levels rendered; horizontal overflow, workbench and visual containment, and order-dish card boundaries |
 | Arithmetic gameplay | 300 repeated submit/next actions |
 | Math Racing | 20 rounds × 30 submissions + timer/stale-callback checks |
 | Cross-game navigation | queued starts and immediate screen switching |
