@@ -387,7 +387,7 @@ async function main() {
         assert(sorted === c.answer, "Order challenge answer is not strictly increasing.");
       }
       if (c.type === "missing") {
-        assert(c.f.n > c.missing && c.missing >= 1, "Missing-count challenge must have a positive gap.");
+        assert(c.f.n > c.missing && c.missing >= 1 && c.f.d >= 4, "Missing-count challenge must have a positive gap and enough distinct choices.");
         assert(c.answer === c.f.n-c.missing, "Missing-count answer does not match the reduced fraction.");
         assert(c.options.length === 4 && new Set(c.options).size === 4 && c.options.includes(c.answer), "Missing-count options must be four distinct values including the answer.");
         assert(c.options.every(n => Number.isInteger(n) && n >= 1 && n <= c.f.d), "Missing-count options contain an invalid count.");
@@ -405,7 +405,7 @@ async function main() {
           assert(new Set(c.items.map(f => f.n + "/" + f.d)).size === 3, "Repeated order generation produced duplicates at level " + level + ".");
           assert(c.items.slice().sort((a,b) => a.n/a.d-b.n/b.d).map(f => f.n + "/" + f.d).join("|") === c.answer, "Repeated order generation has an incorrect answer at level " + level + ".");
         }
-        if (c.type === "missing") assert(c.f.n > c.missing && c.answer === c.f.n-c.missing && c.options.length === 4 && new Set(c.options).size === 4 && c.options.includes(c.answer), "Repeated missing-count generation is invalid at level " + level + ".");
+        if (c.type === "missing") assert(c.f.n > c.missing && c.f.d >= 4 && c.answer === c.f.n-c.missing && c.options.length === 4 && new Set(c.options).size === 4 && c.options.includes(c.answer) && c.options.every(n => n >= 1 && n <= c.f.d), "Repeated missing-count generation is invalid at level " + level + ".");
         if (c.type === "simplify") {
           const gcd = (a,b) => b ? gcd(b,a%b) : a;
           assert(gcd(c.target.n,c.target.d)>1 && gcd(c.answer.n,c.answer.d)===1 && c.target.n*c.answer.d===c.answer.n*c.target.d, "Repeated simplification generation is invalid at level " + level + ".");
