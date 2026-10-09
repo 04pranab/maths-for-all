@@ -577,9 +577,9 @@ It is finished when the experience works.
 The current creative sequence is:
 
 1. **Shape Architect** ✓
-2. **Probability Carnival** · in physical review
-3. **Fraction Bakery** next
-4. **Little Shop**
+2. **Probability Machine** ✓ implemented at 84 levels
+3. **Fraction Bakery** · 100 levels implemented; layout regression audit added; physical review ongoing
+4. **Little Shop** next after Fraction Bakery acceptance
 5. **Number Maze**
 6. **2048** later
 

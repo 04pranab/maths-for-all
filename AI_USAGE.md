@@ -3,7 +3,7 @@
 **Project:** Maths for All  
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
-**Record date:** 6 October 2026
+**Record date:** 9 October 2026
 
 ## Purpose
 
@@ -45,6 +45,7 @@ Where practical, changes are checked through:
 - authentication/session checks;
 - research-consent and research-gateway checks;
 - responsive and large-text checks;
+- exhaustive Fraction Bakery layout checks across all 100 levels, including horizontal overflow and artwork containment;
 - manual inspection;
 - physical testing of learner-facing game mechanics.
 

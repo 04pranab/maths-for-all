@@ -8,7 +8,7 @@ Maths for All is designed around a learner-first loop: **try → understand → 
 
 **v2.0.4 · Geometry & Physical Learning Hardening**
 
-This release hardens the physical-learning experience around the first new game, Shape Architect. The existing educational games remain the regression baseline, while Shape Architect is complete at its current acceptance boundary. Probability Machine is also complete. Fraction Bakery is now the next-generation game under physical review.
+The v2.0.4 release remains the stable release line. The active development focus is Fraction Bakery: a harder, randomized 100-level game with eight stages, realistic inline SVG dishes, and an automated browser layout audit that renders every level. Probability Machine remains implemented, but its card is temporarily hidden from the visible game menu during Fraction Bakery review.
 
 Authentication and account controls remain temporarily disabled while physical game mechanics are being tested.
 
@@ -19,7 +19,7 @@ Authentication and account controls remain temporarily disabled while physical g
 - 🔢 Sudoku
 - 🔷 Shape Fitting
 - 🏗️ Shape Architect with 100 validated, timed picture-building levels
-- 🥐 Fraction Bakery with 72 randomized, mathematically valid fraction orders
+- 🥐 Fraction Bakery with 100 randomized levels across eight stages
 - 🧺 Slab Maths
 - 📱 Responsive desktop and mobile layouts
 - ⌨️ Keyboard-friendly controls and visible focus states
@@ -31,19 +31,21 @@ Authentication and account controls remain temporarily disabled while physical g
 
 ## Fraction Bakery
 
-Fraction Bakery is a visual fraction-building game with randomized, valid orders rather than a fixed worksheet sequence.
+Fraction Bakery is a visual fraction game built around making, counting, comparing, and transforming equal portions. It is designed to be harder from the beginning and to vary its interaction types rather than becoming a repetitive multiple-choice quiz.
 
 The current implementation provides:
 
-- 72 levels across six changing gameplay stages;
+- 100 levels across eight stages;
 - SVG-built pizza, pie, cake, tart, and chocolate-bar dishes;
-- randomized proper fractions generated from valid equal partitions;
-- slice-and-serve construction challenges;
-- fraction identification and comparison;
-- equivalent-fraction matching;
-- like-denominator addition and subtraction through bakery recipes;
-- gentle timing without speed penalties;
-- browser regression coverage for randomization, mathematical validity, SVG rendering, and representative gameplay.
+- randomized fractions with preserved denominators where counting difficulty depends on the number of equal portions;
+- slice-and-serve construction challenges that require selecting the requested number of pieces;
+- fraction identification, comparison, equivalent fractions, recipe arithmetic, simplification, ordering, missing-count puzzles, differences, and mixed-number conversion;
+- a visible 100-level selector;
+- browser regression coverage for mathematical validity, randomization, level rendering, and layout containment across all 100 levels.
+
+The browser audit checks horizontal page overflow, workbench boundaries, challenge artwork and controls, and order-dish containment at every level. This is automated layout regression coverage, not a claim that every device or assistive technology has been physically tested.
+
+Probability Machine remains in the codebase and is temporarily hidden from the visible game menu while Fraction Bakery is under review.
 
 ## Shape Architect
 
@@ -131,7 +133,7 @@ The repository includes a headless Chromium smoke/stress suite covering:
 - repeated gameplay transitions;
 - browser runtime and console errors.
 
-The suite is a regression tool, not a substitute for real assistive-technology testing or physical learner testing.
+The suite is a regression tool, not a substitute for real assistive-technology testing or physical learner testing. Fraction Bakery now has a dedicated browser audit that renders all 100 levels and checks for horizontal overflow, workbench escape, and artwork escaping order cards.
 
 ## Design principles
 

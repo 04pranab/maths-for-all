@@ -3,10 +3,10 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Fraction Bakery physical review after implementation  
+**Current focus:** Fraction Bakery 100-level layout regression audit and physical review  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 8 October 2026
+**Last updated:** 9 October 2026
 
 ---
 
@@ -79,6 +79,7 @@ The automated regression suite checks:
 - Sudoku uniqueness and repeated puzzle generation;
 - Slab Maths constructibility and repeated generation;
 - all 100 Shape Architect levels;
+- all 100 Fraction Bakery levels rendered in-browser, checking horizontal overflow, workbench containment, visual-element boundaries, and order-dish containment;
 - Shape Architect level-selector rendering;
 - Shape Architect visual completion and false-completion rejection;
 - concurrent question and Slab generation;
@@ -129,18 +130,22 @@ The implementation sequence remains:
 
 Probability Machine is complete at 84 levels across seven stages. Its final implementation includes probability intuition, comparison, construction, experiments, randomness investigation, probability deduction, and a non-gambling Dice Lab.
 
-Fraction Bakery is implemented as a 72-level randomized fraction game with six stages:
+Fraction Bakery is implemented as a 100-level randomized fraction game across eight stages:
 
 1. Slice & Serve · Levels 1–12
-2. Recipe Match · Levels 13–24
+2. Count the Order · Levels 13–24
 3. Bigger Bite · Levels 25–36
 4. Equal Recipe · Levels 37–48
 5. Mix the Batter · Levels 49–60
 6. Bake-off · Levels 61–72
+7. Chef's Counter · Levels 73–86
+8. Grand Bake · Levels 87–100
 
-Dish fractions are generated from equal integer partitions, and recipe arithmetic is generated only when the result is valid. The game deliberately changes interaction type across stages so it does not become a multiple-choice fraction quiz.
+The game includes counting and construction, identification, comparison, equivalent fractions, recipe arithmetic, simplification, ordering three fractions, missing-count puzzles, fraction differences, and mixed-number conversion. Difficulty increases through larger denominators and varied reasoning tasks. Randomized generation preserves denominators when the challenge depends on counting equal portions and validates generated arithmetic.
 
-The game uses inline SVG artwork for its interactive pizza, pie, cake, tart, and chocolate-bar dishes. It has no betting, gambling, or reward-for-risk mechanics. Local progress remains available, and the existing authentication prototype remains disabled.
+Dish artwork is generated as inline SVG for pizza, pie, cake, tart, and chocolate bars. The browser regression suite now visits every level and checks page overflow, workbench boundaries, visual-element containment, and dish containment inside order cards. The order-card check specifically protects against the artwork overlap found during visual review.
+
+Probability Machine remains implemented at 84 levels across seven stages, including a non-gambling Dice Lab. Its card is temporarily hidden from the visible game menu while Fraction Bakery is under review. The code has not been removed.
 
 This game is not considered finished until it passes automated checks and is physically played and accepted.
 
@@ -181,4 +186,4 @@ Planned research-enabled milestone after authentication.
 
 The v2.0.4 release is frozen at the current acceptance boundary.
 
-The next product step is **Fraction Bakery physical review**. **Little Shop** begins only after Fraction Bakery is accepted.
+The next product step is **Fraction Bakery physical review**, now backed by an automated layout audit across all 100 levels. **Little Shop** begins only after Fraction Bakery is accepted.
