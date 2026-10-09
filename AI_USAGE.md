@@ -46,6 +46,7 @@ Where practical, changes are checked through:
 - research-consent and research-gateway checks;
 - responsive and large-text checks;
 - exhaustive Fraction Bakery layout checks across all 100 levels, including horizontal overflow and artwork containment;
+- Fraction Bakery mathematical-property checks for reduced/unreduced fraction relationships, unique ordering values, valid missing-count answers and distinct distractors, and correct equivalent-fraction representations across repeated randomized generation;
 - manual inspection;
 - physical testing of learner-facing game mechanics.
 
