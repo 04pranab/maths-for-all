@@ -3,11 +3,16 @@
 ## Unreleased
 
 ### Fraction Bakery
-- Added 72 randomized levels across six gameplay stages.
-- Added SVG-built bakery dishes including pizza, pie, cake, tart, and chocolate bar.
-- Added constructive slice-and-serve fraction building, identification, comparison, equivalent-fraction matching, and like-denominator recipe arithmetic.
-- Constrained generated dish fractions to valid equal partitions so every visual order is solvable.
-- Added regression coverage for randomization, mathematical validity, SVG rendering, stage boundaries, and representative gameplay.
+- Expanded the game from 72 to 100 levels across eight stages: Slice & Serve, Count the Order, Bigger Bite, Equal Recipe, Mix the Batter, Bake-off, Chef's Counter, and Grand Bake.
+- Added more varied challenge types, including simplification, ordering three fractions, missing-count puzzles, differences, and mixed-number conversion.
+- Preserved generated denominators where piece-counting difficulty depends on the number of equal portions, and corrected missing-count generation so the requested count is always valid.
+- Added a visible 100-level selector and cache-busted the updated game assets.
+- Improved the order-card layout so realistic SVG dish artwork stays inside its own card.
+- Added a browser regression audit that renders all 100 levels and checks horizontal overflow, workbench containment, visual-element boundaries, and dish containment.
+- Verified the audit in GitHub Actions alongside syntax, PostgreSQL connectivity, browser stress, production auth API, and research gateway checks.
+
+### Probability Machine
+- Retained the 84-level implementation and non-gambling Dice Lab; the game card is temporarily hidden from the visible menu during Fraction Bakery review.
 
 ## 2.0.4 · 2026-10-06 · Geometry & Physical Learning Hardening
 
