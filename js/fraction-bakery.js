@@ -52,7 +52,7 @@ const FractionBakery = (() => {
   function multiples(base,level){
     const maxK=Math.max(2,Math.min(5,Math.floor(difficulty(level).max/base.d)));
     const k=rand(2,maxK);
-    return frac(base.n*k,base.d*k);
+    return raw(base.n*k,base.d*k);
   }
 
   function dishSvg(type,d,selected=new Set(),size=360){
@@ -103,7 +103,7 @@ const FractionBakery = (() => {
       while(same(a,b)||Math.abs(value(a)-value(b))<.08)b=proper(level);
       c={type:"compare",a,b,dishes:[randomDish(),randomDish()]};
     }else if(stage.from===37){
-      const base=raw(rand(2,Math.min(8,q.max-3)),rand(5,q.max-2)),answer=multiples(base,level);
+      const base=proper(level),answer=multiples(base,level);
       c={type:"equivalent",target:base,answer,options:uniqueFractions(answer,4,level)};
     }else if(stage.from===49){
       const d=rand(q.min,q.max),a=rand(2,d-3),b=rand(2,d-a-1),op=mode%2?"-":"+";
@@ -120,12 +120,17 @@ const FractionBakery = (() => {
         const f=proper(level),equiv=multiples(f,level);
         c={type:"simplify",target:equiv,answer:f,options:uniqueFractions(f,4,level)};
       }else if(mode%4===1){
-        const a=proper(level),b=proper(level);
-        const sorted=[a,b,proper(level)].sort((x,y)=>value(x)-value(y));
+        let items=[proper(level),proper(level),proper(level)];
+        while(new Set(items.map(fmt)).size<3)items=[proper(level),proper(level),proper(level)];
+        const sorted=items.slice().sort((x,y)=>value(x)-value(y));
         c={type:"order",items:shuffle(sorted.slice()),answer:sorted.map(fmt).join("|")};
       }else if(mode%4===2){
-        const d=rand(q.min,q.max),n=rand(2,d-2),missing=rand(1,n-1);
-        c={type:"missing",f:frac(n,d),missing,answer:n,options:shuffle([n,Math.max(1,n-1),Math.min(d-1,n+1),Math.max(1,d-n)])};
+        const d=rand(q.min,q.max),n=rand(2,d-2),f=frac(n,d);
+        if(f.n<2)return newChallenge(level);
+        const missing=rand(1,f.n-1),answer=f.n-missing;
+        const candidates=new Set([answer,answer===1?2:answer-1,answer+1,Math.max(1,f.n-answer),f.n]);
+        for(let option=1;candidates.size<4&&option<=f.d;option++)candidates.add(option);
+        c={type:"missing",f,missing,answer,options:shuffle([...candidates].slice(0,4))};
       }else{
         const a=proper(level),b=proper(level);
         c={type:"difference",a,b,answer:frac(Math.abs(a.n*b.d-b.n*a.d),a.d*b.d)};
@@ -198,7 +203,7 @@ const FractionBakery = (() => {
   function showHint(){state.hintUsed=true;const f=el("fb-feedback");f.textContent=hintFor(state.challenge);f.className="fb-feedback fb-hint";}
   function sceneFor(c){
     if(c.type==="build")return `<div class="fb-dish-wrap">${dishSvg(c.dish,c.f.d,state.selected)}<div class="fb-count-readout">Tap the pieces you want, then serve.</div></div><button class="fb-action" id="fb-serve">🍽️ Serve order</button>`;
-    if(c.type==="identify")return `<div class="fb-dish-wrap">${dishParts(c.dish,c.f)}<div class="fb-count-readout"><strong>${c.f.n}</strong> shaded · <strong>${c.f.d}</strong> total</div></div><div class="fb-options">${c.options.map(f=>`<button class="fb-option" data-answer="${fmt(f)}">${fmt(f)}</button>`).join("")}</div>`;
+    if(c.type==="identify")return `<div class="fb-dish-wrap">${dishParts(c.dish,c.f)}<div class="fb-count-readout">Count the shaded pieces, then count all equal pieces.</div></div><div class="fb-options">${c.options.map(f=>`<button class="fb-option" data-answer="${fmt(f)}">${fmt(f)}</button>`).join("")}</div>`;
     if(c.type==="compare")return `<div class="fb-plates"><button class="fb-plate" data-compare="a">${dishParts(c.dishes[0],c.a)}<span>${fmt(c.a)}</span></button><div class="fb-vs">VS</div><button class="fb-plate" data-compare="b">${dishParts(c.dishes[1],c.b)}<span>${fmt(c.b)}</span></button></div>`;
     if(c.type==="equivalent")return `<div class="fb-equivalent-top"><div class="fb-count-card">${dishParts("pie",c.target)}<b>${fmt(c.target)}</b></div><div class="fb-equals">= ?</div><div class="fb-count-card">${dishParts("tart",c.answer)}<b>re-cut</b></div></div><div class="fb-options">${c.options.map(f=>`<button class="fb-option" data-answer="${fmt(f)}">${fmt(f)}</button>`).join("")}</div>`;
     if(c.type==="mix"||c.type==="bake")return `<div class="fb-mixing-board"><div class="fb-ingredient"><small>Tray A</small><strong>${fmt(c.a)}</strong></div><div class="fb-op">${c.op}</div><div class="fb-ingredient"><small>Tray B</small><strong>${fmt(c.b)}</strong></div><div class="fb-op">=</div><div class="fb-bowl">🥣</div></div><div class="fb-options">${uniqueFractions(c.answer,4,state.level).map(f=>`<button class="fb-option" data-answer="${fmt(f)}">${fmt(f)}</button>`).join("")}</div>`;
