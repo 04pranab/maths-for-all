@@ -4,6 +4,8 @@ import {
 import { CATALOGUE, generateLevel, validateLevel } from './little-shop-levels.mjs';
 
 
+const PROGRESS_KEY = 'maths-for-all.little-shop.progress.v1';
+const PROGRESS_VERSION = 1;
 const itemsById = new Map(CATALOGUE.map(item => [item.id, item]));
 const basket = new Map();
 let active = false;
@@ -18,6 +20,7 @@ let levelAnswered = false;
 let levelHintIndex = 0;
 let levelExplanationVisible = false;
 const completedLevels = new Set();
+let storageWarningShown = false;
 
 function byId(id) {
   return document.getElementById(id);
@@ -135,6 +138,49 @@ function renderChallenge() {
   renderLevelMap();
 }
 
+function loadProgress() {
+  currentLevel = 1;
+  completedLevels.clear();
+  let raw;
+  try {
+    raw = window.localStorage.getItem(PROGRESS_KEY);
+  } catch {
+    return 'Saved progress is unavailable in this browser. You can still play.';
+  }
+  if (!raw) return '';
+  try {
+    const data = JSON.parse(raw);
+    if (data?.version !== PROGRESS_VERSION || !Number.isInteger(data.currentLevel) || data.currentLevel < 1 || data.currentLevel > 100 || !Array.isArray(data.completedLevels) || data.completedLevels.length > 100) {
+      throw new TypeError('Saved progress has an unsupported shape.');
+    }
+    const levels = data.completedLevels;
+    if (levels.some(level => !Number.isInteger(level) || level < 1 || level > 100) || new Set(levels).size !== levels.length) {
+      throw new TypeError('Saved progress contains invalid level numbers.');
+    }
+    currentLevel = data.currentLevel;
+    levels.forEach(level => completedLevels.add(level));
+    return '';
+  } catch {
+    currentLevel = 1;
+    completedLevels.clear();
+    return 'Saved progress was unreadable, so a fresh start is ready.';
+  }
+}
+
+function saveProgress() {
+  try {
+    window.localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+      version: PROGRESS_VERSION,
+      currentLevel,
+      completedLevels: [...completedLevels].sort((a, b) => a - b)
+    }));
+    return true;
+  } catch {
+    setStatus('Progress cannot be saved on this device right now, but you can keep playing.');
+    return false;
+  }
+}
+
 function selectLevel(level) {
   currentLevel = level;
   currentTask = generateLevel(level, level);
@@ -143,12 +189,24 @@ function selectLevel(level) {
   levelHintIndex = 0;
   levelExplanationVisible = false;
   renderChallenge();
+  saveProgress();
 }
 
 function handleClick(event) {
   const button = event.target.closest('[data-ls-action]');
   if (!button || !byId('screen-little-shop')?.contains(button)) return;
   const action = button.dataset.lsAction;
+  if (action === 'reset-progress') {
+    currentLevel = 1;
+    completedLevels.clear();
+    levelAnswered = false;
+    levelHintIndex = 0;
+    levelExplanationVisible = false;
+    selectLevel(1);
+    const saved = saveProgress();
+    setStatus(saved ? 'Progress reset. All 100 levels remain available.' : 'Progress reset for this session. Browser storage is unavailable.');
+    return;
+  }
   if (action === 'level') {
     const level = Number(button.dataset.level);
     if (Number.isInteger(level) && level >= 1 && level <= 100) selectLevel(level);
@@ -182,6 +240,7 @@ function handleClick(event) {
     if (String(answer) === String(currentTask.answer)) {
       levelAnswered = true;
       completedLevels.add(currentLevel);
+      saveProgress();
       if (feedback) feedback.textContent = 'Correct. You can read the explanation below whenever you are ready.';
       levelExplanationVisible = false;
       const explanation = byId('ls-level-explanation');
@@ -318,6 +377,7 @@ function renderCheckout() {
 }
 
 function init() {
+  const progressWarning = loadProgress();
   active = true;
   selectLevel(currentLevel);
   if (controller) controller.abort();
@@ -330,7 +390,7 @@ function init() {
     setStatus('Basket emptied. You can start again whenever you are ready.');
   }, { signal: controller.signal });
   renderBasket();
-  setStatus('Choose an item to begin. Take your time.');
+  setStatus(progressWarning || 'Choose an item to begin. Take your time.');
 }
 
 function stop() {
