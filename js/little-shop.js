@@ -199,7 +199,7 @@ function handleClick(event) {
     checkoutMode = null;
     checkoutAnswered = false;
     checkoutCorrect = null;
-    checkoutHintShown = false;
+    checkoutHintCount = 0;
     renderCheckout();
     return;
   }
@@ -207,7 +207,7 @@ function handleClick(event) {
     checkoutMode = action;
     checkoutAnswered = false;
     checkoutCorrect = null;
-    checkoutHintShown = false;
+    checkoutHintCount = 0;
     renderCheckout();
     return;
   }
@@ -215,7 +215,7 @@ function handleClick(event) {
     checkoutMode = null;
     checkoutAnswered = false;
     checkoutCorrect = null;
-    checkoutHintShown = false;
+    checkoutHintCount = 0;
     renderCheckout();
     return;
   }
