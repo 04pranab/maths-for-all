@@ -781,8 +781,13 @@ async function main() {
     'Game.startSlabMath();' +
     'assert(document.getElementById("screen-slab").classList.contains("active"), "Slab Maths screen did not open.");' +
     'for (let i = 0; i < 100; i++) { SlabMath.restartRound(); SlabMath.hint(); SlabMath.newRound(); }' +
+    'Game.startLittleShop();' +
+    'assert(document.getElementById("screen-little-shop").classList.contains("active"), "Little Shop screen did not open.");' +
+    'assert(document.getElementById("little-shop-title")?.textContent === "Little Shop", "Little Shop title is missing.");' +
+    'assert(window.LittleShop?.isActive(), "Little Shop lifecycle did not become active.");' +
     'Game.goHome();' +
     'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after stress run.");' +
+    'assert(!window.LittleShop.isActive(), "Little Shop lifecycle was not stopped after leaving the screen.");' +
     'return { quizQuestions: document.getElementById("quiz-q-number")?.textContent, sudokuCells: document.querySelectorAll("#sudoku-grid .sudoku-cell").length, shapeCells: document.querySelectorAll("#shape-board .sp-cell").length };' +
   '})()');
 
