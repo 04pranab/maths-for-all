@@ -785,6 +785,14 @@ async function main() {
     'assert(document.getElementById("screen-little-shop").classList.contains("active"), "Little Shop screen did not open.");' +
     'assert(document.getElementById("little-shop-title")?.textContent === "Little Shop", "Little Shop title is missing.");' +
     'assert(window.LittleShop?.isActive(), "Little Shop lifecycle did not become active.");' +
+    'document.querySelector("[data-ls-action=add][data-item=notebook]").click();' +
+    'assert(document.querySelectorAll("#ls-basket .ls-basket-line").length === 1, "Adding an item did not create one basket line.");' +
+    'assert(document.getElementById("ls-total").textContent === "₹12.50", "Basket total is incorrect after adding a notebook.");' +
+    'document.querySelector("[data-ls-action=increase][data-item=notebook]").click();' +
+    'assert(document.getElementById("ls-total").textContent === "₹25", "Basket total is incorrect after increasing quantity.");' +
+    'document.querySelector("[data-ls-action=remove][data-item=notebook]").click();' +
+    'assert(document.getElementById("ls-empty"), "Removing the last item did not restore the empty state.");' +
+    'assert(document.getElementById("ls-total").textContent === "₹0", "Empty basket total should be zero.");' +
     'Game.goHome();' +
     'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after stress run.");' +
     'assert(!window.LittleShop.isActive(), "Little Shop lifecycle was not stopped after leaving the screen.");' +
