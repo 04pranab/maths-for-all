@@ -11,11 +11,12 @@ let controller = null;
 let checkoutMode = null;
 let checkoutAnswered = false;
 let checkoutCorrect = null;
-let checkoutHintShown = false;
+let checkoutHintCount = 0;
 let currentLevel = 1;
 let currentTask = null;
 let levelAnswered = false;
-let levelHintShown = false;
+let levelHintIndex = 0;
+let levelExplanationVisible = false;
 const completedLevels = new Set();
 
 function byId(id) {
@@ -54,7 +55,7 @@ function resetCheckout() {
   checkoutMode = null;
   checkoutAnswered = false;
   checkoutCorrect = null;
-  checkoutHintShown = false;
+  checkoutHintCount = 0;
   const panel = byId('ls-checkout-panel');
   if (panel) panel.hidden = true;
   const content = byId('ls-checkout-content');
@@ -111,7 +112,17 @@ function renderChallenge() {
   choicesRoot.innerHTML = currentTask.choices.map(choice =>
     '<button type="button" class="ls-level-choice" data-ls-action="level-answer" data-answer="' + choice.value + '"' + (levelAnswered ? ' disabled' : '') + '>' + choice.label + '</button>'
   ).join('');
-  if (feedback && !levelHintShown && !levelAnswered) feedback.textContent = '';
+  if (feedback && levelHintIndex === 0 && !levelAnswered) feedback.textContent = '';
+  const explanation = byId('ls-level-explanation');
+  const explanationToggle = byId('ls-level-explanation-toggle');
+  if (explanation) {
+    explanation.textContent = currentTask.explanation;
+    explanation.hidden = !levelAnswered || !levelExplanationVisible;
+  }
+  if (explanationToggle) {
+    explanationToggle.hidden = !levelAnswered;
+    explanationToggle.textContent = levelExplanationVisible ? 'Hide explanation' : 'Show explanation';
+  }
   if (next) {
     next.disabled = !levelAnswered || currentLevel === 100;
     next.textContent = currentLevel === 100 ? 'You reached level 100' : 'Next level →';
@@ -124,7 +135,8 @@ function selectLevel(level) {
   currentTask = generateLevel(level, level);
   if (!validateLevel(currentTask)) throw new Error('Invalid Little Shop task generated for level ' + level + '.');
   levelAnswered = false;
-  levelHintShown = false;
+  levelHintIndex = 0;
+  levelExplanationVisible = false;
   renderChallenge();
 }
 
@@ -138,9 +150,20 @@ function handleClick(event) {
     return;
   }
   if (action === 'level-hint') {
-    levelHintShown = true;
     const feedback = byId('ls-level-feedback');
-    if (feedback) feedback.textContent = currentTask?.hint || 'Look at the amounts and think about what the question asks.';
+    const hints = currentTask?.hintSteps?.length ? currentTask.hintSteps : [currentTask?.hint || 'Look at the amounts and think about what the question asks.'];
+    const index = Math.min(levelHintIndex, hints.length - 1);
+    if (feedback) feedback.textContent = 'Hint ' + (index + 1) + ' of ' + hints.length + ': ' + hints[index];
+    levelHintIndex = Math.min(levelHintIndex + 1, hints.length - 1);
+    return;
+  }
+  if (action === 'level-explanation') {
+    if (!levelAnswered) return;
+    levelExplanationVisible = !levelExplanationVisible;
+    const explanation = byId('ls-level-explanation');
+    const toggle = byId('ls-level-explanation-toggle');
+    if (explanation) explanation.hidden = !levelExplanationVisible;
+    if (toggle) toggle.textContent = levelExplanationVisible ? 'Hide explanation' : 'Show explanation';
     return;
   }
   if (action === 'next-level') {
@@ -154,7 +177,12 @@ function handleClick(event) {
     if (String(answer) === String(currentTask.answer)) {
       levelAnswered = true;
       completedLevels.add(currentLevel);
-      if (feedback) feedback.textContent = 'Correct. ' + currentTask.explanation;
+      if (feedback) feedback.textContent = 'Correct. You can read the explanation below whenever you are ready.';
+      levelExplanationVisible = false;
+      const explanation = byId('ls-level-explanation');
+      const explanationToggle = byId('ls-level-explanation-toggle');
+      if (explanation) { explanation.textContent = currentTask.explanation; explanation.hidden = true; }
+      if (explanationToggle) { explanationToggle.hidden = false; explanationToggle.textContent = 'Show explanation'; }
       byId('ls-level-choices')?.querySelectorAll('button').forEach(choice => { choice.disabled = true; });
       renderLevelMap();
       const next = byId('screen-little-shop')?.querySelector('[data-ls-action="next-level"]');
@@ -171,7 +199,7 @@ function handleClick(event) {
     checkoutMode = null;
     checkoutAnswered = false;
     checkoutCorrect = null;
-    checkoutHintShown = false;
+    checkoutHintCount = 0;
     renderCheckout();
     return;
   }
@@ -179,7 +207,7 @@ function handleClick(event) {
     checkoutMode = action;
     checkoutAnswered = false;
     checkoutCorrect = null;
-    checkoutHintShown = false;
+    checkoutHintCount = 0;
     renderCheckout();
     return;
   }
@@ -187,14 +215,18 @@ function handleClick(event) {
     checkoutMode = null;
     checkoutAnswered = false;
     checkoutCorrect = null;
-    checkoutHintShown = false;
+    checkoutHintCount = 0;
     renderCheckout();
     return;
   }
   if (action === 'hint') {
-    checkoutHintShown = true;
     const feedback = byId('ls-checkout-feedback');
-    if (feedback) feedback.textContent = checkoutMode === 'change' ? 'Hint: change = payment − basket total.' : 'Hint: exact payment matches the basket total with no extra amount.';
+    const hints = checkoutMode === 'change'
+      ? ['change = payment − basket total.', 'Count from the basket total up to the amount paid, or subtract the total from the payment.']
+      : ['Exact payment matches the basket total, with no extra amount.', 'Compare each choice with the basket total.'];
+    const index = Math.min(checkoutHintCount, hints.length - 1);
+    if (feedback) feedback.textContent = 'Hint ' + (index + 1) + ' of ' + hints.length + ': ' + hints[index];
+    checkoutHintCount = Math.min(checkoutHintCount + 1, hints.length - 1);
     return;
   }
   if (action === 'answer') {

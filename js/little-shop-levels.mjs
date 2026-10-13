@@ -22,6 +22,19 @@ const STAGES = [
 
 const PAISA_VALUES = [125, 250, 375, 450, 625, 750, 875, 1250, 2250];
 
+const SECOND_HINTS = {
+  'compare-price': 'Read both price labels carefully, then compare the amounts.',
+  'exact-payment': 'Choose the option equal to the price, not an amount above or below it.',
+  'basket-total': 'Count on from the larger price, then check the sum another way.',
+  'budget-check': 'Compare the basket total with the budget. Subtract to find the difference.',
+  'make-amount': 'Add each note and coin in one group, then compare its sum with the target.',
+  'change': 'Count up from the price to the amount paid, or subtract price from payment.',
+  'quantity-total': 'Find each line total first, then add the line totals together.',
+  'budget-combination': 'Check that both required items are present before checking the total.',
+  'paise-total': 'Add the paise carefully and remember that 100 paise make one rupee.',
+  'multi-step': 'First find the basket total, then subtract it from the payment.'
+};
+
 function randomFor(seed) {
   let state = (Number(seed) >>> 0) || 1;
   return () => {
@@ -76,6 +89,7 @@ function amountChoices(random, answerPaise, offsets = [-500, -200, 200, 500, 800
 
 function baseTask(level, seed, prompt, answer, choices, explanation, hint, extra = {}) {
   const stage = getStageForLevel(level);
+  const hintSteps = extra.hintSteps || [hint, SECOND_HINTS[stage.type]].filter((step, index, steps) => step && (index === 0 || step !== steps[0]));
   return {
     id: 'little-shop-level-' + level,
     level,
@@ -88,6 +102,7 @@ function baseTask(level, seed, prompt, answer, choices, explanation, hint, extra
     choices,
     explanation,
     hint,
+    hintSteps,
     ...extra
   };
 }

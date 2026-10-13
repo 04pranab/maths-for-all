@@ -330,3 +330,13 @@
   .ls-level-button { min-height: 42px; font-size: 1rem; }
   .ls-level-choices { grid-template-columns: minmax(0, 1fr); }
 }
+
+.ls-level-explanation {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-left: 4px solid var(--leaf);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+}
+.ls-level-explanation[hidden], #ls-level-explanation-toggle[hidden] { display: none; }
