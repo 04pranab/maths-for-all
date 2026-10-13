@@ -92,12 +92,17 @@ function renderBasket() {
 function renderLevelMap() {
   const root = byId('ls-level-map');
   if (!root) return;
+  const focusedLevel = document.activeElement?.dataset?.lsAction === 'level' ? document.activeElement.dataset.level : null;
   root.innerHTML = Array.from({ length: 100 }, (_, index) => {
     const level = index + 1;
     const selected = level === currentLevel;
     const complete = completedLevels.has(level);
-    return '<button type="button" class="ls-level-button' + (selected ? ' is-current' : '') + (complete ? ' is-complete' : '') + '" data-ls-action="level" data-level="' + level + '" aria-label="Level ' + level + (complete ? ', completed' : '') + '"' + (selected ? ' aria-current="step"' : '') + '>' + level + '</button>';
+    return '<button type="button" class="ls-level-button' + (selected ? ' is-current' : '') + (complete ? ' is-complete' : '') + '" data-ls-action="level" data-level="' + level + '" aria-label="Level ' + level + (complete ? ', completed' : '') + '"' + (selected ? ' aria-current="step" aria-pressed="true"' : ' aria-pressed="false"') + '>' + level + '</button>';
   }).join('');
+  if (focusedLevel) {
+    const replacement = [...root.querySelectorAll('.ls-level-button')].find(button => button.dataset.level === focusedLevel);
+    replacement?.focus({ preventScroll: true });
+  }
 }
 
 function renderChallenge() {
@@ -187,6 +192,8 @@ function handleClick(event) {
       renderLevelMap();
       const next = byId('screen-little-shop')?.querySelector('[data-ls-action="next-level"]');
       if (next) next.disabled = currentLevel === 100;
+      if (next && !next.disabled) next.focus();
+      else explanationToggle?.focus();
     } else if (feedback) {
       feedback.textContent = 'Not quite. Try again, or use a hint. The answer is not revealed yet.';
     }
@@ -239,6 +246,7 @@ function handleClick(event) {
         ? 'Correct. Payment minus the basket total gives ' + formatMoney(checkoutCorrect) + ' in change.'
         : 'Correct. Exact payment matches the basket total: ' + formatMoney(checkoutCorrect) + '.';
       byId('ls-checkout-content')?.querySelectorAll('[data-ls-action="answer"]').forEach(choice => { choice.disabled = true; });
+      byId('ls-checkout-content')?.querySelector('[data-ls-action="checkout-again"]')?.focus();
     } else if (feedback) {
       feedback.textContent = 'Not quite. Try again, or use a hint. The answer is not revealed yet.';
     }
