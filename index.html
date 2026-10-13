@@ -752,17 +752,38 @@
           <p class="ls-intro">A calm place to practise prices, totals, budgets and change.</p>
         </div>
       </header>
-      <main class="ls-panel" aria-live="polite">
-        <span class="ls-icon" aria-hidden="true">🧺</span>
-        <h2>Shop doors are getting ready</h2>
-        <p>The game is being built in small, tested steps. No real money is used.</p>
-        <p class="ls-status" id="ls-status">Little Shop is ready for its first building block.</p>
-        <button type="button" class="ls-primary" onclick="Game.goHome()">Back to games</button>
+      <main class="ls-game">
+        <section class="ls-catalogue-panel" aria-labelledby="ls-catalogue-title">
+          <div class="ls-section-heading">
+            <div>
+              <h2 id="ls-catalogue-title">On the shelf</h2>
+              <p>Choose an item to add it to your basket.</p>
+            </div>
+          </div>
+          <div id="ls-catalogue" class="ls-catalogue"></div>
+        </section>
+        <aside class="ls-basket-panel" aria-labelledby="ls-basket-title">
+          <div class="ls-section-heading">
+            <div>
+              <h2 id="ls-basket-title">Your basket</h2>
+              <p>Change quantities or remove an item.</p>
+            </div>
+            <span class="ls-basket-icon" aria-hidden="true">🧺</span>
+          </div>
+          <div id="ls-basket"></div>
+          <div class="ls-total-row">
+            <span>Basket total</span>
+            <strong id="ls-total" aria-live="polite">₹0</strong>
+          </div>
+          <p id="ls-status" class="ls-status" role="status">Choose an item to begin.</p>
+          <button type="button" id="ls-clear" class="ls-secondary">Empty basket</button>
+          <p class="ls-note">Practice only. No real money is used.</p>
+        </aside>
       </main>
     </div>
   </section>
 
-  <script src="js/little-shop.js?v=20261013-1"></script>
+  <script type="module" src="js/little-shop.js?v=20261013-2"></script>
   <script src="js/consent.js?v=20261001-1"></script>
   <script>
     /* Prototype compatibility shim. Production authentication remains disabled. */
