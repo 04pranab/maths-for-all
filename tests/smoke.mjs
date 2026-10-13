@@ -797,15 +797,15 @@ async function main() {
     'document.getElementById("ls-checkout-start").click();' +
     'document.querySelector("[data-ls-action=exact]").click();' +
     'assert(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]").length >= 3, "Exact-payment choices did not render.");' +
-    'document.querySelector("#ls-checkout-content [data-ls-action=answer][data-answer=1250]").click();' +
+    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 1250).click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Correct"), "Exact payment was not validated correctly.");' +
     'document.querySelector("[data-ls-action=checkout-again]").click();' +
     'document.querySelector("[data-ls-action=change]").click();' +
-    'document.querySelector("#ls-checkout-content [data-ls-action=answer][data-answer=650]").click();' +
+    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 650).click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("not revealed"), "Wrong change answer revealed the correct answer.");' +
     'document.querySelector("#ls-checkout-content [data-ls-action=hint]").click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("payment − basket total"), "Change hint did not explain the operation.");' +
-    'document.querySelector("#ls-checkout-content [data-ls-action=answer][data-answer=750]").click();' +
+    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 750).click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Correct"), "Change answer was not validated correctly.");' +
     'Game.goHome();' +
     'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after stress run.");' +
