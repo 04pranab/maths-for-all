@@ -13,7 +13,8 @@
     "test:research-gateway": "node tests/research-gateway.mjs",
     "test:smoke": "node tests/smoke.mjs",
     "test:stress": "node tests/smoke.mjs",
-    "test:little-shop-money": "node tests/little-shop-money.mjs"
+    "test:little-shop-money": "node tests/little-shop-money.mjs",
+    "test:little-shop-levels": "node tests/little-shop-levels.mjs"
   },
   "dependencies": {
     "pg": "^8.16.3",
