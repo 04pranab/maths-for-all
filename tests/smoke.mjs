@@ -734,6 +734,29 @@ async function main() {
   await cdp('Emulation.clearDeviceMetricsOverride');
   if (!mobileLayoutResult) throw new Error('Mobile responsive layout audit did not complete.');
 
+  const littleShopResponsiveResults = [];
+  for (const viewport of [{ width: 1366, height: 768, mobile: false }, { width: 768, height: 1024, mobile: true }, { width: 390, height: 844, mobile: true }]) {
+    await cdp('Emulation.setDeviceMetricsOverride', { ...viewport, deviceScaleFactor: 1 });
+    const result = await evaluate('(() => {' +
+      'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+      'Game.startLittleShop();' +
+      'const screen = document.getElementById("screen-little-shop");' +
+      'assert(document.querySelectorAll("#ls-level-map .ls-level-button").length === 100, "Little Shop level map is incomplete at " + innerWidth + "px.");' +
+      'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Little Shop has horizontal overflow at " + innerWidth + "px.");' +
+      'for (const node of screen.querySelectorAll(".ls-level-button,.ls-level-choice,.ls-add,.ls-quantity button,.ls-remove,.ls-primary,.ls-secondary")) {' +
+        'if (node.hidden || getComputedStyle(node).display === "none") continue;' +
+        'const rect = node.getBoundingClientRect();' +
+        'assert(rect.width >= 35 && rect.height >= 38, "Little Shop control is too small at " + innerWidth + "px: " + node.className);' +
+        'assert(rect.left >= -1 && rect.right <= innerWidth + 1, "Little Shop control is clipped at " + innerWidth + "px: " + node.className);' +
+      '}' +
+      'return { width: innerWidth, height: innerHeight, levels: 100, horizontalOverflow: false, controlsWithinViewport: true };' +
+    '})()');
+    littleShopResponsiveResults.push(result);
+  }
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
+  await evaluate('Game.goHome();');
+  if (littleShopResponsiveResults.length !== 3) throw new Error('Little Shop responsive audit did not complete.');
+
   const concurrencyResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const generated = await Promise.all(Array.from({length: 90}, (_, i) => Promise.resolve().then(() => QuestionBank.generate(["easy","medium","hard"][i % 3]))));' +
@@ -789,6 +812,9 @@ async function main() {
     'for (let level = 1; level <= 100; level++) { Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === level).click(); const task = window.LittleShop.getCurrentTask(); assert(task.level === level, "Little Shop level selector opened the wrong level: " + level); assert(document.querySelectorAll("#ls-level-choices .ls-level-choice").length === task.choices.length, "Little Shop choices did not render for level " + level); }' +
     'Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === 21).click();' +
     'const levelTask = window.LittleShop.getCurrentTask();' +
+    'const level21Button = Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === 21);' +
+    'level21Button.focus(); level21Button.click();' +
+    'assert(document.activeElement?.dataset.level === "21", "Little Shop lost keyboard focus when the level map rerendered.");' +
     'document.querySelector("[data-ls-action=level-hint]").click();' +
     'const firstLevelHint = document.getElementById("ls-level-feedback").textContent;' +
     'document.querySelector("[data-ls-action=level-hint]").click();' +
@@ -841,7 +867,7 @@ async function main() {
   if (serverErrors.length) throw new Error('Server emitted output during a successful test run:\n' + serverErrors.join('\n'));
   if (processErrors.length) throw new Error('Test process captured uncaught failures:\n' + processErrors.join('\n'));
 
-  console.log(JSON.stringify({ status: 'PASS', baseline, httpAudit, malformedInputs: malformedInputResult, fractionBakery: fractionResult, fractionBakeryResponsive: fractionResponsiveResults, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0, serverErrors: 0, processErrors: 0 }, null, 2));
+  console.log(JSON.stringify({ status: 'PASS', baseline, httpAudit, malformedInputs: malformedInputResult, fractionBakery: fractionResult, fractionBakeryResponsive: fractionResponsiveResults, littleShopResponsive: littleShopResponsiveResults, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0, serverErrors: 0, processErrors: 0 }, null, 2));
 }
 
 try {
