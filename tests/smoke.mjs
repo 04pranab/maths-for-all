@@ -853,6 +853,21 @@ async function main() {
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Hint 2 of 2"), "Checkout hints did not progress to the second hint.");' +
     'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 800).click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Correct"), "Change answer was not validated correctly.");' +
+    'const progressKey = "maths-for-all.little-shop.progress.v1";' +
+    'localStorage.setItem(progressKey, JSON.stringify({ version: 1, currentLevel: 42, completedLevels: [1, 21, 42] }));' +
+    'Game.goHome(); Game.startLittleShop();' +
+    'assert(window.LittleShop.getCurrentTask().level === 42, "Little Shop did not restore the saved current level.");' +
+    'assert([1, 21, 42].every(level => window.LittleShop.getCompletedLevels().includes(level)), "Little Shop did not restore completed levels.");' +
+    'assert(document.getElementById("ls-checkout-panel").hidden, "Checkout panel remained open after reopening the game.");' +
+    'localStorage.setItem(progressKey, "{broken-json");' +
+    'Game.goHome(); Game.startLittleShop();' +
+    'assert(window.LittleShop.getCurrentTask().level === 1 && window.LittleShop.getCompletedLevels().length === 0, "Corrupt progress did not recover to a clean state.");' +
+    'assert(document.getElementById("ls-status").textContent.includes("unreadable"), "Corrupt progress recovery was not explained.");' +
+    'const originalStorageSet = Storage.prototype.setItem;' +
+    'Storage.prototype.setItem = function () { throw new Error("storage blocked for test"); };' +
+    'Game.goHome(); Game.startLittleShop();' +
+    'assert(window.LittleShop.isActive() && window.LittleShop.getCurrentTask().level === 1, "Little Shop failed when storage writes were unavailable.");' +
+    'Storage.prototype.setItem = originalStorageSet;' +
     'Game.goHome();' +
     'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after stress run.");' +
     'assert(!window.LittleShop.isActive(), "Little Shop lifecycle was not stopped after leaving the screen.");' +
