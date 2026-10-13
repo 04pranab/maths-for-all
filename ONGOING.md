@@ -3,7 +3,7 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Fraction Bakery mathematical-correctness hardening, multi-viewport regression testing, and physical review  
+**Current focus:** Fraction Bakery physical learner review; protocol prepared, sessions pending  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 9 October 2026
@@ -199,4 +199,4 @@ These automated checks are a correctness gate, not proof of educational suitabil
 
 The v2.0.4 release remains the stable baseline; this focused Fraction Bakery correction is tracked separately from the release line.
 
-The next product step is **Fraction Bakery physical review**, backed by mathematical-property checks and layout audits across all 100 levels at three viewport sizes. **Little Shop** begins only after Fraction Bakery is accepted.
+The physical-review protocol is ready at [`docs/testing/fraction-bakery-physical-review.md`](docs/testing/fraction-bakery-physical-review.md). It includes a facilitator script, task sampling, anonymous observation sheets, privacy/safeguarding notes, and explicit acceptance gates. **The actual learner sessions have not yet been run**; the project owner and relevant educator must run them, review findings, and record an acceptance decision. **Little Shop** remains blocked until that decision is recorded.
