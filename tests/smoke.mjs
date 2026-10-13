@@ -793,7 +793,7 @@ async function main() {
     'assert(window.LittleShop.getCompletedLevels().includes(21), "Correct Little Shop level was not marked complete.");' +
     'assert(!document.querySelector("[data-ls-action=next-level]").disabled, "Next level did not unlock after a correct answer.");' +
     'document.querySelector("[data-ls-action=next-level]").click();' +
-    'assert(window.LittleShop.getCurrentTask().level === 22, "Next level did not advance to level 22.");'
+    'assert(window.LittleShop.getCurrentTask().level === 22, "Next level did not advance to level 22.");' +
     'document.querySelector("[data-ls-action=add][data-item=notebook]").click();' +
     'assert(document.querySelectorAll("#ls-basket .ls-basket-line").length === 1, "Adding an item did not create one basket line.");' +
     'assert(document.getElementById("ls-total").textContent === "₹12", "Basket total is incorrect after adding a notebook.");' +
