@@ -859,6 +859,8 @@ async function main() {
     'assert(window.LittleShop.getCurrentTask().level === 42, "Little Shop did not restore the saved current level.");' +
     'assert([1, 21, 42].every(level => window.LittleShop.getCompletedLevels().includes(level)), "Little Shop did not restore completed levels.");' +
     'assert(document.getElementById("ls-checkout-panel").hidden, "Checkout panel remained open after reopening the game.");' +
+    'document.querySelector("[data-ls-action=reset-progress]").click();' +
+    'assert(window.LittleShop.getCurrentTask().level === 1 && window.LittleShop.getCompletedLevels().length === 0, "Reset progress did not clear completion and return to level 1.");' +
     'localStorage.setItem(progressKey, "{broken-json");' +
     'Game.goHome(); Game.startLittleShop();' +
     'assert(window.LittleShop.getCurrentTask().level === 1 && window.LittleShop.getCompletedLevels().length === 0, "Corrupt progress did not recover to a clean state.");' +
