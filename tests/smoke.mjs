@@ -785,6 +785,15 @@ async function main() {
     'assert(document.getElementById("screen-little-shop").classList.contains("active"), "Little Shop screen did not open.");' +
     'assert(document.getElementById("little-shop-title")?.textContent === "Little Shop", "Little Shop title is missing.");' +
     'assert(window.LittleShop?.isActive(), "Little Shop lifecycle did not become active.");' +
+    'assert(document.querySelectorAll("#ls-level-map .ls-level-button").length === 100, "Little Shop must expose all 100 levels.");' +
+    'for (let level = 1; level <= 100; level++) { document.querySelector("#ls-level-map [data-level=\"" + level + "\"]").click(); const task = window.LittleShop.getCurrentTask(); assert(task.level === level, "Little Shop level selector opened the wrong level: " + level); assert(document.querySelectorAll("#ls-level-choices .ls-level-choice").length === task.choices.length, "Little Shop choices did not render for level " + level); }' +
+    'document.querySelector("#ls-level-map [data-level=\"21\"]").click();' +
+    'const levelTask = window.LittleShop.getCurrentTask();' +
+    'Array.from(document.querySelectorAll("#ls-level-choices .ls-level-choice")).find(choice => choice.dataset.answer === levelTask.answer).click();' +
+    'assert(window.LittleShop.getCompletedLevels().includes(21), "Correct Little Shop level was not marked complete.");' +
+    'assert(!document.querySelector("[data-ls-action=next-level]").disabled, "Next level did not unlock after a correct answer.");' +
+    'document.querySelector("[data-ls-action=next-level]").click();' +
+    'assert(window.LittleShop.getCurrentTask().level === 22, "Next level did not advance to level 22.");'
     'document.querySelector("[data-ls-action=add][data-item=notebook]").click();' +
     'assert(document.querySelectorAll("#ls-basket .ls-basket-line").length === 1, "Adding an item did not create one basket line.");' +
     'assert(document.getElementById("ls-total").textContent === "₹12", "Basket total is incorrect after adding a notebook.");' +
