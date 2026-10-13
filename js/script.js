@@ -391,6 +391,7 @@ const Game = (function () {
     slab:   'screen-slab',
     architect: 'screen-architect',
     fraction: 'screen-fraction-bakery',
+    shop: 'screen-little-shop',
   };
 
   function stopBackgroundGames() {
@@ -400,6 +401,7 @@ const Game = (function () {
     if (window.SlabMath && typeof SlabMath.stop === 'function') SlabMath.stop();
     if (window.ShapeArchitect && typeof ShapeArchitect.stop === 'function') ShapeArchitect.stop();
     if (window.FractionBakery && typeof FractionBakery.stop === 'function') FractionBakery.stop();
+    if (window.LittleShop && typeof window.LittleShop.stop === 'function') window.LittleShop.stop();
   }
 
   function showScreen(name) {
@@ -424,8 +426,9 @@ const Game = (function () {
   function startSlabMath()   { Analytics.log('slab','open',{}); showScreen('slab'); SlabMath.init(); ControlsOverlay.maybeShow('slab'); }
   function startShapeArchitect(){ Analytics.log('shape_architect','open',{}); showScreen('architect'); ShapeArchitect.init(); ControlsOverlay.maybeShow('architect'); }
   function startFractionBakery(){ Analytics.log('fraction_bakery','open',{}); showScreen('fraction'); const screen=document.getElementById('screen-fraction-bakery'); if(screen) screen.hidden=false; FractionBakery.init(); ControlsOverlay.maybeShow('fraction'); }
+  function startLittleShop(){ showScreen('shop'); window.LittleShop.init(); }
 
-  return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect, startFractionBakery };
+  return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect, startFractionBakery, startLittleShop };
 })();
 
 /* =============================================================
