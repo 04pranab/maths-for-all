@@ -244,3 +244,89 @@
 @media (min-width: 430px) {
   .ls-checkout-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+.ls-levels-panel {
+  margin-bottom: 20px;
+  padding: clamp(16px, 3vw, 24px);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
+}
+.ls-level-stage {
+  margin: 8px 0 12px;
+  color: var(--leaf-deep);
+  font-weight: 800;
+}
+.ls-level-map {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 20px;
+}
+.ls-level-button {
+  min-width: 0;
+  min-height: 40px;
+  padding: 3px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 9px;
+  background: var(--card-alt);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ls-level-button.is-current {
+  border-color: var(--indigo);
+  background: #eee6f0;
+  box-shadow: inset 0 0 0 1px var(--indigo);
+}
+.ls-level-button.is-complete {
+  border-color: var(--leaf);
+  background: #e4f2e6;
+}
+.ls-challenge-card {
+  padding: clamp(16px, 3vw, 22px);
+  border: 1.5px solid var(--border);
+  border-radius: 15px;
+  background: var(--card-alt);
+}
+.ls-challenge-card h3 { font-size: 1.2rem; line-height: 1.35; }
+.ls-level-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.ls-level-choice {
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 11px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.ls-level-choice:disabled { opacity: .72; }
+.ls-level-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.ls-level-feedback { min-height: 1.6em; margin-top: 12px; color: var(--ink-soft); }
+#screen-little-shop button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+@media (max-width: 760px) {
+  .ls-level-map { grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 5px; }
+  .ls-level-button { min-height: 38px; font-size: .88rem; }
+}
+@media (max-width: 430px) {
+  .ls-level-map { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .ls-level-button { min-height: 42px; font-size: 1rem; }
+  .ls-level-choices { grid-template-columns: minmax(0, 1fr); }
+}

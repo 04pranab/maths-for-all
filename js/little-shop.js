@@ -1,15 +1,8 @@
 import {
   changeDue, formatMoney, totalBasket
 } from './little-shop-money.mjs';
+import { CATALOGUE, generateLevel, validateLevel } from './little-shop-levels.mjs';
 
-const CATALOGUE = [
-  { id: 'notebook', name: 'Notebook', description: 'A place for ideas', icon: '📓', pricePaise: 1250 },
-  { id: 'pencil', name: 'Pencil', description: 'For drawing and writing', icon: '✏️', pricePaise: 500 },
-  { id: 'apple', name: 'Apple', description: 'A piece of fruit', icon: '🍎', pricePaise: 1500 },
-  { id: 'cup', name: 'Cup', description: 'A cup for a drink', icon: '🥤', pricePaise: 2000 },
-  { id: 'book', name: 'Storybook', description: 'A story to explore', icon: '📘', pricePaise: 3500 },
-  { id: 'ruler', name: 'Ruler', description: 'Measure a line', icon: '📏', pricePaise: 800 }
-];
 
 const itemsById = new Map(CATALOGUE.map(item => [item.id, item]));
 const basket = new Map();
@@ -19,6 +12,11 @@ let checkoutMode = null;
 let checkoutAnswered = false;
 let checkoutCorrect = null;
 let checkoutHintShown = false;
+let currentLevel = 1;
+let currentTask = null;
+let levelAnswered = false;
+let levelHintShown = false;
+const completedLevels = new Set();
 
 function byId(id) {
   return document.getElementById(id);
@@ -90,10 +88,82 @@ function renderBasket() {
   if (checkout) checkout.disabled = lines.length === 0;
 }
 
+function renderLevelMap() {
+  const root = byId('ls-level-map');
+  if (!root) return;
+  root.innerHTML = Array.from({ length: 100 }, (_, index) => {
+    const level = index + 1;
+    const selected = level === currentLevel;
+    const complete = completedLevels.has(level);
+    return '<button type="button" class="ls-level-button' + (selected ? ' is-current' : '') + (complete ? ' is-complete' : '') + '" data-ls-action="level" data-level="' + level + '" aria-label="Level ' + level + (complete ? ', completed' : '') + '"' + (selected ? ' aria-current="step"' : '') + '>' + level + '</button>';
+  }).join('');
+}
+
+function renderChallenge() {
+  const stage = byId('ls-level-stage');
+  const prompt = byId('ls-level-prompt');
+  const choicesRoot = byId('ls-level-choices');
+  const feedback = byId('ls-level-feedback');
+  const next = byId('screen-little-shop')?.querySelector('[data-ls-action="next-level"]');
+  if (!currentTask || !choicesRoot || !prompt) return;
+  if (stage) stage.textContent = 'Level ' + currentLevel + ' of 100 · ' + currentTask.stageTitle;
+  prompt.textContent = currentTask.prompt;
+  choicesRoot.innerHTML = currentTask.choices.map(choice =>
+    '<button type="button" class="ls-level-choice" data-ls-action="level-answer" data-answer="' + choice.value + '"' + (levelAnswered ? ' disabled' : '') + '>' + choice.label + '</button>'
+  ).join('');
+  if (feedback && !levelHintShown && !levelAnswered) feedback.textContent = '';
+  if (next) {
+    next.disabled = !levelAnswered || currentLevel === 100;
+    next.textContent = currentLevel === 100 ? 'You reached level 100' : 'Next level →';
+  }
+  renderLevelMap();
+}
+
+function selectLevel(level) {
+  currentLevel = level;
+  currentTask = generateLevel(level, level);
+  if (!validateLevel(currentTask)) throw new Error('Invalid Little Shop task generated for level ' + level + '.');
+  levelAnswered = false;
+  levelHintShown = false;
+  renderChallenge();
+}
+
 function handleClick(event) {
   const button = event.target.closest('[data-ls-action]');
   if (!button || !byId('screen-little-shop')?.contains(button)) return;
   const action = button.dataset.lsAction;
+  if (action === 'level') {
+    const level = Number(button.dataset.level);
+    if (Number.isInteger(level) && level >= 1 && level <= 100) selectLevel(level);
+    return;
+  }
+  if (action === 'level-hint') {
+    levelHintShown = true;
+    const feedback = byId('ls-level-feedback');
+    if (feedback) feedback.textContent = currentTask?.hint || 'Look at the amounts and think about what the question asks.';
+    return;
+  }
+  if (action === 'next-level') {
+    if (levelAnswered && currentLevel < 100) selectLevel(currentLevel + 1);
+    return;
+  }
+  if (action === 'level-answer') {
+    if (!currentTask || levelAnswered) return;
+    const answer = button.dataset.answer;
+    const feedback = byId('ls-level-feedback');
+    if (String(answer) === String(currentTask.answer)) {
+      levelAnswered = true;
+      completedLevels.add(currentLevel);
+      if (feedback) feedback.textContent = 'Correct. ' + currentTask.explanation;
+      byId('ls-level-choices')?.querySelectorAll('button').forEach(choice => { choice.disabled = true; });
+      renderLevelMap();
+      const next = byId('screen-little-shop')?.querySelector('[data-ls-action="next-level"]');
+      if (next) next.disabled = currentLevel === 100;
+    } else if (feedback) {
+      feedback.textContent = 'Not quite. Try again, or use a hint. The answer is not revealed yet.';
+    }
+    return;
+  }
   if (action === 'checkout') {
     if (!basket.size) return;
     const panel = byId('ls-checkout-panel');
@@ -209,6 +279,7 @@ function renderCheckout() {
 
 function init() {
   active = true;
+  selectLevel(currentLevel);
   if (controller) controller.abort();
   controller = new AbortController();
   byId('screen-little-shop')?.addEventListener('click', handleClick, { signal: controller.signal });
@@ -232,4 +303,4 @@ function isActive() {
   return active;
 }
 
-window.LittleShop = { init, stop, isActive, getCatalogue: () => CATALOGUE.map(item => ({ ...item })) };
+window.LittleShop = { init, stop, isActive, getCatalogue: () => CATALOGUE.map(item => ({ ...item })), getCurrentTask: () => currentTask ? JSON.parse(JSON.stringify(currentTask)) : null, getCompletedLevels: () => [...completedLevels] };

@@ -752,6 +752,25 @@
           <p class="ls-intro">A calm place to practise prices, totals, budgets and change.</p>
         </div>
       </header>
+      <section class="ls-levels-panel" aria-labelledby="ls-levels-title">
+        <div class="ls-section-heading">
+          <div>
+            <h2 id="ls-levels-title">Shopkeeper's practice</h2>
+            <p>Choose any of the 100 levels. Take your time and try again whenever you need.</p>
+          </div>
+        </div>
+        <p id="ls-level-stage" class="ls-level-stage"></p>
+        <nav id="ls-level-map" class="ls-level-map" aria-label="Little Shop levels"></nav>
+        <div class="ls-challenge-card">
+          <h3 id="ls-level-prompt">Choose a level to begin.</h3>
+          <div id="ls-level-choices" class="ls-level-choices"></div>
+          <div class="ls-level-actions">
+            <button type="button" class="ls-secondary" data-ls-action="level-hint">Hint</button>
+            <button type="button" class="ls-primary" data-ls-action="next-level" disabled>Next level →</button>
+          </div>
+          <p id="ls-level-feedback" class="ls-level-feedback" role="status"></p>
+        </div>
+      </section>
       <main class="ls-game">
         <section class="ls-catalogue-panel" aria-labelledby="ls-catalogue-title">
           <div class="ls-section-heading">

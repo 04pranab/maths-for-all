@@ -785,11 +785,20 @@ async function main() {
     'assert(document.getElementById("screen-little-shop").classList.contains("active"), "Little Shop screen did not open.");' +
     'assert(document.getElementById("little-shop-title")?.textContent === "Little Shop", "Little Shop title is missing.");' +
     'assert(window.LittleShop?.isActive(), "Little Shop lifecycle did not become active.");' +
+    'assert(document.querySelectorAll("#ls-level-map .ls-level-button").length === 100, "Little Shop must expose all 100 levels.");' +
+    'for (let level = 1; level <= 100; level++) { Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === level).click(); const task = window.LittleShop.getCurrentTask(); assert(task.level === level, "Little Shop level selector opened the wrong level: " + level); assert(document.querySelectorAll("#ls-level-choices .ls-level-choice").length === task.choices.length, "Little Shop choices did not render for level " + level); }' +
+    'Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === 21).click();' +
+    'const levelTask = window.LittleShop.getCurrentTask();' +
+    'Array.from(document.querySelectorAll("#ls-level-choices .ls-level-choice")).find(choice => choice.dataset.answer === levelTask.answer).click();' +
+    'assert(window.LittleShop.getCompletedLevels().includes(21), "Correct Little Shop level was not marked complete.");' +
+    'assert(!document.querySelector("[data-ls-action=next-level]").disabled, "Next level did not unlock after a correct answer.");' +
+    'document.querySelector("[data-ls-action=next-level]").click();' +
+    'assert(window.LittleShop.getCurrentTask().level === 22, "Next level did not advance to level 22.");' +
     'document.querySelector("[data-ls-action=add][data-item=notebook]").click();' +
     'assert(document.querySelectorAll("#ls-basket .ls-basket-line").length === 1, "Adding an item did not create one basket line.");' +
-    'assert(document.getElementById("ls-total").textContent === "₹12.50", "Basket total is incorrect after adding a notebook.");' +
+    'assert(document.getElementById("ls-total").textContent === "₹12", "Basket total is incorrect after adding a notebook.");' +
     'document.querySelector("[data-ls-action=increase][data-item=notebook]").click();' +
-    'assert(document.getElementById("ls-total").textContent === "₹25", "Basket total is incorrect after increasing quantity.");' +
+    'assert(document.getElementById("ls-total").textContent === "₹24", "Basket total is incorrect after increasing quantity.");' +
     'document.querySelector("[data-ls-action=remove][data-item=notebook]").click();' +
     'assert(document.getElementById("ls-empty"), "Removing the last item did not restore the empty state.");' +
     'assert(document.getElementById("ls-total").textContent === "₹0", "Empty basket total should be zero.");' +
@@ -797,15 +806,15 @@ async function main() {
     'document.getElementById("ls-checkout-start").click();' +
     'document.querySelector("[data-ls-action=exact]").click();' +
     'assert(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]").length >= 3, "Exact-payment choices did not render.");' +
-    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 1250).click();' +
+    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 1200).click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Correct"), "Exact payment was not validated correctly.");' +
     'document.querySelector("[data-ls-action=checkout-again]").click();' +
     'document.querySelector("[data-ls-action=change]").click();' +
-    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 650).click();' +
+    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) !== 800).click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("not revealed"), "Wrong change answer revealed the correct answer.");' +
     'document.querySelector("#ls-checkout-content [data-ls-action=hint]").click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("payment − basket total"), "Change hint did not explain the operation.");' +
-    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 750).click();' +
+    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 800).click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Correct"), "Change answer was not validated correctly.");' +
     'Game.goHome();' +
     'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after stress run.");' +
