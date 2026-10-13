@@ -777,6 +777,12 @@
           </div>
           <p id="ls-status" class="ls-status" role="status">Choose an item to begin.</p>
           <button type="button" id="ls-clear" class="ls-secondary">Empty basket</button>
+          <button type="button" id="ls-checkout-start" class="ls-primary" data-ls-action="checkout" disabled>Practice checkout</button>
+          <section id="ls-checkout-panel" class="ls-checkout-panel" hidden aria-labelledby="ls-checkout-title">
+            <h3 id="ls-checkout-title">Checkout practice</h3>
+            <div id="ls-checkout-content"></div>
+            <p id="ls-checkout-feedback" class="ls-checkout-feedback" role="status"></p>
+          </section>
           <p class="ls-note">Practice only. No real money is used.</p>
         </aside>
       </main>
