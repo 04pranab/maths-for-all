@@ -789,8 +789,17 @@ async function main() {
     'for (let level = 1; level <= 100; level++) { Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === level).click(); const task = window.LittleShop.getCurrentTask(); assert(task.level === level, "Little Shop level selector opened the wrong level: " + level); assert(document.querySelectorAll("#ls-level-choices .ls-level-choice").length === task.choices.length, "Little Shop choices did not render for level " + level); }' +
     'Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === 21).click();' +
     'const levelTask = window.LittleShop.getCurrentTask();' +
+    'document.querySelector("[data-ls-action=level-hint]").click();' +
+    'const firstLevelHint = document.getElementById("ls-level-feedback").textContent;' +
+    'document.querySelector("[data-ls-action=level-hint]").click();' +
+    'const secondLevelHint = document.getElementById("ls-level-feedback").textContent;' +
+    'assert(firstLevelHint.includes("Hint 1 of 2") && secondLevelHint.includes("Hint 2 of 2") && firstLevelHint !== secondLevelHint, "Little Shop graduated hints did not progress.");' +
+    'assert(!secondLevelHint.includes(levelTask.answer), "A hint revealed the level answer.");' +
     'Array.from(document.querySelectorAll("#ls-level-choices .ls-level-choice")).find(choice => choice.dataset.answer === levelTask.answer).click();' +
     'assert(window.LittleShop.getCompletedLevels().includes(21), "Correct Little Shop level was not marked complete.");' +
+    'assert(!document.getElementById("ls-level-explanation-toggle").hidden, "Correct answer did not enable optional explanation.");' +
+    'document.getElementById("ls-level-explanation-toggle").click();' +
+    'assert(!document.getElementById("ls-level-explanation").hidden, "Optional explanation did not open.");' +
     'assert(!document.querySelector("[data-ls-action=next-level]").disabled, "Next level did not unlock after a correct answer.");' +
     'document.querySelector("[data-ls-action=next-level]").click();' +
     'assert(window.LittleShop.getCurrentTask().level === 22, "Next level did not advance to level 22.");' +
@@ -814,6 +823,8 @@ async function main() {
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("not revealed"), "Wrong change answer revealed the correct answer.");' +
     'document.querySelector("#ls-checkout-content [data-ls-action=hint]").click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("payment − basket total"), "Change hint did not explain the operation.");' +
+    'document.querySelector("#ls-checkout-content [data-ls-action=hint]").click();' +
+    'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Hint 2 of 2"), "Checkout hints did not progress to the second hint.");' +
     'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 800).click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Correct"), "Change answer was not validated correctly.");' +
     'Game.goHome();' +
