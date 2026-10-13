@@ -744,6 +744,7 @@ async function main() {
       'assert(document.querySelectorAll("#ls-level-map .ls-level-button").length === 100, "Little Shop level map is incomplete at " + innerWidth + "px.");' +
       'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Little Shop has horizontal overflow at " + innerWidth + "px.");' +
       'for (const node of screen.querySelectorAll(".ls-level-button,.ls-level-choice,.ls-add,.ls-quantity button,.ls-remove,.ls-primary,.ls-secondary")) {' +
+        'if (node.hidden || getComputedStyle(node).display === "none") continue;' +
         'const rect = node.getBoundingClientRect();' +
         'assert(rect.width >= 35 && rect.height >= 38, "Little Shop control is too small at " + innerWidth + "px: " + node.className);' +
         'assert(rect.left >= -1 && rect.right <= innerWidth + 1, "Little Shop control is clipped at " + innerWidth + "px: " + node.className);' +
