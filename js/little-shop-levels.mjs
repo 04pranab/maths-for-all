@@ -286,7 +286,9 @@ export function validateLevel(task) {
   if (!task || typeof task !== 'object') return false;
   let stage;
   try { stage = getStageForLevel(task.level); } catch { return false; }
-  if (task.stage !== stage.key || task.type !== stage.type || !Array.isArray(task.choices) || task.choices.length !== 4) return false;
+  if (task.stage !== stage.key || task.type !== stage.type || !Array.isArray(task.choices)) return false;
+  const expectedChoiceCount = task.type === 'compare-price' || task.type === 'budget-check' ? 2 : 4;
+  if (task.choices.length !== expectedChoiceCount) return false;
   const values = task.choices.map(choice => choice.value);
   if (values.some(value => value === undefined || value === null) || new Set(values.map(String)).size !== values.length) return false;
   if (!values.some(value => String(value) === String(task.answer))) return false;
