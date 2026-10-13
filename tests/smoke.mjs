@@ -801,7 +801,7 @@ async function main() {
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Correct"), "Exact payment was not validated correctly.");' +
     'document.querySelector("[data-ls-action=checkout-again]").click();' +
     'document.querySelector("[data-ls-action=change]").click();' +
-    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 700).click();' +
+    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) !== 800).click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("not revealed"), "Wrong change answer revealed the correct answer.");' +
     'document.querySelector("#ls-checkout-content [data-ls-action=hint]").click();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("payment − basket total"), "Change hint did not explain the operation.");' +
