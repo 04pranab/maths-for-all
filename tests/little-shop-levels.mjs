@@ -20,7 +20,6 @@ for (let seed = 1; seed <= 30; seed++) {
     assert.equal(task.choices.filter(choice => String(choice.value) === task.answer).length, 1);
 
     if (task.type === 'compare-price') {
-      const first = byId.get(task.choices.find(choice => choice.value === task.prices[0])?.value);
       const [a, b] = task.prices;
       assert.notEqual(a, b);
       const winner = task.choices.find(choice => choice.value === task.answer);
