@@ -62,6 +62,10 @@ AI assistance must not be used as a reason to add unnecessary complexity, manipu
 
 Game mechanics are reviewed for their actual learning purpose, not only for whether the software runs.
 
+## Planning assistance
+
+AI assistance was used to draft the staged Little Shop product specification and pull-request roadmap in `docs/testing/little-shop-pr-plan.md`. The proposed curriculum, implementation boundaries, and acceptance criteria require review by the project owner and relevant educator before implementation. This planning document is not evidence that the game has been implemented or physically validated.
+
 ## Privacy and research responsibility
 
 AI assistance does not change the project's privacy requirements.

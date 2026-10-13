@@ -195,8 +195,10 @@ The Fraction Bakery review found and corrected several challenge-generation issu
 
 These automated checks are a correctness gate, not proof of educational suitability. A person must still play the game with learners and educators before it is accepted.
 
-## 9. Next step
+## 9. Next steps
 
-The v2.0.4 release remains the stable baseline; this focused Fraction Bakery correction is tracked separately from the release line.
+The v2.0.4 release remains the stable baseline; the Fraction Bakery correctness correction is tracked separately from the release line.
 
-The next product step is **Fraction Bakery physical review**, backed by mathematical-property checks and layout audits across all 100 levels at three viewport sizes. **Little Shop** begins only after Fraction Bakery is accepted.
+1. **Fraction Bakery physical review remains the immediate acceptance gate.** Automated checks passed, but supervised learner sessions and an explicit owner/educator acceptance decision are still required.
+2. **Little Shop planning is prepared, implementation is not started.** See [the complete PR-by-PR plan](docs/testing/little-shop-pr-plan.md) and [tracking issue #118](https://github.com/04pranab/maths-for-all/issues/118).
+3. Little Shop implementation must not begin until the Fraction Bakery physical-review decision is recorded. The proposed sequence has one active implementation PR at a time, exact integer-paise arithmetic, task-generation property tests, responsive/accessibility gates, and a final physical review.
