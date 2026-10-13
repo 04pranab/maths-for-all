@@ -340,3 +340,19 @@
   color: var(--ink);
 }
 .ls-level-explanation[hidden], #ls-level-explanation-toggle[hidden] { display: none; }
+
+@media (forced-colors: active) {
+  .ls-level-button.is-current,
+  .ls-level-button.is-complete,
+  .ls-level-choice:focus-visible,
+  .ls-checkout-choices button:focus-visible {
+    outline: 2px solid ButtonText;
+    outline-offset: 2px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #screen-little-shop *, #screen-little-shop *::before, #screen-little-shop *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
