@@ -18,6 +18,8 @@ for (let seed = 1; seed <= 30; seed++) {
     assert.equal(task.choices.length, ['compare-price', 'budget-check'].includes(task.type) ? 2 : 4);
     assert.equal(new Set(task.choices.map(choice => String(choice.value))).size, task.choices.length);
     assert.equal(task.choices.filter(choice => String(choice.value) === task.answer).length, 1);
+    assert.ok(task.hintSteps.length >= 2, 'Task needs graduated hints.');
+    assert.notEqual(task.hintSteps[0], task.hintSteps[1], 'Graduated hints must differ.');
 
     if (task.type === 'compare-price') {
       const [a, b] = task.prices;
