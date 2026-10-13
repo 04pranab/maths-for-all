@@ -395,6 +395,7 @@ function init() {
 
 function stop() {
   active = false;
+  resetCheckout();
   if (controller) controller.abort();
   controller = null;
 }
