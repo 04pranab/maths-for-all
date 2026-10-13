@@ -786,8 +786,8 @@ async function main() {
     'assert(document.getElementById("little-shop-title")?.textContent === "Little Shop", "Little Shop title is missing.");' +
     'assert(window.LittleShop?.isActive(), "Little Shop lifecycle did not become active.");' +
     'assert(document.querySelectorAll("#ls-level-map .ls-level-button").length === 100, "Little Shop must expose all 100 levels.");' +
-    'for (let level = 1; level <= 100; level++) { document.querySelector("#ls-level-map [data-level=\"" + level + "\"]").click(); const task = window.LittleShop.getCurrentTask(); assert(task.level === level, "Little Shop level selector opened the wrong level: " + level); assert(document.querySelectorAll("#ls-level-choices .ls-level-choice").length === task.choices.length, "Little Shop choices did not render for level " + level); }' +
-    'document.querySelector("#ls-level-map [data-level=\"21\"]").click();' +
+    'for (let level = 1; level <= 100; level++) { Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === level).click(); const task = window.LittleShop.getCurrentTask(); assert(task.level === level, "Little Shop level selector opened the wrong level: " + level); assert(document.querySelectorAll("#ls-level-choices .ls-level-choice").length === task.choices.length, "Little Shop choices did not render for level " + level); }' +
+    'Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === 21).click();' +
     'const levelTask = window.LittleShop.getCurrentTask();' +
     'Array.from(document.querySelectorAll("#ls-level-choices .ls-level-choice")).find(choice => choice.dataset.answer === levelTask.answer).click();' +
     'assert(window.LittleShop.getCompletedLevels().includes(21), "Correct Little Shop level was not marked complete.");' +
