@@ -805,7 +805,7 @@ async function main() {
     'Game.startSlabMath();' +
     'assert(document.getElementById("screen-slab").classList.contains("active"), "Slab Maths screen did not open.");' +
     'for (let i = 0; i < 100; i++) { SlabMath.restartRound(); SlabMath.hint(); SlabMath.newRound(); }' +
-    'Math.random = () => 0.05;' +
+    'const originalMathRandom = Math.random; Math.random = () => 0.05;' +
     'Game.startLittleShop();' +
     'assert(document.getElementById("screen-little-shop").classList.contains("active"), "Little Shop screen did not open.");' +
     'assert(document.getElementById("little-shop-title")?.textContent === "Little Shop", "Little Shop title is missing.");' +
@@ -845,6 +845,7 @@ async function main() {
     'const lastCustomerNumber = window.LittleShop.getState().customerNumber;' +
     'document.querySelector("[data-ls-action=next-customer]").click();' +
     'assert(window.LittleShop.getState().customerNumber === lastCustomerNumber + 1 && window.LittleShop.getState().phase === "shopping", "Next customer did not start a fresh counter transaction.");' +
+    'Math.random = originalMathRandom;' +
     'Game.goHome();' +
     'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after cashier flow.");' +
     'assert(!window.LittleShop.isActive(), "Little Shop lifecycle was not stopped after leaving the screen.");' +
