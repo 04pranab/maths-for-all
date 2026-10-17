@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Little Shop
-- Compact counter layout to reduce vertical scrolling and visual distraction, with more fruit cards per row and tighter panels across screen sizes. Responsive regression checks caught undersized Add buttons; the layout now preserves minimum touch-target dimensions while retaining the compact shelf.
+- Widened the Little Shop counter and gave large desktop screens a five-column fruit shelf, leaving room for more choices without shrinking labels. Increased fruit names, prices, order text, and feedback to child-readable sizes while keeping spacing tight and controls easy to tap. Responsive checks continue to guard against horizontal overflow and undersized controls.
 - Diversified ambiguous fruit symbols for guava, papaya and jackfruit.
 - Replaced the planned 100-level quiz and level map with an open-ended fruit-counter cashier loop.
 - Added 22 fruit choices, customer-specific item and quantity requests, basket matching before billing, and simulated short/exact/overpayment scenarios.
