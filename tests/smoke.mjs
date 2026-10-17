@@ -741,15 +741,16 @@ async function main() {
       'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
       'Game.startLittleShop();' +
       'const screen = document.getElementById("screen-little-shop");' +
-      'assert(document.querySelectorAll("#ls-level-map .ls-level-button").length === 100, "Little Shop level map is incomplete at " + innerWidth + "px.");' +
+      'assert(document.querySelectorAll("#ls-catalogue .ls-item-card").length === 22, "Little Shop catalogue is incomplete at " + innerWidth + "px.");' +
+      'assert(!screen.querySelector("#ls-level-map"), "Old level map is still present at " + innerWidth + "px.");' +
       'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Little Shop has horizontal overflow at " + innerWidth + "px.");' +
-      'for (const node of screen.querySelectorAll(".ls-level-button,.ls-level-choice,.ls-add,.ls-quantity button,.ls-remove,.ls-primary,.ls-secondary")) {' +
-        'if (node.hidden || getComputedStyle(node).display === "none") continue;' +
+      'for (const node of screen.querySelectorAll(".ls-add,.ls-quantity button,.ls-primary,.ls-secondary,.ls-denomination,.ls-back")) {' +
+        'if (node.hidden || node.closest("[hidden]") || getComputedStyle(node).display === "none") continue;' +
         'const rect = node.getBoundingClientRect();' +
         'assert(rect.width >= 35 && rect.height >= 38, "Little Shop control is too small at " + innerWidth + "px: " + node.className);' +
         'assert(rect.left >= -1 && rect.right <= innerWidth + 1, "Little Shop control is clipped at " + innerWidth + "px: " + node.className);' +
       '}' +
-      'return { width: innerWidth, height: innerHeight, levels: 100, horizontalOverflow: false, controlsWithinViewport: true };' +
+      'return { width: innerWidth, height: innerHeight, catalogueItems: 22, horizontalOverflow: false, controlsWithinViewport: true };' +
     '})()');
     littleShopResponsiveResults.push(result);
   }
@@ -804,74 +805,49 @@ async function main() {
     'Game.startSlabMath();' +
     'assert(document.getElementById("screen-slab").classList.contains("active"), "Slab Maths screen did not open.");' +
     'for (let i = 0; i < 100; i++) { SlabMath.restartRound(); SlabMath.hint(); SlabMath.newRound(); }' +
+    'const originalMathRandom = Math.random; Math.random = () => 0.05;' +
     'Game.startLittleShop();' +
     'assert(document.getElementById("screen-little-shop").classList.contains("active"), "Little Shop screen did not open.");' +
     'assert(document.getElementById("little-shop-title")?.textContent === "Little Shop", "Little Shop title is missing.");' +
     'assert(window.LittleShop?.isActive(), "Little Shop lifecycle did not become active.");' +
-    'assert(document.querySelectorAll("#ls-level-map .ls-level-button").length === 100, "Little Shop must expose all 100 levels.");' +
-    'for (let level = 1; level <= 100; level++) { Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === level).click(); const task = window.LittleShop.getCurrentTask(); assert(task.level === level, "Little Shop level selector opened the wrong level: " + level); assert(document.querySelectorAll("#ls-level-choices .ls-level-choice").length === task.choices.length, "Little Shop choices did not render for level " + level); }' +
-    'Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === 21).click();' +
-    'const levelTask = window.LittleShop.getCurrentTask();' +
-    'const level21Button = Array.from(document.querySelectorAll("#ls-level-map .ls-level-button")).find(button => Number(button.dataset.level) === 21);' +
-    'level21Button.focus(); level21Button.click();' +
-    'assert(document.activeElement?.dataset.level === "21", "Little Shop lost keyboard focus when the level map rerendered.");' +
-    'document.querySelector("[data-ls-action=level-hint]").click();' +
-    'const firstLevelHint = document.getElementById("ls-level-feedback").textContent;' +
-    'document.querySelector("[data-ls-action=level-hint]").click();' +
-    'const secondLevelHint = document.getElementById("ls-level-feedback").textContent;' +
-    'assert(firstLevelHint.includes("Hint 1 of 2") && secondLevelHint.includes("Hint 2 of 2") && firstLevelHint !== secondLevelHint, "Little Shop graduated hints did not progress.");' +
-    'assert(!secondLevelHint.includes(levelTask.answer), "A hint revealed the level answer.");' +
-    'Array.from(document.querySelectorAll("#ls-level-choices .ls-level-choice")).find(choice => choice.dataset.answer === levelTask.answer).click();' +
-    'assert(window.LittleShop.getCompletedLevels().includes(21), "Correct Little Shop level was not marked complete.");' +
-    'assert(!document.getElementById("ls-level-explanation-toggle").hidden, "Correct answer did not enable optional explanation.");' +
-    'document.getElementById("ls-level-explanation-toggle").click();' +
-    'assert(!document.getElementById("ls-level-explanation").hidden, "Optional explanation did not open.");' +
-    'assert(!document.querySelector("[data-ls-action=next-level]").disabled, "Next level did not unlock after a correct answer.");' +
-    'document.querySelector("[data-ls-action=next-level]").click();' +
-    'assert(window.LittleShop.getCurrentTask().level === 22, "Next level did not advance to level 22.");' +
-    'document.querySelector("[data-ls-action=add][data-item=notebook]").click();' +
-    'assert(document.querySelectorAll("#ls-basket .ls-basket-line").length === 1, "Adding an item did not create one basket line.");' +
-    'assert(document.getElementById("ls-total").textContent === "₹12", "Basket total is incorrect after adding a notebook.");' +
-    'document.querySelector("[data-ls-action=increase][data-item=notebook]").click();' +
-    'assert(document.getElementById("ls-total").textContent === "₹24", "Basket total is incorrect after increasing quantity.");' +
-    'document.querySelector("[data-ls-action=remove][data-item=notebook]").click();' +
-    'assert(document.getElementById("ls-empty"), "Removing the last item did not restore the empty state.");' +
-    'assert(document.getElementById("ls-total").textContent === "₹0", "Empty basket total should be zero.");' +
-    'document.querySelector("[data-ls-action=add][data-item=notebook]").click();' +
-    'document.getElementById("ls-checkout-start").click();' +
-    'document.querySelector("[data-ls-action=exact]").click();' +
-    'assert(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]").length >= 3, "Exact-payment choices did not render.");' +
-    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 1200).click();' +
-    'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Correct"), "Exact payment was not validated correctly.");' +
-    'document.querySelector("[data-ls-action=checkout-again]").click();' +
-    'document.querySelector("[data-ls-action=change]").click();' +
-    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) !== 800).click();' +
-    'assert(document.getElementById("ls-checkout-feedback").textContent.includes("not revealed"), "Wrong change answer revealed the correct answer.");' +
-    'document.querySelector("#ls-checkout-content [data-ls-action=hint]").click();' +
-    'assert(document.getElementById("ls-checkout-feedback").textContent.includes("payment − basket total"), "Change hint did not explain the operation.");' +
-    'document.querySelector("#ls-checkout-content [data-ls-action=hint]").click();' +
-    'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Hint 2 of 2"), "Checkout hints did not progress to the second hint.");' +
-    'Array.from(document.querySelectorAll("#ls-checkout-content [data-ls-action=answer]")).find(button => Number(button.dataset.answer) === 800).click();' +
-    'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Correct"), "Change answer was not validated correctly.");' +
-    'const progressKey = "maths-for-all.little-shop.progress.v1";' +
-    'localStorage.setItem(progressKey, JSON.stringify({ version: 1, currentLevel: 42, completedLevels: [1, 21, 42] }));' +
-    'Game.goHome(); Game.startLittleShop();' +
-    'assert(window.LittleShop.getCurrentTask().level === 42, "Little Shop did not restore the saved current level.");' +
-    'assert([1, 21, 42].every(level => window.LittleShop.getCompletedLevels().includes(level)), "Little Shop did not restore completed levels.");' +
-    'assert(document.getElementById("ls-checkout-panel").hidden, "Checkout panel remained open after reopening the game.");' +
-    'document.querySelector("[data-ls-action=reset-progress]").click();' +
-    'assert(window.LittleShop.getCurrentTask().level === 1 && window.LittleShop.getCompletedLevels().length === 0, "Reset progress did not clear completion and return to level 1.");' +
-    'localStorage.setItem(progressKey, "{broken-json");' +
-    'Game.goHome(); Game.startLittleShop();' +
-    'assert(window.LittleShop.getCurrentTask().level === 1 && window.LittleShop.getCompletedLevels().length === 0, "Corrupt progress did not recover to a clean state.");' +
-    'assert(document.getElementById("ls-status").textContent.includes("unreadable"), "Corrupt progress recovery was not explained.");' +
-    'const originalStorageSet = Storage.prototype.setItem;' +
-    'Storage.prototype.setItem = function () { throw new Error("storage blocked for test"); };' +
-    'Game.goHome(); Game.startLittleShop();' +
-    'assert(window.LittleShop.isActive() && window.LittleShop.getCurrentTask().level === 1, "Little Shop failed when storage writes were unavailable.");' +
-    'Storage.prototype.setItem = originalStorageSet;' +
+    'assert(!document.querySelector("#ls-level-map") && !document.querySelector("[data-ls-action=level]"), "Little Shop should not expose levels.");' +
+    'assert(document.querySelectorAll("#ls-catalogue .ls-item-card").length === 22, "The fruit shelf should show the full catalogue.");' +
+    'const fillCurrentOrder = () => { const order = window.LittleShop.getState().customer.items; for (const line of order) { for (let n = 0; n < line.quantity; n++) { const add = Array.from(document.querySelectorAll("#ls-catalogue [data-ls-action=add]")).find(button => button.dataset.item === line.id); assert(add, "Requested fruit is missing from shelf: " + line.id); add.click(); } } };' +
+    'const billCurrentOrder = () => { fillCurrentOrder(); assert(!document.getElementById("ls-checkout-start").disabled, "Exact customer order should enable billing."); document.getElementById("ls-checkout-start").click(); };' +
+    'billCurrentOrder();' +
+    'let cashierState = window.LittleShop.getState();' +
+    'assert(cashierState.phase === "payment" && cashierState.settlementKind === "short", "Short-payment scenario did not open.");' +
+    'document.querySelector("[data-ls-action=ask-more]").click();' +
+    'let moneyInput = document.getElementById("ls-money-answer"); moneyInput.value = String((cashierState.settlementAmountPaise + 100) / 100); moneyInput.form.requestSubmit();' +
+    'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Not quite"), "Wrong amount owed should allow retry without revealing the answer.");' +
+    'moneyInput = document.getElementById("ls-money-answer"); moneyInput.value = String(cashierState.settlementAmountPaise / 100); moneyInput.form.requestSubmit();' +
+    'assert(window.LittleShop.getState().phase === "ready" && window.LittleShop.getState().paymentPaise + window.LittleShop.getState().additionalPaymentPaise === window.LittleShop.getState().billTotalPaise, "Correct additional payment did not settle the short bill.");' +
+    'document.querySelector("#ls-payment-action [data-ls-action=finish-sale]").click();' +
+    'assert(window.LittleShop.getState().phase === "done", "Short-payment sale did not complete.");' +
+    'document.querySelector("[data-ls-action=next-customer]").click();' +
+    'Math.random = () => 0.5; billCurrentOrder();' +
+    'cashierState = window.LittleShop.getState();' +
+    'assert(cashierState.settlementKind === "exact" && cashierState.paymentPaise === cashierState.billTotalPaise, "Exact-payment customer was not handled.");' +
+    'document.querySelector("#ls-payment-action [data-ls-action=finish-sale]").click();' +
+    'assert(window.LittleShop.getState().phase === "done", "Exact-payment sale did not complete.");' +
+    'document.querySelector("[data-ls-action=next-customer]").click();' +
+    'Math.random = () => 0.9; billCurrentOrder();' +
+    'cashierState = window.LittleShop.getState();' +
+    'assert(cashierState.settlementKind === "change" && cashierState.paymentPaise > cashierState.billTotalPaise, "Overpayment scenario did not open.");' +
+    'moneyInput = document.getElementById("ls-money-answer"); moneyInput.value = String((cashierState.settlementAmountPaise + 100) / 100); moneyInput.form.requestSubmit();' +
+    'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Not quite"), "Incorrect change calculation should be retryable.");' +
+    'moneyInput = document.getElementById("ls-money-answer"); moneyInput.value = String(cashierState.settlementAmountPaise / 100); moneyInput.form.requestSubmit();' +
+    'assert(window.LittleShop.getState().phase === "change-drawer", "Correct change calculation did not open the cash drawer.");' +
+    'let remainingChange = cashierState.settlementAmountPaise; for (const denomination of [5000, 2000, 1000, 500, 200, 100]) { while (remainingChange >= denomination) { const coin = Array.from(document.querySelectorAll("#ls-cash-drawer [data-ls-action=give-change]")).find(button => Number(button.dataset.value) === denomination); assert(coin && !coin.disabled, "Expected change denomination was unavailable: " + denomination); coin.click(); remainingChange -= denomination; } }' +
+    'assert(window.LittleShop.getState().changeGivenPaise === cashierState.settlementAmountPaise, "Cash drawer did not total the exact change.");' +
+    'document.querySelector("#ls-cash-drawer [data-ls-action=finish-sale]").click();' +
+    'assert(window.LittleShop.getState().phase === "done", "Change-payment sale did not complete.");' +
+    'const lastCustomerNumber = window.LittleShop.getState().customerNumber;' +
+    'document.querySelector("[data-ls-action=next-customer]").click();' +
+    'assert(window.LittleShop.getState().customerNumber === lastCustomerNumber + 1 && window.LittleShop.getState().phase === "shopping", "Next customer did not start a fresh counter transaction.");' +
+    'Math.random = originalMathRandom;' +
     'Game.goHome();' +
-    'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after stress run.");' +
+    'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after cashier flow.");' +
     'assert(!window.LittleShop.isActive(), "Little Shop lifecycle was not stopped after leaving the screen.");' +
     'return { quizQuestions: document.getElementById("quiz-q-number")?.textContent, sudokuCells: document.querySelectorAll("#sudoku-grid .sudoku-cell").length, shapeCells: document.querySelectorAll("#shape-board .sp-cell").length };' +
   '})()');

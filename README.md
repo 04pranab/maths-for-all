@@ -133,7 +133,9 @@ The repository includes a headless Chromium smoke/stress suite covering:
 - repeated gameplay transitions;
 - browser runtime and console errors.
 
-The suite is a regression tool, not a substitute for real assistive-technology testing or physical learner testing. Fraction Bakery now has a dedicated browser audit that renders all 100 levels and checks for horizontal overflow, workbench escape, and artwork escaping order cards.
+Run the focused arithmetic checks with `npm run test:little-shop-money` and `npm run test:little-shop-cashier`; run the full headless Chromium and backend regression suite with `npm run test:smoke`. Little Shop's browser audit exercises underpayment, exact payment, overpayment, change return, the next-customer loop, and desktop/tablet/mobile layouts. Fraction Bakery separately has a browser audit that renders all 100 levels and checks for horizontal overflow, workbench escape, and artwork escaping order cards.
+
+Automated tests are regression tools, not substitutes for real assistive-technology testing or physical learner/educator review.
 
 ## Design principles
 

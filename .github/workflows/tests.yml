@@ -57,13 +57,13 @@ jobs:
           for file in js/*.js; do
             node --check "$file"
           done
-          find server tests -name '*.mjs' -print0 | xargs -0 -n1 node --check
+          find js server tests -name '*.mjs' -print0 | xargs -0 -n1 node --check
 
       - name: Little Shop money tests
         run: npm run test:little-shop-money
 
-      - name: Little Shop level tests
-        run: npm run test:little-shop-levels
+      - name: Little Shop cashier tests
+        run: npm run test:little-shop-cashier
 
       - name: PostgreSQL connectivity check
         run: node tests/postgres-auth.mjs

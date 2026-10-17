@@ -341,6 +341,38 @@ The player's action changes as the mathematical idea becomes more sophisticated.
 
 ---
 
+## Little Shop: the fruit counter 🍎
+
+Little Shop is an open-ended shop-counter activity. There are no levels, level map, timed rounds, comparison quizzes, or final level. Customers keep arriving until the learner chooses to leave.
+
+### The counter loop
+
+1. A customer asks for a small order of fruit.
+2. The learner adds the requested fruits and quantities from the shelf to the basket.
+3. The bill can be made only when the basket matches the customer's request.
+4. The customer hands over an amount of money. Sometimes it is short, sometimes exact, and sometimes more than the bill.
+5. If the payment is short, the learner works out how much more to ask for. A wrong answer can be retried without revealing the amount.
+6. If the payment is exact, the sale can be completed.
+7. If the customer pays extra, the learner calculates the change and then returns it using the on-screen notes and coins.
+8. The learner finishes the sale and invites the next customer.
+
+The current shelf contains 22 fruit choices. Prices, quantities, basket totals, payments and change are calculated with integer paise internally. The activity uses simulated money only, and the counter does not collect personal information or save a learner profile.
+
+### What the activity practises
+
+- matching a spoken-style order to a basket;
+- counting item quantities and checking a bill;
+- subtracting the amount already paid from the bill to find the amount still owed;
+- subtracting the bill from an overpayment to calculate change;
+- making a change amount from notes and coins;
+- correcting a basket or calculation calmly and trying again.
+
+### Facilitator note
+
+Ask the learner to explain how they found the amount still owed or the change. Avoid rushing them or correcting the calculation before they have had a chance to think. Automated tests can verify arithmetic and interaction states, but the wording, fruit choices, and cashier flow still need supervised learner and educator review before the game can be considered educationally accepted.
+
+---
+
 ## 7. Probability words
 
 The project prefers ordinary language first.
@@ -579,7 +611,7 @@ The current creative sequence is:
 1. **Shape Architect** ✓
 2. **Probability Machine** ✓ implemented at 84 levels
 3. **Fraction Bakery** · 100 levels implemented; layout regression audit added; physical review ongoing
-4. **Little Shop** next after Fraction Bakery acceptance
+4. **Little Shop** · continuous fruit-counter cashier prototype; physical learner review pending
 5. **Number Maze**
 6. **2048** later
 
