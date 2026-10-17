@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Offering and educational inspiration
+- Framed Maths for All as a small offering of gratitude, love and seva at the Lotus Feet of Bhagawan Sri Sathya Sai Baba, rather than presenting its purpose as software delivery alone.
+- Documented SSSVV’s published guiding principle, inclusive-education approach and role as an educational reference, while clearly stating that Maths for All is independent and does not claim official affiliation, review or endorsement.
+- Added links to official Sri Sathya Sai and SSSVV source material and surfaced the dedication on the main page and public wiki.
+
 ### Little Shop
 - Widened the Little Shop counter and gave large desktop screens a five-column fruit shelf, leaving room for more choices without shrinking labels. Increased fruit names, prices, order text, and feedback to child-readable sizes while keeping spacing tight and controls easy to tap. Responsive checks continue to guard against horizontal overflow and undersized controls.
 - Diversified ambiguous fruit symbols for guava, papaya and jackfruit.
