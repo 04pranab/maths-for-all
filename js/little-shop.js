@@ -1,4 +1,4 @@
-import { changeDue, formatMoney, parseMoney, totalBasket } from './little-shop-money.mjs';
+import { formatMoney, parseMoney, totalBasket } from './little-shop-money.mjs';
 import {
   CATALOGUE, chooseCustomerPayment, createCustomerOrder, getSettlement, orderMatches, orderTotalPaise
 } from './little-shop-catalogue.mjs';
