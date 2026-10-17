@@ -4,9 +4,42 @@
 
 Maths for All is a free learning space where children meet mathematics through play, making, noticing, experimenting and trying again.
 
-This wiki explains what Maths for All is, why it exists, how the games are meant to feel, what children can learn from them, and the values that guide the project.
+This wiki explains the educational intent, the games, and the values that guide this offering.
+
+## Our offering: a small act of seva
+
+At its heart, Maths for All is not merely a software project. It is our small offering of gratitude, love and service at the Lotus Feet of **Bhagawan Sri Sathya Sai Baba**. We hope to put a little of what we have learned into service by making mathematics more welcoming to children who learn, communicate, move, read, see or hear in different ways.
+
+### Bhagawan Sri Sathya Sai Baba: the spiritual inspiration
+
+Bhagawan’s teachings give this work its spiritual direction. His emphasis on *Educare* invites us to think of education as drawing out the knowledge, wisdom and human values latent within a learner, not merely delivering information. The ideal that “the end of education is character” reminds us that learning should nurture kindness, honesty, responsibility, patience and a willingness to serve.
+
+We offer this effort at His Lotus Feet with humility. We do not claim to speak on Bhagawan’s behalf, nor do we claim that He or any institution has approved this particular work.
+
+### Sri Sathya Sai Vidya Vahini: vision, mission and inclusive education
+
+Sri Sathya Sai Vidya Vahini (SSSVV), an initiative of the Sri Sathya Sai Central Trust, describes its guiding principle as **“Integral Education for All, Integral Education by All.”** Its published mission focuses on making human-values-infused, secular educational resources freely available, supporting teachers, and widening access to quality learning, including through digital content, teaching aids and training.
+
+SSSVV’s Inclusive Education initiative speaks to the need for education that includes children with and without disabilities. Its published resources describe the use of **Universal Design for Learning (UDL)**, multisensory learning and varied learning approaches to help teachers address diverse needs, foster participation and support each learner’s growth. The SSSVV Inclusive Education page also highlights Bhagawan’s call for “expansive feeling, inclusive thinking and intuitive vision.”
+
+### What this means for Maths for All
+
+- **Bhagawan Sri Sathya Sai Baba is the spiritual inspiration and the One to whom we offer this seva.** His teachings guide the values we hope to practise through the work.
+- **SSSVV is an educational inspiration and reference, not the developer of this site.** Its published vision and inclusive-education resources help us think carefully about access, dignity, participation and human values.
+- **Our responsibility is to translate those intentions into honest, careful work.** Maths for All offers playful mathematics, readable interfaces, patient retries and clearer ways to explore ideas. These are our developing efforts, not a claim that the site already meets every learner’s needs or the full UDL framework.
+
+This offering is independent. We do not claim that SSSVV or the Sri Sathya Sai Central Trust owns, funds, develops, reviews, adopts, approves or endorses Maths for All. Nor do we claim a formal partnership. The site should earn trust through respectful design, transparent limitations and ongoing review with learners, educators and people who use assistive technology.
+
+### Official sources that guide this understanding
+
+- [Sri Sathya Sai Vidya Vahini: About, guiding principle and programme](https://www.srisathyasaividyavahini.org/about/)
+- [Sri Sathya Sai Vidya Vahini: Inclusive Education](https://www.srisathyasaividyavahini.org/activities/inclusive-education/)
+- [SSSVV Inclusive Education resource site](https://inclusivelearning.sssvv.org/)
+- [Sri Sathya Sai Central Trust: education philosophy and SSSVV](https://www.srisathyasai.org/pages/sai-projects.html)
+- [Sri Sathya Sai Central Trust: selected messages and quotations](https://www.srisathyasai.org/pages/sai-his-messages-quotes.html)
 
 ---
+
 
 ## 1. Why Maths for All exists
 
