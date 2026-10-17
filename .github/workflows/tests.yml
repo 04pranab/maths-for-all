@@ -62,8 +62,8 @@ jobs:
       - name: Little Shop money tests
         run: npm run test:little-shop-money
 
-      - name: Little Shop level tests
-        run: npm run test:little-shop-levels
+      - name: Little Shop cashier tests
+        run: npm run test:little-shop-cashier
 
       - name: PostgreSQL connectivity check
         run: node tests/postgres-auth.mjs
