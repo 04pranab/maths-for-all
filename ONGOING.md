@@ -3,10 +3,10 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Fraction Bakery mathematical-correctness hardening, multi-viewport regression testing, and physical review  
+**Current focus:** Little Shop continuous cashier-counter prototype, end-to-end billing checks, and physical review  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 9 October 2026
+**Last updated:** 17 October 2026
 
 ---
 
@@ -123,7 +123,7 @@ The implementation sequence remains:
 1. **Shape Architect** ✅
 2. **Probability Machine** ✅
 3. **Fraction Bakery** ▶ physical review
-4. **Little Shop**
+4. **Little Shop** · continuous fruit-counter cashier prototype
 5. **Number Maze**
 
 `2048` is intentionally deferred until these five are designed, implemented, tested, animated/fine-tuned, and physically reviewed.
@@ -195,10 +195,22 @@ The Fraction Bakery review found and corrected several challenge-generation issu
 
 These automated checks are a correctness gate, not proof of educational suitability. A person must still play the game with learners and educators before it is accepted.
 
-## 9. Next steps
+## 9. Current focus and next steps
 
-The v2.0.4 release remains the stable baseline; the Fraction Bakery correctness correction is tracked separately from the release line.
+The v2.0.4 release remains the stable baseline. Fraction Bakery's automated correctness and responsive checks have passed; its supervised physical review and acceptance decision remain open.
 
-1. **Fraction Bakery physical review remains the immediate acceptance gate.** Automated checks passed, but supervised learner sessions and an explicit owner/educator acceptance decision are still required.
-2. **Little Shop planning is prepared, implementation is not started.** See [the complete PR-by-PR plan](docs/testing/little-shop-pr-plan.md) and [tracking issue #118](https://github.com/04pranab/maths-for-all/issues/118).
-3. Little Shop implementation must not begin until the Fraction Bakery physical-review decision is recorded. The proposed sequence has one active implementation PR at a time, exact integer-paise arithmetic, task-generation property tests, responsive/accessibility gates, and a final physical review.
+At the project owner's direction, Little Shop's earlier 100-level curriculum and level-map plan is superseded. The game is now an open-ended cashier counter, with no levels, stage progression, timer, or comparison quiz.
+
+The implementation scope is one complete customer transaction:
+
+1. A customer requests two to four fruit items in specified quantities.
+2. The learner assembles the exact order from a shelf of 22 fruit choices.
+3. Billing is enabled only when basket contents match the order.
+4. The customer pays too little, the exact amount, or more than the bill.
+5. For underpayment, the learner calculates the shortfall and asks for that amount.
+6. For overpayment, the learner calculates the change and returns it using simulated notes and coins.
+7. The sale closes, and the learner serves the next customer indefinitely.
+
+All currency arithmetic uses integer paise internally. The cashier prototype has no account, progress profile, real payment, learner analytics, or cloud dependency. The automated acceptance gate covers the three payment paths, retries for incorrect calculations, exact change construction, repeated customer transactions, and desktop/tablet/mobile layouts.
+
+Next: complete CI on the focused cashier-counter PR, inspect the resulting browser checks, fix any failures without weakening assertions, then conduct supervised learner/educator review. Do not claim educational acceptance from automated tests alone.
