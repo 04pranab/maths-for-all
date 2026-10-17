@@ -4,6 +4,10 @@ A simple, friendly mathematics learning website built with plain HTML, CSS, and 
 
 Maths for All is designed around a learner-first loop: **try → understand → retry → continue**.
 
+At its heart, this is not merely a software project. It is our small offering of gratitude, love and service at the Lotus Feet of Bhagawan Sri Sathya Sai Baba. It takes inspiration from His teachings on education, character and selfless service, and from Sri Sathya Sai Vidya Vahini’s published commitment to inclusive, values-based education.
+
+Maths for All is an independent offering. It is not an official initiative of Sri Sathya Sai Vidya Vahini (SSSVV) or the Sri Sathya Sai Central Trust, and no endorsement or formal partnership is claimed. Read [Our offering](wiki.html#offering) for the dedication, educational inspiration and clear boundaries.
+
 ## Current release
 
 **v2.0.4 · Geometry & Physical Learning Hardening**

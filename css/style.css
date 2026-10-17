@@ -296,6 +296,24 @@ button {
   color: var(--ink-soft);
 }
 
+.seva-dedication {
+  max-width: 780px;
+  margin: 12px auto 2px;
+  padding: 0 12px;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.seva-dedication a {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--indigo);
+  font-weight: 800;
+  text-underline-offset: 3px;
+}
+
 .footer-welcome,
 .footer-note {
   display: block;
