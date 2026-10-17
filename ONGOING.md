@@ -8,6 +8,10 @@
 **Research milestone:** `v3.0.0`  
 **Last updated:** 17 October 2026
 
+## The spirit of this work
+
+The software repository is the practical form of a much more personal intention: Maths for All is offered at the Lotus Feet of Bhagawan Sri Sathya Sai Baba as our small act of gratitude and seva. Bhagawan’s teachings are the spiritual inspiration; Sri Sathya Sai Vidya Vahini’s publicly stated vision for integral and inclusive education is an educational reference. This is an independent offering, not an official SSSVV or Sri Sathya Sai Central Trust initiative. The technical record below documents how we try to serve that intention responsibly.
+
 ---
 
 ## 1. v2.0.4 release baseline
