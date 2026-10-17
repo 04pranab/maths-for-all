@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/shape-architect.css" />
   <link rel="stylesheet" href="css/probability-carnival.css?v=20261007-7" />
   <link rel="stylesheet" href="css/fraction-bakery.css?v=20261008-4" />
-  <link rel="stylesheet" href="css/little-shop.css?v=20261013-1" />
+  <link rel="stylesheet" href="css/little-shop.css?v=20261017-1" />
 </head>
 <body>
 
@@ -747,71 +747,91 @@
       <header class="ls-header">
         <button type="button" class="ls-back" onclick="Game.goHome()">← Back to games</button>
         <div>
-          <p class="ls-eyebrow">MATHS FOR ALL</p>
+          <p class="ls-eyebrow">MATHS FOR ALL · SHOP COUNTER</p>
           <h1 id="little-shop-title">Little Shop</h1>
-          <p class="ls-intro">A calm place to practise prices, totals, budgets and change.</p>
+          <p class="ls-intro">Serve one customer at a time. Pack their order, make the bill, and handle the money.</p>
         </div>
       </header>
-      <section class="ls-levels-panel" aria-labelledby="ls-levels-title">
-        <div class="ls-section-heading">
-          <div>
-            <h2 id="ls-levels-title">Shopkeeper's practice</h2>
-            <p>Choose any of the 100 levels. Take your time and try again whenever you need.</p>
-          </div>
-        </div>
-        <p id="ls-level-stage" class="ls-level-stage"></p>
-        <nav id="ls-level-map" class="ls-level-map" aria-label="Little Shop levels"></nav>
-        <button type="button" class="ls-secondary ls-reset-progress" data-ls-action="reset-progress">Reset progress</button>
-        <div class="ls-challenge-card">
-          <h3 id="ls-level-prompt">Choose a level to begin.</h3>
-          <div id="ls-level-choices" class="ls-level-choices"></div>
-          <div class="ls-level-actions">
-            <button type="button" class="ls-secondary" data-ls-action="level-hint">Hint</button>
-            <button type="button" id="ls-level-explanation-toggle" class="ls-secondary" data-ls-action="level-explanation" hidden>Show explanation</button>
-            <button type="button" class="ls-primary" data-ls-action="next-level" disabled>Next level →</button>
-          </div>
-          <p id="ls-level-feedback" class="ls-level-feedback" role="status"></p>
-          <p id="ls-level-explanation" class="ls-level-explanation" hidden></p>
+
+      <section class="ls-customer-card" aria-labelledby="ls-customer-heading">
+        <div class="ls-customer-avatar" aria-hidden="true">🧑‍🌾</div>
+        <div class="ls-customer-copy">
+          <p class="ls-eyebrow" id="ls-customer-number">CUSTOMER 1</p>
+          <h2 id="ls-customer-heading">Welcome to the shop!</h2>
+          <p id="ls-customer-request">“Hello! Please get my fruit order ready.”</p>
+          <ul id="ls-customer-order" class="ls-customer-order" aria-label="Customer's order"></ul>
         </div>
       </section>
+
       <main class="ls-game">
         <section class="ls-catalogue-panel" aria-labelledby="ls-catalogue-title">
           <div class="ls-section-heading">
             <div>
-              <h2 id="ls-catalogue-title">On the shelf</h2>
-              <p>Choose an item to add it to your basket.</p>
+              <h2 id="ls-catalogue-title">Fruit shelf</h2>
+              <p>Add the fruits the customer asked for. Use the quantity controls to correct your basket.</p>
             </div>
+            <span class="ls-basket-icon" aria-hidden="true">🍎</span>
           </div>
           <div id="ls-catalogue" class="ls-catalogue"></div>
         </section>
+
         <aside class="ls-basket-panel" aria-labelledby="ls-basket-title">
           <div class="ls-section-heading">
             <div>
-              <h2 id="ls-basket-title">Your basket</h2>
-              <p>Change quantities or remove an item.</p>
+              <h2 id="ls-basket-title">Customer's basket</h2>
+              <p>Check each item before you make the bill.</p>
             </div>
             <span class="ls-basket-icon" aria-hidden="true">🧺</span>
           </div>
           <div id="ls-basket"></div>
           <div class="ls-total-row">
-            <span>Basket total</span>
+            <span>Bill total</span>
             <strong id="ls-total" aria-live="polite">₹0</strong>
           </div>
-          <p id="ls-status" class="ls-status" role="status">Choose an item to begin.</p>
-          <button type="button" id="ls-clear" class="ls-secondary">Empty basket</button>
-          <button type="button" id="ls-checkout-start" class="ls-primary" data-ls-action="checkout" disabled>Practice checkout</button>
+          <p id="ls-status" class="ls-status" role="status" aria-live="polite">Add the requested fruits to begin.</p>
+          <div class="ls-basket-actions">
+            <button type="button" id="ls-clear" class="ls-secondary" data-ls-action="clear-basket">Empty basket</button>
+            <button type="button" id="ls-checkout-start" class="ls-primary" data-ls-action="bill-customer" disabled>Make the bill</button>
+          </div>
+
           <section id="ls-checkout-panel" class="ls-checkout-panel" hidden aria-labelledby="ls-checkout-title">
-            <h3 id="ls-checkout-title">Checkout practice</h3>
-            <div id="ls-checkout-content"></div>
-            <p id="ls-checkout-feedback" class="ls-checkout-feedback" role="status"></p>
+            <p class="ls-eyebrow">PAYMENT COUNTER</p>
+            <h2 id="ls-checkout-title">Take the customer's payment</h2>
+            <div class="ls-money-summary">
+              <div><span>Bill total</span><strong id="ls-bill-total">₹0</strong></div>
+              <div><span>Customer gives</span><strong id="ls-customer-payment">₹0</strong></div>
+            </div>
+            <p id="ls-payment-prompt" class="ls-payment-prompt"></p>
+            <div id="ls-payment-action" class="ls-payment-action"></div>
+            <p id="ls-checkout-feedback" class="ls-checkout-feedback" role="status" aria-live="polite"></p>
+            <div id="ls-cash-drawer" class="ls-cash-drawer" hidden>
+              <h3>Return the change</h3>
+              <p>Choose notes and coins to give the customer the exact change.</p>
+              <div id="ls-change-denominations" class="ls-change-denominations"></div>
+              <div class="ls-change-total"><span>Change handed back</span><strong id="ls-change-given">₹0</strong></div>
+              <p id="ls-change-feedback" class="ls-change-feedback" role="status"></p>
+              <div class="ls-payment-buttons">
+                <button type="button" class="ls-secondary" data-ls-action="undo-change">Undo last</button>
+                <button type="button" class="ls-secondary" data-ls-action="clear-change">Clear change</button>
+                <button type="button" class="ls-primary" data-ls-action="finish-sale" disabled>Finish sale</button>
+              </div>
+            </div>
+            <button type="button" id="ls-complete-sale" class="ls-primary ls-complete-sale" data-ls-action="finish-sale" hidden>Complete sale</button>
           </section>
-          <p class="ls-note">Practice only. No real money is used.</p>
+
+          <section id="ls-sale-complete" class="ls-sale-complete" hidden aria-labelledby="ls-sale-heading">
+            <p class="ls-eyebrow">SALE COMPLETE</p>
+            <h2 id="ls-sale-heading">Nicely done!</h2>
+            <p id="ls-sale-summary"></p>
+            <button type="button" class="ls-primary" data-ls-action="next-customer">Next customer →</button>
+          </section>
+          <p class="ls-note">Practice counter only. No real money is used. Customers keep coming, so keep the shop open!</p>
         </aside>
       </main>
     </div>
   </section>
 
-  <script type="module" src="js/little-shop.js?v=20261013-2"></script>
+  <script type="module" src="js/little-shop.js?v=20261017-1"></script>
   <script src="js/consent.js?v=20261001-1"></script>
   <script>
     /* Prototype compatibility shim. Production authentication remains disabled. */
