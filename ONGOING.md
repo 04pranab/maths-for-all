@@ -3,7 +3,7 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Little Shop continuous cashier-counter prototype, end-to-end billing checks, and physical review  
+**Current focus:** Little Shop cashier-counter physical review; Fraction Bakery physical review remains open  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 17 October 2026
@@ -201,7 +201,9 @@ The v2.0.4 release remains the stable baseline. Fraction Bakery's automated corr
 
 At the project owner's direction, Little Shop's earlier 100-level curriculum and level-map plan is superseded. The game is now an open-ended cashier counter, with no levels, stage progression, timer, or comparison quiz.
 
-The implementation scope is one complete customer transaction:
+The cashier-counter implementation is merged in [PR #129](https://github.com/04pranab/maths-for-all/pull/129) at commit `14abcf89963eb52785b0a2671dc7038934565fa8`. The final PR-head CI run passed: [workflow run #840](https://github.com/04pranab/maths-for-all/actions/runs/39012091995).
+
+The implemented scope is one complete customer transaction:
 
 1. A customer requests two to four fruit items in specified quantities.
 2. The learner assembles the exact order from a shelf of 22 fruit choices.
@@ -213,4 +215,4 @@ The implementation scope is one complete customer transaction:
 
 All currency arithmetic uses integer paise internally. The cashier prototype has no account, progress profile, real payment, learner analytics, or cloud dependency. The automated acceptance gate covers the three payment paths, retries for incorrect calculations, exact change construction, repeated customer transactions, and desktop/tablet/mobile layouts.
 
-Next: complete CI on the focused cashier-counter PR, inspect the resulting browser checks, fix any failures without weakening assertions, then conduct supervised learner/educator review. Do not claim educational acceptance from automated tests alone.
+Next: conduct supervised learner/educator review of the cashier counter and record any usability blockers. Automated tests establish arithmetic and state-transition correctness only, not educational acceptance. Fraction Bakery's separate physical-review decision also remains open.
