@@ -821,7 +821,7 @@ async function main() {
     'let moneyInput = document.getElementById("ls-money-answer"); moneyInput.value = String((cashierState.settlementAmountPaise + 100) / 100); moneyInput.form.requestSubmit();' +
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Not quite"), "Wrong amount owed should allow retry without revealing the answer.");' +
     'moneyInput = document.getElementById("ls-money-answer"); moneyInput.value = String(cashierState.settlementAmountPaise / 100); moneyInput.form.requestSubmit();' +
-    'assert(window.LittleShop.getState().phase === "ready" && window.LittleShop.getState().paymentPaise === window.LittleShop.getState().billTotalPaise, "Correct additional payment did not settle the short bill.");' +
+    'assert(window.LittleShop.getState().phase === "ready" && window.LittleShop.getState().paymentPaise + window.LittleShop.getState().additionalPaymentPaise === window.LittleShop.getState().billTotalPaise, "Correct additional payment did not settle the short bill.");' +
     'document.querySelector("#ls-payment-action [data-ls-action=finish-sale]").click();' +
     'assert(window.LittleShop.getState().phase === "done", "Short-payment sale did not complete.");' +
     'document.querySelector("[data-ls-action=next-customer]").click();' +
