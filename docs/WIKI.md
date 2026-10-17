@@ -251,96 +251,6 @@ The learner can choose levels freely rather than being forced through a fixed st
 
 ---
 
-# 6. Probability Carnival 🎪
-
-Probability Carnival is a 60-level probability adventure.
-
-It is designed around a changing game loop rather than a collection of probability demonstrations. The learner gradually moves from intuition to comparison, construction, experimentation, randomness and evidence-based inference.
-
-There is no betting, gambling, money, or reward for taking risks. The excitement comes from finding out what happens.
-
-The carnival's progression is:
-
-**Predict → Compare → Build → Experiment → Investigate → Deduce**
-
-### Stage 1: Probability intuition · Levels 1–10
-
-The learner meets ordinary probability language first:
-
-- impossible
-- certain
-- likely
-- unlikely
-- equally likely
-
-The learner makes a prediction before seeing the outcome.
-
-### Stage 2: Compare · Levels 11–20
-
-The learner puts two chances side by side and decides which outcome is more likely, which is less likely, or whether the chances are equal.
-
-### Stage 3: Build · Levels 21–30
-
-The learner becomes the machine builder and physically changes Sun and Moon tokens to construct simple probability ratios:
-
-- 1:1
-- 2:1
-- 3:1
-- 1:3
-
-### Stage 4: Experiment · Levels 31–40
-
-The learner runs experiments of different sizes:
-
-- 5 trials
-- 10 trials
-- 20 trials
-
-The results are visible and can be compared. The learner begins to see the difference between expectation and one actual experiment.
-
-### Stage 5: Randomness · Levels 41–50
-
-The learner investigates:
-
-- surprising short runs
-- longer runs
-- theoretical probability
-- experimental probability
-- sample size
-
-The important idea is that randomness can produce variation. A random run does not have to reproduce the theoretical ratio exactly.
-
-### Stage 6: Probability Detective · Levels 51–60
-
-The machine is hidden. The learner collects clues, examines the evidence and identifies the hidden configuration.
-
-The final challenge becomes:
-
-> **What can the evidence tell me about what is hidden?**
-
-The learner also encounters fair and unfair machine designs and practises changing their conclusion when the evidence gives them a reason to do so.
-
-### What the learner practises
-
-Across the six stages, Probability Carnival develops:
-
-- prediction
-- comparison
-- counting
-- proportional thinking
-- construction
-- experimentation
-- observation
-- sample-size reasoning
-- uncertainty
-- evidence
-- inference
-- mathematical communication
-
-The player's action changes as the mathematical idea becomes more sophisticated.
-
----
-
 ## Little Shop: the fruit counter 🍎
 
 Little Shop is an open-ended shop-counter activity. There are no levels, level map, timed rounds, comparison quizzes, or final level. Customers keep arriving until the learner chooses to leave.
@@ -373,7 +283,7 @@ Ask the learner to explain how they found the amount still owed or the change. A
 
 ---
 
-## 7. Probability words
+## 6. Probability words
 
 The project prefers ordinary language first.
 
@@ -395,7 +305,7 @@ The first job is to make the idea understandable.
 
 ---
 
-## 8. Accessibility
+## 7. Accessibility
 
 Accessibility is part of the experience.
 
@@ -434,7 +344,7 @@ It also makes the whole experience easier to understand.
 
 ---
 
-## 9. What we want children to feel
+## 8. What we want children to feel
 
 We want the games to encourage:
 
@@ -466,7 +376,7 @@ It is building understanding.
 
 ---
 
-## 10. What we do not want
+## 9. What we do not want
 
 Maths for All should not become:
 
@@ -484,7 +394,7 @@ But fun should help the mathematics breathe rather than bury it.
 
 ---
 
-## 11. For parents, teachers and facilitators
+## 10. For parents, teachers and facilitators
 
 Adults do not need to turn every game into a lesson.
 
@@ -506,21 +416,11 @@ A child's explanation can reveal much more than a correct button press.
 
 ---
 
-## 12. Using the games in a group
+## 11. Using the games in a group
 
 The activities can also become shared mathematical conversations.
 
 For example:
-
-### Probability Carnival
-
-One child predicts.
-
-Another watches the results.
-
-A third child keeps track of what happened.
-
-Then the group compares their ideas.
 
 ### Shape Architect
 
@@ -540,7 +440,7 @@ The goal is to give mathematics something to talk about.
 
 ---
 
-## 13. Privacy and trust
+## 12. Privacy and trust
 
 Playing a game should not automatically mean participating in research.
 
@@ -556,7 +456,7 @@ Privacy information should remain understandable and accessible without requirin
 
 ---
 
-## 14. Responsible use of AI
+## 13. Responsible use of AI
 
 AI tools may help people working on Maths for All with:
 
@@ -583,7 +483,7 @@ The project's AI-use record explains the disclosure and responsibility principle
 
 ---
 
-## 15. How a new game should be created
+## 14. How a new game should be created
 
 Every new game follows the same human-centred path:
 
@@ -604,16 +504,15 @@ It is finished when the experience works.
 
 ---
 
-## 16. Current roadmap
+## 15. Current roadmap
 
 The current creative sequence is:
 
 1. **Shape Architect** ✓
-2. **Probability Machine** ✓ implemented at 84 levels
-3. **Fraction Bakery** · 100 levels implemented; layout regression audit added; physical review ongoing
-4. **Little Shop** · continuous fruit-counter cashier prototype; physical learner review pending
-5. **Number Maze**
-6. **2048** later
+2. **Fraction Bakery** · 100 levels implemented; layout regression audit added; physical review ongoing
+3. **Little Shop** · continuous fruit-counter cashier prototype; physical learner review pending
+4. **Number Maze**
+5. **2048** later
 
 The order matters.
 
@@ -621,7 +520,7 @@ We want the first five new games to create a broad collection of mathematical ex
 
 ---
 
-## 17. What “finished” means
+## 16. What “finished” means
 
 A game should be considered ready when:
 
@@ -638,7 +537,7 @@ A game should be considered ready when:
 
 ---
 
-## 18. Our promise
+## 17. Our promise
 
 Maths for All is a small project.
 
