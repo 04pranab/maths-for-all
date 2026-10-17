@@ -812,7 +812,7 @@ async function main() {
     'assert(window.LittleShop?.isActive(), "Little Shop lifecycle did not become active.");' +
     'assert(!document.querySelector("#ls-level-map") && !document.querySelector("[data-ls-action=level]"), "Little Shop should not expose levels.");' +
     'assert(document.querySelectorAll("#ls-catalogue .ls-item-card").length === 22, "The fruit shelf should show the full catalogue.");' +
-    'const fillCurrentOrder = () => { const order = window.LittleShop.getState().customer.items; for (const line of order) { for (let n = 0; n < line.quantity; n++) { const add = document.querySelector("#ls-catalogue [data-ls-action=add][data-item=\"" + line.id + "\"]"); assert(add, "Requested fruit is missing from shelf: " + line.id); add.click(); } } };' +
+    'const fillCurrentOrder = () => { const order = window.LittleShop.getState().customer.items; for (const line of order) { for (let n = 0; n < line.quantity; n++) { const add = Array.from(document.querySelectorAll("#ls-catalogue [data-ls-action=add]")).find(button => button.dataset.item === line.id); assert(add, "Requested fruit is missing from shelf: " + line.id); add.click(); } } };' +
     'const billCurrentOrder = () => { fillCurrentOrder(); assert(!document.getElementById("ls-checkout-start").disabled, "Exact customer order should enable billing."); document.getElementById("ls-checkout-start").click(); };' +
     'billCurrentOrder();' +
     'let cashierState = window.LittleShop.getState();' +
@@ -838,7 +838,7 @@ async function main() {
     'assert(document.getElementById("ls-checkout-feedback").textContent.includes("Not quite"), "Incorrect change calculation should be retryable.");' +
     'moneyInput = document.getElementById("ls-money-answer"); moneyInput.value = String(cashierState.settlementAmountPaise / 100); moneyInput.form.requestSubmit();' +
     'assert(window.LittleShop.getState().phase === "change-drawer", "Correct change calculation did not open the cash drawer.");' +
-    'let remainingChange = cashierState.settlementAmountPaise; for (const denomination of [5000, 2000, 1000, 500, 200, 100]) { while (remainingChange >= denomination) { const coin = document.querySelector("#ls-cash-drawer [data-ls-action=\"give-change\"][data-value=\"" + denomination + "\"]"); assert(coin && !coin.disabled, "Expected change denomination was unavailable: " + denomination); coin.click(); remainingChange -= denomination; } }' +
+    'let remainingChange = cashierState.settlementAmountPaise; for (const denomination of [5000, 2000, 1000, 500, 200, 100]) { while (remainingChange >= denomination) { const coin = Array.from(document.querySelectorAll("#ls-cash-drawer [data-ls-action=give-change]")).find(button => Number(button.dataset.value) === denomination); assert(coin && !coin.disabled, "Expected change denomination was unavailable: " + denomination); coin.click(); remainingChange -= denomination; } }' +
     'assert(window.LittleShop.getState().changeGivenPaise === cashierState.settlementAmountPaise, "Cash drawer did not total the exact change.");' +
     'document.querySelector("#ls-cash-drawer [data-ls-action=finish-sale]").click();' +
     'assert(window.LittleShop.getState().phase === "done", "Change-payment sale did not complete.");' +
