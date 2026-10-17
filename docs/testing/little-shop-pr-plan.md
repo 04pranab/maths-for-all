@@ -1,6 +1,6 @@
 # Little Shop: Continuous Cashier Counter
 
-**Status:** Revised scope implemented on a focused feature branch; CI and review are required before merge. Physical learner/educator acceptance remains pending.  
+**Status:** Merged in [PR #129](https://github.com/04pranab/maths-for-all/pull/129) at commit `14abcf89963eb52785b0a2671dc7038934565fa8`; [PR-head CI passed](https://github.com/04pranab/maths-for-all/actions/runs/39012091995). Physical learner/educator acceptance remains pending.  
 **Scope decision:** This document supersedes the earlier 100-level curriculum proposal. Little Shop has no levels, stages, level map, timer, comparison quiz, or end-of-game progression.
 
 ## Product intent
