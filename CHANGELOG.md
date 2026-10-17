@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Little Shop
+- Compact counter layout to reduce vertical scrolling and visual distraction, with more fruit cards per row and tighter panels across screen sizes.
+- Diversified ambiguous fruit symbols for guava, papaya and jackfruit.
 - Replaced the planned 100-level quiz and level map with an open-ended fruit-counter cashier loop.
 - Added 22 fruit choices, customer-specific item and quantity requests, basket matching before billing, and simulated short/exact/overpayment scenarios.
 - Added a subtraction prompt for asking a customer for the amount still owed, plus change calculation and a simulated notes-and-coins drawer.
