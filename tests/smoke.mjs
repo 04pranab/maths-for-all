@@ -739,7 +739,73 @@ async function main() {
     await cdp('Emulation.setDeviceMetricsOverride', { ...viewport, deviceScaleFactor: 1 });
     const result = await evaluate('(() => {' +
       'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
-      'Math.random = () => 0.05;' +
+      'Game.startLittleShop();' +
+      'const screen = document.getElementById("screen-little-shop");' +
+      'assert(document.querySelectorAll("#ls-catalogue .ls-item-card").length === 22, "Little Shop catalogue is incomplete at " + innerWidth + "px.");' +
+      'assert(!screen.querySelector("#ls-level-map"), "Old level map is still present at " + innerWidth + "px.");' +
+      'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Little Shop has horizontal overflow at " + innerWidth + "px.");' +
+      'for (const node of screen.querySelectorAll(".ls-add,.ls-quantity button,.ls-primary,.ls-secondary,.ls-denomination,.ls-back")) {' +
+        'if (node.hidden || getComputedStyle(node).display === "none") continue;' +
+        'const rect = node.getBoundingClientRect();' +
+        'assert(rect.width >= 35 && rect.height >= 38, "Little Shop control is too small at " + innerWidth + "px: " + node.className);' +
+        'assert(rect.left >= -1 && rect.right <= innerWidth + 1, "Little Shop control is clipped at " + innerWidth + "px: " + node.className);' +
+      '}' +
+      'return { width: innerWidth, height: innerHeight, catalogueItems: 22, horizontalOverflow: false, controlsWithinViewport: true };' +
+    '})()');
+    littleShopResponsiveResults.push(result);
+  }
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
+  await evaluate('Game.goHome();');
+  if (littleShopResponsiveResults.length !== 3) throw new Error('Little Shop responsive audit did not complete.');
+
+  const concurrencyResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'const generated = await Promise.all(Array.from({length: 90}, (_, i) => Promise.resolve().then(() => QuestionBank.generate(["easy","medium","hard"][i % 3]))));' +
+    'assert(generated.length === 90, "Concurrent question generation returned the wrong count.");' +
+    'assert(generated.every(q => q && Number.isFinite(q.answer) && typeof q.text === "string"), "Concurrent question generation returned an invalid question.");' +
+    'const slabRounds = await Promise.all(Array.from({length: 30}, () => Promise.resolve().then(() => { SlabMath.newRound(); return Number(document.getElementById("slab-basket-number").textContent); })));' +
+    'assert(slabRounds.length === 30 && slabRounds.every(Number.isFinite), "Concurrent Slab Maths generation failed.");' +
+    'const rapidStarts = [["quiz", "screen-quiz", Game.startArithmetic], ["race", "screen-race", Game.startRacing], ["sudoku", "screen-sudoku", Game.startSudoku], ["shape", "screen-shape", Game.startShapePuzzle], ["slab", "screen-slab", Game.startSlabMath]];' +
+    'for (const [key, screenId, start] of rapidStarts) { Game.goHome(); start(); assert(document.getElementById(screenId)?.classList.contains("active"), "Rapid start did not activate " + key + "."); }' +
+    'assert(document.querySelector(".screen.active")?.id === "screen-slab", "Rapid game starts did not leave the last requested game active.");' +
+    'Game.startShapePuzzle();' +
+    'const shapeTimerBeforeSwitch = document.getElementById("shape-timer")?.textContent;' +
+    'Game.startArithmetic();' +
+    'await new Promise(r => setTimeout(r, 1200));' +
+    'assert(document.getElementById("shape-timer")?.textContent === shapeTimerBeforeSwitch, "Shape timer continued running after leaving Shape Fitting.");' +
+    'Game.startRacing();' +
+    'Racing.start();' +
+    'document.getElementById("race-input").value = "0";' +
+    'Racing.submit();' +
+    'Racing.back();' +
+    'await new Promise(r => setTimeout(r, 260));' +
+    'assert(document.getElementById("race-setup-panel")?.classList.contains("hidden") === false, "Racing did not remain on setup after immediate back.");' +
+    'assert(document.getElementById("race-play-panel")?.classList.contains("hidden") === true, "A stale Racing callback modified the play panel after back.");' +
+    'Game.goHome();' +
+    'return { concurrentQuestions: generated.length, concurrentSlabRounds: slabRounds.length, rapidStarts: rapidStarts.length, staleTimerChecks: 2 };' +
+  '})()');
+
+  if (!concurrencyResult) throw new Error('Concurrency audit did not complete.');
+
+  const gameResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'ResearchConsent.set("yes");' +
+    'Game.startArithmetic();' +
+    'assert(document.getElementById("screen-quiz").classList.contains("active"), "Arithmetic screen did not open.");' +
+    'for (let i = 0; i < 300; i++) { document.getElementById("quiz-input").value = "999999"; Quiz.submit(); Quiz.next(); }' +
+    'Game.startRacing();' +
+    'assert(document.getElementById("screen-race").classList.contains("active"), "Racing screen did not open.");' +
+    'for (let round = 0; round < 20; round++) { Racing.start(); for (let i = 0; i < 30; i++) { document.getElementById("race-input").value = "999999"; Racing.submit(); } Racing.back(); }' +
+    'Game.startSudoku();' +
+    'assert(document.getElementById("screen-sudoku").classList.contains("active"), "Sudoku screen did not open.");' +
+    'for (let i = 0; i < 100; i++) { Sudoku.newPuzzle(); Sudoku.giveHint(); }' +
+    'Game.startShapePuzzle();' +
+    'assert(document.getElementById("screen-shape").classList.contains("active"), "Shape screen did not open.");' +
+    'for (let i = 0; i < 100; i++) { ShapePuzzle.restartLevel(); ShapePuzzle.showHint(); ShapePuzzle.rotateSelected(); }' +
+    'Game.startSlabMath();' +
+    'assert(document.getElementById("screen-slab").classList.contains("active"), "Slab Maths screen did not open.");' +
+    'for (let i = 0; i < 100; i++) { SlabMath.restartRound(); SlabMath.hint(); SlabMath.newRound(); }' +
+    'Math.random = () => 0.05;' +
     'Game.startLittleShop();' +
     'assert(document.getElementById("screen-little-shop").classList.contains("active"), "Little Shop screen did not open.");' +
     'assert(document.getElementById("little-shop-title")?.textContent === "Little Shop", "Little Shop title is missing.");' +
