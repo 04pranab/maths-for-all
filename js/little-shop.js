@@ -222,7 +222,6 @@ function makeBill() {
   additionalPaymentPaise = 0;
   settlementKind = payment.kind;
   settlementAmountPaise = Math.abs(billTotalPaise - paymentPaise);
-  changeAnswerCorrect = false;
   changePieces = [];
   phase = 'payment';
   renderBasket();
