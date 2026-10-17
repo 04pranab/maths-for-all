@@ -15,7 +15,6 @@ let billTotalPaise = 0;
 let paymentPaise = 0;
 let settlementKind = null;
 let settlementAmountPaise = 0;
-let changeAnswerCorrect = false;
 let changePieces = [];
 
 function byId(id) {
@@ -199,7 +198,6 @@ function startNewCustomer(increment = true) {
   paymentPaise = 0;
   settlementKind = null;
   settlementAmountPaise = 0;
-  changeAnswerCorrect = false;
   changePieces = [];
   const panel = byId('ls-checkout-panel');
   if (panel) panel.hidden = true;
@@ -280,7 +278,6 @@ function handleSubmit(event) {
       input?.select();
       return;
     }
-    changeAnswerCorrect = true;
     settlementKind = 'change';
     settlementAmountPaise = settlement.amountPaise;
     changePieces = [];
