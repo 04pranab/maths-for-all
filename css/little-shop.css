@@ -183,3 +183,12 @@
   #screen-little-shop .ls-customer-avatar { width: 34px; height: 34px; font-size: 1.2rem; }
   #screen-little-shop .ls-header > div { grid-template-columns: 1fr; }
 }
+
+
+/* Preserve comfortable touch targets while keeping the shelf compact. */
+#screen-little-shop .ls-add { min-height: 38px; }
+#screen-little-shop .ls-quantity button { width: 38px; height: 38px; }
+@media (max-width: 420px) {
+  #screen-little-shop .ls-add { min-height: 38px; }
+  #screen-little-shop .ls-quantity button { width: 38px; height: 38px; }
+}
