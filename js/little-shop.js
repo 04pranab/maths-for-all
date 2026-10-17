@@ -13,6 +13,7 @@ let customer = null;
 let phase = 'shopping';
 let billTotalPaise = 0;
 let paymentPaise = 0;
+let additionalPaymentPaise = 0;
 let settlementKind = null;
 let settlementAmountPaise = 0;
 let changePieces = [];
@@ -173,7 +174,7 @@ function renderPayment() {
       if (action) action.innerHTML = '<form class="ls-money-form" data-ls-form="change"><label for="ls-money-answer">How much change will you return?</label><div class="ls-money-input-row"><span>₹</span><input id="ls-money-answer" name="amount" inputmode="decimal" autocomplete="off" placeholder="Your answer" required><button type="submit" class="ls-primary">Check change</button></div></form>';
     }
   } else if (phase === 'ready') {
-    if (prompt) prompt.textContent = 'You asked for the remaining amount and the customer paid it. The bill is now settled.';
+    if (prompt) prompt.textContent = 'You asked for ' + formatMoney(additionalPaymentPaise) + ' more. The customer paid it. ' + formatMoney(paymentPaise) + ' + ' + formatMoney(additionalPaymentPaise) + ' = ' + formatMoney(billTotalPaise) + '. The bill is settled.';
     if (action) action.innerHTML = '<button type="button" class="ls-primary" data-ls-action="finish-sale">Complete sale</button>';
   } else if (phase === 'change-drawer') {
     if (prompt) prompt.textContent = 'Correct! Return ' + formatMoney(settlementAmountPaise) + ' to the customer using the notes and coins below.';
@@ -199,6 +200,7 @@ function startNewCustomer(increment = true) {
   phase = 'shopping';
   billTotalPaise = 0;
   paymentPaise = 0;
+  additionalPaymentPaise = 0;
   settlementKind = null;
   settlementAmountPaise = 0;
   changePieces = [];
@@ -217,6 +219,7 @@ function makeBill() {
   billTotalPaise = basketTotalPaise();
   const payment = chooseCustomerPayment(billTotalPaise);
   paymentPaise = payment.paidPaise;
+  additionalPaymentPaise = 0;
   settlementKind = payment.kind;
   settlementAmountPaise = Math.abs(billTotalPaise - paymentPaise);
   changeAnswerCorrect = false;
@@ -266,7 +269,7 @@ function handleSubmit(event) {
       input?.select();
       return;
     }
-    paymentPaise = billTotalPaise;
+    additionalPaymentPaise = answer;
     settlementKind = 'short';
     settlementAmountPaise = settlement.amountPaise;
     phase = 'ready';
@@ -393,6 +396,7 @@ function getState() {
     basket: [...basket.entries()].map(([id, quantity]) => ({ id, quantity })),
     billTotalPaise,
     paymentPaise,
+    additionalPaymentPaise,
     settlementKind,
     settlementAmountPaise,
     changeGivenPaise: changeGivenPaise()
