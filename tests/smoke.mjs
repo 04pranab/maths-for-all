@@ -847,7 +847,7 @@ async function main() {
     'assert(window.LittleShop.getState().customerNumber === lastCustomerNumber + 1 && window.LittleShop.getState().phase === "shopping", "Next customer did not start a fresh counter transaction.");' +
     'Game.goHome();' +
     'assert(document.getElementById("screen-menu").classList.contains("active"), "Home screen did not return after cashier flow.");' +
-    'assert(!window.LittleShop.isActive(), "Little Shop lifecycle was not stopped after leaving the screen.");'
+    'assert(!window.LittleShop.isActive(), "Little Shop lifecycle was not stopped after leaving the screen.");' +
     'return { quizQuestions: document.getElementById("quiz-q-number")?.textContent, sudokuCells: document.querySelectorAll("#sudoku-grid .sudoku-cell").length, shapeCells: document.querySelectorAll("#shape-board .sp-cell").length };' +
   '})()');
 
