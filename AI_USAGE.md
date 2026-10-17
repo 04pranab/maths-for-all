@@ -46,6 +46,7 @@ Where practical, changes are checked through:
 - research-consent and research-gateway checks;
 - responsive and large-text checks;
 - exhaustive Fraction Bakery layout checks across all 100 levels, including horizontal overflow and artwork containment;
+- Little Shop cashier tests for generated customer orders, exact basket matching, short/exact/overpayment settlement, and change-making;
 - Fraction Bakery mathematical-property checks for reduced/unreduced fraction relationships, unique ordering values, valid missing-count answers and distinct distractors, and correct equivalent-fraction representations across repeated randomized generation;
 - manual inspection;
 - physical testing of learner-facing game mechanics.
@@ -64,7 +65,7 @@ Game mechanics are reviewed for their actual learning purpose, not only for whet
 
 ## Planning assistance
 
-AI assistance was used to draft the staged Little Shop product specification and pull-request roadmap in `docs/testing/little-shop-pr-plan.md`. The proposed curriculum, implementation boundaries, and acceptance criteria require review by the project owner and relevant educator before implementation. This planning document is not evidence that the game has been implemented or physically validated.
+AI assistance was used to help implement the Little Shop cashier-counter prototype and its tests. The earlier 100-level plan was superseded by the project owner's request for a continuous fruit-shop transaction loop. The current code and automated tests do not establish educational effectiveness or physical acceptance; supervised learner and educator review remains necessary.
 
 ## Privacy and research responsibility
 
