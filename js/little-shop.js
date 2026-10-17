@@ -101,6 +101,11 @@ function renderBasket() {
   const clear = byId('ls-clear');
   if (clear) clear.disabled = phase !== 'shopping' || lines.length === 0;
   const bill = byId('ls-checkout-start');
+  if (phase === 'shopping') {
+    if (!lines.length) setStatus('Add the fruits the customer asked for to begin.');
+    else if (basketMatchesCustomer()) setStatus('The basket matches the order. You can make the bill.');
+    else setStatus('Keep adding, removing, or adjusting fruit until the basket matches the customer’s order.');
+  }
   if (bill) {
     bill.disabled = phase !== 'shopping' || !basketMatchesCustomer();
     bill.textContent = basketMatchesCustomer() ? 'Make the bill' : 'Match the customer’s order';
@@ -152,8 +157,6 @@ function renderPayment() {
   const feedback = byId('ls-checkout-feedback');
   if (feedback && phase === 'payment') feedback.textContent = '';
   if (action) action.innerHTML = '';
-  const complete = byId('ls-complete-sale');
-  if (complete) complete.hidden = true;
 
   if (phase === 'payment') {
     const settlement = getSettlement(billTotalPaise, paymentPaise);
