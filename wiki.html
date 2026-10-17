@@ -137,7 +137,7 @@
           </div>
         </section>
 
-        <section id="games" class="wiki-card" data-search="games arithmetic racing sudoku shape fitting slab maths shape architect">
+        <section id="games" class="wiki-card" data-search="games arithmetic racing sudoku shape fitting slab maths shape architect fraction bakery little shop">
           <span class="wiki-tag">03 · THE PLAYGROUND</span>
           <h2>The game map</h2>
           <p>
@@ -145,84 +145,33 @@
             The collection should feel varied rather than like the same worksheet wearing different clothes.
           </p>
 
-          <div class="game-list">
-            <article>
-              <b>🧮 Arithmetic Quiz</b>
-              <span>Number sense, arithmetic and everyday mathematical situations.</span>
-            </article>
-            <article>
-              <b>🏁 Math Racing</b>
-              <span>Arithmetic fluency, concentration and improving your own performance.</span>
-            </article>
-            <article>
-              <b>🔢 Sudoku Challenge</b>
-              <span>Logic, deduction, patterns and persistence.</span>
-            </article>
-            <article>
-              <b>🔷 Shape Fitting</b>
-              <span>Shape recognition, orientation and spatial reasoning.</span>
-            </article>
-            <article>
-              <b>🧺 Slab Maths</b>
-              <span>Subtraction, decomposition and planning.</span>
-            </article>
-            <article>
-              <b>🏗️ Shape Architect</b>
-              <span>Geometry, rotation, composition, planning and creativity.</span>
-            </article>
-            <article>
-              <b>🍎 Little Shop</b>
-              <span>An endless fruit-counter game for counting, bills, payments and giving change.</span>
-            </article>
+          <p class="game-map-hint">Choose any game to explore what it teaches, how it works and a small idea to try. You can switch between games without leaving this page.</p>
+          <div class="game-list game-picker" aria-label="Choose a game to learn about">
+            <button class="game-choice" type="button" data-game="arithmetic" aria-expanded="false"><b>🧮 Arithmetic Quiz</b><span>Number sense, arithmetic and everyday mathematical situations.</span><small>Explore game ↗</small></button>
+            <button class="game-choice" type="button" data-game="racing" aria-expanded="false"><b>🏁 Math Racing</b><span>Arithmetic fluency, concentration and improving your own performance.</span><small>Explore game ↗</small></button>
+            <button class="game-choice" type="button" data-game="sudoku" aria-expanded="false"><b>🔢 Sudoku Challenge</b><span>Logic, deduction, patterns and persistence.</span><small>Explore game ↗</small></button>
+            <button class="game-choice" type="button" data-game="shape-fitting" aria-expanded="false"><b>🔷 Shape Fitting</b><span>Shape recognition, orientation and spatial reasoning.</span><small>Explore game ↗</small></button>
+            <button class="game-choice" type="button" data-game="slab" aria-expanded="false"><b>🧺 Slab Maths</b><span>Subtraction, decomposition and planning.</span><small>Explore game ↗</small></button>
+            <button class="game-choice" type="button" data-game="architect" aria-expanded="false"><b>🏗️ Shape Architect</b><span>Geometry, rotation, composition, planning and creativity.</span><small>Explore game ↗</small></button>
+            <button class="game-choice" type="button" data-game="bakery" aria-expanded="false"><b>🥐 Fraction Bakery</b><span>Fractions, portions and visual part-whole thinking.</span><small>Explore game ↗</small></button>
+            <button class="game-choice" type="button" data-game="shop" aria-expanded="false"><b>🍎 Little Shop</b><span>An endless fruit-counter game for counting, bills, payments and giving change.</span><small>Explore game ↗</small></button>
           </div>
-        </section>
-
-        <section id="probability-ideas" class="wiki-card" data-search="probability vocabulary prediction trial outcome chance evidence pattern fair sample inference">
-          <span class="wiki-tag">04 · PROBABILITY</span>
-          <h2>Probability, in friendly language</h2>
-          <p>
-            The project introduces ordinary language before formal terminology.
-            Children should first understand the idea and then learn the mathematical word for it.
-          </p>
-
-          <div class="game-list">
-            <article>
-              <b>Prediction</b>
-              <span>What you think may happen.</span>
-            </article>
-            <article>
-              <b>Trial</b>
-              <span>One run of an experiment.</span>
-            </article>
-            <article>
-              <b>Outcome</b>
-              <span>What happened in that trial.</span>
-            </article>
-            <article>
-              <b>Chance</b>
-              <span>How likely something is to happen.</span>
-            </article>
-            <article>
-              <b>Evidence</b>
-              <span>What the experiment actually showed.</span>
-            </article>
-            <article>
-              <b>Pattern</b>
-              <span>Something that keeps appearing in the results.</span>
-            </article>
-            <article>
-              <b>Fair</b>
-              <span>The outcomes being compared have equal chances.</span>
-            </article>
-            <article>
-              <b>Inference</b>
-              <span>A conclusion made from clues or evidence.</span>
-            </article>
-          </div>
+          <section class="game-detail" id="game-detail" aria-live="polite" aria-atomic="true" hidden>
+            <div class="game-detail-top"><span class="wiki-tag">GAME GUIDE</span><button type="button" id="game-detail-close" class="game-detail-close">Close ×</button></div>
+            <h3 id="game-detail-title"></h3>
+            <p id="game-detail-summary"></p>
+            <div class="game-detail-grid">
+              <div><strong>What you do</strong><p id="game-detail-how"></p></div>
+              <div><strong>What you practise</strong><ul id="game-detail-skills"></ul></div>
+              <div><strong>Try asking</strong><p id="game-detail-prompt"></p></div>
+            </div>
+            <p class="wiki-note" id="game-detail-note"></p>
+            <a class="game-detail-link" href="index.html">Go to the games page ↗</a>
+          </section>
         </section>
 
         <section id="little-shop" class="wiki-card" data-search="little shop fruit counter cashier basket prices counting addition subtraction payment change child readable wide shelf">
-          <span class="wiki-tag">05 · EVERYDAY MATHEMATICS</span>
+          <span class="wiki-tag">04 · EVERYDAY MATHEMATICS</span>
           <h2>Little Shop: the fruit counter 🍎</h2>
           <p>
             Little Shop is an open-ended shop-counter activity. Customers keep arriving,
@@ -263,7 +212,7 @@
         </section>
 
         <section id="accessibility" class="wiki-card" data-search="accessibility inclusive disability large controls keyboard focus text motion screen readers mobile">
-          <span class="wiki-tag">06 · FOR EVERYONE</span>
+          <span class="wiki-tag">05 · FOR EVERYONE</span>
           <h2>Accessibility</h2>
           <p>
             Accessibility is part of the experience, not a final decoration pass.
@@ -292,7 +241,7 @@
         </section>
 
         <section id="feel" class="wiki-card" data-search="feel child confidence curiosity agency mistakes learning emotional experience">
-          <span class="wiki-tag">07 · THE CHILD'S EXPERIENCE</span>
+          <span class="wiki-tag">06 · THE CHILD'S EXPERIENCE</span>
           <h2>What we want children to feel</h2>
 
           <div class="wiki-points">
@@ -324,7 +273,7 @@
         </section>
 
         <section id="parents" class="wiki-card" data-search="parents teachers facilitators adults classroom teaching questions conversation group">
-          <span class="wiki-tag">08 · FOR ADULTS</span>
+          <span class="wiki-tag">07 · FOR ADULTS</span>
           <h2>For parents, teachers and facilitators</h2>
           <p>
             Adults do not need to turn every game into a formal lesson.
@@ -363,7 +312,7 @@
         </section>
 
         <section id="privacy" class="wiki-card" data-search="privacy trust research consent data children family account">
-          <span class="wiki-tag">09 · TRUST</span>
+          <span class="wiki-tag">08 · TRUST</span>
           <h2>Privacy and trust</h2>
           <p>
             Playing a game should not automatically mean participating in research.
@@ -391,7 +340,7 @@
         </section>
 
         <section id="responsibility" class="wiki-card" data-search="responsible AI artificial intelligence human review children education correctness privacy">
-          <span class="wiki-tag">10 · RESPONSIBILITY</span>
+          <span class="wiki-tag">09 · RESPONSIBILITY</span>
           <h2>Responsible use of AI</h2>
           <p>
             AI tools may help the people building Maths for All with ideas, writing,
@@ -407,7 +356,7 @@
         </section>
 
         <section id="creation" class="wiki-card" data-search="new games design creation process prototype play test accessibility quality human centred">
-          <span class="wiki-tag">11 · MAKING GAMES</span>
+          <span class="wiki-tag">10 · MAKING GAMES</span>
           <h2>How a new game is created</h2>
 
           <div class="steps">
@@ -430,7 +379,7 @@
         </section>
 
         <section id="roadmap" class="wiki-card" data-search="roadmap shape architect fraction bakery little shop number maze 2048">
-          <span class="wiki-tag">12 · ROADMAP</span>
+          <span class="wiki-tag">11 · ROADMAP</span>
           <h2>Where the project is going</h2>
 
           <div class="roadmap">
@@ -463,7 +412,7 @@
         </section>
 
         <section id="standard" class="wiki-card" data-search="finished complete done standard game quality mathematics controls accessibility physical testing">
-          <span class="wiki-tag">13 · WHEN A GAME IS FINISHED</span>
+          <span class="wiki-tag">12 · WHEN A GAME IS FINISHED</span>
           <h2>Our definition of finished</h2>
 
           <div class="pill-row">
@@ -481,7 +430,7 @@
         </section>
 
         <section id="promise" class="wiki-card" data-search="promise kinder learning world education mathematics belonging child">
-          <span class="wiki-tag">14 · OUR PROMISE</span>
+          <span class="wiki-tag">13 · OUR PROMISE</span>
           <h2>A small project with a big reason</h2>
           <p>
             Maths for All does not need to solve every problem in education.
@@ -506,6 +455,6 @@
     </footer>
   </main>
 
-  <script src="js/wiki.js?v=20261007-3"></script>
+  <script src="js/wiki.js?v=20261017-5"></script>
 </body>
 </html>

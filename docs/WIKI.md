@@ -251,6 +251,22 @@ The learner can choose levels freely rather than being forced through a fixed st
 
 ---
 
+### 🥐 Fraction Bakery
+
+**What happens:**  
+The learner works through bakery-style orders using visual portions to explore fractions and part-whole relationships.
+
+**Mathematical focus:**
+
+- equal parts and wholes,
+- fractions as quantities,
+- comparing and combining portions.
+
+**Human value:**  
+Careful observation and confidence through practice.
+
+---
+
 ## Little Shop: the fruit counter 🍎
 
 Little Shop is an open-ended shop-counter activity. There are no levels, level map, timed rounds, comparison quizzes, or final level. Customers keep arriving until the learner chooses to leave.
@@ -283,29 +299,7 @@ Ask the learner to explain how they found the amount still owed or the change. A
 
 ---
 
-## 6. Probability words
-
-The project prefers ordinary language first.
-
-| Word | What it means |
-|---|---|
-| **Prediction** | What you think may happen |
-| **Trial** | One run of an experiment |
-| **Outcome** | What happened in that trial |
-| **Chance** | How likely something is to happen |
-| **Evidence** | What the experiment actually showed |
-| **Pattern** | Something that appears repeatedly |
-| **Fair** | The possible outcomes have equal chances in the chosen comparison |
-| **Sample** | The collection of results we have observed |
-| **Inference** | A conclusion we make from clues or evidence |
-
-Formal mathematical vocabulary can be introduced gradually.
-
-The first job is to make the idea understandable.
-
----
-
-## 7. Accessibility
+## 6. Accessibility
 
 Accessibility is part of the experience.
 
@@ -344,7 +338,7 @@ It also makes the whole experience easier to understand.
 
 ---
 
-## 8. What we want children to feel
+## 7. What we want children to feel
 
 We want the games to encourage:
 
@@ -376,7 +370,7 @@ It is building understanding.
 
 ---
 
-## 9. What we do not want
+## 8. What we do not want
 
 Maths for All should not become:
 
@@ -394,7 +388,7 @@ But fun should help the mathematics breathe rather than bury it.
 
 ---
 
-## 10. For parents, teachers and facilitators
+## 9. For parents, teachers and facilitators
 
 Adults do not need to turn every game into a lesson.
 
@@ -416,7 +410,7 @@ A child's explanation can reveal much more than a correct button press.
 
 ---
 
-## 11. Using the games in a group
+## 10. Using the games in a group
 
 The activities can also become shared mathematical conversations.
 
@@ -440,7 +434,7 @@ The goal is to give mathematics something to talk about.
 
 ---
 
-## 12. Privacy and trust
+## 11. Privacy and trust
 
 Playing a game should not automatically mean participating in research.
 
@@ -456,7 +450,7 @@ Privacy information should remain understandable and accessible without requirin
 
 ---
 
-## 13. Responsible use of AI
+## 12. Responsible use of AI
 
 AI tools may help people working on Maths for All with:
 
@@ -483,7 +477,7 @@ The project's AI-use record explains the disclosure and responsibility principle
 
 ---
 
-## 14. How a new game should be created
+## 13. How a new game should be created
 
 Every new game follows the same human-centred path:
 
@@ -504,7 +498,7 @@ It is finished when the experience works.
 
 ---
 
-## 15. Current roadmap
+## 14. Current roadmap
 
 The current creative sequence is:
 
@@ -520,7 +514,7 @@ We want the first five new games to create a broad collection of mathematical ex
 
 ---
 
-## 16. What “finished” means
+## 15. What “finished” means
 
 A game should be considered ready when:
 
@@ -537,7 +531,7 @@ A game should be considered ready when:
 
 ---
 
-## 17. Our promise
+## 16. Our promise
 
 Maths for All is a small project.
 

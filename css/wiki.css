@@ -392,3 +392,45 @@
     border-bottom: 0;
   }
 }
+
+
+/* Interactive game guide */
+.game-map-hint { margin-bottom: 14px; }
+.game-picker .game-choice {
+  appearance: none; width: 100%; min-height: 132px; display: flex; flex-direction: column;
+  align-items: flex-start; gap: 8px; padding: 16px; border: 1px solid var(--border);
+  border-radius: 16px; background: var(--card); color: var(--ink); text-align: left;
+  font: inherit; cursor: pointer; transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+.game-picker .game-choice:hover, .game-picker .game-choice:focus-visible {
+  border-color: var(--indigo); box-shadow: 0 5px 18px rgba(45,55,120,.10); outline: none; transform: translateY(-2px);
+}
+.game-picker .game-choice[aria-expanded="true"] {
+  border-color: var(--indigo); background: var(--soft-indigo, #f0efff); box-shadow: inset 0 0 0 1px var(--indigo);
+}
+.game-picker .game-choice b { font-size: 1.04rem; }
+.game-picker .game-choice span { line-height: 1.45; }
+.game-picker .game-choice small { margin-top: auto; color: var(--indigo); font-weight: 700; }
+.game-detail {
+  margin-top: 18px; padding: clamp(16px,3vw,26px); border: 1px solid var(--border);
+  border-radius: 20px; background: var(--card); box-shadow: 0 8px 28px rgba(40,45,80,.08); scroll-margin-top: 100px;
+}
+.game-detail[hidden] { display: none; }
+.game-detail-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.game-detail-close {
+  border: 1px solid var(--border); border-radius: 999px; padding: 7px 12px; color: var(--ink);
+  background: transparent; cursor: pointer; font: inherit;
+}
+.game-detail h3 { font-size: clamp(1.35rem,3vw,1.8rem); margin: 12px 0 8px; }
+.game-detail-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 18px 0; }
+.game-detail-grid > div { padding: 14px; border-radius: 14px; background: var(--surface,rgba(120,120,150,.07)); }
+.game-detail-grid strong { display: block; margin-bottom: 8px; }
+.game-detail-grid p { margin: 0; }
+.game-detail-grid ul { margin: 0; padding-left: 20px; }
+.game-detail-grid li + li { margin-top: 4px; }
+.game-detail-link {
+  display: inline-flex; min-height: 44px; align-items: center; padding: 10px 15px;
+  border-radius: 12px; color: white !important; background: var(--indigo); font-weight: 700;
+}
+@media (max-width: 800px) { .game-detail-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .game-picker .game-choice { transition: none; } .game-picker .game-choice:hover { transform: none; } }
