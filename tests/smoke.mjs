@@ -742,6 +742,10 @@ async function main() {
       'Game.startLittleShop();' +
       'const screen = document.getElementById("screen-little-shop");' +
       'assert(document.querySelectorAll("#ls-catalogue .ls-item-card").length === 22, "Little Shop catalogue is incomplete at " + innerWidth + "px.");' +
+      'const sampleName = screen.querySelector(".ls-item-copy h3"); const samplePrice = screen.querySelector(".ls-item-copy p");' +
+      'assert(parseFloat(getComputedStyle(sampleName).fontSize) >= 16, "Little Shop fruit names must remain readable at " + innerWidth + "px.");' +
+      'assert(parseFloat(getComputedStyle(samplePrice).fontSize) >= 14, "Little Shop prices must remain readable at " + innerWidth + "px.");' +
+      'if (innerWidth === 1366) assert(screen.querySelector(".ls-shell").getBoundingClientRect().width >= 1300, "Little Shop counter should use the available desktop width.");' +
       'assert(!screen.querySelector("#ls-level-map"), "Old level map is still present at " + innerWidth + "px.");' +
       'assert(document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2, "Little Shop has horizontal overflow at " + innerWidth + "px.");' +
       'for (const node of screen.querySelectorAll(".ls-add,.ls-quantity button,.ls-primary,.ls-secondary,.ls-denomination,.ls-back")) {' +
