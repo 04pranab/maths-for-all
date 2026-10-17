@@ -63,7 +63,7 @@
 .ls-primary:disabled, .ls-secondary:disabled, .ls-add:disabled, .ls-quantity button:disabled, .ls-denomination:disabled { opacity: .48; cursor: not-allowed; }
 .ls-basket-actions > button { flex: 1 1 130px; }
 .ls-checkout-panel, .ls-sale-complete { margin-top: 20px; padding: 17px; border: 2px solid var(--border-strong); border-radius: 16px; background: var(--card-alt); }
-.ls-checkout-panel[hidden], .ls-sale-complete[hidden], .ls-cash-drawer[hidden], .ls-complete-sale[hidden] { display: none; }
+.ls-checkout-panel[hidden], .ls-sale-complete[hidden], .ls-cash-drawer[hidden] { display: none; }
 .ls-money-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 14px 0; }
 .ls-money-summary > div { display: grid; gap: 7px; padding: 12px; border: 1.5px solid var(--border-strong); border-radius: 12px; background: var(--card); }
 .ls-money-summary span { color: var(--muted); font-size: .9rem; }
@@ -86,7 +86,6 @@
 .ls-change-total strong { font-size: 1.25rem; }
 .ls-sale-complete { border-color: var(--leaf-deep); }
 .ls-sale-complete > p:not(.ls-eyebrow) { line-height: 1.55; }
-.ls-sale-complete .ls-primary { width: 100%; }
 .ls-note { margin: 16px 0 0; color: var(--muted); font-size: .88rem; line-height: 1.5; }
 #screen-little-shop button:focus-visible, #screen-little-shop input:focus-visible { outline: 3px solid var(--indigo-deep); outline-offset: 3px; }
 @media (max-width: 900px) {
