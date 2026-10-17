@@ -1,6 +1,6 @@
 import { formatMoney, parseMoney, totalBasket } from './little-shop-money.mjs';
 import {
-  CATALOGUE, chooseCustomerPayment, createCustomerOrder, getSettlement, orderMatches, orderTotalPaise
+  CATALOGUE, chooseCustomerPayment, createCustomerOrder, getSettlement, orderMatches
 } from './little-shop-catalogue.mjs';
 
 const itemsById = new Map(CATALOGUE.map(item => [item.id, item]));
