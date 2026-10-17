@@ -9,6 +9,8 @@
 
 This document records the use of AI-assisted development tools in Maths for All. It exists for transparency and does not transfer responsibility for the project from the human author to an AI system.
 
+The repository documents the engineering, but the work itself is intended as a small offering of gratitude, love and seva at the Lotus Feet of Bhagawan Sri Sathya Sai Baba. Its educational thinking is inspired by Bhagawan’s teachings and informed by the public materials of Sri Sathya Sai Vidya Vahini (SSSVV), especially its inclusive-education work. Maths for All remains independent; this record does not imply SSSVV or Sri Sathya Sai Central Trust involvement, review or endorsement.
+
 ## Tools used
 
 The project has used:
