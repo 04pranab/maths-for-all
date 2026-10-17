@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Little Shop
+- Replaced the planned 100-level quiz and level map with an open-ended fruit-counter cashier loop.
+- Added 22 fruit choices, customer-specific item and quantity requests, basket matching before billing, and simulated short/exact/overpayment scenarios.
+- Added a subtraction prompt for asking a customer for the amount still owed, plus change calculation and a simulated notes-and-coins drawer.
+- Added a next-customer loop with no level progression, timed rounds, real payment, saved learner profile, or backend dependency.
+- Added deterministic property checks for 1,000 generated customer orders and browser coverage for all payment outcomes and three viewport sizes. Automated checks do not replace physical learner review.
+
 ### Fraction Bakery
 - Expanded the game from 72 to 100 levels across eight stages: Slice & Serve, Count the Order, Bigger Bite, Equal Recipe, Mix the Batter, Bake-off, Chef's Counter, and Grand Bake.
 - Added more varied challenge types, including simplification, ordering three fractions, missing-count puzzles, differences, and mixed-number conversion.
