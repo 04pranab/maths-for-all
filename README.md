@@ -8,7 +8,7 @@ Maths for All is designed around a learner-first loop: **try → understand → 
 
 **v2.0.4 · Geometry & Physical Learning Hardening**
 
-The v2.0.4 release remains the stable release line. Fraction Bakery's automated correctness checks have passed; supervised physical review is still pending. The current development focus is the Little Shop cashier-counter prototype, a continuous fruit-shop activity with no levels or timer. Probability Machine remains implemented, but its card is temporarily hidden from the visible game menu during Fraction Bakery review.
+The v2.0.4 release remains the stable release line. The active development focus is Fraction Bakery: a harder, randomized 100-level game with eight stages, realistic inline SVG dishes, and an automated browser layout audit that renders every level. Probability Machine remains implemented, but its card is temporarily hidden from the visible game menu during Fraction Bakery review.
 
 Authentication and account controls remain temporarily disabled while physical game mechanics are being tested.
 
@@ -20,7 +20,6 @@ Authentication and account controls remain temporarily disabled while physical g
 - 🔷 Shape Fitting
 - 🏗️ Shape Architect with 100 validated, timed picture-building levels
 - 🥐 Fraction Bakery with 100 randomized levels across eight stages
-- 🍎 Little Shop, an infinite fruit-counter simulation for orders, bills, underpayment, and change
 - 🧺 Slab Maths
 - 📱 Responsive desktop and mobile layouts
 - ⌨️ Keyboard-friendly controls and visible focus states
@@ -47,18 +46,6 @@ The current implementation provides:
 The browser audit checks horizontal page overflow, workbench boundaries, challenge artwork and controls, and order-dish containment at every level. This is automated layout regression coverage, not a claim that every device or assistive technology has been physically tested.
 
 Probability Machine remains in the codebase and is temporarily hidden from the visible game menu while Fraction Bakery is under review.
-
-## Little Shop
-
-Little Shop is designed as a continuous cashier counter rather than a level-based quiz. A customer asks for fruit, the learner fills the basket, and the bill is enabled only when the basket matches the request. The customer then pays too little, the exact amount, or extra money.
-
-- Ask for the remaining amount when a customer has not paid enough.
-- Calculate change when the customer pays extra, then return it using simulated notes and coins.
-- Finish the sale and welcome the next customer. There is no final level.
-- Choose from 22 fruit items; all currency calculations use integer paise internally.
-- No real payments, account, progress profile, or learner-identifying data are involved.
-
-The browser suite checks all three payment paths and desktop, tablet, and mobile layouts. Automated verification is not a substitute for supervised learner and educator review.
 
 ## Shape Architect
 
@@ -146,7 +133,9 @@ The repository includes a headless Chromium smoke/stress suite covering:
 - repeated gameplay transitions;
 - browser runtime and console errors.
 
-The suite is a regression tool, not a substitute for real assistive-technology testing or physical learner testing. Fraction Bakery now has a dedicated browser audit that renders all 100 levels and checks for horizontal overflow, workbench escape, and artwork escaping order cards.
+Run the focused arithmetic checks with `npm run test:little-shop-money` and `npm run test:little-shop-cashier`; run the full headless Chromium and backend regression suite with `npm run test:smoke`. Little Shop's browser audit exercises underpayment, exact payment, overpayment, change return, the next-customer loop, and desktop/tablet/mobile layouts. Fraction Bakery separately has a browser audit that renders all 100 levels and checks for horizontal overflow, workbench escape, and artwork escaping order cards.
+
+Automated tests are regression tools, not substitutes for real assistive-technology testing or physical learner/educator review.
 
 ## Design principles
 
