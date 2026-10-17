@@ -1,26 +1,22 @@
+import { changeDue, formatMoney, parseMoney, totalBasket } from './little-shop-money.mjs';
 import {
-  changeDue, formatMoney, totalBasket
-} from './little-shop-money.mjs';
-import { CATALOGUE, generateLevel, validateLevel } from './little-shop-levels.mjs';
+  CATALOGUE, chooseCustomerPayment, createCustomerOrder, getSettlement, orderMatches, orderTotalPaise
+} from './little-shop-catalogue.mjs';
 
-
-const PROGRESS_KEY = 'maths-for-all.little-shop.progress.v1';
-const PROGRESS_VERSION = 1;
 const itemsById = new Map(CATALOGUE.map(item => [item.id, item]));
+const DENOMINATIONS = [5000, 2000, 1000, 500, 200, 100];
 const basket = new Map();
 let active = false;
 let controller = null;
-let checkoutMode = null;
-let checkoutAnswered = false;
-let checkoutCorrect = null;
-let checkoutHintCount = 0;
-let currentLevel = 1;
-let currentTask = null;
-let levelAnswered = false;
-let levelHintIndex = 0;
-let levelExplanationVisible = false;
-const completedLevels = new Set();
-let storageWarningShown = false;
+let customerNumber = 1;
+let customer = null;
+let phase = 'shopping';
+let billTotalPaise = 0;
+let paymentPaise = 0;
+let settlementKind = null;
+let settlementAmountPaise = 0;
+let changeAnswerCorrect = false;
+let changePieces = [];
 
 function byId(id) {
   return document.getElementById(id);
@@ -39,32 +35,50 @@ function basketLines() {
   }));
 }
 
+function basketTotalPaise() {
+  return totalBasket(basketLines());
+}
+
+function basketMatchesCustomer() {
+  return customer && orderMatches(customer.items, basket);
+}
+
+function renderCustomer() {
+  if (!customer) return;
+  const number = byId('ls-customer-number');
+  const request = byId('ls-customer-request');
+  const order = byId('ls-customer-order');
+  const heading = byId('ls-customer-heading');
+  if (number) number.textContent = 'CUSTOMER ' + customerNumber;
+  if (heading) heading.textContent = customer.name + ' is at the counter';
+  if (request) request.textContent = '“Hello! Could I have these fruits, please?”';
+  if (order) {
+    order.innerHTML = customer.items.map(line => {
+      const item = itemsById.get(line.id);
+      return '<li><span aria-hidden="true">' + item.icon + '</span> <strong>' + item.name + '</strong> <span>× ' + line.quantity + ' ' + (line.quantity === 1 ? item.unit : unitForQuantity(item)) + '</span></li>';
+    }).join('');
+  }
+}
+
+function unitForQuantity(item) {
+  return item.unit === 'each' ? 'pieces' : item.unit === 'bunch' ? 'bunches' : item.unit === 'punnet' ? 'punnets' : 'portions';
+}
+
 function renderCatalogue() {
   const root = byId('ls-catalogue');
   if (!root) return;
   root.innerHTML = CATALOGUE.map(item => {
     const quantity = basket.get(item.id) || 0;
-    return '<article class="ls-item-card">' +
+    const requested = customer?.items.find(line => line.id === item.id)?.quantity || 0;
+    return '<article class="ls-item-card' + (requested ? ' is-requested' : '') + '">' +
       '<span class="ls-item-icon" aria-hidden="true">' + item.icon + '</span>' +
-      '<div class="ls-item-copy"><h3>' + item.name + '</h3><p>' + item.description + '</p>' +
-      '<strong class="ls-price">' + formatMoney(item.pricePaise) + '</strong></div>' +
-      '<button type="button" class="ls-add" data-ls-action="add" data-item="' + item.id + '" aria-label="Add ' + item.name + ' to basket">Add</button>' +
+      '<div class="ls-item-copy"><h3>' + item.name + '</h3><p>' + formatMoney(item.pricePaise) + ' / ' + item.unit + '</p>' +
+      (requested ? '<span class="ls-requested-badge">Customer asked for ' + requested + '</span>' : '') +
+      '</div>' +
+      '<button type="button" class="ls-add" data-ls-action="add" data-item="' + item.id + '" aria-label="Add one ' + item.name + '"' + (phase !== 'shopping' ? ' disabled' : '') + '>Add 1</button>' +
       (quantity ? '<span class="ls-on-shelf">' + quantity + ' in basket</span>' : '') +
       '</article>';
   }).join('');
-}
-
-function resetCheckout() {
-  checkoutMode = null;
-  checkoutAnswered = false;
-  checkoutCorrect = null;
-  checkoutHintCount = 0;
-  const panel = byId('ls-checkout-panel');
-  if (panel) panel.hidden = true;
-  const content = byId('ls-checkout-content');
-  if (content) content.innerHTML = '';
-  const feedback = byId('ls-checkout-feedback');
-  if (feedback) feedback.textContent = '';
 }
 
 function renderBasket() {
@@ -74,263 +88,275 @@ function renderBasket() {
   const lines = basketLines();
   root.innerHTML = lines.length ? lines.map(({ item, quantity, pricePaise }) =>
     '<article class="ls-basket-line" data-basket-item="' + item.id + '">' +
-      '<div class="ls-basket-line-main"><strong>' + item.name + '</strong><span>' + formatMoney(pricePaise) + ' each</span></div>' +
+      '<div class="ls-basket-line-main"><strong>' + item.name + '</strong><span>' + formatMoney(pricePaise) + ' / ' + item.unit + '</span></div>' +
       '<div class="ls-quantity" aria-label="' + item.name + ' quantity">' +
-        '<button type="button" data-ls-action="decrease" data-item="' + item.id + '" aria-label="Remove one ' + item.name + '">−</button>' +
-        '<output aria-label="Quantity">' + quantity + '</output>' +
-        '<button type="button" data-ls-action="increase" data-item="' + item.id + '" aria-label="Add one ' + item.name + '">+</button>' +
+        '<button type="button" data-ls-action="decrease" data-item="' + item.id + '" aria-label="Remove one ' + item.name + '"' + (phase !== 'shopping' ? ' disabled' : '') + '>−</button>' +
+        '<output aria-label="' + item.name + ' quantity">' + quantity + '</output>' +
+        '<button type="button" data-ls-action="increase" data-item="' + item.id + '" aria-label="Add one ' + item.name + '"' + (phase !== 'shopping' ? ' disabled' : '') + '>+</button>' +
       '</div>' +
       '<strong class="ls-line-total">' + formatMoney(pricePaise * quantity) + '</strong>' +
-      '<button type="button" class="ls-remove" data-ls-action="remove" data-item="' + item.id + '">Remove</button>' +
+      '<button type="button" class="ls-remove" data-ls-action="remove" data-item="' + item.id + '"' + (phase !== 'shopping' ? ' disabled' : '') + '>Remove</button>' +
     '</article>'
-  ).join('') : '<p class="ls-empty" id="ls-empty">Your basket is empty. Add an item from the shelf to begin.</p>';
-  total.textContent = formatMoney(totalBasket(lines));
-  renderCatalogue();
+  ).join('') : '<p class="ls-empty" id="ls-empty">The basket is empty. Add the fruits your customer asked for.</p>';
+  total.textContent = formatMoney(basketTotalPaise());
   const clear = byId('ls-clear');
-  if (clear) clear.disabled = lines.length === 0;
-  const checkout = byId('ls-checkout-start');
-  if (checkout) checkout.disabled = lines.length === 0;
+  if (clear) clear.disabled = phase !== 'shopping' || lines.length === 0;
+  const bill = byId('ls-checkout-start');
+  if (bill) {
+    bill.disabled = phase !== 'shopping' || !basketMatchesCustomer();
+    bill.textContent = basketMatchesCustomer() ? 'Make the bill' : 'Match the customer’s order';
+  }
+  renderCatalogue();
 }
 
-function renderLevelMap() {
-  const root = byId('ls-level-map');
-  if (!root) return;
-  const focusedLevel = document.activeElement?.dataset?.lsAction === 'level' ? document.activeElement.dataset.level : null;
-  root.innerHTML = Array.from({ length: 100 }, (_, index) => {
-    const level = index + 1;
-    const selected = level === currentLevel;
-    const complete = completedLevels.has(level);
-    return '<button type="button" class="ls-level-button' + (selected ? ' is-current' : '') + (complete ? ' is-complete' : '') + '" data-ls-action="level" data-level="' + level + '" aria-label="Level ' + level + (complete ? ', completed' : '') + '"' + (selected ? ' aria-current="step" aria-pressed="true"' : ' aria-pressed="false"') + '>' + level + '</button>';
-  }).join('');
-  if (focusedLevel) {
-    const replacement = [...root.querySelectorAll('.ls-level-button')].find(button => button.dataset.level === focusedLevel);
-    replacement?.focus({ preventScroll: true });
+function renderChangeDrawer() {
+  const drawer = byId('ls-cash-drawer');
+  if (!drawer) return;
+  drawer.hidden = phase !== 'change-drawer';
+  const root = byId('ls-change-denominations');
+  if (root) {
+    root.innerHTML = DENOMINATIONS.map(value => {
+      const remaining = settlementAmountPaise - changeGivenPaise();
+      return '<button type="button" class="ls-denomination" data-ls-action="give-change" data-value="' + value + '"' +
+        (phase !== 'change-drawer' || value > remaining ? ' disabled' : '') + '>' + formatMoney(value) + '</button>';
+    }).join('');
+  }
+  const total = byId('ls-change-given');
+  if (total) total.textContent = formatMoney(changeGivenPaise()) + ' / ' + formatMoney(settlementAmountPaise);
+  const finish = drawer.querySelector('[data-ls-action="finish-sale"]');
+  if (finish) finish.disabled = changeGivenPaise() !== settlementAmountPaise;
+  const feedback = byId('ls-change-feedback');
+  if (feedback) {
+    feedback.textContent = changeGivenPaise() === settlementAmountPaise
+      ? 'That is the exact change. Finish the sale when you are ready.'
+      : changeGivenPaise() > settlementAmountPaise
+        ? 'That is too much change. Undo a note or coin and try again.'
+        : 'Choose notes and coins until the amount matches the change due.';
   }
 }
 
-function renderChallenge() {
-  const stage = byId('ls-level-stage');
-  const prompt = byId('ls-level-prompt');
-  const choicesRoot = byId('ls-level-choices');
-  const feedback = byId('ls-level-feedback');
-  const next = byId('screen-little-shop')?.querySelector('[data-ls-action="next-level"]');
-  if (!currentTask || !choicesRoot || !prompt) return;
-  if (stage) stage.textContent = 'Level ' + currentLevel + ' of 100 · ' + currentTask.stageTitle;
-  prompt.textContent = currentTask.prompt;
-  choicesRoot.innerHTML = currentTask.choices.map(choice =>
-    '<button type="button" class="ls-level-choice" data-ls-action="level-answer" data-answer="' + choice.value + '"' + (levelAnswered ? ' disabled' : '') + '>' + choice.label + '</button>'
-  ).join('');
-  if (feedback && levelHintIndex === 0 && !levelAnswered) feedback.textContent = '';
-  const explanation = byId('ls-level-explanation');
-  const explanationToggle = byId('ls-level-explanation-toggle');
-  if (explanation) {
-    explanation.textContent = currentTask.explanation;
-    explanation.hidden = !levelAnswered || !levelExplanationVisible;
-  }
-  if (explanationToggle) {
-    explanationToggle.hidden = !levelAnswered;
-    explanationToggle.textContent = levelExplanationVisible ? 'Hide explanation' : 'Show explanation';
-  }
-  if (next) {
-    next.disabled = !levelAnswered || currentLevel === 100;
-    next.textContent = currentLevel === 100 ? 'You reached level 100' : 'Next level →';
-  }
-  renderLevelMap();
+function changeGivenPaise() {
+  return changePieces.reduce((sum, value) => sum + value, 0);
 }
 
-function loadProgress() {
-  currentLevel = 1;
-  completedLevels.clear();
-  let raw;
-  try {
-    raw = window.localStorage.getItem(PROGRESS_KEY);
-  } catch {
-    return 'Saved progress is unavailable in this browser. You can still play.';
-  }
-  if (!raw) return '';
-  try {
-    const data = JSON.parse(raw);
-    if (data?.version !== PROGRESS_VERSION || !Number.isInteger(data.currentLevel) || data.currentLevel < 1 || data.currentLevel > 100 || !Array.isArray(data.completedLevels) || data.completedLevels.length > 100) {
-      throw new TypeError('Saved progress has an unsupported shape.');
+function renderPayment() {
+  const panel = byId('ls-checkout-panel');
+  const sale = byId('ls-sale-complete');
+  if (panel) panel.hidden = !['payment', 'change-drawer', 'ready'].includes(phase);
+  if (sale) sale.hidden = phase !== 'done';
+  const bill = byId('ls-bill-total');
+  const paid = byId('ls-customer-payment');
+  if (bill) bill.textContent = formatMoney(billTotalPaise);
+  if (paid) paid.textContent = formatMoney(paymentPaise);
+  const prompt = byId('ls-payment-prompt');
+  const action = byId('ls-payment-action');
+  const feedback = byId('ls-checkout-feedback');
+  if (feedback && phase === 'payment') feedback.textContent = '';
+  if (action) action.innerHTML = '';
+  const complete = byId('ls-complete-sale');
+  if (complete) complete.hidden = true;
+
+  if (phase === 'payment') {
+    const settlement = getSettlement(billTotalPaise, paymentPaise);
+    settlementKind = settlement.kind;
+    settlementAmountPaise = settlement.amountPaise;
+    if (settlement.kind === 'short') {
+      if (prompt) prompt.textContent = 'The bill is ' + formatMoney(billTotalPaise) + ', but the customer has given ' + formatMoney(paymentPaise) + '. Ask them for the amount still owed.';
+      if (action) action.innerHTML = '<button type="button" class="ls-primary" data-ls-action="ask-more">Ask how much more?</button>';
+    } else if (settlement.kind === 'exact') {
+      if (prompt) prompt.textContent = 'The customer has paid the exact bill. No change is needed.';
+      if (action) action.innerHTML = '<button type="button" class="ls-primary" data-ls-action="finish-sale">Complete sale</button>';
+    } else {
+      if (prompt) prompt.textContent = 'The bill is ' + formatMoney(billTotalPaise) + '. The customer has given ' + formatMoney(paymentPaise) + '. Work out how much change to return.';
+      if (action) action.innerHTML = '<form class="ls-money-form" data-ls-form="change"><label for="ls-money-answer">How much change will you return?</label><div class="ls-money-input-row"><span>₹</span><input id="ls-money-answer" name="amount" inputmode="decimal" autocomplete="off" placeholder="Your answer" required><button type="submit" class="ls-primary">Check change</button></div></form>';
     }
-    const levels = data.completedLevels;
-    if (levels.some(level => !Number.isInteger(level) || level < 1 || level > 100) || new Set(levels).size !== levels.length) {
-      throw new TypeError('Saved progress contains invalid level numbers.');
+  } else if (phase === 'ready') {
+    if (prompt) prompt.textContent = 'You asked for the remaining amount and the customer paid it. The bill is now settled.';
+    if (action) action.innerHTML = '<button type="button" class="ls-primary" data-ls-action="finish-sale">Complete sale</button>';
+  } else if (phase === 'change-drawer') {
+    if (prompt) prompt.textContent = 'Correct! Return ' + formatMoney(settlementAmountPaise) + ' to the customer using the notes and coins below.';
+  }
+
+  renderChangeDrawer();
+  if (phase === 'done') {
+    if (sale) {
+      const summary = byId('ls-sale-summary');
+      if (summary) {
+        const returned = settlementKind === 'change' ? ' You returned ' + formatMoney(settlementAmountPaise) + ' in change.' : '';
+        const asked = settlementKind === 'short' ? ' The customer paid the remaining amount you asked for.' : '';
+        summary.textContent = 'Customer ' + customerNumber + ': bill ' + formatMoney(billTotalPaise) + ', paid ' + formatMoney(billTotalPaise + (settlementKind === 'change' ? settlementAmountPaise : 0)) + '.' + returned + asked;
+      }
     }
-    currentLevel = data.currentLevel;
-    levels.forEach(level => completedLevels.add(level));
-    return '';
-  } catch {
-    currentLevel = 1;
-    completedLevels.clear();
-    return 'Saved progress was unreadable, so a fresh start is ready.';
   }
 }
 
-function saveProgress() {
+function startNewCustomer(increment = true) {
+  if (increment) customerNumber += 1;
+  customer = createCustomerOrder();
+  basket.clear();
+  phase = 'shopping';
+  billTotalPaise = 0;
+  paymentPaise = 0;
+  settlementKind = null;
+  settlementAmountPaise = 0;
+  changeAnswerCorrect = false;
+  changePieces = [];
+  const panel = byId('ls-checkout-panel');
+  if (panel) panel.hidden = true;
+  const sale = byId('ls-sale-complete');
+  if (sale) sale.hidden = true;
+  renderCustomer();
+  renderBasket();
+  renderPayment();
+  setStatus('Customer ' + customerNumber + ' is waiting. Add exactly the fruits requested.');
+}
+
+function makeBill() {
+  if (phase !== 'shopping' || !basketMatchesCustomer()) return;
+  billTotalPaise = basketTotalPaise();
+  const payment = chooseCustomerPayment(billTotalPaise);
+  paymentPaise = payment.paidPaise;
+  settlementKind = payment.kind;
+  settlementAmountPaise = Math.abs(billTotalPaise - paymentPaise);
+  changeAnswerCorrect = false;
+  changePieces = [];
+  phase = 'payment';
+  renderBasket();
+  renderPayment();
+  setStatus('The basket is billed. Check the money the customer handed over.');
+  byId('ls-payment-prompt')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function finishSale() {
+  if (phase === 'payment' && settlementKind === 'exact') {
+    phase = 'done';
+  } else if (phase === 'ready' && settlementKind === 'short') {
+    phase = 'done';
+  } else if (phase === 'change-drawer' && changeGivenPaise() === settlementAmountPaise) {
+    phase = 'done';
+  } else {
+    return;
+  }
+  renderBasket();
+  renderPayment();
+  setStatus('Sale complete. The counter is ready for the next customer.');
+  byId('ls-sale-complete')?.querySelector('[data-ls-action="next-customer"]')?.focus();
+}
+
+function handleSubmit(event) {
+  const form = event.target.closest('[data-ls-form]');
+  if (!form || !byId('screen-little-shop')?.contains(form)) return;
+  event.preventDefault();
+  const feedback = byId('ls-checkout-feedback');
+  const input = form.querySelector('input[name="amount"]');
+  let answer;
   try {
-    window.localStorage.setItem(PROGRESS_KEY, JSON.stringify({
-      version: PROGRESS_VERSION,
-      currentLevel,
-      completedLevels: [...completedLevels].sort((a, b) => a - b)
-    }));
-    return true;
+    answer = parseMoney(input?.value || '');
   } catch {
-    setStatus('Progress cannot be saved on this device right now, but you can keep playing.');
-    return false;
+    if (feedback) feedback.textContent = 'Enter a valid money amount, such as 12 or 12.50.';
+    input?.focus();
+    return;
   }
-}
-
-function selectLevel(level) {
-  currentLevel = level;
-  currentTask = generateLevel(level, level);
-  if (!validateLevel(currentTask)) throw new Error('Invalid Little Shop task generated for level ' + level + '.');
-  levelAnswered = false;
-  levelHintIndex = 0;
-  levelExplanationVisible = false;
-  renderChallenge();
-  saveProgress();
+  if (phase !== 'payment') return;
+  const settlement = getSettlement(billTotalPaise, paymentPaise);
+  if (settlement.kind === 'short') {
+    if (answer !== settlement.amountPaise) {
+      if (feedback) feedback.textContent = 'Not quite. Work out the difference between the bill and the money already paid, then try again.';
+      input?.select();
+      return;
+    }
+    paymentPaise = billTotalPaise;
+    settlementKind = 'short';
+    settlementAmountPaise = settlement.amountPaise;
+    phase = 'ready';
+    if (feedback) feedback.textContent = 'Correct. You ask for ' + formatMoney(answer) + ' more, and the customer pays it.';
+    renderPayment();
+    if (feedback) feedback.textContent = 'Correct. You ask for ' + formatMoney(answer) + ' more, and the customer pays it.';
+    return;
+  }
+  if (settlement.kind === 'change') {
+    if (answer !== settlement.amountPaise) {
+      if (feedback) feedback.textContent = 'Not quite. Subtract the bill from the amount the customer gave, then try again.';
+      input?.select();
+      return;
+    }
+    changeAnswerCorrect = true;
+    settlementKind = 'change';
+    settlementAmountPaise = settlement.amountPaise;
+    changePieces = [];
+    phase = 'change-drawer';
+    renderPayment();
+    if (feedback) feedback.textContent = 'Correct! Now count out the change using the notes and coins.';
+  }
 }
 
 function handleClick(event) {
   const button = event.target.closest('[data-ls-action]');
   if (!button || !byId('screen-little-shop')?.contains(button)) return;
   const action = button.dataset.lsAction;
-  if (action === 'reset-progress') {
-    currentLevel = 1;
-    completedLevels.clear();
-    levelAnswered = false;
-    levelHintIndex = 0;
-    levelExplanationVisible = false;
-    selectLevel(1);
-    const saved = saveProgress();
-    setStatus(saved ? 'Progress reset. All 100 levels remain available.' : 'Progress reset for this session. Browser storage is unavailable.');
+  if (action === 'next-customer') {
+    if (phase === 'done') startNewCustomer(true);
     return;
   }
-  if (action === 'level') {
-    const level = Number(button.dataset.level);
-    if (Number.isInteger(level) && level >= 1 && level <= 100) selectLevel(level);
+  if (action === 'bill-customer') {
+    makeBill();
     return;
   }
-  if (action === 'level-hint') {
-    const feedback = byId('ls-level-feedback');
-    const hints = currentTask?.hintSteps?.length ? currentTask.hintSteps : [currentTask?.hint || 'Look at the amounts and think about what the question asks.'];
-    const index = Math.min(levelHintIndex, hints.length - 1);
-    if (feedback) feedback.textContent = 'Hint ' + (index + 1) + ' of ' + hints.length + ': ' + hints[index];
-    levelHintIndex = Math.min(levelHintIndex + 1, hints.length - 1);
+  if (action === 'ask-more') {
+    const actionRoot = byId('ls-payment-action');
+    if (actionRoot) actionRoot.innerHTML = '<form class="ls-money-form" data-ls-form="more"><label for="ls-money-answer">How much more should the customer pay?</label><div class="ls-money-input-row"><span>₹</span><input id="ls-money-answer" name="amount" inputmode="decimal" autocomplete="off" placeholder="Your answer" required><button type="submit" class="ls-primary">Ask for this amount</button></div></form>';
+    byId('ls-money-answer')?.focus();
     return;
   }
-  if (action === 'level-explanation') {
-    if (!levelAnswered) return;
-    levelExplanationVisible = !levelExplanationVisible;
-    const explanation = byId('ls-level-explanation');
-    const toggle = byId('ls-level-explanation-toggle');
-    if (explanation) explanation.hidden = !levelExplanationVisible;
-    if (toggle) toggle.textContent = levelExplanationVisible ? 'Hide explanation' : 'Show explanation';
+  if (action === 'finish-sale') {
+    finishSale();
     return;
   }
-  if (action === 'next-level') {
-    if (levelAnswered && currentLevel < 100) selectLevel(currentLevel + 1);
+  if (action === 'give-change') {
+    if (phase !== 'change-drawer') return;
+    const value = Number(button.dataset.value);
+    if (!DENOMINATIONS.includes(value) || changeGivenPaise() + value > settlementAmountPaise) return;
+    changePieces.push(value);
+    renderChangeDrawer();
     return;
   }
-  if (action === 'level-answer') {
-    if (!currentTask || levelAnswered) return;
-    const answer = button.dataset.answer;
-    const feedback = byId('ls-level-feedback');
-    if (String(answer) === String(currentTask.answer)) {
-      levelAnswered = true;
-      completedLevels.add(currentLevel);
-      saveProgress();
-      if (feedback) feedback.textContent = 'Correct. You can read the explanation below whenever you are ready.';
-      levelExplanationVisible = false;
-      const explanation = byId('ls-level-explanation');
-      const explanationToggle = byId('ls-level-explanation-toggle');
-      if (explanation) { explanation.textContent = currentTask.explanation; explanation.hidden = true; }
-      if (explanationToggle) { explanationToggle.hidden = false; explanationToggle.textContent = 'Show explanation'; }
-      byId('ls-level-choices')?.querySelectorAll('button').forEach(choice => { choice.disabled = true; });
-      renderLevelMap();
-      const next = byId('screen-little-shop')?.querySelector('[data-ls-action="next-level"]');
-      if (next) next.disabled = currentLevel === 100;
-      if (next && !next.disabled) next.focus();
-      else explanationToggle?.focus();
-    } else if (feedback) {
-      feedback.textContent = 'Not quite. Try again, or use a hint. The answer is not revealed yet.';
-    }
+  if (action === 'undo-change') {
+    if (phase !== 'change-drawer') return;
+    changePieces.pop();
+    renderChangeDrawer();
     return;
   }
-  if (action === 'checkout') {
-    if (!basket.size) return;
-    const panel = byId('ls-checkout-panel');
-    if (panel) panel.hidden = false;
-    checkoutMode = null;
-    checkoutAnswered = false;
-    checkoutCorrect = null;
-    checkoutHintCount = 0;
-    renderCheckout();
+  if (action === 'clear-change') {
+    if (phase !== 'change-drawer') return;
+    changePieces = [];
+    renderChangeDrawer();
     return;
   }
-  if (action === 'exact' || action === 'change') {
-    checkoutMode = action;
-    checkoutAnswered = false;
-    checkoutCorrect = null;
-    checkoutHintCount = 0;
-    renderCheckout();
+  if (action === 'clear-basket') {
+    if (phase !== 'shopping') return;
+    basket.clear();
+    renderBasket();
+    setStatus('Basket emptied. Add the fruits the customer asked for.');
     return;
   }
-  if (action === 'checkout-again') {
-    checkoutMode = null;
-    checkoutAnswered = false;
-    checkoutCorrect = null;
-    checkoutHintCount = 0;
-    renderCheckout();
-    return;
-  }
-  if (action === 'hint') {
-    const feedback = byId('ls-checkout-feedback');
-    const hints = checkoutMode === 'change'
-      ? ['change = payment − basket total.', 'Count from the basket total up to the amount paid, or subtract the total from the payment.']
-      : ['Exact payment matches the basket total, with no extra amount.', 'Compare each choice with the basket total.'];
-    const index = Math.min(checkoutHintCount, hints.length - 1);
-    if (feedback) feedback.textContent = 'Hint ' + (index + 1) + ' of ' + hints.length + ': ' + hints[index];
-    checkoutHintCount = Math.min(checkoutHintCount + 1, hints.length - 1);
-    return;
-  }
-  if (action === 'answer') {
-    if (checkoutAnswered || checkoutCorrect === null) return;
-    const answer = Number(button.dataset.answer);
-    const feedback = byId('ls-checkout-feedback');
-    if (answer === checkoutCorrect) {
-      checkoutAnswered = true;
-      if (feedback) feedback.textContent = checkoutMode === 'change'
-        ? 'Correct. Payment minus the basket total gives ' + formatMoney(checkoutCorrect) + ' in change.'
-        : 'Correct. Exact payment matches the basket total: ' + formatMoney(checkoutCorrect) + '.';
-      byId('ls-checkout-content')?.querySelectorAll('[data-ls-action="answer"]').forEach(choice => { choice.disabled = true; });
-      byId('ls-checkout-content')?.querySelector('[data-ls-action="checkout-again"]')?.focus();
-    } else if (feedback) {
-      feedback.textContent = 'Not quite. Try again, or use a hint. The answer is not revealed yet.';
-    }
-    return;
-  }
+  if (phase !== 'shopping') return;
   const id = button.dataset.item;
   if (!itemsById.has(id)) return;
   const quantity = basket.get(id) || 0;
   switch (action) {
     case 'add':
     case 'increase':
-      basket.set(id, quantity + 1);
-      setStatus(itemsById.get(id).name + ' added to your basket.');
-      resetCheckout();
+      if (quantity < 99) basket.set(id, quantity + 1);
+      setStatus(itemsById.get(id).name + ' added to the basket.');
       break;
     case 'decrease':
       if (quantity <= 1) basket.delete(id);
       else basket.set(id, quantity - 1);
       setStatus('Basket quantity updated.');
-      resetCheckout();
       break;
     case 'remove':
       basket.delete(id);
-      setStatus(itemsById.get(id).name + ' removed from your basket.');
-      resetCheckout();
+      setStatus(itemsById.get(id).name + ' removed from the basket.');
       break;
     default:
       return;
@@ -338,64 +364,18 @@ function handleClick(event) {
   renderBasket();
 }
 
-function renderCheckout() {
-  const root = byId('ls-checkout-content');
-  const feedback = byId('ls-checkout-feedback');
-  if (!root) return;
-  if (feedback) feedback.textContent = '';
-  if (!checkoutMode) {
-    root.innerHTML = '<p>Choose what to practise. You can retry whenever you need.</p>' +
-      '<div class="ls-checkout-modes">' +
-      '<button type="button" data-ls-action="exact">Pay the exact amount</button>' +
-      '<button type="button" data-ls-action="change">Work out the change</button>' +
-      '</div>';
-    return;
-  }
-  const total = totalBasket(basketLines());
-  let payment = total;
-  let correct = total;
-  let choices;
-  let question;
-  if (checkoutMode === 'exact') {
-    choices = [...new Set([total, total + 100, total + 500, total + 1000])];
-    question = 'Choose the exact amount that pays for this basket (' + formatMoney(total) + ').';
-  } else {
-    payment = Math.ceil(total / 1000) * 1000;
-    if (payment <= total) payment = total + 1000;
-    correct = changeDue(total, payment);
-    choices = [...new Set([Math.max(0, correct - 100), correct, correct + 100, correct + 200])];
-    question = 'The basket costs ' + formatMoney(total) + '. A customer pays ' + formatMoney(payment) + '. How much change should they get?';
-  }
-  checkoutCorrect = correct;
-  const displayChoices = [...choices].sort((a, b) => a - b);
-  root.innerHTML = '<p class="ls-checkout-question">' + question + '</p>' +
-    '<div class="ls-checkout-choices">' + displayChoices.map(value =>
-      '<button type="button" data-ls-action="answer" data-answer="' + value + '"' + (checkoutAnswered ? ' disabled' : '') + '>' + formatMoney(value) + '</button>'
-    ).join('') + '</div>' +
-    '<div class="ls-checkout-actions"><button type="button" data-ls-action="hint" class="ls-secondary">Hint</button>' +
-    '<button type="button" data-ls-action="checkout-again" class="ls-secondary">Choose another practice</button></div>';
-}
-
 function init() {
-  const progressWarning = loadProgress();
-  active = true;
-  selectLevel(currentLevel);
   if (controller) controller.abort();
   controller = new AbortController();
+  active = true;
+  customerNumber = 1;
   byId('screen-little-shop')?.addEventListener('click', handleClick, { signal: controller.signal });
-  byId('ls-clear')?.addEventListener('click', () => {
-    basket.clear();
-    resetCheckout();
-    renderBasket();
-    setStatus('Basket emptied. You can start again whenever you are ready.');
-  }, { signal: controller.signal });
-  renderBasket();
-  setStatus(progressWarning || 'Choose an item to begin. Take your time.');
+  byId('screen-little-shop')?.addEventListener('submit', handleSubmit, { signal: controller.signal });
+  startNewCustomer(false);
 }
 
 function stop() {
   active = false;
-  resetCheckout();
   if (controller) controller.abort();
   controller = null;
 }
@@ -404,4 +384,25 @@ function isActive() {
   return active;
 }
 
-window.LittleShop = { init, stop, isActive, getCatalogue: () => CATALOGUE.map(item => ({ ...item })), getCurrentTask: () => currentTask ? JSON.parse(JSON.stringify(currentTask)) : null, getCompletedLevels: () => [...completedLevels] };
+function getState() {
+  return {
+    active,
+    customerNumber,
+    customer: customer ? { name: customer.name, items: customer.items.map(line => ({ ...line })) } : null,
+    phase,
+    basket: [...basket.entries()].map(([id, quantity]) => ({ id, quantity })),
+    billTotalPaise,
+    paymentPaise,
+    settlementKind,
+    settlementAmountPaise,
+    changeGivenPaise: changeGivenPaise()
+  };
+}
+
+window.LittleShop = {
+  init,
+  stop,
+  isActive,
+  getCatalogue: () => CATALOGUE.map(item => ({ ...item })),
+  getState
+};
