@@ -11,10 +11,10 @@
 - Added wiki regression checks for 320, 390, 768 and 1366px widths, in-page anchors, themed underlined links, search and all interactive game-guide cards.
 - This remains an engineering and browser-audit milestone. Physical device, assistive-technology and learner/educator evaluation remains necessary.
 
-### Offering and educational inspiration
-- Framed Maths for All as a small offering of gratitude, love and seva at the Lotus Feet of Bhagawan Sri Sathya Sai Baba, rather than presenting its purpose as software delivery alone.
+### Wiki project background
+- Kept the project's dedication and educational inspiration on the public Wiki, with clear independence and non-endorsement language.
 - Documented SSSVV’s published guiding principle, inclusive-education approach and role as an educational reference, while clearly stating that Maths for All is independent and does not claim official affiliation, review or endorsement.
-- Added links to official Sri Sathya Sai and SSSVV source material and surfaced the dedication on the main page and public wiki.
+- Added links to official Sri Sathya Sai and SSSVV source material on the public Wiki.
 
 ### Little Shop
 - Widened the Little Shop counter and gave large desktop screens a five-column fruit shelf, leaving room for more choices without shrinking labels. Increased fruit names, prices, order text, and feedback to child-readable sizes while keeping spacing tight and controls easy to tap. Responsive checks continue to guard against horizontal overflow and undersized controls.

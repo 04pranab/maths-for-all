@@ -204,6 +204,11 @@ async function main() {
       'documentsByPath.set(pagePath, new DOMParser().parseFromString(await response.text(), "text/html"));' +
     '}' +
     'let linksChecked = 0, localRoutesChecked = 0, fragmentsChecked = 0, newTabLinksChecked = 0;' +
+    'const mainDocument = documentsByPath.get("/index.html");' +
+    'const wikiDocument = documentsByPath.get("/wiki.html");' +
+    'assert(!mainDocument.querySelector(".seva-dedication"), "The main page must not contain a dedication block.");' +
+    'const wikiOffering = wikiDocument.querySelector("#offering");' +
+    'assert(wikiOffering && /gratitude, love and service at the Lotus Feet of Bhagawan Sri Sathya Sai Baba/i.test(wikiOffering.textContent), "The dedication must remain in the Wiki offering section.");' +
     'for (const [pagePath, sourceDocument] of documentsByPath) {' +
       'const pageUrl = new URL(pagePath, origin);' +
       'for (const link of sourceDocument.querySelectorAll("a[href]")) {' +
@@ -894,9 +899,8 @@ async function main() {
       'Game.goHome();' +
       'document.documentElement.style.setProperty("--font-scale", "1");' +
       'assert(document.documentElement.scrollWidth <= innerWidth + 2, "The home screen overflows horizontally at " + innerWidth + "px.");' +
-      'const dedicationLink = document.querySelector(".seva-dedication a");' +
-      'assert(dedicationLink && getComputedStyle(dedicationLink).textDecorationLine.includes("underline"), "The home-page inline link must be visibly underlined.");' +
-      'assert(getComputedStyle(dedicationLink).color !== "rgb(0, 0, 238)", "A home-page link is using the browser default blue instead of the theme.");' +
+      'assert(!document.querySelector(".seva-dedication"), "The dedication block must not appear on the main game page.");' +
+      'assert(!(document.getElementById("screen-menu").innerText || "").includes("At the Lotus Feet of Bhagawan Sri Sathya Sai Baba"), "The main game page must keep the dedication on the Wiki only.");' +
       'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
       'assert(gameCards.length === 8, "The visible game menu should contain eight current game cards, not " + gameCards.length + ".");' +
       'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +

@@ -12,7 +12,7 @@
 
 ## The spirit of this work
 
-The software repository is the practical form of a much more personal intention: Maths for All is offered at the Lotus Feet of Bhagawan Sri Sathya Sai Baba as our small act of gratitude and seva. Bhagawan’s teachings are the spiritual inspiration; Sri Sathya Sai Vidya Vahini’s publicly stated vision for integral and inclusive education is an educational reference. This is an independent offering, not an official SSSVV or Sri Sathya Sai Central Trust initiative. The technical record below documents how we try to serve that intention responsibly.
+This file records engineering decisions, test results and release work. The project's educational and spiritual background is kept on the [Wiki](wiki.html#offering). Maths for All is independent and does not claim official affiliation or endorsement from SSSVV or the Sri Sathya Sai Central Trust.
 
 ---
 
