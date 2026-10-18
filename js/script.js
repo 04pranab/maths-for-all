@@ -440,7 +440,7 @@ const Game = (function () {
   function startShapeArchitect(){ Analytics.log('shape_architect','open',{}); showScreen('architect'); ShapeArchitect.init(); ControlsOverlay.maybeShow('architect'); }
   function startFractionBakery(){ Analytics.log('fraction_bakery','open',{}); showScreen('fraction'); const screen=document.getElementById('screen-fraction-bakery'); if(screen) screen.hidden=false; FractionBakery.init(); ControlsOverlay.maybeShow('fraction'); }
   function startLittleShop(){ showScreen('shop'); window.LittleShop.init(); }
-  function startNumberMaze(){ Analytics.log('number_maze','open',{}); showScreen('numberMaze'); NumberMaze.init(); ControlsOverlay.maybeShow('numberMaze'); }
+  function startNumberMaze(){ Analytics.log('number_maze','open',{}); showScreen('numberMaze'); NumberMaze.init(); document.getElementById('number-maze-title')?.focus({ preventScroll: true }); ControlsOverlay.maybeShow('numberMaze'); }
 
   return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect, startFractionBakery, startLittleShop, startNumberMaze };
 })();
