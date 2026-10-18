@@ -84,6 +84,7 @@ The current feature branch includes:
 - three fixed guided starter boards, Explore, Daily Challenge and Challenge Climb modes; progress counts a completed daily board once per day;
 - touch/mouse path tracing, keyboard arrow navigation, undo, reset, hints, live progress feedback and an untimed retry-friendly flow;
 - on-device progress and deterministic daily puzzles;
+- copyable puzzle codes that reload the exact same seeded board, with validation for malformed codes;
 - automated generator invariant tests and browser smoke/responsive coverage.
 
 “Unlimited” means the learner can keep asking for new generated puzzles rather than exhausting a fixed level list. Puzzle seeds are finite machine values, so this should be understood as effectively endless replay, not a mathematical claim that every possible board is guaranteed unique forever. Desktop/mobile rendering and interaction tests still need to pass in CI, and physical device, assistive-technology and learner/educator evaluation are not yet claimed.
