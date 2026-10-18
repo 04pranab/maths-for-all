@@ -116,9 +116,9 @@ const NumberMazeEngine = (() => {
     return path;
   }
 
-  function makeCheckpoints(path, spacing, phase) {
+  function makeCheckpoints(path, spacing, phase, size) {
     const checkpoints = [];
-    const checkpointAt = new Array(Math.max.apply(null, path) + 1).fill(0);
+    const checkpointAt = new Array(size * size).fill(0);
     const positions = [0];
     for (let position = spacing + phase; position < path.length - 1; position += spacing) {
       positions.push(position);
@@ -212,7 +212,7 @@ const NumberMazeEngine = (() => {
   }
 
   function buildPuzzle(seed, difficulty, size, path, spacing, phase) {
-    const marked = makeCheckpoints(path, spacing, phase);
+    const marked = makeCheckpoints(path, spacing, phase, size);
     return {
       seed: seed >>> 0,
       difficulty,
