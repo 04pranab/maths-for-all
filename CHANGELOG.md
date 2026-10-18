@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Number Maze · procedural puzzle generation (unreleased)
+- Added a solver-checked path puzzle that combines ordered checkpoints with the requirement to fill every open square exactly once.
+- Added seeded generation for Gentle, Steady and Stretch boards, a bounded uniqueness check and a verified constrained fallback.
+- Added Explore, Daily Challenge and Challenge Climb; untimed attempts, mouse/touch tracing, keyboard arrow controls, undo, reset, hints, clear progress feedback and on-device progress.
+- Added generator invariant tests, game-navigation/help checks, responsive browser audit coverage, and the Number Maze entry in the Wiki game map.
+- Automated checks are being run on the feature branch. Physical-device, assistive-technology and learner/educator evaluation remain separate review steps.
+
 ### UI consistency and pre-next-game stabilization
 - Added a final-loaded interaction stylesheet so inline links use the site's indigo palette, visited links do not turn browser-purple, article links stay underlined at rest, navigation remains navigation-like, and keyboard focus is clearly visible.
 - Added programmatic labels to the arithmetic answer field, racing answer field and racing player-name field.
