@@ -935,6 +935,18 @@
             <p class="nm-muted">Boards have different shapes, checkpoints, and paths. The finish waits until all open squares are filled.</p>
           </section>
 
+          <section class="nm-side-card" aria-labelledby="nm-share-heading">
+            <h2 id="nm-share-heading">Save or share a puzzle</h2>
+            <p>Keep a puzzle code to replay this exact board on another visit or share it with a friend.</p>
+            <label class="nm-code-label" for="nm-puzzle-code">Puzzle code</label>
+            <input id="nm-puzzle-code" class="nm-code-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="NM1-S-ABC123" aria-describedby="nm-code-help">
+            <p id="nm-code-help" class="nm-muted">Codes include the difficulty and a reproducible seed. Loading a code starts an untimed Explore puzzle.</p>
+            <div class="nm-action-bar nm-code-actions">
+              <button type="button" class="nm-action soft" onclick="NumberMaze.copyPuzzleCode()">▣ Copy code</button>
+              <button type="button" class="nm-action primary" onclick="NumberMaze.loadPuzzleCode()">↪ Load code</button>
+            </div>
+          </section>
+
           <section class="nm-side-card" aria-labelledby="nm-how-heading">
             <h2 id="nm-how-heading">How it works</h2>
             <ol class="nm-instructions">
