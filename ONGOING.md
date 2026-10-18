@@ -6,7 +6,9 @@
 **Current focus:** Little Shop cashier-counter physical review; Fraction Bakery physical review remains open  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 17 October 2026
+**Last updated:** 18 October 2026
+
+**Current quality gate:** Stabilize existing game UI, navigation, accessibility labels, mobile reflow and feedback wording before beginning the next game. Merge is gated on the full GitHub Actions workflow passing.
 
 ## The spirit of this work
 
