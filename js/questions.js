@@ -667,7 +667,7 @@ const Racing = (function () {
     if (nextQuestionTimeout) { clearTimeout(nextQuestionTimeout); nextQuestionTimeout = null; }
   }
   function back() { stop(); hide('race-play-panel'); hide('race-result-panel'); show('race-setup-panel'); }
-  return { init, setTimer, setDifficulty, start, submit, back, stop, clearLeaderboard };
+  return { init, setTimer, setDifficulty, start, submit, back, backToSetup: back, playAgain: start, stop, clearLeaderboard };
 })();
 
 // =============================================================
