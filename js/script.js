@@ -165,6 +165,16 @@ const ControlsOverlay = (function () {
         'The clock measures your time, but speed is not the goal. Notice how shapes fit.'
       ],
     },
+    numberMaze: {
+      icon: '🧩', title: 'How to play: Number Maze',
+      bullets: [
+        'Begin at checkpoint 1, then connect each numbered checkpoint in ascending order.',
+        'Move one square horizontally or vertically at a time. Walls cannot be crossed.',
+        'Fill every open square exactly once without revisiting a square, and reach the final checkpoint last.',
+        'Use Undo, Reset path, or Hint whenever you need them. There is no clock and no penalty for experimenting.',
+        'Explore generates fresh validated boards, Daily Challenge repeats one puzzle for the day, and Challenge Climb grows harder as you solve.',
+      ],
+    },
     slab: {
       icon: '🧺', title: 'How to play: Slab Maths',
       bullets: [
@@ -246,7 +256,8 @@ const Analytics = (function () {
     slab: 'Slab Maths',
     architect: 'Shape Architect',
     probability_carnival: 'Probability Carnival',
-    fraction_bakery: 'Fraction Bakery'
+    fraction_bakery: 'Fraction Bakery',
+    number_maze: 'Number Maze'
   };
 
   function events() {
@@ -392,6 +403,7 @@ const Game = (function () {
     architect: 'screen-architect',
     fraction: 'screen-fraction-bakery',
     shop: 'screen-little-shop',
+    numberMaze: 'screen-number-maze',
   };
 
   function stopBackgroundGames() {
@@ -402,6 +414,7 @@ const Game = (function () {
     if (window.ShapeArchitect && typeof ShapeArchitect.stop === 'function') ShapeArchitect.stop();
     if (window.FractionBakery && typeof FractionBakery.stop === 'function') FractionBakery.stop();
     if (window.LittleShop && typeof window.LittleShop.stop === 'function') window.LittleShop.stop();
+    if (window.NumberMaze && typeof window.NumberMaze.stop === 'function') window.NumberMaze.stop();
   }
 
   function showScreen(name) {
@@ -427,8 +440,9 @@ const Game = (function () {
   function startShapeArchitect(){ Analytics.log('shape_architect','open',{}); showScreen('architect'); ShapeArchitect.init(); ControlsOverlay.maybeShow('architect'); }
   function startFractionBakery(){ Analytics.log('fraction_bakery','open',{}); showScreen('fraction'); const screen=document.getElementById('screen-fraction-bakery'); if(screen) screen.hidden=false; FractionBakery.init(); ControlsOverlay.maybeShow('fraction'); }
   function startLittleShop(){ showScreen('shop'); window.LittleShop.init(); }
+  function startNumberMaze(){ Analytics.log('number_maze','open',{}); showScreen('numberMaze'); NumberMaze.init(); ControlsOverlay.maybeShow('numberMaze'); }
 
-  return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect, startFractionBakery, startLittleShop };
+  return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect, startFractionBakery, startLittleShop, startNumberMaze };
 })();
 
 /* =============================================================
