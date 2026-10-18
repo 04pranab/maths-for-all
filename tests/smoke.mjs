@@ -193,12 +193,16 @@ async function main() {
 
   if (baseline.missing.length) throw new Error('Missing required DOM nodes: ' + baseline.missing.join(', '));
 
-  const resourceResults  await evaluate('document.activeElement?.blur();');
-  await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
-  await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
-  const keyboardFocusAudit = await evaluate('(() => { const node=document.activeElement; const style=getComputedStyle(node); if (!node.matches(":focus-visible")) throw new Error("Keyboard navigation did not expose a focus-visible control on the games page."); if (style.outlineStyle==="none" || parseFloat(style.outlineWidth)<2) throw new Error("Keyboard focus ring is missing or too thin on the games page."); return { element:node.tagName, outlineStyle:style.outlineStyle, outlineWidth:style.outlineWidth }; })()');
+  const resourceResults = await evaluate('(async () => {' +
+    'const urls = [...Array.from(document.scripts).map(s => s.src), ...Array.from(document.querySelectorAll("link[rel=stylesheet]")).map(l => l.href)];' +
+    'const results = [];' +
+    'for (const url of urls) { const r = await fetch(url, { cache: "no-store" }); results.push({ url, ok: r.ok, status: r.status }); }' +
+    'return results;' +
+  '})()');
+  const badResources = resourceResults.filter(x => !x.ok);
+  if (badResources.length) throw new Error('Broken static resources: ' + JSON.stringify(badResources));
 
-  const concurrencyResult = await evaluate('(async () => {' +
+  const modalResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'localStorage.clear(); sessionStorage.clear();' +
     'const guestPolicy = document.querySelector(".nav-policy");' +
@@ -835,14 +839,13 @@ async function main() {
     interfaceAuditResults.push(result);
   }
   await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
-
- = await evaluate('(async () => {' +
   await evaluate('document.activeElement?.blur();');
   await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
   await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
   const keyboardFocusAudit = await evaluate('(() => { const node=document.activeElement; const style=getComputedStyle(node); if (!node.matches(":focus-visible")) throw new Error("Keyboard navigation did not expose a focus-visible control on the games page."); if (style.outlineStyle==="none" || parseFloat(style.outlineWidth)<2) throw new Error("Keyboard focus ring is missing or too thin on the games page."); return { element:node.tagName, outlineStyle:style.outlineStyle, outlineWidth:style.outlineWidth }; })()');
 
-  const concurrencyResult    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+  const concurrencyResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const generated = await Promise.all(Array.from({length: 90}, (_, i) => Promise.resolve().then(() => QuestionBank.generate(["easy","medium","hard"][i % 3]))));' +
     'assert(generated.length === 90, "Concurrent question generation returned the wrong count.");' +
     'assert(generated.every(q => q && Number.isFinite(q.answer) && typeof q.text === "string"), "Concurrent question generation returned an invalid question.");' +
@@ -979,7 +982,7 @@ async function main() {
       'const search=document.getElementById("wiki-search-input"); search.value="little shop"; search.dispatchEvent(new Event("input",{bubbles:true}));' +
       'assert(!document.getElementById("little-shop").classList.contains("wiki-hidden"),"Wiki search hides the matching Little Shop section.");' +
       'search.value=""; search.dispatchEvent(new Event("input",{bubbles:true}));' +
-      'return {width:innerWidth,height:innerHeight,inlineLinks: inlineLinks.length,gameGuideCards:cardButtons.length,inPageLinks:Array.from(document.querySelectorAll("a")).filter(a => (a.getAttribute("href") || "").startsWith("#")).length,horizontalOverflow:false,linkThemeConsistent:true};' +
+      'return {width:innerWidth,height:innerHeight,inlineLinks:inlineLinks.length,gameGuideCards:cardButtons.length,inPageLinks:Array.from(document.querySelectorAll("a")).filter(a => (a.getAttribute("href") || "").startsWith("#")).length,horizontalOverflow:false,linkThemeConsistent:true};' +
     '})()');
     wikiResponsiveResults.push(result);
   }
