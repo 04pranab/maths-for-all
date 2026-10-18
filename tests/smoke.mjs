@@ -762,6 +762,84 @@ async function main() {
   await evaluate('Game.goHome();');
   if (littleShopResponsiveResults.length !== 3) throw new Error('Little Shop responsive audit did not complete.');
 
+  const interfaceAuditResults = [];
+  const interactionViewports = [
+    { width: 320, height: 640, mobile: true },
+    { width: 390, height: 844, mobile: true },
+    { width: 768, height: 1024, mobile: true },
+    { width: 1024, height: 768, mobile: false },
+    { width: 1366, height: 768, mobile: false },
+    { width: 1920, height: 1080, mobile: false }
+  ];
+  const gamesForInterfaceAudit = 9;
+
+  for (const viewport of interactionViewports) {
+    await cdp('Emulation.setDeviceMetricsOverride', { ...viewport, deviceScaleFactor: 1 });
+    const result = await evaluate('(() => {' +
+      'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+      'ResearchConsent.set("yes");' +
+      'document.documentElement.style.setProperty("--font-scale", innerWidth <= 320 ? "1.35" : "1");' +
+      'const launchers = [' +
+        '["Arithmetic Quiz", () => Game.startArithmetic()], ' +
+        '["Math Racing", () => Game.startRacing()], ' +
+        '["Sudoku Challenge", () => Game.startSudoku()], ' +
+        '["Shape Fitting", () => Game.startShapePuzzle()], ' +
+        '["Slab Maths", () => Game.startSlabMath()], ' +
+        '["Shape Architect", () => Game.startShapeArchitect()], ' +
+        '["Fraction Bakery", () => FractionBakery.open()], ' +
+        '["Little Shop", () => Game.startLittleShop()], ' +
+        '["Probability Machine", () => ProbabilityCarnival.open()]' +
+      '];' +
+      'let checkedScreens = 0;' +
+      'const isVisible = node => { const style = getComputedStyle(node); const rect = node.getBoundingClientRect(); return !node.hidden && !node.closest("[hidden]") && style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0; };' +
+      'for (const [name, launch] of launchers) {' +
+        'Game.goHome(); launch();' +
+        'const active = document.querySelector(".screen.active");' +
+        'assert(active, name + " did not activate a screen at " + innerWidth + "px.");' +
+        'assert(!active.hidden, name + " activated a hidden screen at " + innerWidth + "px.");' +
+        'assert(document.documentElement.scrollWidth <= innerWidth + 2, name + " causes document horizontal overflow at " + innerWidth + "px (" + document.documentElement.scrollWidth + "px).");' +
+        'assert(document.body.scrollWidth <= innerWidth + 2, name + " causes body horizontal overflow at " + innerWidth + "px (" + document.body.scrollWidth + "px).");' +
+        'const activeStyle = getComputedStyle(active);' +
+        'assert(!(activeStyle.overflowY === "hidden" && active.scrollHeight > active.clientHeight + 4), name + " clips vertical content at " + innerWidth + "px (" + active.scrollHeight + "px inside " + active.clientHeight + "px).");' +
+        'const controls = Array.from(active.querySelectorAll("button, a[href], input:not([type=hidden]), select, textarea")).filter(isVisible);' +
+        'for (const node of controls) {' +
+          'if (node.matches("input,select,textarea")) {' +
+            'const labelled = Boolean(node.getAttribute("aria-label") || node.getAttribute("aria-labelledby") || (node.labels && node.labels.length) || node.title);' +
+            'assert(labelled, name + " has an input without an accessible label: " + (node.id || node.outerHTML.slice(0, 100)));' +
+          '} else {' +
+            'const textName = (node.innerText || node.textContent || "").replace(/\\s+/g, " ").trim();' +
+            'assert(Boolean(node.getAttribute("aria-label") || node.getAttribute("aria-labelledby") || node.title || textName), name + " has an unnamed visible control: " + node.outerHTML.slice(0, 120));' +
+          '}' +
+          'if (node.tagName === "BUTTON") {' +
+            'const rect = node.getBoundingClientRect();' +
+            'assert(rect.width >= 24 && rect.height >= 24, name + " contains a very small button (" + Math.round(rect.width) + "x" + Math.round(rect.height) + "): " + node.textContent.trim().slice(0, 40));' +
+            'let parent = node.parentElement, insideHorizontalScroller = false;' +
+            'while (parent && parent !== active) { const overflowX = getComputedStyle(parent).overflowX; if (overflowX === "auto" || overflowX === "scroll") { insideHorizontalScroller = true; break; } parent = parent.parentElement; }' +
+            'assert(insideHorizontalScroller || (rect.left >= -2 && rect.right <= innerWidth + 2), name + " has a button clipped horizontally at " + innerWidth + "px: " + node.textContent.trim().slice(0, 40));' +
+          '}' +
+        '}' +
+        'const visibleCopy = (active.innerText || "").toLowerCase();' +
+        'assert(!/\\b(dumb|stupid|idiot|loser|worthless|lazy|hopeless|not smart|bad at math|you are a failure)\\b/.test(visibleCopy), name + " contains shaming or derogatory learner-facing wording.");' +
+        'checkedScreens++;' +
+      '}' +
+      'Game.goHome();' +
+      'document.documentElement.style.setProperty("--font-scale", "1");' +
+      'assert(document.documentElement.scrollWidth <= innerWidth + 2, "The home screen overflows horizontally at " + innerWidth + "px.");' +
+      'const dedicationLink = document.querySelector(".seva-dedication a");' +
+      'assert(dedicationLink && getComputedStyle(dedicationLink).textDecorationLine.includes("underline"), "The home-page inline link must be visibly underlined.");' +
+      'assert(getComputedStyle(dedicationLink).color !== "rgb(0, 0, 238)", "A home-page link is using the browser default blue instead of the theme.");' +
+      'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
+      'assert(gameCards.length === 8, "The visible game menu should contain eight current game cards, not " + gameCards.length + ".");' +
+      'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
+      'return { width: innerWidth, height: innerHeight, fontScale: innerWidth <= 320 ? 1.35 : 1, screensChecked: checkedScreens, visibleGameCards: gameCards.length, horizontalOverflow: false, accessibleNamesChecked: true, derogatoryCopyFound: false };' +
+    '})()');
+    if (!result || result.screensChecked !== gamesForInterfaceAudit) {
+      throw new Error('Whole-game UI audit did not complete at ' + viewport.width + 'px.');
+    }
+    interfaceAuditResults.push(result);
+  }
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
+
   const concurrencyResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const generated = await Promise.all(Array.from({length: 90}, (_, i) => Promise.resolve().then(() => QuestionBank.generate(["easy","medium","hard"][i % 3]))));' +
