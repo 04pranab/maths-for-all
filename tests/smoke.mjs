@@ -193,6 +193,75 @@ async function main() {
 
   if (baseline.missing.length) throw new Error('Missing required DOM nodes: ' + baseline.missing.join(', '));
 
+  const routeIntegrityAudit = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'const origin = location.origin;' +
+    'const pagePaths = ["/index.html", "/wiki.html"];' +
+    'const documentsByPath = new Map();' +
+    'for (const pagePath of pagePaths) {' +
+      'const response = await fetch(pagePath, { cache: "no-store" });' +
+      'assert(response.ok, "Page route failed: " + pagePath + " returned " + response.status);' +
+      'documentsByPath.set(pagePath, new DOMParser().parseFromString(await response.text(), "text/html"));' +
+    '}' +
+    'let linksChecked = 0, localRoutesChecked = 0, fragmentsChecked = 0, newTabLinksChecked = 0;' +
+    'for (const [pagePath, sourceDocument] of documentsByPath) {' +
+      'const pageUrl = new URL(pagePath, origin);' +
+      'for (const link of sourceDocument.querySelectorAll("a[href]")) {' +
+        'const rawHref = link.getAttribute("href");' +
+        'assert(Boolean(rawHref && rawHref.trim()), pagePath + " contains an anchor with an empty href.");' +
+        'const labelParts = [link.textContent, link.getAttribute("aria-label"), link.title, Array.from(link.querySelectorAll("img")).map(image => image.alt).join(" ")];' +
+        'const label = String(labelParts.find(value => String(value || "").trim()) || "").replace(/\\s+/g, " ").trim();' +
+        'assert(Boolean(label), pagePath + " contains an unnamed link: " + rawHref);' +
+        'const destination = new URL(rawHref, pageUrl);' +
+        'assert(["http:", "https:", "mailto:", "tel:"].includes(destination.protocol), pagePath + " contains an unsafe or unsupported link protocol: " + rawHref);' +
+        'if (link.target.toLowerCase() === "_blank") {' +
+          'const rel = new Set((link.getAttribute("rel") || "").toLowerCase().split(/\\s+/).filter(Boolean));' +
+          'assert(rel.has("noopener") || rel.has("noreferrer"), pagePath + " opens a new tab without noopener/noreferrer: " + rawHref);' +
+          'newTabLinksChecked++;' +
+        '}' +
+        'if (destination.origin === origin && (destination.protocol === "http:" || destination.protocol === "https:")) {' +
+          'const targetPath = destination.pathname === "/" ? "/index.html" : destination.pathname;' +
+          'const response = await fetch(targetPath + destination.search, { cache: "no-store" });' +
+          'assert(response.ok, "Broken same-origin link from " + pagePath + ": " + rawHref + " returned " + response.status);' +
+          'localRoutesChecked++;' +
+          'if (destination.hash && destination.hash.length > 1) {' +
+            'let targetDocument = documentsByPath.get(targetPath);' +
+            'if (!targetDocument) {' +
+              'targetDocument = new DOMParser().parseFromString(await response.text(), "text/html");' +
+              'documentsByPath.set(targetPath, targetDocument);' +
+            '}' +
+            'const fragment = decodeURIComponent(destination.hash.slice(1));' +
+            'const exists = Boolean(targetDocument.getElementById(fragment) || Array.from(targetDocument.querySelectorAll("[name]")).some(node => node.getAttribute("name") === fragment));' +
+            'assert(exists, "Broken in-page link from " + pagePath + ": " + rawHref);' +
+            'fragmentsChecked++;' +
+          '}' +
+        '}' +
+        'linksChecked++;' +
+      '}' +
+    '}' +
+    'const applicationNamespaces = new Set(["Accessibility","Analytics","ControlsOverlay","FractionBakery","Game","Navigation","ProbabilityCarnival","Progress","Quiz","Racing","ResearchConsent","ShapeArchitect","ShapePuzzle","SlabMath","Sudoku"]);' +
+    'let inlineHandlersChecked = 0, inlineCallsChecked = 0;' +
+    'for (const node of document.querySelectorAll("[onclick]")) {' +
+      'const handler = node.getAttribute("onclick") || "";' +
+      'for (const match of handler.matchAll(/(^|[^.\\w$])([A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)+)\\s*\\(/g)) {' +
+        'const path = match[2];' +
+        'if (!applicationNamespaces.has(path.split(".")[0]) || path.startsWith("this.") || path.startsWith("event.")) continue;' +
+        'let callable = false;' +
+        'try { callable = Function("return (" + path + ")")() instanceof Function; } catch {}' +
+        'assert(callable, "Inline button/link handler points to a missing function: " + path + " on " + node.outerHTML.slice(0, 140));' +
+        'inlineCallsChecked++;' +
+      '}' +
+      'inlineHandlersChecked++;' +
+    '}' +
+    'assert(linksChecked >= 10, "Link integrity audit did not inspect both pages.");' +
+    'assert(inlineHandlersChecked >= 80 && inlineCallsChecked >= 50, "Inline interaction audit inspected too few handlers (" + inlineHandlersChecked + " / " + inlineCallsChecked + ").");' +
+    'return { pagesChecked: 2, linksChecked, localRoutesChecked, fragmentsChecked, newTabLinksChecked, inlineHandlersChecked, inlineCallsChecked };' +
+  '})()');
+
+  if (!routeIntegrityAudit || routeIntegrityAudit.pagesChecked !== 2 || routeIntegrityAudit.localRoutesChecked < 5) {
+    throw new Error('Link and inline-handler integrity audit did not complete: ' + JSON.stringify(routeIntegrityAudit));
+  }
+
   const resourceResults = await evaluate('(async () => {' +
     'const urls = [...Array.from(document.scripts).map(s => s.src), ...Array.from(document.querySelectorAll("link[rel=stylesheet]")).map(l => l.href)];' +
     'const results = [];' +
@@ -838,6 +907,105 @@ async function main() {
     }
     interfaceAuditResults.push(result);
   }
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
+
+  const controlFlowAudit = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'ResearchConsent.set("yes");' +
+    'const cases = [' +
+      '{name:"Arithmetic Quiz",card:"button.menu-card[onclick=\\"Game.startArithmetic()\\"]",screen:"screen-quiz",help:"How to play: Arithmetic Quiz"},' +
+      '{name:"Math Racing",card:"button.menu-card[onclick=\\"Game.startRacing()\\"]",screen:"screen-race",help:"How to play: Math Racing"},' +
+      '{name:"Sudoku Challenge",card:"button.menu-card[onclick=\\"Game.startSudoku()\\"]",screen:"screen-sudoku",help:"How to play: Sudoku Challenge"},' +
+      '{name:"Shape Fitting",card:"button.menu-card[onclick=\\"Game.startShapePuzzle()\\"]",screen:"screen-shape",help:"How to play: Shape Fitting"},' +
+      '{name:"Slab Maths",card:"button.menu-card[onclick=\\"Game.startSlabMath()\\"]",screen:"screen-slab",help:"How to play: Slab Maths"},' +
+      '{name:"Shape Architect",card:"button.menu-card[onclick=\\"Game.startShapeArchitect()\\"]",screen:"screen-architect",help:"How to play: Shape Architect"},' +
+      '{name:"Fraction Bakery",card:"button.menu-card[onclick=\\"FractionBakery.open()\\"]",screen:"screen-fraction-bakery",help:null},' +
+      '{name:"Little Shop",card:"button.menu-card[onclick=\\"Game.startLittleShop()\\"]",screen:"screen-little-shop",help:null}' +
+    '];' +
+    'let cardsClicked = 0, backActionsClicked = 0, helpActionsClicked = 0;' +
+    'for (const item of cases) {' +
+      'Game.goHome();' +
+      'const card = document.querySelector("#screen-menu " + item.card);' +
+      'assert(card && !card.hidden && getComputedStyle(card).display !== "none" && card.getBoundingClientRect().width > 0, item.name + " menu card is missing or hidden.");' +
+      'card.click();' +
+      'await new Promise(resolve => setTimeout(resolve, 20));' +
+      'const active = document.querySelector(".screen.active");' +
+      'assert(active && active.id === item.screen, item.name + " card opened " + (active?.id || "no active screen") + " instead of " + item.screen + ".");' +
+      'cardsClicked++;' +
+      'if (item.help) {' +
+        'const help = active.querySelector("button.btn-help");' +
+        'assert(help && !help.disabled, item.name + " is missing its enabled How to play button.");' +
+        'help.click();' +
+        'const overlay = document.getElementById("controls-overlay");' +
+        'assert(overlay && !overlay.classList.contains("hidden"), item.name + " help button did not open the instructions.");' +
+        'assert(document.getElementById("controls-title").textContent === item.help, item.name + " help button opened the wrong instructions.");' +
+        'const dismiss = overlay.querySelector("button[onclick=\\"ControlsOverlay.dismiss()\\"]");' +
+        'assert(dismiss, item.name + " help overlay has no usable dismiss button.");' +
+        'dismiss.click();' +
+        'assert(overlay.classList.contains("hidden"), item.name + " help overlay did not close.");' +
+        'helpActionsClicked++;' +
+      '}' +
+      'const back = active.querySelector("button[onclick=\\"Game.goHome()\\"], button[onclick=\\"FractionBakery.close()\\"]");' +
+      'assert(back && !back.disabled, item.name + " is missing its enabled Back/Home action.");' +
+      'back.click();' +
+      'await new Promise(resolve => setTimeout(resolve, 20));' +
+      'assert(document.getElementById("screen-menu").classList.contains("active"), item.name + " Back/Home action did not return to the menu.");' +
+      'backActionsClicked++;' +
+    '}' +
+    'Game.startRacing();' +
+    'const raceSetup = document.getElementById("race-setup-panel"), racePlay = document.getElementById("race-play-panel"), raceResult = document.getElementById("race-result-panel");' +
+    'raceSetup.classList.add("hidden"); racePlay.classList.add("hidden"); raceResult.classList.remove("hidden");' +
+    'const playAgain = raceResult.querySelector("button[onclick=\\"Racing.playAgain()\\"]");' +
+    'assert(playAgain, "Math Racing results are missing the Play Again action."); playAgain.click();' +
+    'assert(!racePlay.classList.contains("hidden") && raceResult.classList.contains("hidden"), "Play Again did not start a fresh race.");' +
+    'Racing.stop(); racePlay.classList.add("hidden"); raceResult.classList.remove("hidden");' +
+    'const scoreboard = raceResult.querySelector("button[onclick=\\"Racing.backToSetup()\\"]");' +
+    'assert(scoreboard, "Math Racing results are missing the Scoreboard action."); scoreboard.click();' +
+    'assert(!raceSetup.classList.contains("hidden") && raceResult.classList.contains("hidden") && racePlay.classList.contains("hidden"), "Scoreboard action did not return to race setup.");' +
+    'Racing.stop();' +
+    'Game.goHome();' +
+    'ProbabilityCarnival.open();' +
+    'await new Promise(resolve => setTimeout(resolve, 20));' +
+    'assert(document.getElementById("screen-probability-carnival").classList.contains("active"), "Probability Machine did not open through its entry point.");' +
+    'const probabilityBack = document.querySelector("#screen-probability-carnival .pc-back");' +
+    'assert(probabilityBack && !probabilityBack.disabled, "Probability Machine is missing its Back action.");' +
+    'probabilityBack.click();' +
+    'assert(document.getElementById("screen-menu").classList.contains("active"), "Probability Machine Back action did not return to the menu.");' +
+    'const homeNav = document.querySelector("#nav-links button[onclick=\\"Navigation.home()\\"]");' +
+    'homeNav.click();' +
+    'assert(document.getElementById("screen-menu").classList.contains("active"), "Games navigation did not return home.");' +
+    'const progressNav = document.querySelector("#nav-links button[onclick=\\"Navigation.progress()\\"]");' +
+    'assert(progressNav, "My Progress navigation button is missing.");' +
+    'progressNav.click();' +
+    'const progressModal = document.getElementById("progress-modal");' +
+    'assert(progressModal && !progressModal.classList.contains("hidden"), "My Progress button did not open the progress panel.");' +
+    'const closeProgress = progressModal.querySelector("button.btn-progress.close");' +
+    'assert(closeProgress, "My Progress panel has no Close button.");' +
+    'closeProgress.click();' +
+    'assert(progressModal.classList.contains("hidden"), "My Progress Close button did not dismiss the panel.");' +
+    'Game.goHome();' +
+    'return { menuCardsClicked:cardsClicked, backActionsClicked, helpActionsClicked, probabilityMachineBackChecked:true, progressOpenCloseChecked:true };' +
+  '})()');
+
+  if (!controlFlowAudit || controlFlowAudit.menuCardsClicked !== 8 || controlFlowAudit.backActionsClicked !== 8 || controlFlowAudit.helpActionsClicked < 6) {
+    throw new Error('Control-flow audit did not complete: ' + JSON.stringify(controlFlowAudit));
+  }
+
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 320, height: 640, deviceScaleFactor: 1, mobile: true });
+  const mobileNavigationAudit = await evaluate('(() => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'const toggle = document.getElementById("nav-menu-toggle");' +
+    'const links = document.getElementById("nav-links");' +
+    'assert(toggle && links, "Mobile navigation controls are missing.");' +
+    'toggle.click();' +
+    'assert(toggle.getAttribute("aria-expanded") === "true" && links.classList.contains("open"), "Mobile menu button did not open navigation.");' +
+    'assert(getComputedStyle(links).display !== "none", "Opened mobile navigation remains hidden.");' +
+    'toggle.click();' +
+    'assert(toggle.getAttribute("aria-expanded") === "false" && !links.classList.contains("open"), "Mobile menu button did not close navigation.");' +
+    'return { openCloseChecked:true, expandedStateSynchronized:true };' +
+  '})()');
+  if (!mobileNavigationAudit || !mobileNavigationAudit.openCloseChecked) throw new Error('Mobile navigation audit did not complete.');
+
   await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
   await evaluate('document.activeElement?.blur();');
   await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
