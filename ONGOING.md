@@ -3,12 +3,12 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Little Shop cashier-counter physical review; Fraction Bakery physical review remains open  
+**Current focus:** Number Maze procedural-generation implementation and CI review; Fraction Bakery physical review remains open  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 18 October 2026
 
-**Current quality gate:** Stabilize existing game UI, navigation, accessibility labels, mobile reflow and feedback wording before beginning the next game. Merge is gated on the full GitHub Actions workflow passing.
+**Current quality gate:** Number Maze must pass generator-invariant, JavaScript syntax, menu/help/back-navigation, responsive layout, browser smoke/stress and the repository's full GitHub Actions workflow before merge. Physical device and assistive-technology review remains separate.
 
 ## The spirit of this work
 
@@ -129,8 +129,8 @@ The implementation sequence remains:
 1. **Shape Architect** ✅
 2. **Probability Machine** ✅
 3. **Fraction Bakery** ▶ physical review
-4. **Little Shop** · continuous fruit-counter cashier prototype
-5. **Number Maze**
+4. **Little Shop** ✅ implementation complete; physical review can be tracked separately
+5. **Number Maze** ▶ procedural generation and unique-solution verification in progress
 
 `2048` is intentionally deferred until these five are designed, implemented, tested, animated/fine-tuned, and physically reviewed.
 
