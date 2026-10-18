@@ -959,7 +959,7 @@ async function main() {
       'assert(document.documentElement.scrollWidth <= innerWidth + 2, "Wiki page overflows horizontally at " + innerWidth + "px.");' +
       'assert(document.querySelectorAll("#offering").length === 1, "Wiki must contain exactly one offering section.");' +
       'assert(!document.body.innerText.includes("I can change my mind"), "Wiki still contains wording the author flagged as potentially diminishing.");' +
-      'const missingTargets = Array.from(document.querySelectorAll("a[href^=\"#\"]")).filter(a => !document.getElementById(decodeURIComponent(a.getAttribute("href").slice(1))));' +
+      'const missingTargets = Array.from(document.querySelectorAll("a")).filter(a => { const href=a.getAttribute("href"); return href && href.startsWith("#") && !document.getElementById(decodeURIComponent(href.slice(1))); });' +
       'assert(missingTargets.length===0, "Wiki has a broken in-page link: " + (missingTargets[0]?.getAttribute("href") || ""));' +
       'const actionable = Array.from(document.querySelectorAll("a[href],button")).filter(visible);' +
       'for (const node of actionable) {' +
@@ -983,7 +983,7 @@ async function main() {
       'const search=document.getElementById("wiki-search-input"); search.value="little shop"; search.dispatchEvent(new Event("input",{bubbles:true}));' +
       'assert(!document.getElementById("little-shop").classList.contains("wiki-hidden"),"Wiki search hides the matching Little Shop section.");' +
       'search.value=""; search.dispatchEvent(new Event("input",{bubbles:true}));' +
-      'return {width:innerWidth,height:innerHeight,inlineLinks: inlineLinks.length,gameGuideCards:cardButtons.length,inPageLinks:document.querySelectorAll("a[href^=\"#\"]").length,horizontalOverflow:false,linkThemeConsistent:true};' +
+      'return {width:innerWidth,height:innerHeight,inlineLinks: inlineLinks.length,gameGuideCards:cardButtons.length,inPageLinks:Array.from(document.querySelectorAll("a")).filter(a => (a.getAttribute("href") || "").startsWith("#")).length,horizontalOverflow:false,linkThemeConsistent:true};' +
     '})()');
     wikiResponsiveResults.push(result);
   }
