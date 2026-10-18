@@ -902,6 +902,10 @@
             <h2 id="nm-mode-heading">Choose your journey</h2>
             <p>Every board is generated fresh and checked for a single complete solution.</p>
             <div class="nm-mode-list" role="group" aria-label="Puzzle mode">
+              <button type="button" class="nm-mode" data-nm-mode="tutorial" aria-pressed="false" onclick="NumberMaze.setMode('tutorial')">
+                <span class="nm-mode-icon" aria-hidden="true">📖</span>
+                <span class="nm-mode-copy">Guided Starters<small>Three fixed gentle boards to learn the rules</small></span>
+              </button>
               <button type="button" class="nm-mode" data-nm-mode="explore" aria-pressed="true" onclick="NumberMaze.setMode('explore')">
                 <span class="nm-mode-icon" aria-hidden="true">🌱</span>
                 <span class="nm-mode-copy">Explore<small>Fresh boards whenever you like</small></span>
@@ -916,6 +920,7 @@
               </button>
             </div>
             <p id="nm-challenge-note" class="nm-challenge-note" hidden>Every five solved puzzles, the next challenge steps up. You can still take breaks, reset, or use hints.</p>
+            <p id="nm-tutorial-note" class="nm-challenge-note" hidden>Start with these three repeatable, solver-checked gentle boards. Use Undo and Hint to explore the path, then try solving each one at your own pace.</p>
             <p class="nm-muted">Progress is saved on this device only.</p>
           </section>
 
