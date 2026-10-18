@@ -3,12 +3,12 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Little Shop cashier-counter physical review; Fraction Bakery physical review remains open  
+**Current focus:** Number Maze procedural-generation implementation and CI review; Fraction Bakery physical review remains open  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
 **Last updated:** 18 October 2026
 
-**Current quality gate:** Stabilize existing game UI, navigation, accessibility labels, mobile reflow and feedback wording before beginning the next game. Merge is gated on the full GitHub Actions workflow passing.
+**Current quality gate:** Number Maze must pass generator-invariant, JavaScript syntax, menu/help/back-navigation, responsive layout, browser smoke/stress and the repository's full GitHub Actions workflow before merge. Physical device and assistive-technology review remains separate.
 
 ## The spirit of this work
 
@@ -129,8 +129,8 @@ The implementation sequence remains:
 1. **Shape Architect** ✅
 2. **Probability Machine** ✅
 3. **Fraction Bakery** ▶ physical review
-4. **Little Shop** · continuous fruit-counter cashier prototype
-5. **Number Maze**
+4. **Little Shop** ✅ implementation complete; physical review can be tracked separately
+5. **Number Maze** ▶ procedural generation and unique-solution verification in progress
 
 `2048` is intentionally deferred until these five are designed, implemented, tested, animated/fine-tuned, and physically reviewed.
 
@@ -222,3 +222,17 @@ The implemented scope is one complete customer transaction:
 All currency arithmetic uses integer paise internally. The cashier prototype has no account, progress profile, real payment, learner analytics, or cloud dependency. The automated acceptance gate covers the three payment paths, retries for incorrect calculations, exact change construction, repeated customer transactions, and desktop/tablet/mobile layouts. A focused Little Shop layout pass widens the counter to 1600px on large screens and uses up to five fruit columns on wide desktops, leaving room to expand the shelf later. Fruit names, prices, customer orders, and feedback now use more readable type, while compact spacing limits unnecessary scrolling. The layout switches to four, three, and two columns as space narrows, keeps touch targets comfortable, and remains scoped to Little Shop.
 
 Next: conduct supervised learner/educator review of the cashier counter and record any usability blockers. Automated tests establish arithmetic and state-transition correctness only, not educational acceptance. Fraction Bakery's separate physical-review decision also remains open.
+
+## 10. Number Maze implementation (unreleased feature branch)
+
+The feature branch `feat/number-maze-unlimited-boards` implements the next game without merging to `main`.
+
+- **Core rule:** one orthogonal path connects numbered checkpoints in ascending order and covers each open square exactly once. The route cannot revisit squares, jump over cells, or pass through walls.
+- **Generation:** deterministic seeded paths, three difficulty bands, checkpoint placement, bounded solution counting, and a constrained valid fallback.
+- **Modes:** three fixed, repeatable guided starter boards; Explore generates a fresh seeded board; Daily Challenge uses a stable UTC date-and-difficulty seed and counts completion once per day; Challenge Climb advances difficulty every five locally recorded solves.
+- **Accessibility:** untimed, retry-friendly play; mouse/touch path tracing; arrow-key navigation; native button semantics; live status announcements; Undo, Reset and hints; responsive styling with reduced-motion support.
+- **Replay/share:** each board displays a validated puzzle code that can be copied and loaded later to reproduce the same seeded board; loading an imported code starts a fresh Explore attempt.
+- **Validation:** each returned board is checked for a complete route and exactly one solution. Tests cover multiple seeds per difficulty, adjacency, coverage, deterministic generation, checkpoint order and uniqueness. Browser regression coverage includes launch, instructions, controls, daily reproducibility and responsive screens.
+- The uniqueness guarantee applies to each accepted puzzle independently. It does not guarantee that no two future random seeds can ever produce an identical board.
+- The feature branch must pass the full GitHub Actions workflow before merge. Physical-device testing, screen-reader/assistive-technology review, and feedback from learners and educators remain separate acceptance steps.
+

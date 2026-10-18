@@ -10,7 +10,7 @@ Maths for All is an independent mathematics learning project inspired by inclusi
 
 **v2.0.4 · Geometry & Physical Learning Hardening**
 
-The v2.0.4 release remains the stable release line. The active development focus is Fraction Bakery: a harder, randomized 100-level game with eight stages, realistic inline SVG dishes, and an automated browser layout audit that renders every level. Probability Machine remains implemented, but its card is temporarily hidden from the visible game menu during Fraction Bakery review.
+The v2.0.4 release remains the stable release line. The Number Maze implementation is under review on the feature branch: it combines ordered checkpoint path-finding with space-filling constraints, procedural generation, and a bounded solver that rejects boards unless they have exactly one valid route. Fraction Bakery physical review remains an open quality gate. Probability Machine remains implemented, but its card is temporarily hidden from the visible game menu.
 
 Authentication and account controls remain temporarily disabled while physical game mechanics are being tested.
 
@@ -23,6 +23,7 @@ Authentication and account controls remain temporarily disabled while physical g
 - 🏗️ Shape Architect with 100 validated, timed picture-building levels
 - 🥐 Fraction Bakery with 100 randomized levels across eight stages
 - 🧺 Slab Maths
+- 🧩 Number Maze with procedurally generated unique-solution path puzzles (feature branch, not yet released)
 - 📱 Responsive desktop and mobile layouts
 - ⌨️ Keyboard-friendly controls and visible focus states
 - ❓ Game-specific How to play instructions
@@ -70,6 +71,23 @@ The current release provides:
 - regression coverage for false completion, level availability, rendering, and visual matching.
 
 The silhouette is a guide, not another puzzle layer. The learner still has to understand the shapes and arrange the pieces.
+
+## Number Maze (under development)
+
+Number Maze combines a numbered path puzzle with a space-filling constraint. The learner starts at checkpoint 1, visits later checkpoints in ascending order, moves only between orthogonally adjacent open squares, never revisits a square, and must fill every open square before finishing at the final checkpoint.
+
+The current feature branch includes:
+
+- seeded procedural generation for Gentle (4×4), Steady (5×5), and Stretch (6×6) boards;
+- a bounded backtracking solver that verifies a unique solution before a puzzle is shown;
+- a deterministic validated fallback if randomized construction cannot produce an accepted board;
+- three fixed guided starter boards, Explore, Daily Challenge and Challenge Climb modes; progress counts a completed daily board once per day;
+- touch/mouse path tracing, keyboard arrow navigation, undo, reset, hints, live progress feedback and an untimed retry-friendly flow;
+- on-device progress and deterministic daily puzzles;
+- copyable puzzle codes that reload the exact same seeded board, with validation for malformed codes;
+- automated generator invariant tests and browser smoke/responsive coverage.
+
+“Unlimited” means the learner can keep asking for new generated puzzles rather than exhausting a fixed level list. Puzzle seeds are finite machine values, so this should be understood as effectively endless replay, not a mathematical claim that every possible board is guaranteed unique forever. Desktop/mobile rendering and interaction tests still need to pass in CI, and physical device, assistive-technology and learner/educator evaluation are not yet claimed.
 
 ## Current presentation
 

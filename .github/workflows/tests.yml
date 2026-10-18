@@ -65,6 +65,9 @@ jobs:
       - name: Little Shop cashier tests
         run: npm run test:little-shop-cashier
 
+      - name: Number Maze generator tests
+        run: npm run test:number-maze
+
       - name: PostgreSQL connectivity check
         run: node tests/postgres-auth.mjs
 
