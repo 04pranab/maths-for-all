@@ -933,7 +933,7 @@ async function main() {
       'assert(!document.querySelector(".seva-dedication"), "The dedication block must not appear on the main game page.");' +
       'assert(!(document.getElementById("screen-menu").innerText || "").includes("At the Lotus Feet of Bhagawan Sri Sathya Sai Baba"), "The main game page must keep the dedication on the Wiki only.");' +
       'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
-      'assert(gameCards.length === 9, "The visible game menu should contain nine current game cards, not  + gameCards.length + ".");' +
+      'assert(gameCards.length === 9, "The visible game menu should contain nine current game cards, not " + gameCards.length + ".");' +
       'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
       'return { width: innerWidth, height: innerHeight, fontScale: innerWidth <= 320 ? 1.35 : 1, screensChecked: checkedScreens, visibleGameCards: gameCards.length, horizontalOverflow: false, accessibleNamesChecked: true, derogatoryCopyFound: false };' +
     '})()');
