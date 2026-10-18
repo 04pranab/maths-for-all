@@ -185,7 +185,7 @@ async function main() {
   await sleep(500);
 
   const baseline = await evaluate('(() => {' +
-    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","screen-architect","screen-fraction-bakery","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
+    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","screen-architect","screen-fraction-bakery","screen-number-maze","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
     'const missing = required.filter(id => !document.getElementById(id));' +
     'const resources = [...Array.from(document.scripts).map(s => s.src), ...Array.from(document.querySelectorAll("link[rel=stylesheet]")).map(l => l.href)];' +
     'return { missing, resources };' +
@@ -305,10 +305,10 @@ async function main() {
 
   const helpResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
-    'const cases = [["screen-quiz","quiz","How to play: Arithmetic Quiz"],["screen-race","race","How to play: Math Racing"],["screen-sudoku","sudoku","How to play: Sudoku Challenge"],["screen-shape","shape","How to play: Shape Fitting"],["screen-slab","slab","How to play: Slab Maths"],["screen-architect","architect","How to play: Shape Architect"],["screen-fraction-bakery","fraction","How to play: Fraction Bakery"]];' +
+    'const cases = [["screen-quiz","quiz","How to play: Arithmetic Quiz"],["screen-race","race","How to play: Math Racing"],["screen-sudoku","sudoku","How to play: Sudoku Challenge"],["screen-shape","shape","How to play: Shape Fitting"],["screen-slab","slab","How to play: Slab Maths"],["screen-architect","architect","How to play: Shape Architect"],["screen-fraction-bakery","fraction","How to play: Fraction Bakery"],["screen-number-maze","numberMaze","How to play: Number Maze"]];' +
     'for (const [screenId, key, title] of cases) {' +
       'Game.goHome();' +
-      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath, architect: Game.startShapeArchitect, fraction: Game.startFractionBakery }[key];' +
+      'const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath, architect: Game.startShapeArchitect, fraction: Game.startFractionBakery, numberMaze: Game.startNumberMaze }[key];' +
       'start();' +
       'Navigation.howToPlay();' +
       'await new Promise(r => setTimeout(r, 20));' +
@@ -320,6 +320,95 @@ async function main() {
     'return { ok: true };' +
   '})()');
 
+
+  const numberMazeResult = await evaluate(`(() => {
+    const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    Game.goHome();
+    Game.startNumberMaze();
+    const screen = document.getElementById("screen-number-maze");
+    assert(screen.classList.contains("active"), "Number Maze did not open.");
+    assert(screen.querySelector("#nm-board"), "Number Maze board is missing.");
+    assert(screen.querySelector("#nm-feedback[aria-live='polite']"), "Number Maze live feedback is missing.");
+    assert(screen.querySelectorAll("#nm-board .nm-cell").length === NumberMaze.getSummary().openCellCount, "Every usable puzzle square should render as a cell.");
+    assert(screen.querySelector("#nm-board .is-start"), "The generated puzzle should mark checkpoint 1.");
+    const codeInput = screen.querySelector("#nm-puzzle-code");
+    assert(codeInput && /^NM1-[GSX]-[0-9A-Z]{1,7}$/.test(codeInput.value), "A shareable puzzle code should be shown.");
+    const initialPuzzleCode = codeInput.value;
+    const initialBoard = screen.querySelector("#nm-board").innerHTML;
+    assert(NumberMaze.loadPuzzleCode(), "Loading a valid puzzle code should succeed.");
+    assert(screen.querySelector("#nm-board").innerHTML === initialBoard, "Loading a puzzle code should reconstruct the exact same board.");
+    codeInput.value = "not-a-number-maze-code";
+    assert(!NumberMaze.loadPuzzleCode(), "Malformed puzzle codes should be rejected.");
+    assert(screen.querySelector("#nm-feedback").textContent.includes("not recognised"), "Invalid codes should receive clear feedback.");
+    codeInput.value = initialPuzzleCode;
+    assert(NumberMaze.loadPuzzleCode(), "The original puzzle code should remain reusable.");
+
+    screen.querySelector("#nm-board .is-start").click();
+    assert(NumberMaze.getSummary().pathLength === 1, "Starting checkpoint should create a one-cell path.");
+    const codeParts = /^NM1-([GSX])-([0-9A-Z]{1,7})$/.exec(initialPuzzleCode);
+    const puzzleDifficulty = { G: "gentle", S: "steady", X: "stretch" }[codeParts[1]];
+    const keyboardPuzzle = NumberMazeEngine.generate(Number.parseInt(codeParts[2], 36), puzzleDifficulty);
+    const delta = keyboardPuzzle.solution[1] - keyboardPuzzle.solution[0];
+    const arrowKey = delta === -keyboardPuzzle.size ? "ArrowUp" : delta === keyboardPuzzle.size ? "ArrowDown" : delta === 1 ? "ArrowRight" : "ArrowLeft";
+    const focusedStart = document.activeElement;
+    assert(focusedStart && focusedStart.matches("#nm-board [data-cell]"), "Starting the route should focus the current path cell.");
+    focusedStart.dispatchEvent(new KeyboardEvent("keydown", { key: arrowKey, bubbles: true, cancelable: true }));
+    assert(NumberMaze.getSummary().pathLength === 2, "Arrow keys should extend the path to an adjacent open square.");
+    assert(document.activeElement.dataset.cell === String(keyboardPuzzle.solution[1]), "Keyboard movement should focus the next path cell.");
+    NumberMaze.undo();
+    assert(NumberMaze.getSummary().pathLength === 1, "Undo should remove the most recent keyboard step.");
+    NumberMaze.undo();
+    assert(NumberMaze.getSummary().pathLength === 0, "Undo should safely remove the first step.");
+    NumberMaze.hint();
+    assert(screen.querySelector("#nm-board .is-hint"), "Hint should identify a useful next square.");
+    assert(!screen.querySelector("#nm-board .is-hint").classList.contains("is-start"), "An empty-path hint should point to the next move, not merely repeat checkpoint 1.");
+    assert(screen.querySelector("#nm-feedback").textContent.includes("move to the glowing square"), "The first hint should explain the suggested next move.");
+    NumberMaze.setDifficulty("gentle");
+    assert(NumberMaze.getSummary().difficulty === "gentle", "Explore difficulty selector should work.");
+    NumberMaze.setMode("daily");
+    assert(screen.querySelector("#nm-new-puzzle").textContent.includes("Replay daily puzzle"), "Daily mode should label the repeat action accurately.");
+    const dailyBoard = screen.querySelector("#nm-board").innerHTML;
+    NumberMaze.newPuzzle();
+    assert(screen.querySelector("#nm-board").innerHTML === dailyBoard, "Daily puzzle seed should reproduce the same board.");
+    NumberMaze.setMode("challenge");
+    assert(screen.querySelector("#nm-new-puzzle").textContent.includes("Next challenge"), "Challenge Climb should label its next action accurately.");
+    assert(NumberMaze.getSummary().mode === "challenge", "Challenge Climb mode should switch.");
+    assert(screen.querySelector("[data-nm-difficulty='gentle']").disabled, "Challenge Climb should control its own difficulty.");
+    NumberMaze.setMode("daily");
+    NumberMaze.setDifficulty("gentle");
+    const dateKey = new Date().toISOString().slice(0, 10);
+    const dailySeed = NumberMazeEngine.hashSeed("maths-for-all-number-maze-" + dateKey + "-gentle");
+    const knownPuzzle = NumberMazeEngine.generate(dailySeed, "gentle");
+    for (const cell of knownPuzzle.solution) {
+      const button = screen.querySelector("#nm-board [data-cell='" + cell + "']");
+      assert(button, "Solution cell " + cell + " should be open and reachable.");
+      button.click();
+    }
+    assert(NumberMaze.getSummary().completed, "Following the verified solution should complete Number Maze.");
+    assert(!screen.querySelector("#nm-complete").hidden, "Completion panel should be announced and visible.");
+    assert(screen.querySelector("#nm-feedback").textContent.includes("Puzzle complete"), "Completion feedback should be available to assistive technology.");
+    const dailySolvedCount = NumberMaze.getSummary().solved;
+    NumberMaze.newPuzzle();
+    for (const cell of knownPuzzle.solution) screen.querySelector('#nm-board [data-cell="' + cell + '"]').click();
+    assert(NumberMaze.getSummary().solved === dailySolvedCount, "Replaying an already completed daily puzzle should not inflate the solved count.");
+    NumberMaze.setMode("tutorial");
+    assert(screen.querySelector("#nm-new-puzzle").textContent.includes("Next guided board"), "Guided Starters should label its next action accurately.");
+    assert(NumberMaze.getSummary().mode === "tutorial", "Guided Starters mode should be selectable.");
+    assert(NumberMaze.getSummary().difficulty === "gentle", "Guided Starters should remain at Gentle difficulty.");
+    const starterOne = screen.querySelector("#nm-board").innerHTML;
+    NumberMaze.newPuzzle();
+    const starterTwo = screen.querySelector("#nm-board").innerHTML;
+    NumberMaze.newPuzzle();
+    const starterThree = screen.querySelector("#nm-board").innerHTML;
+    NumberMaze.newPuzzle();
+    assert(starterOne !== starterTwo && starterTwo !== starterThree && starterOne !== starterThree, "Guided Starters should rotate through three distinct fixed boards.");
+    assert(screen.querySelector("#nm-board").innerHTML === starterOne, "Guided Starter boards should cycle deterministically.");
+    NumberMaze.setMode("explore");
+    NumberMaze.resetPath();
+    Game.goHome();
+    return { ok: true };
+  })()`);
+  if (!numberMazeResult || !numberMazeResult.ok) throw new Error("Number Maze interaction audit failed.");
 
   const probabilityResult = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
@@ -845,7 +934,7 @@ async function main() {
     { width: 1366, height: 768, mobile: false },
     { width: 1920, height: 1080, mobile: false }
   ];
-  const gamesForInterfaceAudit = 9;
+  const gamesForInterfaceAudit = 10;
 
   for (const viewport of interactionViewports) {
     await cdp('Emulation.setDeviceMetricsOverride', { ...viewport, deviceScaleFactor: 1 });
@@ -862,7 +951,8 @@ async function main() {
         '["Shape Architect", () => Game.startShapeArchitect()], ' +
         '["Fraction Bakery", () => FractionBakery.open()], ' +
         '["Little Shop", () => Game.startLittleShop()], ' +
-        '["Probability Machine", () => ProbabilityCarnival.open()]' +
+        '["Number Maze", () => Game.startNumberMaze()], ' +
+      '["Probability Machine", () => ProbabilityCarnival.open()]' +
       '];' +
       'let checkedScreens = 0;' +
       'const isVisible = node => { const style = getComputedStyle(node); const rect = node.getBoundingClientRect(); return !node.hidden && !node.closest("[hidden]") && style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0; };' +
@@ -902,7 +992,7 @@ async function main() {
       'assert(!document.querySelector(".seva-dedication"), "The dedication block must not appear on the main game page.");' +
       'assert(!(document.getElementById("screen-menu").innerText || "").includes("At the Lotus Feet of Bhagawan Sri Sathya Sai Baba"), "The main game page must keep the dedication on the Wiki only.");' +
       'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
-      'assert(gameCards.length === 8, "The visible game menu should contain eight current game cards, not " + gameCards.length + ".");' +
+      'assert(gameCards.length === 9, "The visible game menu should contain nine current game cards, not " + gameCards.length + ".");' +
       'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
       'return { width: innerWidth, height: innerHeight, fontScale: innerWidth <= 320 ? 1.35 : 1, screensChecked: checkedScreens, visibleGameCards: gameCards.length, horizontalOverflow: false, accessibleNamesChecked: true, derogatoryCopyFound: false };' +
     '})()');
@@ -924,7 +1014,8 @@ async function main() {
       '{name:"Slab Maths",card:"button.menu-card[onclick=\\"Game.startSlabMath()\\"]",screen:"screen-slab",help:"How to play: Slab Maths"},' +
       '{name:"Shape Architect",card:"button.menu-card[onclick=\\"Game.startShapeArchitect()\\"]",screen:"screen-architect",help:"How to play: Shape Architect"},' +
       '{name:"Fraction Bakery",card:"button.menu-card[onclick=\\"FractionBakery.open()\\"]",screen:"screen-fraction-bakery",help:null},' +
-      '{name:"Little Shop",card:"button.menu-card[onclick=\\"Game.startLittleShop()\\"]",screen:"screen-little-shop",help:null}' +
+      '{name:"Little Shop",card:"button.menu-card[onclick=\\"Game.startLittleShop()\\"]",screen:"screen-little-shop",help:null},' +
+      '{name:"Number Maze",card:"button.menu-card[onclick=\\"Game.startNumberMaze()\\"]",screen:"screen-number-maze",help:"How to play: Number Maze"}' +
     '];' +
     'let cardsClicked = 0, backActionsClicked = 0, helpActionsClicked = 0;' +
     'for (const item of cases) {' +
@@ -937,7 +1028,7 @@ async function main() {
       'assert(active && active.id === item.screen, item.name + " card opened " + (active?.id || "no active screen") + " instead of " + item.screen + ".");' +
       'cardsClicked++;' +
       'if (item.help) {' +
-        'const help = active.querySelector("button.btn-help");' +
+        'const help = active.querySelector("button.btn-help, button.nm-help");' +
         'assert(help && !help.disabled, item.name + " is missing its enabled How to play button.");' +
         'help.click();' +
         'const overlay = document.getElementById("controls-overlay");' +
@@ -991,7 +1082,7 @@ async function main() {
     'return { menuCardsClicked:cardsClicked, backActionsClicked, helpActionsClicked, probabilityMachineBackChecked:true, progressOpenCloseChecked:true };' +
   '})()');
 
-  if (!controlFlowAudit || controlFlowAudit.menuCardsClicked !== 8 || controlFlowAudit.backActionsClicked !== 8 || controlFlowAudit.helpActionsClicked < 6) {
+  if (!controlFlowAudit || controlFlowAudit.menuCardsClicked !== 9 || controlFlowAudit.backActionsClicked !== 9 || controlFlowAudit.helpActionsClicked !== 7) {
     throw new Error('Control-flow audit did not complete: ' + JSON.stringify(controlFlowAudit));
   }
 
@@ -1146,7 +1237,7 @@ async function main() {
         'assert(style.color!=="rgb(0, 0, 238)" && style.color!=="rgb(85, 26, 139)", "Wiki link uses a browser-default blue or purple colour.");' +
       '}' +
       'const cardButtons=Array.from(document.querySelectorAll(".game-choice"));' +
-      'assert(cardButtons.length===8, "Wiki should expose all eight currently listed games.");' +
+      'assert(cardButtons.length===9, "Wiki should expose all nine currently listed games.");' +
       'for (const card of cardButtons) { card.click(); const detail=document.getElementById("game-detail"); assert(detail&&!detail.hidden,"Selecting "+card.dataset.game+" did not reveal game details."); assert(document.getElementById("game-detail-title").textContent.trim().length>0,"Game detail title is empty."); assert(card.getAttribute("aria-expanded")==="true","Selected game card did not expose expanded state."); assert(cardButtons.filter(other=>other.getAttribute("aria-expanded")==="true").length===1,"Game guide has more than one selected card."); }' +
       'document.getElementById("game-detail-close").click();' +
       'assert(document.getElementById("game-detail").hidden,"Close did not hide game details.");' +

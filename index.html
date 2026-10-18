@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/probability-carnival.css?v=20261007-7" />
   <link rel="stylesheet" href="css/fraction-bakery.css?v=20261018-1" />
   <link rel="stylesheet" href="css/little-shop.css?v=20261017-4" />
+  <link rel="stylesheet" href="css/number-maze.css?v=20261018-2" />
   <link rel="stylesheet" href="css/interactions.css?v=20261018-1" />
 </head>
 <body>
@@ -162,6 +163,12 @@
         <div class="card-title">Little Shop</div>
         <div class="card-desc">Explore prices, totals, budgets and change at your own pace.</div>
         <div class="card-tag">Solo · Mathematics</div>
+      </button>
+      <button class="menu-card card-number-maze" onclick="Game.startNumberMaze()">
+        <div class="card-badge-icon" aria-hidden="true">🧩</div>
+        <div class="card-title">Number Maze</div>
+        <div class="card-desc">Trace the numbered route and fill every open square. Fresh validated puzzles keep coming.</div>
+        <div class="card-tag">Solo · Unlimited puzzles · Untimed</div>
       </button>
       <button class="menu-card card-probability" onclick="ProbabilityCarnival.open()" hidden aria-hidden="true" tabindex="-1">
         <div class="card-badge-icon">⚙️</div>
@@ -732,7 +739,7 @@
   <script src="js/probability-carnival-stories.js?v=20261007-4"></script>
   <script src="js/probability-carnival-canvas.js?v=20261007-5"></script>
   <script src="js/probability-carnival.js?v=20261007-5"></script>
-  <script src="js/script.js?v=20261018-1"></script>
+  <script src="js/script.js?v=20261018-3"></script>
   <script src="js/questions.js?v=20261018-2"></script>
   <script src="js/sudoku.js?v=20260924-2"></script>
   <script src="js/shapes.js?v=20260924-2"></script>
@@ -743,6 +750,8 @@
   <script src="js/shape-architect-levels.js?v=20261006-5"></script>
   <script src="js/shape-architect.js?v=20261006-5"></script>
   <script src="js/fraction-bakery.js?v=20261008-4"></script>
+  <script src="js/number-maze-engine.js?v=20261018-2"></script>
+  <script src="js/number-maze.js?v=20261018-3"></script>
   <section id="screen-little-shop" class="screen" aria-labelledby="little-shop-title">
     <div class="ls-shell">
       <header class="ls-header">
@@ -826,6 +835,134 @@
             <button type="button" class="ls-primary" data-ls-action="next-customer">Next customer →</button>
           </section>
           <p class="ls-note">Practice counter only. No real money is used. Customers keep coming, so keep the shop open!</p>
+        </aside>
+      </main>
+    </div>
+  </section>
+
+  <section id="screen-number-maze" class="screen" aria-labelledby="number-maze-title">
+    <div class="nm-shell">
+      <header class="nm-header">
+        <div class="nm-header-copy">
+          <span class="nm-eyebrow">MATHS FOR ALL · LOGIC WORKSHOP</span>
+          <h1 id="number-maze-title" tabindex="-1">🧩 Number Maze</h1>
+          <p class="nm-intro">Connect the numbered checkpoints in order, then fill <strong>every open square exactly once</strong>. There is no timer, no lives, and no penalty for trying again.</p>
+        </div>
+        <button type="button" class="nm-back" onclick="Game.goHome()">← Back to games</button>
+        <button type="button" class="nm-help" onclick="ControlsOverlay.forceShow('numberMaze')" aria-label="How to play Number Maze">?</button>
+      </header>
+
+      <div class="nm-topline">
+        <div class="nm-current-tags" aria-label="Current puzzle details">
+          <span class="nm-tag">Mode: <strong id="nm-current-mode">Explore</strong></span>
+          <span class="nm-tag">Difficulty: <strong id="nm-current-difficulty">Steady</strong></span>
+          <span class="nm-tag" id="nm-daily-badge">One shared puzzle per day</span>
+        </div>
+        <p class="nm-total-solved">Puzzles solved on this device: <strong id="nm-total-solved">0</strong></p>
+      </div>
+
+      <main class="nm-layout">
+        <section class="nm-board-card" aria-labelledby="nm-board-heading">
+          <div class="nm-board-heading">
+            <div>
+              <h2 id="nm-board-heading">Find the one complete route</h2>
+              <p class="nm-board-note">Start at 1. Move horizontally or vertically, one square at a time.</p>
+            </div>
+          </div>
+
+          <div class="nm-board-frame">
+            <div id="nm-board" class="nm-board" role="group" aria-label="Number Maze puzzle board"></div>
+          </div>
+
+          <p id="nm-feedback" class="nm-feedback" role="status" aria-live="polite">Begin at checkpoint 1. Take your time.</p>
+
+          <div class="nm-stats" aria-label="Puzzle progress">
+            <div class="nm-stat"><small>Open squares filled</small><strong><span id="nm-path-count">0</span>/<span id="nm-cell-count">0</span></strong></div>
+            <div class="nm-stat"><small>Checkpoints reached</small><strong><span id="nm-checkpoint-count">0</span>/<span id="nm-checkpoint-total">0</span></strong></div>
+            <div class="nm-stat"><small>Time limit</small><strong>None</strong></div>
+          </div>
+
+          <div class="nm-action-bar" aria-label="Puzzle actions">
+            <button type="button" class="nm-action soft" onclick="NumberMaze.undo()">↶ Undo</button>
+            <button type="button" class="nm-action soft" onclick="NumberMaze.hint()">💡 Hint</button>
+            <button type="button" class="nm-action soft" onclick="NumberMaze.resetPath()">↻ Reset path</button>
+            <button type="button" id="nm-new-puzzle" class="nm-action primary" onclick="NumberMaze.newPuzzle()">＋ New puzzle</button>
+          </div>
+
+          <section id="nm-complete" class="nm-complete" hidden aria-labelledby="nm-complete-heading">
+            <div class="nm-complete-emoji" aria-hidden="true">🌟</div>
+            <h2 id="nm-complete-heading">Route complete!</h2>
+            <p id="nm-complete-summary">You filled every open square and reached each checkpoint in order.</p>
+            <button type="button" id="nm-next-complete" class="nm-action primary" onclick="NumberMaze.newPuzzle()">Explore another puzzle →</button>
+          </section>
+        </section>
+
+        <aside class="nm-side-stack" aria-label="Puzzle choices and instructions">
+          <section class="nm-side-card" aria-labelledby="nm-mode-heading">
+            <h2 id="nm-mode-heading">Choose your journey</h2>
+            <p>Every board is generated fresh and checked for a single complete solution.</p>
+            <div class="nm-mode-list" role="group" aria-label="Puzzle mode">
+              <button type="button" class="nm-mode" data-nm-mode="tutorial" aria-pressed="false" onclick="NumberMaze.setMode('tutorial')">
+                <span class="nm-mode-icon" aria-hidden="true">📖</span>
+                <span class="nm-mode-copy">Guided Starters<small>Three fixed gentle boards to learn the rules</small></span>
+              </button>
+              <button type="button" class="nm-mode" data-nm-mode="explore" aria-pressed="true" onclick="NumberMaze.setMode('explore')">
+                <span class="nm-mode-icon" aria-hidden="true">🌱</span>
+                <span class="nm-mode-copy">Explore<small>Fresh boards whenever you like</small></span>
+              </button>
+              <button type="button" class="nm-mode" data-nm-mode="daily" aria-pressed="false" onclick="NumberMaze.setMode('daily')">
+                <span class="nm-mode-icon" aria-hidden="true">📅</span>
+                <span class="nm-mode-copy">Daily Challenge<small>Same seeded puzzle each day</small></span>
+              </button>
+              <button type="button" class="nm-mode" data-nm-mode="challenge" aria-pressed="false" onclick="NumberMaze.setMode('challenge')">
+                <span class="nm-mode-icon" aria-hidden="true">🪜</span>
+                <span class="nm-mode-copy">Challenge Climb<small>Difficulty grows as you solve</small></span>
+              </button>
+            </div>
+            <p id="nm-challenge-note" class="nm-challenge-note" hidden>Every five solved puzzles, the next challenge steps up. You can still take breaks, reset, or use hints.</p>
+            <p id="nm-tutorial-note" class="nm-challenge-note" hidden>Start with these three repeatable, solver-checked gentle boards. Use Undo and Hint to explore the path, then try solving each one at your own pace.</p>
+            <p class="nm-muted">Progress is saved on this device only.</p>
+          </section>
+
+          <section class="nm-side-card" aria-labelledby="nm-difficulty-heading">
+            <h2 id="nm-difficulty-heading">Set the challenge</h2>
+            <p>Choose a comfortable starting point. You can change it at any time.</p>
+            <div class="nm-difficulty-list" role="group" aria-label="Puzzle difficulty">
+              <button type="button" class="nm-difficulty" data-nm-difficulty="gentle" aria-pressed="false" onclick="NumberMaze.setDifficulty('gentle')">Gentle</button>
+              <button type="button" class="nm-difficulty" data-nm-difficulty="steady" aria-pressed="true" onclick="NumberMaze.setDifficulty('steady')">Steady</button>
+              <button type="button" class="nm-difficulty" data-nm-difficulty="stretch" aria-pressed="false" onclick="NumberMaze.setDifficulty('stretch')">Stretch</button>
+            </div>
+            <p class="nm-muted">Boards have different shapes, checkpoints, and paths. The finish waits until all open squares are filled.</p>
+          </section>
+
+          <section class="nm-side-card" aria-labelledby="nm-share-heading">
+            <h2 id="nm-share-heading">Save or share a puzzle</h2>
+            <p>Keep a puzzle code to replay this exact board on another visit or share it with a friend.</p>
+            <label class="nm-code-label" for="nm-puzzle-code">Puzzle code</label>
+            <input id="nm-puzzle-code" class="nm-code-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="NM1-S-ABC123" aria-describedby="nm-code-help">
+            <p id="nm-code-help" class="nm-muted">Codes include the difficulty and a reproducible seed. Loading a code starts an untimed Explore puzzle.</p>
+            <div class="nm-action-bar nm-code-actions">
+              <button type="button" class="nm-action soft" onclick="NumberMaze.copyPuzzleCode()">▣ Copy code</button>
+              <button type="button" class="nm-action primary" onclick="NumberMaze.loadPuzzleCode()">↪ Load code</button>
+            </div>
+          </section>
+
+          <section class="nm-side-card" aria-labelledby="nm-how-heading">
+            <h2 id="nm-how-heading">How it works</h2>
+            <ol class="nm-instructions">
+              <li>Begin at checkpoint 1, then follow each number in order.</li>
+              <li>Move only to an open square directly beside the end of your path.</li>
+              <li>Do not revisit a square. Fill every open square once.</li>
+              <li>Reach the final checkpoint last. Walls cannot be crossed.</li>
+            </ol>
+            <div class="nm-legend" aria-label="Board legend">
+              <div class="nm-legend-item"><span class="nm-legend-swatch checkpoint" aria-hidden="true"></span>Numbered checkpoint</div>
+              <div class="nm-legend-item"><span class="nm-legend-swatch route" aria-hidden="true"></span>Your path</div>
+              <div class="nm-legend-item"><span class="nm-legend-swatch wall" aria-hidden="true"></span>Wall</div>
+              <div class="nm-legend-item"><span class="nm-legend-swatch" aria-hidden="true"></span>Open square</div>
+            </div>
+            <p class="nm-footnote">Mouse, touch, or drag to trace. On a keyboard, focus a square and use the arrow keys. Backspace/Delete undoes the last step.</p>
+          </section>
         </aside>
       </main>
     </div>

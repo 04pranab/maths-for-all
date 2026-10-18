@@ -2,12 +2,20 @@
 
 ## Unreleased
 
+### Number Maze · procedural puzzle generation (unreleased)
+- Added a solver-checked path puzzle that combines ordered checkpoints with the requirement to fill every open square exactly once.
+- Added seeded generation for Gentle, Steady and Stretch boards, a bounded uniqueness check and a verified constrained fallback.
+- Added three fixed guided starter boards, Explore, Daily Challenge and Challenge Climb; untimed attempts, mouse/touch tracing, keyboard arrow controls, undo, reset, hints, clear progress feedback and on-device progress. Daily replay does not inflate the solve count.
+- Added copyable, difficulty-aware puzzle codes that regenerate the exact board and reject malformed input.
+- Added generator invariant tests, game-navigation/help checks, responsive browser audit coverage, and the Number Maze entry in the Wiki game map.
+- Automated checks are being run on the feature branch. Physical-device, assistive-technology and learner/educator evaluation remain separate review steps.
+
 ### UI consistency and pre-next-game stabilization
 - Added a final-loaded interaction stylesheet so inline links use the site's indigo palette, visited links do not turn browser-purple, article links stay underlined at rest, navigation remains navigation-like, and keyboard focus is clearly visible.
 - Added programmatic labels to the arithmetic answer field, racing answer field and racing player-name field.
 - Reworded feedback to keep the focus on learning and exploring rather than framing an answer as a personal failure; changed the learner promise that had been flagged as potentially diminishing.
 - Improved Fraction Bakery's narrow-phone level selector to use five columns of at least 44px controls in a vertically scrollable grid.
-- Expanded browser regression coverage to audit all nine game screens at 320, 390, 768, 1024, 1366 and 1920px widths, including increased text size at 320px, overflow/clipping, visible control names, minimum actionable target size, and shaming language.
+- Expanded browser regression coverage to audit all ten game screens at 320, 390, 768, 1024, 1366 and 1920px widths, including increased text size at 320px, overflow/clipping, visible control names, minimum actionable target size, and shaming language.
 - Added wiki regression checks for 320, 390, 768 and 1366px widths, in-page anchors, themed underlined links, search and all interactive game-guide cards.
 - This remains an engineering and browser-audit milestone. Physical device, assistive-technology and learner/educator evaluation remains necessary.
 
