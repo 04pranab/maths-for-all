@@ -952,6 +952,18 @@ async function main() {
       'assert(document.getElementById("screen-menu").classList.contains("active"), item.name + " Back/Home action did not return to the menu.");' +
       'backActionsClicked++;' +
     '}' +
+    'Game.startRacing();' +
+    'const raceSetup = document.getElementById("race-setup-panel"), racePlay = document.getElementById("race-play-panel"), raceResult = document.getElementById("race-result-panel");' +
+    'raceSetup.classList.add("hidden"); racePlay.classList.add("hidden"); raceResult.classList.remove("hidden");' +
+    'const playAgain = raceResult.querySelector("button[onclick=\\"Racing.playAgain()\\"]");' +
+    'assert(playAgain, "Math Racing results are missing the Play Again action."); playAgain.click();' +
+    'assert(!racePlay.classList.contains("hidden") && raceResult.classList.contains("hidden"), "Play Again did not start a fresh race.");' +
+    'Racing.stop(); racePlay.classList.add("hidden"); raceResult.classList.remove("hidden");' +
+    'const scoreboard = raceResult.querySelector("button[onclick=\\"Racing.backToSetup()\\"]");' +
+    'assert(scoreboard, "Math Racing results are missing the Scoreboard action."); scoreboard.click();' +
+    'assert(!raceSetup.classList.contains("hidden") && raceResult.classList.contains("hidden") && racePlay.classList.contains("hidden"), "Scoreboard action did not return to race setup.");' +
+    'Racing.stop();' +
+    'Game.goHome();' +
     'ProbabilityCarnival.open();' +
     'await new Promise(resolve => setTimeout(resolve, 20));' +
     'assert(document.getElementById("screen-probability-carnival").classList.contains("active"), "Probability Machine did not open through its entry point.");' +
