@@ -1178,7 +1178,7 @@ async function main() {
         'assert(style.color!=="rgb(0, 0, 238)" && style.color!=="rgb(85, 26, 139)", "Wiki link uses a browser-default blue or purple colour.");' +
       '}' +
       'const cardButtons=Array.from(document.querySelectorAll(".game-choice"));' +
-      'assert(cardButtons.length===8, "Wiki should expose all eight currently listed games.");' +
+      'assert(cardButtons.length===9, "Wiki should expose all nine currently listed games.");' +
       'for (const card of cardButtons) { card.click(); const detail=document.getElementById("game-detail"); assert(detail&&!detail.hidden,"Selecting "+card.dataset.game+" did not reveal game details."); assert(document.getElementById("game-detail-title").textContent.trim().length>0,"Game detail title is empty."); assert(card.getAttribute("aria-expanded")==="true","Selected game card did not expose expanded state."); assert(cardButtons.filter(other=>other.getAttribute("aria-expanded")==="true").length===1,"Game guide has more than one selected card."); }' +
       'document.getElementById("game-detail-close").click();' +
       'assert(document.getElementById("game-detail").hidden,"Close did not hide game details.");' +
