@@ -386,6 +386,8 @@ const NumberMaze = (() => {
     state.mode = 'explore';
     state.difficulty = difficulty;
     state.puzzle = NumberMazeEngine.generate(seed, difficulty);
+    const codeInput = byId('nm-puzzle-code');
+    if (codeInput) codeInput.value = puzzleCode(state.puzzle);
     state.path = [];
     state.focusCell = state.puzzle.start;
     state.hintCell = null;
