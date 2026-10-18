@@ -26,6 +26,14 @@ for (const difficulty of Object.keys(engine.DIFFICULTIES)) {
   }
 }
 
+const tutorialSeeds = [0x4D415A45, 0x4D415A46, 0x4D415A47];
+const tutorialBoards = tutorialSeeds.map(seed => engine.generate(seed, 'gentle'));
+for (const board of tutorialBoards) {
+  assert.ok(engine.validate(board), 'Every guided starter should be solvable and unique.');
+  assert.equal(board.difficulty, 'gentle');
+}
+assert.equal(new Set(tutorialBoards.map(board => JSON.stringify(board.solution))).size, 3, 'Guided starters should use distinct routes.');
+
 const invalid = engine.generate(91, 'gentle');
 invalid.checkpoints = invalid.checkpoints.slice(1);
 assert.equal(engine.countSolutions(invalid, 2, 1000).count, 0, 'A board without checkpoint 1 must be rejected.');
