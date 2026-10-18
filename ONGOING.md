@@ -229,7 +229,7 @@ The feature branch `feat/number-maze-unlimited-boards` implements the next game 
 
 - **Core rule:** one orthogonal path connects numbered checkpoints in ascending order and covers each open square exactly once. The route cannot revisit squares, jump over cells, or pass through walls.
 - **Generation:** deterministic seeded paths, three difficulty bands, checkpoint placement, bounded solution counting, and a constrained valid fallback.
-- **Modes:** Explore generates a fresh seeded board; Daily Challenge uses a stable UTC date-and-difficulty seed; Challenge Climb advances difficulty every five locally recorded solves.
+- **Modes:** three fixed, repeatable guided starter boards; Explore generates a fresh seeded board; Daily Challenge uses a stable UTC date-and-difficulty seed and counts completion once per day; Challenge Climb advances difficulty every five locally recorded solves.
 - **Accessibility:** untimed, retry-friendly play; mouse/touch path tracing; arrow-key navigation; native button semantics; live status announcements; Undo, Reset and hints; responsive styling with reduced-motion support.
 - **Validation:** each returned board is checked for a complete route and exactly one solution. Tests cover multiple seeds per difficulty, adjacency, coverage, deterministic generation, checkpoint order and uniqueness. Browser regression coverage includes launch, instructions, controls, daily reproducibility and responsive screens.
 - The uniqueness guarantee applies to each accepted puzzle independently. It does not guarantee that no two future random seeds can ever produce an identical board.
