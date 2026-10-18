@@ -9,6 +9,7 @@ for (const difficulty of Object.keys(engine.DIFFICULTIES)) {
   for (const seed of [1, 17, 20261018]) {
     const puzzle = engine.generate(seed, difficulty);
     assert.equal(puzzle.seed, seed, 'Seed should be retained.');
+    assert.equal(puzzle.checkpointAt.length, puzzle.size * puzzle.size, 'Checkpoint map should cover every board cell.');
     assert.equal(puzzle.difficulty, difficulty);
     assert.ok(engine.validate(puzzle), difficulty + ' seed ' + seed + ' should be valid and have one solution.');
     assert.equal(puzzle.solution.length, puzzle.openCells.length, 'Solution must fill every open square.');
