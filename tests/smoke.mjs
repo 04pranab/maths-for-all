@@ -359,6 +359,10 @@ async function main() {
     assert(NumberMaze.getSummary().completed, "Following the verified solution should complete Number Maze.");
     assert(!screen.querySelector("#nm-complete").hidden, "Completion panel should be announced and visible.");
     assert(screen.querySelector("#nm-feedback").textContent.includes("Puzzle complete"), "Completion feedback should be available to assistive technology.");
+    const dailySolvedCount = NumberMaze.getSummary().solved;
+    NumberMaze.newPuzzle();
+    for (const cell of knownPuzzle.solution) screen.querySelector("#nm-board [data-cell=\"" + cell + "\"]").click();
+    assert(NumberMaze.getSummary().solved === dailySolvedCount, "Replaying an already completed daily puzzle should not inflate the solved count.");
     NumberMaze.setMode("tutorial");
     assert(NumberMaze.getSummary().mode === "tutorial", "Guided Starters mode should be selectable.");
     assert(NumberMaze.getSummary().difficulty === "gentle", "Guided Starters should remain at Gentle difficulty.");
