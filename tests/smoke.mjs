@@ -934,6 +934,52 @@ async function main() {
     'return { quizQuestions: document.getElementById("quiz-q-number")?.textContent, sudokuCells: document.querySelectorAll("#sudoku-grid .sudoku-cell").length, shapeCells: document.querySelectorAll("#shape-board .sp-cell").length };' +
   '})()');
 
+  await cdp('Page.navigate', { url: baseUrl + '/wiki.html' });
+  await waitFor(async () => await evaluate('document.readyState === "complete" && Boolean(document.querySelector(".wiki-shell"))'));
+  const wikiResponsiveResults = [];
+  for (const viewport of [
+    { width: 320, height: 640, mobile: true },
+    { width: 390, height: 844, mobile: true },
+    { width: 768, height: 1024, mobile: true },
+    { width: 1366, height: 768, mobile: false }
+  ]) {
+    await cdp('Emulation.setDeviceMetricsOverride', { ...viewport, deviceScaleFactor: 1 });
+    const result = await evaluate('(() => {' +
+      'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+      'const visible = node => { const style=getComputedStyle(node), rect=node.getBoundingClientRect(); return !node.hidden && !node.closest("[hidden]") && style.display!=="none" && style.visibility!=="hidden" && rect.width>0 && rect.height>0; };' +
+      'assert(document.documentElement.scrollWidth <= innerWidth + 2, "Wiki page overflows horizontally at " + innerWidth + "px.");' +
+      'assert(document.querySelectorAll("#offering").length === 1, "Wiki must contain exactly one offering section.");' +
+      'assert(!document.body.innerText.includes("I can change my mind"), "Wiki still contains wording the author flagged as potentially diminishing.");' +
+      'const missingTargets = Array.from(document.querySelectorAll("a[href^=\"#\"]")).filter(a => !document.getElementById(decodeURIComponent(a.getAttribute("href").slice(1))));' +
+      'assert(missingTargets.length===0, "Wiki has a broken in-page link: " + (missingTargets[0]?.getAttribute("href") || ""));' +
+      'const actionable = Array.from(document.querySelectorAll("a[href],button")).filter(visible);' +
+      'for (const node of actionable) {' +
+        'const name=(node.getAttribute("aria-label")||node.getAttribute("aria-labelledby")||node.title||node.innerText||node.textContent||"").trim();' +
+        'assert(name.length>0, "Wiki has an unnamed visible link or button: "+node.outerHTML.slice(0,120));' +
+        'if (node.tagName==="BUTTON") { const rect=node.getBoundingClientRect(); assert(rect.width>=24&&rect.height>=24,"Wiki button has a very small target at "+innerWidth+"px: "+name.slice(0,40)); }' +
+      '}' +
+      'const inlineLinks=Array.from(document.querySelectorAll(".wiki-card a, .wiki-footer a")).filter(visible);' +
+      'assert(inlineLinks.length>0, "Wiki inline links are missing.");' +
+      'for (const link of inlineLinks) {' +
+        'const style=getComputedStyle(link);' +
+        'assert(style.textDecorationLine.includes("underline"), "Inline wiki link is not underlined at rest: "+(link.innerText||link.href).trim().slice(0,80));' +
+        'assert(style.color!=="rgb(0, 0, 238)" && style.color!=="rgb(85, 26, 139)", "Wiki link uses a browser-default blue or purple colour.");' +
+      '}' +
+      'const cardButtons=Array.from(document.querySelectorAll(".game-choice"));' +
+      'assert(cardButtons.length===8, "Wiki should expose all eight currently listed games.");' +
+      'for (const card of cardButtons) { card.click(); const detail=document.getElementById("game-detail"); assert(detail&&!detail.hidden,"Selecting "+card.dataset.game+" did not reveal game details."); assert(document.getElementById("game-detail-title").textContent.trim().length>0,"Game detail title is empty."); assert(card.getAttribute("aria-expanded")==="true","Selected game card did not expose expanded state."); assert(cardButtons.filter(other=>other.getAttribute("aria-expanded")==="true").length===1,"Game guide has more than one selected card."); }' +
+      'document.getElementById("game-detail-close").click();' +
+      'assert(document.getElementById("game-detail").hidden,"Close did not hide game details.");' +
+      'assert(cardButtons.every(card=>card.getAttribute("aria-expanded")==="false"),"Close did not reset game-card expanded states.");' +
+      'const search=document.getElementById("wiki-search-input"); search.value="little shop"; search.dispatchEvent(new Event("input",{bubbles:true}));' +
+      'assert(!document.getElementById("little-shop").classList.contains("wiki-hidden"),"Wiki search hides the matching Little Shop section.");' +
+      'search.value=""; search.dispatchEvent(new Event("input",{bubbles:true}));' +
+      'return {width:innerWidth,height:innerHeight,inlineLinks: inlineLinks.length,gameGuideCards:cardButtons.length,inPageLinks:document.querySelectorAll("a[href^=\"#\"]").length,horizontalOverflow:false,linkThemeConsistent:true};' +
+    '})()');
+    wikiResponsiveResults.push(result);
+  }
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
+
   await sleep(500);
   const unexpectedResourceErrors = failedResources.filter(item => item.status !== 404 || !item.url.includes('/api/'));
   if (unexpectedResourceErrors.length) throw new Error('Browser resource errors detected:\n' + unexpectedResourceErrors.map(item => item.status + ' ' + item.url).join('\n'));
