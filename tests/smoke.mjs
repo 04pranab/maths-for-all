@@ -346,6 +346,21 @@ async function main() {
     NumberMaze.setMode("challenge");
     assert(NumberMaze.getSummary().mode === "challenge", "Challenge Climb mode should switch.");
     assert(screen.querySelector("[data-nm-difficulty='gentle']").disabled, "Challenge Climb should control its own difficulty.");
+    NumberMaze.setMode("daily");
+    NumberMaze.setDifficulty("gentle");
+    const dateKey = new Date().toISOString().slice(0, 10);
+    const dailySeed = NumberMazeEngine.hashSeed("maths-for-all-number-maze-" + dateKey + "-gentle");
+    const knownPuzzle = NumberMazeEngine.generate(dailySeed, "gentle");
+    for (const cell of knownPuzzle.solution) {
+      const button = screen.querySelector("#nm-board [data-cell='" + cell + "']");
+      assert(button, "Solution cell " + cell + " should be open and reachable.");
+      button.click();
+    }
+    assert(NumberMaze.getSummary().completed, "Following the verified solution should complete Number Maze.");
+    assert(!screen.querySelector("#nm-complete").hidden, "Completion panel should be announced and visible.");
+    assert(screen.querySelector("#nm-feedback").textContent.includes("Puzzle complete"), "Completion feedback should be available to assistive technology.");
+    NumberMaze.setMode("explore");
+    NumberMaze.resetPath();
     Game.goHome();
     return { ok: true };
   })()`);
