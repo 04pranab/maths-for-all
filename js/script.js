@@ -114,7 +114,7 @@ const ControlsOverlay = (function () {
         'Choose a timer length and a level, then press Start Race.',
         'Type each answer and press Enter or Go — you move straight to the next question.',
         'Try to answer as many as you can before the time runs out.',
-        'A wrong answer just moves you on — it never costs you points.',
+        'Every answer lets you continue — points are never taken away.',
       ],
     },
     sudoku: {
@@ -140,7 +140,7 @@ const ControlsOverlay = (function () {
       bullets: [
         'Choose a tent and start with a prediction.',
         'Run the experiment and watch the evidence grow.',
-        'A surprising result is not a failure. Use it as another clue.',
+        'A surprising result can become another clue. Use it to explore.',
         'Build, compare, and reason about chance. There is no betting or reward for risk.',
         'Use the reflection and discovery cards to connect the experiment to the idea.'
       ],
@@ -151,7 +151,7 @@ const ControlsOverlay = (function () {
         'Every order is generated from a valid fraction, so every challenge has a real solution.',
         'Tap equal dish pieces to build the requested fraction, or choose the matching recipe.',
         'Later orders ask you to compare fractions, find equivalent fractions, and mix like-denominator recipes.',
-        'Wrong answers are clues. Check how many equal parts make the whole and try again.',
+        'Check how many equal parts make the whole, then try again.',
         'The timer is only a gentle record. There is no penalty for taking your time.'
       ],
     },
