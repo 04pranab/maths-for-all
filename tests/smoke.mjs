@@ -359,6 +359,17 @@ async function main() {
     assert(NumberMaze.getSummary().completed, "Following the verified solution should complete Number Maze.");
     assert(!screen.querySelector("#nm-complete").hidden, "Completion panel should be announced and visible.");
     assert(screen.querySelector("#nm-feedback").textContent.includes("Puzzle complete"), "Completion feedback should be available to assistive technology.");
+    NumberMaze.setMode("tutorial");
+    assert(NumberMaze.getSummary().mode === "tutorial", "Guided Starters mode should be selectable.");
+    assert(NumberMaze.getSummary().difficulty === "gentle", "Guided Starters should remain at Gentle difficulty.");
+    const starterOne = screen.querySelector("#nm-board").innerHTML;
+    NumberMaze.newPuzzle();
+    const starterTwo = screen.querySelector("#nm-board").innerHTML;
+    NumberMaze.newPuzzle();
+    const starterThree = screen.querySelector("#nm-board").innerHTML;
+    NumberMaze.newPuzzle();
+    assert(starterOne !== starterTwo && starterTwo !== starterThree && starterOne !== starterThree, "Guided Starters should rotate through three distinct fixed boards.");
+    assert(screen.querySelector("#nm-board").innerHTML === starterOne, "Guided Starter boards should cycle deterministically.");
     NumberMaze.setMode("explore");
     NumberMaze.resetPath();
     Game.goHome();
