@@ -62,6 +62,14 @@
       prompt: "How many equal pieces make the whole? How could you show the same amount another way?",
       note: "Use the pictures to connect fraction symbols with quantities the learner can see."
     },
+    "number-maze": {
+      title: "🧩 Number Maze",
+      summary: "A path puzzle that combines ordered numbered checkpoints with filling every open square exactly once.",
+      how: "Start at checkpoint 1 and trace a single orthogonal route. Reach each later checkpoint in order, never revisit a square, and fill every open square before the final checkpoint.",
+      skills: ["Spatial reasoning and path planning", "Sequencing and constraint-based deduction", "Perseverance, working memory and planning"],
+      prompt: "Which square could close off a route if you leave it too late? What clue helps you know which checkpoint comes next?",
+      note: "The game offers unlimited untimed attempts, Undo, Reset and hints. Explore boards are generated with a solver that verifies a unique complete route; progress stays on the current device."
+    },
     shop: {
       title: "🍎 Little Shop",
       summary: "An open-ended fruit counter where customers keep arriving and the learner runs the shop.",
