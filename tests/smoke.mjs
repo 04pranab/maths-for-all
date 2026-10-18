@@ -354,10 +354,12 @@ async function main() {
     NumberMaze.setDifficulty("gentle");
     assert(NumberMaze.getSummary().difficulty === "gentle", "Explore difficulty selector should work.");
     NumberMaze.setMode("daily");
+    assert(screen.querySelector("#nm-new-puzzle").textContent.includes("Replay daily puzzle"), "Daily mode should label the repeat action accurately.");
     const dailyBoard = screen.querySelector("#nm-board").innerHTML;
     NumberMaze.newPuzzle();
     assert(screen.querySelector("#nm-board").innerHTML === dailyBoard, "Daily puzzle seed should reproduce the same board.");
     NumberMaze.setMode("challenge");
+    assert(screen.querySelector("#nm-new-puzzle").textContent.includes("Next challenge"), "Challenge Climb should label its next action accurately.");
     assert(NumberMaze.getSummary().mode === "challenge", "Challenge Climb mode should switch.");
     assert(screen.querySelector("[data-nm-difficulty='gentle']").disabled, "Challenge Climb should control its own difficulty.");
     NumberMaze.setMode("daily");
@@ -378,6 +380,7 @@ async function main() {
     for (const cell of knownPuzzle.solution) screen.querySelector('#nm-board [data-cell="' + cell + '"]').click();
     assert(NumberMaze.getSummary().solved === dailySolvedCount, "Replaying an already completed daily puzzle should not inflate the solved count.");
     NumberMaze.setMode("tutorial");
+    assert(screen.querySelector("#nm-new-puzzle").textContent.includes("Next guided board"), "Guided Starters should label its next action accurately.");
     assert(NumberMaze.getSummary().mode === "tutorial", "Guided Starters mode should be selectable.");
     assert(NumberMaze.getSummary().difficulty === "gentle", "Guided Starters should remain at Gentle difficulty.");
     const starterOne = screen.querySelector("#nm-board").innerHTML;
