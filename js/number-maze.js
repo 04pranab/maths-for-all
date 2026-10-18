@@ -80,6 +80,8 @@ const NumberMaze = (() => {
     if (mode) mode.textContent = modeNames[state.mode] || 'Explore';
     const challengeNote = byId('nm-challenge-note');
     if (challengeNote) challengeNote.hidden = state.mode !== 'challenge';
+    const tutorialNote = byId('nm-tutorial-note');
+    if (tutorialNote) tutorialNote.hidden = state.mode !== 'tutorial';
     const progress = readProgress();
     const solved = byId('nm-total-solved');
     if (solved) solved.textContent = String(progress.solved);
@@ -219,7 +221,7 @@ const NumberMaze = (() => {
   }
 
   function setMode(mode) {
-    if (!['explore', 'daily', 'challenge'].includes(mode)) return;
+    if (!['explore', 'daily', 'challenge', 'tutorial'].includes(mode)) return;
     state.mode = mode;
     if (mode === 'tutorial') state.tutorialIndex = 0;
     state.difficulty = currentDifficulty();
