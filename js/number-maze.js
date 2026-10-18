@@ -95,6 +95,11 @@ const NumberMaze = (() => {
     }
   }
 
+  function puzzleCode(puzzle) {
+    const keys = { gentle: 'G', steady: 'S', stretch: 'X' };
+    return 'NM1-' + (keys[puzzle.difficulty] || 'S') + '-' + (puzzle.seed >>> 0).toString(36).toUpperCase();
+  }
+
   function boardCellLabel(cell, puzzle) {
     const row = Math.floor(cell / puzzle.size) + 1;
     const col = cell % puzzle.size + 1;
@@ -181,6 +186,8 @@ const NumberMaze = (() => {
     if (cellCount) cellCount.textContent = String(puzzle.openCells.length);
     if (checkpointCount) checkpointCount.textContent = String(visitedCheckpoints);
     if (checkpointTotal) checkpointTotal.textContent = String(puzzle.checkpoints.length);
+    const codeInput = byId('nm-puzzle-code');
+    if (codeInput && document.activeElement !== codeInput) codeInput.value = puzzleCode(puzzle);
     const completion = byId('nm-complete');
     if (completion) completion.hidden = !state.completed;
     const summary = byId('nm-complete-summary');
@@ -337,6 +344,60 @@ const NumberMaze = (() => {
     return true;
   }
 
+  async function copyPuzzleCode() {
+    if (!state.puzzle) return;
+    const input = byId('nm-puzzle-code');
+    const code = puzzleCode(state.puzzle);
+    if (input) input.value = code;
+    try {
+      if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') throw new Error('Clipboard API unavailable');
+      await navigator.clipboard.writeText(code);
+      announce('Puzzle code copied. Share it or load it later to replay this exact board.');
+      return;
+    } catch (error) {
+      if (input) {
+        input.focus();
+        input.select();
+        let copied = false;
+        try { copied = document.execCommand('copy'); } catch (copyError) { copied = false; }
+        announce(copied
+          ? 'Puzzle code copied. Share it or load it later to replay this exact board.'
+          : 'Puzzle code selected. Use Ctrl+C or your device’s Copy action to save it.');
+      } else {
+        announce('Your puzzle code is ' + code + '.');
+      }
+    }
+  }
+
+  function loadPuzzleCode() {
+    const input = byId('nm-puzzle-code');
+    const code = input ? input.value.trim().toUpperCase() : '';
+    const match = /^NM1-([GSX])-([0-9A-Z]{1,7})$/.exec(code);
+    if (!match) {
+      announce('That puzzle code is not recognised. Use a code like NM1-S-ABC123.');
+      return false;
+    }
+    const seed = Number.parseInt(match[2], 36);
+    if (!Number.isSafeInteger(seed) || seed <= 0 || seed > 0xFFFFFFFF) {
+      announce('That puzzle code contains an invalid seed. Check the letters and numbers and try again.');
+      return false;
+    }
+    const difficulty = { G: 'gentle', S: 'steady', X: 'stretch' }[match[1]];
+    state.mode = 'explore';
+    state.difficulty = difficulty;
+    state.puzzle = NumberMazeEngine.generate(seed, difficulty);
+    state.path = [];
+    state.focusCell = state.puzzle.start;
+    state.hintCell = null;
+    state.hints = 0;
+    state.completed = false;
+    state.dragging = false;
+    state.pointerId = null;
+    render(false);
+    announce('Puzzle loaded. This code reproduces the same ' + difficulty + ' board. Begin at checkpoint 1.');
+    return true;
+  }
+
   function undo() {
     if (!state.path.length || state.completed) {
       announce(state.completed ? 'This puzzle is complete. Start another puzzle to keep going.' : 'Your path is already empty. Start at checkpoint 1.');
@@ -464,6 +525,8 @@ const NumberMaze = (() => {
     undo,
     hint,
     resetPath,
+    copyPuzzleCode,
+    loadPuzzleCode,
     getSummary: () => ({
       mode: state.mode,
       difficulty: currentDifficulty(),
