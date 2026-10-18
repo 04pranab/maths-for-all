@@ -762,6 +762,88 @@ async function main() {
   await evaluate('Game.goHome();');
   if (littleShopResponsiveResults.length !== 3) throw new Error('Little Shop responsive audit did not complete.');
 
+  const interfaceAuditResults = [];
+  const interactionViewports = [
+    { width: 320, height: 640, mobile: true },
+    { width: 390, height: 844, mobile: true },
+    { width: 768, height: 1024, mobile: true },
+    { width: 1024, height: 768, mobile: false },
+    { width: 1366, height: 768, mobile: false },
+    { width: 1920, height: 1080, mobile: false }
+  ];
+  const gamesForInterfaceAudit = 9;
+
+  for (const viewport of interactionViewports) {
+    await cdp('Emulation.setDeviceMetricsOverride', { ...viewport, deviceScaleFactor: 1 });
+    const result = await evaluate('(() => {' +
+      'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+      'ResearchConsent.set("yes");' +
+      'document.documentElement.style.setProperty("--font-scale", innerWidth <= 320 ? "1.35" : "1");' +
+      'const launchers = [' +
+        '["Arithmetic Quiz", () => Game.startArithmetic()], ' +
+        '["Math Racing", () => Game.startRacing()], ' +
+        '["Sudoku Challenge", () => Game.startSudoku()], ' +
+        '["Shape Fitting", () => Game.startShapePuzzle()], ' +
+        '["Slab Maths", () => Game.startSlabMath()], ' +
+        '["Shape Architect", () => Game.startShapeArchitect()], ' +
+        '["Fraction Bakery", () => FractionBakery.open()], ' +
+        '["Little Shop", () => Game.startLittleShop()], ' +
+        '["Probability Machine", () => ProbabilityCarnival.open()]' +
+      '];' +
+      'let checkedScreens = 0;' +
+      'const isVisible = node => { const style = getComputedStyle(node); const rect = node.getBoundingClientRect(); return !node.hidden && !node.closest("[hidden]") && style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0; };' +
+      'for (const [name, launch] of launchers) {' +
+        'Game.goHome(); launch();' +
+        'const active = document.querySelector(".screen.active");' +
+        'assert(active, name + " did not activate a screen at " + innerWidth + "px.");' +
+        'assert(!active.hidden, name + " activated a hidden screen at " + innerWidth + "px.");' +
+        'assert(document.documentElement.scrollWidth <= innerWidth + 2, name + " causes document horizontal overflow at " + innerWidth + "px (" + document.documentElement.scrollWidth + "px).");' +
+        'assert(document.body.scrollWidth <= innerWidth + 2, name + " causes body horizontal overflow at " + innerWidth + "px (" + document.body.scrollWidth + "px).");' +
+        'const activeStyle = getComputedStyle(active);' +
+        'assert(!(activeStyle.overflowY === "hidden" && active.scrollHeight > active.clientHeight + 4), name + " clips vertical content at " + innerWidth + "px (" + active.scrollHeight + "px inside " + active.clientHeight + "px).");' +
+        'const controls = Array.from(active.querySelectorAll("button, a[href], input:not([type=hidden]), select, textarea")).filter(isVisible);' +
+        'for (const node of controls) {' +
+          'if (node.matches("input,select,textarea")) {' +
+            'const labelled = Boolean(node.getAttribute("aria-label") || node.getAttribute("aria-labelledby") || (node.labels && node.labels.length) || node.title);' +
+            'assert(labelled, name + " has an input without an accessible label: " + (node.id || node.outerHTML.slice(0, 100)));' +
+          '} else {' +
+            'const textName = (node.innerText || node.textContent || "").replace(/\\s+/g, " ").trim();' +
+            'assert(Boolean(node.getAttribute("aria-label") || node.getAttribute("aria-labelledby") || node.title || textName), name + " has an unnamed visible control: " + node.outerHTML.slice(0, 120));' +
+          '}' +
+          'if (node.tagName === "BUTTON") {' +
+            'const rect = node.getBoundingClientRect();' +
+            'assert(rect.width >= 24 && rect.height >= 24, name + " contains a very small button (" + Math.round(rect.width) + "x" + Math.round(rect.height) + "): " + node.textContent.trim().slice(0, 40));' +
+            'let parent = node.parentElement, insideHorizontalScroller = false;' +
+            'while (parent && parent !== active) { const overflowX = getComputedStyle(parent).overflowX; if (overflowX === "auto" || overflowX === "scroll") { insideHorizontalScroller = true; break; } parent = parent.parentElement; }' +
+            'assert(insideHorizontalScroller || (rect.left >= -2 && rect.right <= innerWidth + 2), name + " has a button clipped horizontally at " + innerWidth + "px: " + node.textContent.trim().slice(0, 40));' +
+          '}' +
+        '}' +
+        'const visibleCopy = (active.innerText || "").toLowerCase();' +
+        'assert(!/\\b(dumb|stupid|idiot|loser|worthless|lazy|hopeless|not smart|bad at math|you are a failure)\\b/.test(visibleCopy), name + " contains shaming or derogatory learner-facing wording.");' +
+        'checkedScreens++;' +
+      '}' +
+      'Game.goHome();' +
+      'document.documentElement.style.setProperty("--font-scale", "1");' +
+      'assert(document.documentElement.scrollWidth <= innerWidth + 2, "The home screen overflows horizontally at " + innerWidth + "px.");' +
+      'const dedicationLink = document.querySelector(".seva-dedication a");' +
+      'assert(dedicationLink && getComputedStyle(dedicationLink).textDecorationLine.includes("underline"), "The home-page inline link must be visibly underlined.");' +
+      'assert(getComputedStyle(dedicationLink).color !== "rgb(0, 0, 238)", "A home-page link is using the browser default blue instead of the theme.");' +
+      'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
+      'assert(gameCards.length === 8, "The visible game menu should contain eight current game cards, not " + gameCards.length + ".");' +
+      'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
+      'return { width: innerWidth, height: innerHeight, fontScale: innerWidth <= 320 ? 1.35 : 1, screensChecked: checkedScreens, visibleGameCards: gameCards.length, horizontalOverflow: false, accessibleNamesChecked: true, derogatoryCopyFound: false };' +
+    '})()');
+    if (!result || result.screensChecked !== gamesForInterfaceAudit) {
+      throw new Error('Whole-game UI audit did not complete at ' + viewport.width + 'px.');
+    }
+    interfaceAuditResults.push(result);
+  }
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
+  await evaluate('document.activeElement?.blur();');
+  await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  const keyboardFocusAudit = await evaluate('(() => { const node=document.activeElement; const style=getComputedStyle(node); if (!node.matches(":focus-visible")) throw new Error("Keyboard navigation did not expose a focus-visible control on the games page."); if (style.outlineStyle==="none" || parseFloat(style.outlineWidth)<2) throw new Error("Keyboard focus ring is missing or too thin on the games page."); return { element:node.tagName, outlineStyle:style.outlineStyle, outlineWidth:style.outlineWidth }; })()');
+
   const concurrencyResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const generated = await Promise.all(Array.from({length: 90}, (_, i) => Promise.resolve().then(() => QuestionBank.generate(["easy","medium","hard"][i % 3]))));' +
@@ -856,6 +938,56 @@ async function main() {
     'return { quizQuestions: document.getElementById("quiz-q-number")?.textContent, sudokuCells: document.querySelectorAll("#sudoku-grid .sudoku-cell").length, shapeCells: document.querySelectorAll("#shape-board .sp-cell").length };' +
   '})()');
 
+  await cdp('Page.navigate', { url: baseUrl + '/wiki.html' });
+  await waitFor(async () => await evaluate('document.readyState === "complete" && Boolean(document.querySelector(".wiki-shell"))'));
+  await evaluate('document.activeElement?.blur();');
+  await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  const wikiFocusAudit = await evaluate('(() => { const node=document.activeElement; const style=getComputedStyle(node); if (!node.matches(":focus-visible")) throw new Error("Keyboard navigation did not expose a focus-visible control on the Wiki."); if (style.outlineStyle==="none" || parseFloat(style.outlineWidth)<2) throw new Error("Keyboard focus ring is missing or too thin on the Wiki."); return { element:node.tagName, outlineStyle:style.outlineStyle, outlineWidth:style.outlineWidth }; })()');
+  const wikiResponsiveResults = [];
+  for (const viewport of [
+    { width: 320, height: 640, mobile: true },
+    { width: 390, height: 844, mobile: true },
+    { width: 768, height: 1024, mobile: true },
+    { width: 1366, height: 768, mobile: false }
+  ]) {
+    await cdp('Emulation.setDeviceMetricsOverride', { ...viewport, deviceScaleFactor: 1 });
+    const result = await evaluate('(() => {' +
+      'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+      'const visible = node => { const style=getComputedStyle(node), rect=node.getBoundingClientRect(); return !node.hidden && !node.closest("[hidden]") && style.display!=="none" && style.visibility!=="hidden" && rect.width>0 && rect.height>0; };' +
+      'assert(document.documentElement.scrollWidth <= innerWidth + 2, "Wiki page overflows horizontally at " + innerWidth + "px.");' +
+      'assert(document.querySelectorAll("#offering").length === 1, "Wiki must contain exactly one offering section.");' +
+      'assert(!document.body.innerText.includes("I can change my mind"), "Wiki still contains wording the author flagged as potentially diminishing.");' +
+      'const missingTargets = Array.from(document.querySelectorAll("a")).filter(a => { const href=a.getAttribute("href"); return href && href.startsWith("#") && !document.getElementById(decodeURIComponent(href.slice(1))); });' +
+      'assert(missingTargets.length===0, "Wiki has a broken in-page link: " + (missingTargets[0]?.getAttribute("href") || ""));' +
+      'const actionable = Array.from(document.querySelectorAll("a[href],button")).filter(visible);' +
+      'for (const node of actionable) {' +
+        'const name=(node.getAttribute("aria-label")||node.getAttribute("aria-labelledby")||node.title||node.innerText||node.textContent||"").trim();' +
+        'assert(name.length>0, "Wiki has an unnamed visible link or button: "+node.outerHTML.slice(0,120));' +
+        'if (node.tagName==="BUTTON") { const rect=node.getBoundingClientRect(); assert(rect.width>=24&&rect.height>=24,"Wiki button has a very small target at "+innerWidth+"px: "+name.slice(0,40)); }' +
+      '}' +
+      'const inlineLinks=Array.from(document.querySelectorAll(".wiki-card a, .wiki-footer a")).filter(visible);' +
+      'assert(inlineLinks.length>0, "Wiki inline links are missing.");' +
+      'for (const link of inlineLinks) {' +
+        'const style=getComputedStyle(link);' +
+        'assert(style.textDecorationLine.includes("underline"), "Inline wiki link is not underlined at rest: "+(link.innerText||link.href).trim().slice(0,80));' +
+        'assert(style.color!=="rgb(0, 0, 238)" && style.color!=="rgb(85, 26, 139)", "Wiki link uses a browser-default blue or purple colour.");' +
+      '}' +
+      'const cardButtons=Array.from(document.querySelectorAll(".game-choice"));' +
+      'assert(cardButtons.length===8, "Wiki should expose all eight currently listed games.");' +
+      'for (const card of cardButtons) { card.click(); const detail=document.getElementById("game-detail"); assert(detail&&!detail.hidden,"Selecting "+card.dataset.game+" did not reveal game details."); assert(document.getElementById("game-detail-title").textContent.trim().length>0,"Game detail title is empty."); assert(card.getAttribute("aria-expanded")==="true","Selected game card did not expose expanded state."); assert(cardButtons.filter(other=>other.getAttribute("aria-expanded")==="true").length===1,"Game guide has more than one selected card."); }' +
+      'document.getElementById("game-detail-close").click();' +
+      'assert(document.getElementById("game-detail").hidden,"Close did not hide game details.");' +
+      'assert(cardButtons.every(card=>card.getAttribute("aria-expanded")==="false"),"Close did not reset game-card expanded states.");' +
+      'const search=document.getElementById("wiki-search-input"); search.value="little shop"; search.dispatchEvent(new Event("input",{bubbles:true}));' +
+      'assert(!document.getElementById("little-shop").classList.contains("wiki-hidden"),"Wiki search hides the matching Little Shop section.");' +
+      'search.value=""; search.dispatchEvent(new Event("input",{bubbles:true}));' +
+      'return {width:innerWidth,height:innerHeight,inlineLinks:inlineLinks.length,gameGuideCards:cardButtons.length,inPageLinks:Array.from(document.querySelectorAll("a")).filter(a => (a.getAttribute("href") || "").startsWith("#")).length,horizontalOverflow:false,linkThemeConsistent:true};' +
+    '})()');
+    wikiResponsiveResults.push(result);
+  }
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
+
   await sleep(500);
   const unexpectedResourceErrors = failedResources.filter(item => item.status !== 404 || !item.url.includes('/api/'));
   if (unexpectedResourceErrors.length) throw new Error('Browser resource errors detected:\n' + unexpectedResourceErrors.map(item => item.status + ' ' + item.url).join('\n'));
@@ -864,7 +996,7 @@ async function main() {
   if (serverErrors.length) throw new Error('Server emitted output during a successful test run:\n' + serverErrors.join('\n'));
   if (processErrors.length) throw new Error('Test process captured uncaught failures:\n' + processErrors.join('\n'));
 
-  console.log(JSON.stringify({ status: 'PASS', baseline, httpAudit, malformedInputs: malformedInputResult, fractionBakery: fractionResult, fractionBakeryResponsive: fractionResponsiveResults, littleShopResponsive: littleShopResponsiveResults, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0, serverErrors: 0, processErrors: 0 }, null, 2));
+  console.log(JSON.stringify({ status: 'PASS', baseline, httpAudit, malformedInputs: malformedInputResult, fractionBakery: fractionResult, fractionBakeryResponsive: fractionResponsiveResults, littleShopResponsive: littleShopResponsiveResults, interfaceAudit: interfaceAuditResults, keyboardFocus: keyboardFocusAudit, wikiResponsive: wikiResponsiveResults, wikiKeyboardFocus: wikiFocusAudit, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0, serverErrors: 0, processErrors: 0 }, null, 2));
 }
 
 try {

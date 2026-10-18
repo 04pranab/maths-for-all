@@ -379,7 +379,7 @@ We want the games to encourage:
 
 The first interaction should feel approachable.
 
-### “I can change my mind.”
+### “I can learn something new.”
 
 A prediction is allowed to be wrong.
 

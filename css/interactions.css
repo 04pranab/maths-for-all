@@ -1,0 +1,98 @@
+/* Shared interaction rules. Game styles may shape controls, but every link keeps
+   the same palette and every keyboard interaction keeps a visible focus ring. */
+
+a {
+  color: var(--indigo-deep);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.16em;
+  text-decoration-skip-ink: auto;
+}
+
+a:visited {
+  color: var(--indigo-deep);
+}
+
+a:hover {
+  color: var(--indigo);
+  text-decoration-thickness: 2px;
+}
+
+a:active {
+  color: var(--indigo-deep);
+}
+
+/* Navigation is styled as navigation, not as inline body copy. */
+.site-nav a,
+.nav-links a,
+.wiki-nav-links a,
+.wiki-index a,
+.brand-mark {
+  text-decoration: none;
+}
+
+/* Inline article links remain visibly identifiable without needing a hover. */
+.wiki-card a {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.16em;
+}
+
+body :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.game-picker .game-choice:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.answer-input:focus-visible,
+.setup-input:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+button,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: rgba(118, 90, 114, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  a {
+    color: LinkText;
+  }
+
+  a:visited {
+    color: VisitedText;
+  }
+
+  body :is(a, button, input, select, textarea, [tabindex]):focus-visible,
+  .game-picker .game-choice:focus-visible {
+    outline-color: Highlight;
+  }
+}
+
+.wiki-footer a {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.16em;
+}
