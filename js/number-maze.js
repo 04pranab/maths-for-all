@@ -126,7 +126,6 @@
       button.type = 'button';
       button.className = 'nm-cell';
       button.dataset.cell = String(cell);
-      button.setAttribute('role', 'gridcell');
       button.setAttribute('aria-label', boardCellLabel(cell, puzzle));
       button.setAttribute('aria-pressed', String(routeIndex.has(cell)));
       button.tabIndex = cell === state.focusCell ? 0 : -1;
