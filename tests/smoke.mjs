@@ -345,6 +345,18 @@ async function main() {
 
     screen.querySelector("#nm-board .is-start").click();
     assert(NumberMaze.getSummary().pathLength === 1, "Starting checkpoint should create a one-cell path.");
+    const codeParts = /^NM1-([GSX])-([0-9A-Z]{1,7})$/.exec(initialPuzzleCode);
+    const puzzleDifficulty = { G: "gentle", S: "steady", X: "stretch" }[codeParts[1]];
+    const keyboardPuzzle = NumberMazeEngine.generate(Number.parseInt(codeParts[2], 36), puzzleDifficulty);
+    const delta = keyboardPuzzle.solution[1] - keyboardPuzzle.solution[0];
+    const arrowKey = delta === -keyboardPuzzle.size ? "ArrowUp" : delta === keyboardPuzzle.size ? "ArrowDown" : delta === 1 ? "ArrowRight" : "ArrowLeft";
+    const focusedStart = document.activeElement;
+    assert(focusedStart && focusedStart.matches("#nm-board [data-cell]"), "Starting the route should focus the current path cell.");
+    focusedStart.dispatchEvent(new KeyboardEvent("keydown", { key: arrowKey, bubbles: true, cancelable: true }));
+    assert(NumberMaze.getSummary().pathLength === 2, "Arrow keys should extend the path to an adjacent open square.");
+    assert(document.activeElement.dataset.cell === String(keyboardPuzzle.solution[1]), "Keyboard movement should focus the next path cell.");
+    NumberMaze.undo();
+    assert(NumberMaze.getSummary().pathLength === 1, "Undo should remove the most recent keyboard step.");
     NumberMaze.undo();
     assert(NumberMaze.getSummary().pathLength === 0, "Undo should safely remove the first step.");
     NumberMaze.hint();
