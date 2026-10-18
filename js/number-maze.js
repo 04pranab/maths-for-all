@@ -435,6 +435,12 @@ const NumberMaze = (() => {
       return;
     }
     state.hints++;
+    if (state.path.length === 0) {
+      state.hintCell = state.puzzle.solution[1];
+      announce('Start at checkpoint 1, then move to the glowing square.');
+      render(false);
+      return;
+    }
     state.hintCell = state.puzzle.solution[prefix];
     if (prefix < state.path.length) {
       announce('Hint: the glowing square is on the unique complete route. Undo steps until your path lines up with it.');
