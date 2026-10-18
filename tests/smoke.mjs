@@ -840,8 +840,13 @@ async function main() {
   }
   await cdp('Emulation.setDeviceMetricsOverride', { width: 1366, height: 768, deviceScaleFactor: 1, mobile: false });
 
-  const concurrencyResult = await evaluate('(async () => {' +
-    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+ = await evaluate('(async () => {' +
+  await evaluate('document.activeElement?.blur();');
+  await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  const keyboardFocusAudit = await evaluate('(() => { const node=document.activeElement; const style=getComputedStyle(node); if (!node.matches(":focus-visible")) throw new Error("Keyboard navigation did not expose a focus-visible control on the games page."); if (style.outlineStyle==="none" || parseFloat(style.outlineWidth)<2) throw new Error("Keyboard focus ring is missing or too thin on the games page."); return { element:node.tagName, outlineStyle:style.outlineStyle, outlineWidth:style.outlineWidth }; })()');
+
+  const concurrencyResult    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const generated = await Promise.all(Array.from({length: 90}, (_, i) => Promise.resolve().then(() => QuestionBank.generate(["easy","medium","hard"][i % 3]))));' +
     'assert(generated.length === 90, "Concurrent question generation returned the wrong count.");' +
     'assert(generated.every(q => q && Number.isFinite(q.answer) && typeof q.text === "string"), "Concurrent question generation returned an invalid question.");' +
@@ -936,6 +941,10 @@ async function main() {
 
   await cdp('Page.navigate', { url: baseUrl + '/wiki.html' });
   await waitFor(async () => await evaluate('document.readyState === "complete" && Boolean(document.querySelector(".wiki-shell"))'));
+  await evaluate('document.activeElement?.blur();');
+  await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  const wikiFocusAudit = await evaluate('(() => { const node=document.activeElement; const style=getComputedStyle(node); if (!node.matches(":focus-visible")) throw new Error("Keyboard navigation did not expose a focus-visible control on the Wiki."); if (style.outlineStyle==="none" || parseFloat(style.outlineWidth)<2) throw new Error("Keyboard focus ring is missing or too thin on the Wiki."); return { element:node.tagName, outlineStyle:style.outlineStyle, outlineWidth:style.outlineWidth }; })()');
   const wikiResponsiveResults = [];
   for (const viewport of [
     { width: 320, height: 640, mobile: true },
@@ -988,7 +997,7 @@ async function main() {
   if (serverErrors.length) throw new Error('Server emitted output during a successful test run:\n' + serverErrors.join('\n'));
   if (processErrors.length) throw new Error('Test process captured uncaught failures:\n' + processErrors.join('\n'));
 
-  console.log(JSON.stringify({ status: 'PASS', baseline, httpAudit, malformedInputs: malformedInputResult, fractionBakery: fractionResult, fractionBakeryResponsive: fractionResponsiveResults, littleShopResponsive: littleShopResponsiveResults, interfaceAudit: interfaceAuditResults, wikiResponsive: wikiResponsiveResults, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0, serverErrors: 0, processErrors: 0 }, null, 2));
+  console.log(JSON.stringify({ status: 'PASS', baseline, httpAudit, malformedInputs: malformedInputResult, fractionBakery: fractionResult, fractionBakeryResponsive: fractionResponsiveResults, littleShopResponsive: littleShopResponsiveResults, interfaceAudit: interfaceAuditResults, keyboardFocus: keyboardFocusAudit, wikiResponsive: wikiResponsiveResults, wikiKeyboardFocus: wikiFocusAudit, generators: generatorResult, concurrency: concurrencyResult, games: gameResult, browserErrors: 0, serverErrors: 0, processErrors: 0 }, null, 2));
 }
 
 try {
