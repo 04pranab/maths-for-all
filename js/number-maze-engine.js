@@ -249,7 +249,7 @@ const NumberMazeEngine = (() => {
     }
 
     /* A bounded, deterministic fallback: a fully constrained valid snake path. */
-    const fallbackPath = snakePath(settings.size);
+    const fallbackPath = snakePath(settings.size).slice(0, settings.maxCells);
     const fallback = buildPuzzle(actualSeed, key, settings.size, fallbackPath, 1, 0);
     fallback.generatedAt = 'validated-fallback';
     const verified = countSolutions(fallback, 2, settings.size * settings.size * 4 + 100);
