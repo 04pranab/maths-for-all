@@ -68,7 +68,7 @@
       how: "Start at checkpoint 1 and trace a single orthogonal route. Reach each later checkpoint in order, never revisit a square, and fill every open square before the final checkpoint.",
       skills: ["Spatial reasoning and path planning", "Sequencing and constraint-based deduction", "Perseverance, working memory and planning"],
       prompt: "Which square could close off a route if you leave it too late? What clue helps you know which checkpoint comes next?",
-      note: "The game offers unlimited untimed attempts, Undo, Reset and hints. Explore boards are generated with a solver that verifies a unique complete route; progress stays on the current device."
+      note: "The game offers three guided starters, unlimited untimed attempts, Undo, Reset and hints. Generated boards are solver-checked for a unique complete route. Copyable puzzle codes reproduce the exact board, and progress stays on the current device."
     },
     shop: {
       title: "🍎 Little Shop",
