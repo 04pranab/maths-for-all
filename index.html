@@ -886,14 +886,14 @@
             <button type="button" class="nm-action soft" onclick="NumberMaze.undo()">↶ Undo</button>
             <button type="button" class="nm-action soft" onclick="NumberMaze.hint()">💡 Hint</button>
             <button type="button" class="nm-action soft" onclick="NumberMaze.resetPath()">↻ Reset path</button>
-            <button type="button" class="nm-action primary" onclick="NumberMaze.newPuzzle()">＋ New puzzle</button>
+            <button type="button" id="nm-new-puzzle" class="nm-action primary" onclick="NumberMaze.newPuzzle()">＋ New puzzle</button>
           </div>
 
           <section id="nm-complete" class="nm-complete" hidden aria-labelledby="nm-complete-heading">
             <div class="nm-complete-emoji" aria-hidden="true">🌟</div>
             <h2 id="nm-complete-heading">Route complete!</h2>
             <p id="nm-complete-summary">You filled every open square and reached each checkpoint in order.</p>
-            <button type="button" class="nm-action primary" onclick="NumberMaze.newPuzzle()">Explore another puzzle →</button>
+            <button type="button" id="nm-next-complete" class="nm-action primary" onclick="NumberMaze.newPuzzle()">Explore another puzzle →</button>
           </section>
         </section>
 
