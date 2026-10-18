@@ -1070,7 +1070,7 @@ async function main() {
     'return { menuCardsClicked:cardsClicked, backActionsClicked, helpActionsClicked, probabilityMachineBackChecked:true, progressOpenCloseChecked:true };' +
   '})()');
 
-  if (!controlFlowAudit || controlFlowAudit.menuCardsClicked !== 8 || controlFlowAudit.backActionsClicked !== 8 || controlFlowAudit.helpActionsClicked < 6) {
+  if (!controlFlowAudit || controlFlowAudit.menuCardsClicked !== 9 || controlFlowAudit.backActionsClicked !== 9 || controlFlowAudit.helpActionsClicked !== 7) {
     throw new Error('Control-flow audit did not complete: ' + JSON.stringify(controlFlowAudit));
   }
 
