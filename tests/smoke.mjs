@@ -375,7 +375,7 @@ async function main() {
     assert(screen.querySelector("#nm-feedback").textContent.includes("Puzzle complete"), "Completion feedback should be available to assistive technology.");
     const dailySolvedCount = NumberMaze.getSummary().solved;
     NumberMaze.newPuzzle();
-    for (const cell of knownPuzzle.solution) screen.querySelector("#nm-board [data-cell=\"" + cell + "\"]").click();
+    for (const cell of knownPuzzle.solution) screen.querySelector('#nm-board [data-cell="' + cell + '"]').click();
     assert(NumberMaze.getSummary().solved === dailySolvedCount, "Replaying an already completed daily puzzle should not inflate the solved count.");
     NumberMaze.setMode("tutorial");
     assert(NumberMaze.getSummary().mode === "tutorial", "Guided Starters mode should be selectable.");
