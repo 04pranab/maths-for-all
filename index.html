@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/probability-carnival.css?v=20261007-7" />
   <link rel="stylesheet" href="css/fraction-bakery.css?v=20261008-4" />
   <link rel="stylesheet" href="css/little-shop.css?v=20261017-4" />
+  <link rel="stylesheet" href="css/interactions.css?v=20261018-1" />
 </head>
 <body>
 
@@ -213,7 +214,7 @@
       <div class="question-card" id="quiz-question">Loading...</div>
 
       <div class="answer-row">
-        <input type="number" id="quiz-input" class="answer-input" placeholder="Type your answer" autocomplete="off" inputmode="numeric" />
+        <input type="number" id="quiz-input" class="answer-input" aria-label="Answer to the arithmetic question" placeholder="Type your answer" autocomplete="off" inputmode="numeric" />
         <button class="btn-submit" id="quiz-submit-btn" onclick="Quiz.submit()">✔ Submit</button>
       </div>
 
@@ -265,7 +266,7 @@
         <div class="level-guide"><strong>🏁 Race map</strong><span>Starter keeps the numbers friendlier.</span><span>Growing adds multiplication and division.</span><span>Champion brings larger, multi-step thinking.</span></div>
 
         <label class="setup-label">🤝 Your name:</label>
-        <input type="text" id="race-player-name" class="setup-input" placeholder="Enter your name" maxlength="20" />
+        <input type="text" id="race-player-name" class="setup-input" aria-label="Player name for this race" placeholder="Enter your name" maxlength="20" />
 
         <label class="setup-label">⏱ Timer:</label>
         <div class="timer-options">
@@ -305,7 +306,7 @@
       <div class="question-card" id="race-question">Get Ready!</div>
 
       <div class="answer-row">
-        <input type="number" id="race-input" class="answer-input" placeholder="Answer fast!" autocomplete="off" inputmode="numeric" />
+        <input type="number" id="race-input" class="answer-input" aria-label="Answer to the current racing question" placeholder="Answer fast!" autocomplete="off" inputmode="numeric" />
         <button class="btn-submit btn-race-submit" onclick="Racing.submit()">➡ Go!</button>
       </div>
 
