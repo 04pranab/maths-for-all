@@ -8,6 +8,7 @@ const NumberMaze = (() => {
     path: [],
     mode: 'explore',
     difficulty: 'steady',
+    tutorialIndex: 0,
     focusCell: 0,
     hintCell: null,
     hints: 0,
@@ -42,6 +43,7 @@ const NumberMaze = (() => {
   }
 
   function currentDifficulty() {
+    if (state.mode === 'tutorial') return 'gentle';
     return state.mode === 'challenge' ? challengeDifficulty() : state.difficulty;
   }
 
@@ -67,11 +69,11 @@ const NumberMaze = (() => {
     document.querySelectorAll('[data-nm-difficulty]').forEach(button => {
       const selected = button.dataset.nmDifficulty === currentDifficulty();
       button.setAttribute('aria-pressed', String(selected));
-      button.disabled = state.mode === 'challenge';
+      button.disabled = state.mode === 'challenge' || state.mode === 'tutorial';
     });
     const current = state.puzzle ? state.puzzle.difficulty : currentDifficulty();
     const names = { gentle: 'Gentle', steady: 'Steady', stretch: 'Stretch' };
-    const modeNames = { explore: 'Explore', daily: 'Daily Challenge', challenge: 'Challenge Climb' };
+    const modeNames = { explore: 'Explore', daily: 'Daily Challenge', challenge: 'Challenge Climb', tutorial: 'Guided Starters' };
     const difficulty = byId('nm-current-difficulty');
     const mode = byId('nm-current-mode');
     if (difficulty) difficulty.textContent = names[current] || 'Steady';
@@ -193,7 +195,15 @@ const NumberMaze = (() => {
 
   function newPuzzle() {
     state.difficulty = currentDifficulty();
-    const seed = state.mode === 'daily' ? dailySeed() : NumberMazeEngine.randomSeed();
+    let seed;
+    if (state.mode === 'tutorial') {
+      const tutorialSeeds = [0x4D415A45, 0x4D415A46, 0x4D415A47];
+      state.difficulty = 'gentle';
+      seed = tutorialSeeds[state.tutorialIndex % tutorialSeeds.length];
+      state.tutorialIndex = (state.tutorialIndex + 1) % tutorialSeeds.length;
+    } else {
+      seed = state.mode === 'daily' ? dailySeed() : NumberMazeEngine.randomSeed();
+    }
     state.puzzle = NumberMazeEngine.generate(seed, state.difficulty);
     state.path = [];
     state.focusCell = state.puzzle.start;
@@ -211,13 +221,14 @@ const NumberMaze = (() => {
   function setMode(mode) {
     if (!['explore', 'daily', 'challenge'].includes(mode)) return;
     state.mode = mode;
+    if (mode === 'tutorial') state.tutorialIndex = 0;
     state.difficulty = currentDifficulty();
     newPuzzle();
     updateControls();
   }
 
   function setDifficulty(difficulty) {
-    if (!Object.prototype.hasOwnProperty.call(NumberMazeEngine.DIFFICULTIES, difficulty) || state.mode === 'challenge') return;
+    if (!Object.prototype.hasOwnProperty.call(NumberMazeEngine.DIFFICULTIES, difficulty) || state.mode === 'challenge' || state.mode === 'tutorial') return;
     state.difficulty = difficulty;
     newPuzzle();
   }
