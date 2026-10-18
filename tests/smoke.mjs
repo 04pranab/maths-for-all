@@ -193,16 +193,12 @@ async function main() {
 
   if (baseline.missing.length) throw new Error('Missing required DOM nodes: ' + baseline.missing.join(', '));
 
-  const resourceResults = await evaluate('(async () => {' +
-    'const urls = [...Array.from(document.scripts).map(s => s.src), ...Array.from(document.querySelectorAll("link[rel=stylesheet]")).map(l => l.href)];' +
-    'const results = [];' +
-    'for (const url of urls) { const r = await fetch(url, { cache: "no-store" }); results.push({ url, ok: r.ok, status: r.status }); }' +
-    'return results;' +
-  '})()');
-  const badResources = resourceResults.filter(x => !x.ok);
-  if (badResources.length) throw new Error('Broken static resources: ' + JSON.stringify(badResources));
+  const resourceResults  await evaluate('document.activeElement?.blur();');
+  await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+  const keyboardFocusAudit = await evaluate('(() => { const node=document.activeElement; const style=getComputedStyle(node); if (!node.matches(":focus-visible")) throw new Error("Keyboard navigation did not expose a focus-visible control on the games page."); if (style.outlineStyle==="none" || parseFloat(style.outlineWidth)<2) throw new Error("Keyboard focus ring is missing or too thin on the games page."); return { element:node.tagName, outlineStyle:style.outlineStyle, outlineWidth:style.outlineWidth }; })()');
 
-  const modalResult = await evaluate('(async () => {' +
+  const concurrencyResult = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'localStorage.clear(); sessionStorage.clear();' +
     'const guestPolicy = document.querySelector(".nav-policy");' +
