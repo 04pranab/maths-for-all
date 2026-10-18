@@ -82,6 +82,17 @@ const NumberMaze = (() => {
     if (challengeNote) challengeNote.hidden = state.mode !== 'challenge';
     const tutorialNote = byId('nm-tutorial-note');
     if (tutorialNote) tutorialNote.hidden = state.mode !== 'tutorial';
+    const newPuzzleButton = byId('nm-new-puzzle');
+    const nextCompleteButton = byId('nm-next-complete');
+    const nextLabels = {
+      explore: '＋ New puzzle',
+      daily: '↻ Replay daily puzzle',
+      challenge: 'Next challenge →',
+      tutorial: 'Next guided board →'
+    };
+    const nextLabel = nextLabels[state.mode] || nextLabels.explore;
+    if (newPuzzleButton) newPuzzleButton.textContent = nextLabel;
+    if (nextCompleteButton) nextCompleteButton.textContent = nextLabel;
     const progress = readProgress();
     const solved = byId('nm-total-solved');
     if (solved) solved.textContent = String(progress.solved);
@@ -222,7 +233,13 @@ const NumberMaze = (() => {
     state.dragging = false;
     render(false);
     const names = { gentle: 'Gentle', steady: 'Steady', stretch: 'Stretch' };
-    announce((state.mode === 'daily' ? 'Daily challenge' : state.mode === 'challenge' ? 'Challenge Climb' : 'Fresh puzzle') +
+    const modeLabels = {
+      explore: 'Fresh puzzle',
+      daily: 'Daily challenge',
+      challenge: 'Challenge Climb puzzle',
+      tutorial: 'Guided starter'
+    };
+    announce((modeLabels[state.mode] || 'Fresh puzzle') +
       ' ready. ' + names[state.difficulty] + ' difficulty, ' + state.puzzle.openCells.length +
       ' open squares. Begin at checkpoint 1.');
   }
