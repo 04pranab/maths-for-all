@@ -6,6 +6,7 @@
 - Added a solver-checked path puzzle that combines ordered checkpoints with the requirement to fill every open square exactly once.
 - Added seeded generation for Gentle, Steady and Stretch boards, a bounded uniqueness check and a verified constrained fallback.
 - Added three fixed guided starter boards, Explore, Daily Challenge and Challenge Climb; untimed attempts, mouse/touch tracing, keyboard arrow controls, undo, reset, hints, clear progress feedback and on-device progress. Daily replay does not inflate the solve count.
+- Added copyable, difficulty-aware puzzle codes that regenerate the exact board and reject malformed input.
 - Added generator invariant tests, game-navigation/help checks, responsive browser audit coverage, and the Number Maze entry in the Wiki game map.
 - Automated checks are being run on the feature branch. Physical-device, assistive-technology and learner/educator evaluation remain separate review steps.
 
