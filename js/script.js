@@ -172,7 +172,8 @@ const ControlsOverlay = (function () {
         'Move one square horizontally or vertically at a time. Walls cannot be crossed.',
         'Fill every open square exactly once without revisiting a square, and reach the final checkpoint last.',
         'Use Undo, Reset path, or Hint whenever you need them. There is no clock and no penalty for experimenting.',
-        'Explore generates fresh validated boards, Daily Challenge repeats one puzzle for the day, and Challenge Climb grows harder as you solve.',
+        'Start with Guided Starters, explore fresh boards, repeat the shared Daily Challenge, or try the Challenge Climb.',
+        'Copy or load a puzzle code to replay the same board or share it with someone else.',
       ],
     },
     slab: {
