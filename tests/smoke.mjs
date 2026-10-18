@@ -999,7 +999,7 @@ async function main() {
       'assert(active && active.id === item.screen, item.name + " card opened " + (active?.id || "no active screen") + " instead of " + item.screen + ".");' +
       'cardsClicked++;' +
       'if (item.help) {' +
-        'const help = active.querySelector("button.btn-help");' +
+        'const help = active.querySelector("button.btn-help, button.nm-help");' +
         'assert(help && !help.disabled, item.name + " is missing its enabled How to play button.");' +
         'help.click();' +
         'const overlay = document.getElementById("controls-overlay");' +
