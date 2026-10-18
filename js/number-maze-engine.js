@@ -1,5 +1,6 @@
 /* Number Maze: deterministic procedural boards with a bounded uniqueness solver. */
-(function (root) {
+const root = typeof globalThis !== 'undefined' ? globalThis : this;
+const NumberMazeEngine = (() => {
   'use strict';
 
   const DIFFICULTIES = {
