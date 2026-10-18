@@ -349,6 +349,8 @@ async function main() {
     assert(NumberMaze.getSummary().pathLength === 0, "Undo should safely remove the first step.");
     NumberMaze.hint();
     assert(screen.querySelector("#nm-board .is-hint"), "Hint should identify a useful next square.");
+    assert(!screen.querySelector("#nm-board .is-hint").classList.contains("is-start"), "An empty-path hint should point to the next move, not merely repeat checkpoint 1.");
+    assert(screen.querySelector("#nm-feedback").textContent.includes("move to the glowing square"), "The first hint should explain the suggested next move.");
     NumberMaze.setDifficulty("gentle");
     assert(NumberMaze.getSummary().difficulty === "gentle", "Explore difficulty selector should work.");
     NumberMaze.setMode("daily");
