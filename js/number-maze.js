@@ -69,7 +69,7 @@
       button.setAttribute('aria-pressed', String(selected));
       button.disabled = state.mode === 'challenge';
     });
-    const current = currentDifficulty();
+    const current = state.puzzle ? state.puzzle.difficulty : currentDifficulty();
     const names = { gentle: 'Gentle', steady: 'Steady', stretch: 'Stretch' };
     const modeNames = { explore: 'Explore', daily: 'Daily Challenge', challenge: 'Challenge Climb' };
     const difficulty = byId('nm-current-difficulty');
@@ -84,8 +84,10 @@
     const dailyBadge = byId('nm-daily-badge');
     if (dailyBadge) {
       const done = !!progress.daily[dailyProgressKey()];
-      dailyBadge.textContent = done ? 'Daily puzzle complete' : 'One shared puzzle per day';
-      dailyBadge.classList.toggle('is-complete', done);
+      dailyBadge.textContent = state.mode === 'daily'
+        ? (done ? 'Daily puzzle complete' : 'Today’s shared puzzle')
+        : 'Untimed · No penalties';
+      dailyBadge.classList.toggle('is-complete', state.mode === 'daily' && done);
     }
   }
 
