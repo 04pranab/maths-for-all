@@ -134,3 +134,21 @@
 /* Keep every level's title and question flush together. */
 #screen-fraction-bakery .fb-work{row-gap:0}
 #screen-fraction-bakery .fb-title + .fb-prompt{margin-top:0!important}
+
+/* On narrow phones, keep level selectors large enough to tap and scroll vertically. */
+@media (max-width: 520px) {
+  #screen-fraction-bakery .fb-level-grid {
+    grid-template-columns: repeat(5, minmax(44px, 1fr));
+    grid-template-rows: repeat(20, 44px);
+    max-height: 280px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    gap: 4px;
+  }
+
+  #screen-fraction-bakery .fb-level-button {
+    min-height: 44px;
+    font-size: 0.82rem;
+    border-radius: 8px;
+  }
+}
