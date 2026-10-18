@@ -81,7 +81,7 @@ The current feature branch includes:
 - seeded procedural generation for Gentle (4×4), Steady (5×5), and Stretch (6×6) boards;
 - a bounded backtracking solver that verifies a unique solution before a puzzle is shown;
 - a deterministic validated fallback if randomized construction cannot produce an accepted board;
-- three fixed guided starter boards, Explore, Daily Challenge and Challenge Climb modes;
+- three fixed guided starter boards, Explore, Daily Challenge and Challenge Climb modes; progress counts a completed daily board once per day;
 - touch/mouse path tracing, keyboard arrow navigation, undo, reset, hints, live progress feedback and an untimed retry-friendly flow;
 - on-device progress and deterministic daily puzzles;
 - automated generator invariant tests and browser smoke/responsive coverage.
