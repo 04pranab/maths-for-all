@@ -365,7 +365,8 @@
   }
 
   function handleArrow(event) {
-    if (!event.target || !event.target.matches('#nm-board [data-cell]')) return;
+    const screen = byId('screen-number-maze');
+    if (!screen || !screen.classList.contains('active') || !event.target || !event.target.matches('#nm-board [data-cell]')) return;
     const current = Number(event.target.dataset.cell);
     const size = state.puzzle ? state.puzzle.size : 0;
     if (!size) return;
