@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### UI consistency and pre-next-game stabilization
+- Added a final-loaded interaction stylesheet so inline links use the site's indigo palette, visited links do not turn browser-purple, article links stay underlined at rest, navigation remains navigation-like, and keyboard focus is clearly visible.
+- Added programmatic labels to the arithmetic answer field, racing answer field and racing player-name field.
+- Reworded feedback to keep the focus on learning and exploring rather than framing an answer as a personal failure; changed the learner promise that had been flagged as potentially diminishing.
+- Improved Fraction Bakery's narrow-phone level selector to use five columns of at least 44px controls in a vertically scrollable grid.
+- Expanded browser regression coverage to audit all nine game screens at 320, 390, 768, 1024, 1366 and 1920px widths, including increased text size at 320px, overflow/clipping, visible control names, minimum actionable target size, and shaming language.
+- Added wiki regression checks for 320, 390, 768 and 1366px widths, in-page anchors, themed underlined links, search and all interactive game-guide cards.
+- This remains an engineering and browser-audit milestone. Physical device, assistive-technology and learner/educator evaluation remains necessary.
+
 ### Offering and educational inspiration
 - Framed Maths for All as a small offering of gratitude, love and seva at the Lotus Feet of Bhagawan Sri Sathya Sai Baba, rather than presenting its purpose as software delivery alone.
 - Documented SSSVV’s published guiding principle, inclusive-education approach and role as an educational reference, while clearly stating that Maths for All is independent and does not claim official affiliation, review or endorsement.
