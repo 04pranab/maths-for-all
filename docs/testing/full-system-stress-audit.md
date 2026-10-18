@@ -19,7 +19,8 @@ The suite is intended to catch regressions without introducing test-only endpoin
 | Slab Maths | 60 repeated rounds + 120 fresh rounds + 30 concurrent generation calls |
 | Shape Fitting | all 100 authored levels + 100 repeated actions |
 | Fraction Bakery | all 100 levels rendered; horizontal overflow, workbench and visual containment, and order-dish card boundaries |
-| Main app and Wiki links | Every anchor target, same-origin route, in-page fragment, visible link name, and safe new-tab relationship checked |\n| Interactive navigation | Eight visible game cards clicked end-to-end, each Back/Home path, all available in-game help buttons, Progress open/close, Probability Machine return, and mobile menu open/close |\n| Inline action integrity | Every static inline application handler is checked for a resolvable function before gameplay stress starts |\n| Arithmetic gameplay | 300 repeated submit/next actions |
+| Main app and Wiki links | Every anchor target, same-origin route, in-page fragment, visible link name, and safe new-tab relationship checked |
+| Interactive navigation | Eight visible game cards clicked end-to-end, each Back/Home path, all available in-game help buttons, Progress open/close, Probability Machine return, and mobile menu open/close |\n| Inline action integrity | Every static inline application handler is checked for a resolvable function before gameplay stress starts |\n| Arithmetic gameplay | 300 repeated submit/next actions |
 | Math Racing | 20 rounds × 30 submissions + timer/stale-callback checks |
 | Cross-game navigation | queued starts and immediate screen switching |
 | Malformed browser input | blank, text, negative, oversized, NUL and whitespace inputs |
