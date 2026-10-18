@@ -249,8 +249,10 @@ const NumberMaze = (() => {
     state.completed = true;
     state.hintCell = null;
     const progress = readProgress();
-    progress.solved++;
-    if (state.mode === 'daily') progress.daily[dailyProgressKey()] = true;
+    const dailyKey = dailyProgressKey();
+    const dailyWasAlreadySolved = state.mode === 'daily' && !!progress.daily[dailyKey];
+    if (!dailyWasAlreadySolved) progress.solved++;
+    if (state.mode === 'daily') progress.daily[dailyKey] = true;
     writeProgress(progress);
     render(false);
     announce('Puzzle complete. Every open square was filled exactly once and each checkpoint was reached in order. Well reasoned!');
