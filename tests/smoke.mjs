@@ -955,7 +955,8 @@ async function main() {
       '{name:"Slab Maths",card:"button.menu-card[onclick=\\"Game.startSlabMath()\\"]",screen:"screen-slab",help:"How to play: Slab Maths"},' +
       '{name:"Shape Architect",card:"button.menu-card[onclick=\\"Game.startShapeArchitect()\\"]",screen:"screen-architect",help:"How to play: Shape Architect"},' +
       '{name:"Fraction Bakery",card:"button.menu-card[onclick=\\"FractionBakery.open()\\"]",screen:"screen-fraction-bakery",help:null},' +
-      '{name:"Little Shop",card:"button.menu-card[onclick=\\"Game.startLittleShop()\\"]",screen:"screen-little-shop",help:null}' +
+      '{name:"Little Shop",card:"button.menu-card[onclick=\\"Game.startLittleShop()\\"]",screen:"screen-little-shop",help:null},' +
+      '{name:"Number Maze",card:"button.menu-card[onclick=\\"Game.startNumberMaze()\\"]",screen:"screen-number-maze",help:"How to play: Number Maze"}' +
     '];' +
     'let cardsClicked = 0, backActionsClicked = 0, helpActionsClicked = 0;' +
     'for (const item of cases) {' +
