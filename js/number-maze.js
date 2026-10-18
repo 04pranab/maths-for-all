@@ -1,5 +1,5 @@
 /* Number Maze interaction layer. The engine is deterministic and independently testable. */
-(function () {
+const NumberMaze = (() => {
   'use strict';
 
   const STORAGE_KEY = 'mfa_number_maze_progress_v1';
