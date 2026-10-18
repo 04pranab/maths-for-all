@@ -191,6 +191,8 @@ async function main() {
     'return { missing, resources };' +
   '})()');
 
+  if (baseline.missing.length) throw new Error('Missing required DOM nodes: ' + baseline.missing.join(', '));
+
   const routeIntegrityAudit = await evaluate('(async () => {' +
     'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
     'const origin = location.origin;' +
@@ -207,7 +209,8 @@ async function main() {
       'for (const link of sourceDocument.querySelectorAll("a[href]")) {' +
         'const rawHref = link.getAttribute("href");' +
         'assert(Boolean(rawHref && rawHref.trim()), pagePath + " contains an anchor with an empty href.");' +
-        'const label = (link.textContent || link.getAttribute("aria-label") || link.title || Array.from(link.querySelectorAll("img")).map(image => image.alt).join(" ")).replace(/\\s+/g, " ").trim();' +
+        'const labelParts = [link.textContent, link.getAttribute("aria-label"), link.title, Array.from(link.querySelectorAll("img")).map(image => image.alt).join(" ")];' +
+        'const label = String(labelParts.find(value => String(value || "").trim()) || "").replace(/\\s+/g, " ").trim();' +
         'assert(Boolean(label), pagePath + " contains an unnamed link: " + rawHref);' +
         'const destination = new URL(rawHref, pageUrl);' +
         'assert(["http:", "https:", "mailto:", "tel:"].includes(destination.protocol), pagePath + " contains an unsafe or unsupported link protocol: " + rawHref);' +
