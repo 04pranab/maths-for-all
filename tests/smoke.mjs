@@ -331,6 +331,18 @@ async function main() {
     assert(screen.querySelector("#nm-feedback[aria-live='polite']"), "Number Maze live feedback is missing.");
     assert(screen.querySelectorAll("#nm-board .nm-cell").length === NumberMaze.getSummary().openCellCount, "Every usable puzzle square should render as a cell.");
     assert(screen.querySelector("#nm-board .is-start"), "The generated puzzle should mark checkpoint 1.");
+    const codeInput = screen.querySelector("#nm-puzzle-code");
+    assert(codeInput && /^NM1-[GSX]-[0-9A-Z]{1,7}$/.test(codeInput.value), "A shareable puzzle code should be shown.");
+    const initialPuzzleCode = codeInput.value;
+    const initialBoard = screen.querySelector("#nm-board").innerHTML;
+    assert(NumberMaze.loadPuzzleCode(), "Loading a valid puzzle code should succeed.");
+    assert(screen.querySelector("#nm-board").innerHTML === initialBoard, "Loading a puzzle code should reconstruct the exact same board.");
+    codeInput.value = "not-a-number-maze-code";
+    assert(!NumberMaze.loadPuzzleCode(), "Malformed puzzle codes should be rejected.");
+    assert(screen.querySelector("#nm-feedback").textContent.includes("not recognised"), "Invalid codes should receive clear feedback.");
+    codeInput.value = initialPuzzleCode;
+    assert(NumberMaze.loadPuzzleCode(), "The original puzzle code should remain reusable.");
+
     screen.querySelector("#nm-board .is-start").click();
     assert(NumberMaze.getSummary().pathLength === 1, "Starting checkpoint should create a one-cell path.");
     NumberMaze.undo();
