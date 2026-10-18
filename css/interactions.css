@@ -90,3 +90,9 @@ textarea {
     outline-color: Highlight;
   }
 }
+
+.wiki-footer a {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.16em;
+}
