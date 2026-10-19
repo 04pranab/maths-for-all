@@ -3683,3 +3683,310 @@ body {
 .nav-link.nav-wiki-link.active {
   text-decoration: none;
 }
+
+
+/* Home: a compact, calm learning arcade with a level grid. */
+#screen-menu {
+  min-height: calc(100dvh - 60px);
+  padding-bottom: 8px;
+}
+#screen-menu .arcade-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+  grid-template-rows: auto auto auto auto;
+  align-items: center;
+  column-gap: clamp(20px, 3.2vw, 48px);
+  row-gap: 2px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 10px 20px 4px;
+  text-align: left;
+}
+#screen-menu .arcade-badge {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: start;
+  margin: 0 0 3px;
+  padding: 4px 12px;
+  border-width: 1.5px;
+  border-radius: 999px;
+  font-size: .78rem;
+  letter-spacing: .01em;
+  transform: none;
+}
+#screen-menu .arena-title {
+  grid-column: 1;
+  grid-row: 2;
+  margin: 0;
+  font-size: clamp(2.1rem, 4.1vw, 3.35rem);
+  line-height: 1;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+}
+#screen-menu .title-arena { margin-left: 8px; }
+#screen-menu .arena-subtitle-hi {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: start;
+  margin: 4px 0 0;
+  font-size: 1.02rem;
+  line-height: 1.3;
+}
+#screen-menu .learning-promise {
+  grid-column: 2;
+  grid-row: 2 / 4;
+  align-self: center;
+  justify-self: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: center;
+  gap: 6px;
+  max-width: none;
+  margin: 0;
+}
+#screen-menu .learning-promise span {
+  padding: 5px 9px;
+  border-width: 1px;
+  background: rgba(255,255,255,.72);
+  box-shadow: none;
+  font-size: .78rem;
+  line-height: 1.25;
+}
+#screen-menu .math-wisdom {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  justify-content: center;
+  gap: 7px;
+  margin: 6px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid rgba(185,204,191,.55);
+}
+#screen-menu .math-wisdom-sanskrit { font-size: 1.02rem; }
+#screen-menu .math-wisdom-meaning { font-size: .82rem; }
+
+#screen-menu .menu-section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(1180px, 100%);
+  margin: 6px auto 0;
+  padding: 4px 20px 0;
+}
+#screen-menu .menu-section-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font: 800 1.08rem/1.25 var(--font-head);
+}
+#screen-menu .menu-section-heading p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .82rem;
+  line-height: 1.3;
+  text-align: right;
+}
+#screen-menu .menu-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 12px;
+  width: min(1180px, 100%);
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 8px 20px 4px;
+}
+#screen-menu .menu-card {
+  display: flex;
+  flex: 0 1 calc((100% - 48px) / 5);
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  max-width: none;
+  min-height: 192px;
+  padding: 12px 11px 11px;
+  border: 1.75px solid var(--ink);
+  border-radius: 16px 16px 16px 8px;
+  background: var(--card);
+  box-shadow: 0 3px 0 rgba(38,50,56,.10);
+  text-align: center;
+  transform: none;
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+#screen-menu .menu-card[hidden] { display: none !important; }
+#screen-menu .menu-card:hover,
+#screen-menu .menu-card:focus-visible {
+  border-color: var(--leaf-deep);
+  box-shadow: 0 5px 0 rgba(55,105,71,.15);
+  transform: translateY(-2px);
+}
+#screen-menu .card-badge-icon {
+  width: calc(54px + (var(--font-scale) - 1) * 12px);
+  height: calc(54px + (var(--font-scale) - 1) * 12px);
+  min-width: 50px;
+  min-height: 50px;
+  margin: 0 auto 8px;
+  border-width: 2px;
+  font-size: 1.65rem;
+  flex: 0 0 auto;
+}
+#screen-menu .card-title {
+  margin-bottom: 5px;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+#screen-menu .card-desc {
+  flex: 1 0 auto;
+  min-height: 3.6em;
+  margin-bottom: 9px;
+  font-size: .82rem;
+  line-height: 1.35;
+}
+#screen-menu .card-tag {
+  max-width: 100%;
+  margin-top: auto;
+  padding: 4px 8px;
+  border-width: 1px;
+  font-size: .73rem;
+  line-height: 1.25;
+  border-radius: 999px;
+  overflow-wrap: anywhere;
+}
+#screen-menu .menu-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 10px;
+  row-gap: 3px;
+  width: min(1180px, 100%);
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 9px 20px 4px;
+  font-size: .78rem;
+  line-height: 1.35;
+}
+#screen-menu .menu-footer .footer-welcome {
+  flex: 0 0 100%;
+  font-size: .8rem;
+}
+#screen-menu .menu-footer .footer-note,
+#screen-menu .menu-footer .type-credit {
+  display: inline;
+  margin: 0;
+  font-size: .75rem;
+  opacity: 1;
+}
+#screen-menu .menu-footer .type-credit { color: var(--ink-soft); }
+
+@media (max-width: 1100px) {
+  #screen-menu .menu-card { flex-basis: calc((100% - 24px) / 3); }
+  #screen-menu .arcade-header { column-gap: 24px; }
+  #screen-menu .learning-promise { gap: 5px; }
+}
+@media (max-width: 700px) {
+  #screen-menu .arcade-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 14px 3px;
+    text-align: center;
+  }
+  #screen-menu .arcade-badge {
+    align-self: center;
+    margin: 0 0 2px;
+    padding: 4px 10px;
+    font-size: .75rem;
+  }
+  #screen-menu .arena-title {
+    white-space: normal;
+    font-size: clamp(2.1rem, 8.5vw, 2.9rem);
+    line-height: 1.02;
+  }
+  #screen-menu .title-arena { margin-left: 5px; }
+  #screen-menu .arena-subtitle-hi { margin: 1px 0 0; font-size: 1rem; }
+  #screen-menu .learning-promise {
+    justify-content: center;
+    align-self: auto;
+    margin: 5px 0 0;
+    gap: 5px;
+  }
+  #screen-menu .learning-promise span { font-size: .74rem; padding: 4px 8px; }
+  #screen-menu .math-wisdom {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 7px;
+    margin-top: 4px;
+    padding-top: 5px;
+  }
+  #screen-menu .math-wisdom-sanskrit { font-size: .96rem; }
+  #screen-menu .math-wisdom-meaning { font-size: .78rem; }
+  #screen-menu .menu-section-heading { padding: 4px 14px 0; }
+  #screen-menu .menu-section-heading h2 { font-size: 1rem; }
+  #screen-menu .menu-section-heading p { font-size: .75rem; }
+  #screen-menu .menu-grid {
+    gap: 10px;
+    padding: 7px 14px 3px;
+  }
+  #screen-menu .menu-card {
+    flex-basis: calc((100% - 10px) / 2);
+    min-height: 188px;
+    padding: 11px 9px 10px;
+  }
+  #screen-menu .card-badge-icon {
+    width: calc(50px + (var(--font-scale) - 1) * 10px);
+    height: calc(50px + (var(--font-scale) - 1) * 10px);
+    min-width: 46px;
+    min-height: 46px;
+    font-size: 1.5rem;
+  }
+  #screen-menu .card-title { font-size: .96rem; }
+  #screen-menu .card-desc { font-size: .8rem; min-height: 3.7em; }
+  #screen-menu .card-tag { font-size: .7rem; }
+  #screen-menu .menu-footer { padding: 8px 14px 4px; row-gap: 4px; }
+}
+@media (max-width: 420px) {
+  #screen-menu .menu-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1px;
+    margin-top: 4px;
+  }
+  #screen-menu .menu-section-heading p { text-align: left; }
+  #screen-menu .menu-grid { padding-inline: 14px; }
+  #screen-menu .menu-card {
+    flex-basis: 100%;
+    max-width: 360px;
+    min-height: 0;
+    padding: 12px 12px 11px;
+  }
+  #screen-menu .card-badge-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+  }
+  #screen-menu .card-desc { min-height: 0; }
+}
+@media (max-height: 760px) and (min-width: 701px) {
+  #screen-menu .arcade-header { padding-top: 6px; }
+  #screen-menu .menu-card { min-height: 174px; padding: 9px 10px 8px; }
+  #screen-menu .card-badge-icon {
+    width: calc(48px + (var(--font-scale) - 1) * 10px);
+    height: calc(48px + (var(--font-scale) - 1) * 10px);
+    min-width: 46px;
+    min-height: 46px;
+    margin-bottom: 6px;
+    font-size: 1.45rem;
+  }
+  #screen-menu .card-desc { min-height: 3.3em; margin-bottom: 7px; }
+  #screen-menu .menu-footer { padding-top: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #screen-menu .menu-card { transition: none; }
+}
