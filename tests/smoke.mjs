@@ -327,8 +327,14 @@ async function main() {
     Game.startNumberMaze();
     const screen = document.getElementById("screen-number-maze");
     assert(screen.classList.contains("active"), "Number Maze did not open.");
+    assert(!screen.querySelector("#nm-setup").hidden, "Number Maze should open on its difficulty and mode menu.");
+    assert(screen.querySelector("#nm-play").hidden, "The board should stay hidden until the learner starts the puzzle.");
+    assert(screen.querySelectorAll("[data-nm-difficulty]").length === 3, "The setup menu should offer three difficulties.");
+    assert(screen.querySelectorAll("[data-nm-mode]").length === 4, "The setup menu should offer the available play styles.");
     assert(screen.querySelector("#nm-board"), "Number Maze board is missing.");
     assert(screen.querySelector("#nm-feedback[aria-live='polite']"), "Number Maze live feedback is missing.");
+    screen.querySelector("#nm-start-game").click();
+    assert(!screen.querySelector("#nm-play").hidden, "Starting a puzzle should reveal the board-first play screen.");
     assert(screen.querySelectorAll("#nm-board .nm-cell").length === NumberMaze.getSummary().openCellCount, "Every usable puzzle square should render as a cell.");
     assert(screen.querySelector("#nm-board .is-start"), "The generated puzzle should mark checkpoint 1.");
     const codeInput = screen.querySelector("#nm-puzzle-code");
@@ -354,6 +360,8 @@ async function main() {
     assert(focusedStart && focusedStart.matches("#nm-board [data-cell]"), "Starting the route should focus the current path cell.");
     focusedStart.dispatchEvent(new KeyboardEvent("keydown", { key: arrowKey, bubbles: true, cancelable: true }));
     assert(NumberMaze.getSummary().pathLength === 2, "Arrow keys should extend the path to an adjacent open square.");
+    const routeLine = screen.querySelector("#nm-board .nm-route-svg .nm-route-line");
+    assert(routeLine && routeLine.getAttribute("stroke-linecap") === "round" && routeLine.getAttribute("stroke-linejoin") === "round", "The route should render as a smooth connected line.");
     assert(document.activeElement.dataset.cell === String(keyboardPuzzle.solution[1]), "Keyboard movement should focus the next path cell.");
     NumberMaze.undo();
     assert(NumberMaze.getSummary().pathLength === 1, "Undo should remove the most recent keyboard step.");
