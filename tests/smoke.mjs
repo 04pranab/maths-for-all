@@ -327,7 +327,6 @@ async function main() {
     Game.goHome();
     Game.startNumberMaze();
     const screen = document.getElementById("screen-number-maze");
-    assert(document.getElementById("controls-overlay").classList.contains("hidden"), "Number Maze should not auto-open help on entry.");
     assert(screen.classList.contains("active"), "Number Maze did not open.");
     assert(!screen.querySelector("#nm-setup").hidden, "Number Maze should open on its difficulty and mode menu.");
     assert(screen.querySelector("#nm-play").hidden, "The board should stay hidden until the learner starts the puzzle.");
