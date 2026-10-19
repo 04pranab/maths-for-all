@@ -213,10 +213,10 @@ const ControlsOverlay = (function () {
 
   let activeKey = null;
 
-  function maybeShow(key) {
+  function maybeShow(key, silent) {
     if (!CONTENT[key]) return;
-    if (seen[key]) return;
     activeKey = key;
+    if (seen[key] || silent) return;
     render(key);
     show('controls-overlay');
   }
@@ -441,7 +441,7 @@ const Game = (function () {
   function startShapeArchitect(){ Analytics.log('shape_architect','open',{}); showScreen('architect'); ShapeArchitect.init(); ControlsOverlay.maybeShow('architect'); }
   function startFractionBakery(){ Analytics.log('fraction_bakery','open',{}); showScreen('fraction'); const screen=document.getElementById('screen-fraction-bakery'); if(screen) screen.hidden=false; FractionBakery.init(); ControlsOverlay.maybeShow('fraction'); }
   function startLittleShop(){ showScreen('shop'); window.LittleShop.init(); }
-  function startNumberMaze(){ Analytics.log('number_maze','open',{}); showScreen('numberMaze'); NumberMaze.init(); document.getElementById('number-maze-title')?.focus({ preventScroll: true }); }
+  function startNumberMaze(){ Analytics.log('number_maze','open',{}); showScreen('numberMaze'); NumberMaze.init(); ControlsOverlay.maybeShow('numberMaze', true); document.getElementById('number-maze-title')?.focus({ preventScroll: true }); }
 
   return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect, startFractionBakery, startLittleShop, startNumberMaze };
 })();
