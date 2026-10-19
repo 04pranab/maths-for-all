@@ -877,17 +877,17 @@
             </div>
             <p class="nm-section-note">Start small, then move up when it feels right.</p>
             <div class="nm-difficulty-list" role="group" aria-label="Puzzle difficulty">
-              <button type="button" class="nm-difficulty" data-nm-difficulty="gentle" aria-pressed="false">
+              <button type="button" class="nm-difficulty" data-nm-difficulty="gentle" aria-pressed="false" onclick="NumberMaze.setDifficulty('gentle')">
                 <span class="nm-difficulty-node" aria-hidden="true"></span>
                 <span class="nm-difficulty-name">Gentle</span>
                 <span class="nm-difficulty-note">A small start</span>
               </button>
-              <button type="button" class="nm-difficulty" data-nm-difficulty="steady" aria-pressed="true">
+              <button type="button" class="nm-difficulty" data-nm-difficulty="steady" aria-pressed="true" onclick="NumberMaze.setDifficulty('steady')">
                 <span class="nm-difficulty-node" aria-hidden="true"></span>
                 <span class="nm-difficulty-name">Steady</span>
                 <span class="nm-difficulty-note">Find your rhythm</span>
               </button>
-              <button type="button" class="nm-difficulty" data-nm-difficulty="stretch" aria-pressed="false">
+              <button type="button" class="nm-difficulty" data-nm-difficulty="stretch" aria-pressed="false" onclick="NumberMaze.setDifficulty('stretch')">
                 <span class="nm-difficulty-node" aria-hidden="true"></span>
                 <span class="nm-difficulty-name">Stretch</span>
                 <span class="nm-difficulty-note">A longer trail</span>
@@ -902,22 +902,22 @@
             </div>
             <p class="nm-section-note">Each one offers a different way to explore.</p>
             <div class="nm-mode-list" role="group" aria-label="Puzzle mode">
-              <button type="button" class="nm-mode" data-nm-mode="tutorial" aria-pressed="false">
+              <button type="button" class="nm-mode" data-nm-mode="tutorial" aria-pressed="false" onclick="NumberMaze.setMode('tutorial')">
                 <span class="nm-mode-index" aria-hidden="true">A</span>
                 <span class="nm-mode-copy"><span class="nm-mode-name">Guided Starters</span><small>Learn with three gentle boards</small></span>
                 <span class="nm-mode-check" aria-hidden="true"></span>
               </button>
-              <button type="button" class="nm-mode" data-nm-mode="explore" aria-pressed="true">
+              <button type="button" class="nm-mode" data-nm-mode="explore" aria-pressed="true" onclick="NumberMaze.setMode('explore')">
                 <span class="nm-mode-index" aria-hidden="true">B</span>
                 <span class="nm-mode-copy"><span class="nm-mode-name">Explore</span><small>A fresh maze each time</small></span>
                 <span class="nm-mode-check" aria-hidden="true"></span>
               </button>
-              <button type="button" class="nm-mode" data-nm-mode="daily" aria-pressed="false">
+              <button type="button" class="nm-mode" data-nm-mode="daily" aria-pressed="false" onclick="NumberMaze.setMode('daily')">
                 <span class="nm-mode-index" aria-hidden="true">C</span>
                 <span class="nm-mode-copy"><span class="nm-mode-name">Daily Challenge</span><small>One shared maze for today</small></span>
                 <span class="nm-mode-check" aria-hidden="true"></span>
               </button>
-              <button type="button" class="nm-mode" data-nm-mode="challenge" aria-pressed="false">
+              <button type="button" class="nm-mode" data-nm-mode="challenge" aria-pressed="false" onclick="NumberMaze.setMode('challenge')">
                 <span class="nm-mode-index" aria-hidden="true">D</span>
                 <span class="nm-mode-copy"><span class="nm-mode-name">Challenge Climb</span><small>Build up step by step</small></span>
                 <span class="nm-mode-check" aria-hidden="true"></span>
