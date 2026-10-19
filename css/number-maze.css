@@ -76,3 +76,119 @@
 @media (prefers-reduced-motion: reduce) {
   #screen-number-maze .nm-cell { transition: none; }
 }
+
+
+/* A quieter, field-journal setup screen: no generic card grid. */
+#screen-number-maze {
+  --nm-route-color: #4d6b53;
+  --nm-route-halo: #dfe8dc;
+  --nm-quiet-paper: #f6f7f1;
+  --nm-quiet-rule: #d0d9ce;
+  --nm-quiet-soft: #e7eee3;
+  --nm-quiet-ink: #2d4032;
+  padding: 0;
+  background: var(--nm-quiet-paper);
+}
+#screen-number-maze .nm-shell { max-width: none; width: 100%; padding: 8px clamp(12px, 2.4vw, 36px) 14px; }
+#screen-number-maze .nm-header { align-items: center; gap: 16px; max-width: 1240px; margin: 0 auto 4px; }
+#screen-number-maze .nm-header h1 { flex: 1 1 auto; margin: 0; color: var(--nm-quiet-ink); font-size: clamp(1.35rem, 2.1vw, 1.8rem); letter-spacing: -.025em; }
+#screen-number-maze .nm-back { min-height: 40px; padding: 7px 12px; border: 1px solid var(--nm-quiet-rule); border-radius: 999px; background: transparent; color: var(--nm-quiet-ink); box-shadow: none; font-size: .92rem; }
+#screen-number-maze .nm-settings { min-height: 40px; padding: 7px 12px; border-color: var(--nm-quiet-rule); border-radius: 999px; background: transparent; color: var(--nm-quiet-ink); box-shadow: none; }
+#screen-number-maze .nm-settings[hidden] { display: none !important; }
+#screen-number-maze .nm-setup { width: min(1100px, 100%); margin: clamp(8px, 1.8vh, 18px) auto 0; }
+#screen-number-maze .nm-setup[hidden], #screen-number-maze .nm-play[hidden] { display: none !important; }
+#screen-number-maze .nm-setup-hero { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(220px,.8fr); align-items: center; gap: clamp(18px,4vw,54px); padding: clamp(16px,2.5vh,26px) 0 clamp(22px,3vh,34px); border-bottom: 1px solid var(--nm-quiet-rule); }
+#screen-number-maze .nm-setup-copy { min-width: 0; }
+#screen-number-maze .nm-overline { margin: 0 0 7px; color: var(--nm-route-color); font-size: .78rem; font-weight: 800; letter-spacing: .13em; }
+#screen-number-maze #nm-setup-heading { margin: 0 0 9px; color: var(--nm-quiet-ink); font: 800 clamp(2rem,4.3vw,3.6rem)/1.04 var(--font-head); letter-spacing: -.035em; }
+#screen-number-maze .nm-setup-copy > p:last-child { max-width: 510px; color: #526256; font-size: clamp(1rem,1.45vw,1.16rem); line-height: 1.55; }
+#screen-number-maze .nm-trail-art { display: block; width: min(100%,360px); max-height: 150px; justify-self: end; overflow: visible; }
+#screen-number-maze .nm-trail-echo { stroke: var(--nm-route-halo); }
+#screen-number-maze .nm-trail-line { stroke: var(--nm-route-color); }
+#screen-number-maze .nm-trail-point { fill: var(--nm-quiet-paper); stroke: var(--nm-route-color); stroke-width: 3; }
+#screen-number-maze .nm-trail-art text { fill: var(--nm-route-color); font: 700 11px var(--font-body); }
+#screen-number-maze .nm-setup-content { display: grid; grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); gap: clamp(26px,5.5vw,74px); padding: clamp(22px,3.2vh,36px) 0 clamp(20px,3vh,32px); }
+#screen-number-maze .nm-choice-group { min-width: 0; }
+#screen-number-maze .nm-mode-choice { border-left: 1px solid var(--nm-quiet-rule); padding-left: clamp(22px,3.5vw,46px); }
+#screen-number-maze .nm-section-heading { display: flex; align-items: baseline; gap: 12px; margin: 0 0 3px; }
+#screen-number-maze .nm-section-number { color: #758779; font-size: .78rem; font-weight: 800; letter-spacing: .1em; }
+#screen-number-maze .nm-section-heading h3 { margin: 0; color: var(--nm-quiet-ink); font: 800 clamp(1.15rem,1.8vw,1.42rem)/1.25 var(--font-head); }
+#screen-number-maze .nm-section-note { margin: 5px 0 20px; color: #647167; font-size: .94rem; line-height: 1.45; }
+#screen-number-maze .nm-difficulty-list { position: relative; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin: 0; }
+#screen-number-maze .nm-difficulty-list::before { content: ""; position: absolute; top: 8px; left: 16%; right: 16%; height: 2px; background: #cbd6c8; }
+#screen-number-maze .nm-difficulty { position: relative; z-index: 1; display: flex; min-width: 0; min-height: 0; flex-direction: column; align-items: center; gap: 8px; padding: 0 4px 10px; border: 0; border-radius: 0; background: transparent; color: #58695c; box-shadow: none; text-align: center; font: inherit; cursor: pointer; }
+#screen-number-maze .nm-difficulty-node { display: block; width: 18px; height: 18px; flex: 0 0 auto; border: 2px solid #8fa18f; border-radius: 50%; background: var(--nm-quiet-paper); }
+#screen-number-maze .nm-difficulty-name { color: #405445; font-weight: 800; font-size: 1rem; }
+#screen-number-maze .nm-difficulty-note { color: #748076; font-size: .78rem; line-height: 1.35; }
+#screen-number-maze .nm-difficulty[aria-pressed="true"] { border: 0; background: transparent; color: var(--nm-quiet-ink); box-shadow: none; }
+#screen-number-maze .nm-difficulty[aria-pressed="true"] .nm-difficulty-node { border: 5px solid var(--nm-route-color); box-shadow: 0 0 0 4px var(--nm-quiet-soft); }
+#screen-number-maze .nm-difficulty[aria-pressed="true"] .nm-difficulty-name { color: var(--nm-route-color); }
+#screen-number-maze .nm-mode-list { display: grid; grid-template-columns: 1fr; gap: 0; margin: 0; border-top: 1px solid var(--nm-quiet-rule); }
+#screen-number-maze .nm-mode { display: grid; grid-template-columns: 28px minmax(0,1fr) 24px; align-items: center; gap: 9px; width: 100%; min-height: 63px; padding: 10px 8px; border: 0; border-bottom: 1px solid var(--nm-quiet-rule); border-radius: 0; background: transparent; color: var(--nm-quiet-ink); box-shadow: none; text-align: left; font: inherit; cursor: pointer; }
+#screen-number-maze .nm-mode-index { color: #839186; font: 700 .82rem var(--font-body); }
+#screen-number-maze .nm-mode-copy { display: flex; min-width: 0; flex-direction: column; gap: 1px; }
+#screen-number-maze .nm-mode-name { font-weight: 800; font-size: .98rem; }
+#screen-number-maze .nm-mode-copy small { color: #657366; font-size: .82rem; line-height: 1.35; }
+#screen-number-maze .nm-mode-check { width: 20px; height: 20px; display: grid; place-items: center; border: 1px solid #9baa9a; border-radius: 50%; color: #fff; font-size: .76rem; }
+#screen-number-maze .nm-mode[aria-pressed="true"] { border-color: var(--nm-quiet-rule); background: rgba(223,232,220,.48); box-shadow: inset 3px 0 0 var(--nm-route-color); color: var(--nm-quiet-ink); }
+#screen-number-maze .nm-mode[aria-pressed="true"] .nm-mode-index { color: var(--nm-route-color); font-weight: 800; }
+#screen-number-maze .nm-mode[aria-pressed="true"] .nm-mode-check { border-color: var(--nm-route-color); background: var(--nm-route-color); }
+#screen-number-maze .nm-mode[aria-pressed="true"] .nm-mode-check::before { content: "✓"; }
+#screen-number-maze .nm-mode:hover:not(:disabled) { background: rgba(223,232,220,.32); }
+#screen-number-maze .nm-mode:disabled, #screen-number-maze .nm-difficulty:disabled { opacity: .46; cursor: not-allowed; }
+#screen-number-maze .nm-setup-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 0 4px; border-top: 1px solid var(--nm-quiet-rule); }
+#screen-number-maze .nm-code-details { flex: 1 1 auto; min-width: 0; max-width: 380px; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
+#screen-number-maze .nm-code-details summary { display: inline-block; color: #526458; font-size: .9rem; font-weight: 700; text-underline-offset: 4px; cursor: pointer; }
+#screen-number-maze .nm-code-details[open] { padding: 10px 0 0; }
+#screen-number-maze .nm-code-help { margin: 0 0 6px; color: #657366; font-size: .84rem; }
+#screen-number-maze .nm-code-details .nm-action-bar { margin-top: 7px; }
+#screen-number-maze .nm-start-game { display: inline-flex; align-items: center; justify-content: space-between; gap: 34px; width: min(310px,100%); min-height: 54px; margin: 0; padding: 12px 20px; border: 1px solid #3e5945; border-radius: 999px; background: var(--nm-route-color); color: #fff; box-shadow: none; font-size: 1.02rem; text-align: left; }
+#screen-number-maze .nm-start-game:hover { background: #405d47; }
+#screen-number-maze .nm-action.primary { border-color: #3e5945; background: var(--nm-route-color); color: #fff; box-shadow: none; }
+#screen-number-maze .nm-action.primary:hover { background: #405d47; }
+#screen-number-maze .nm-action.soft { border-color: #b8c7b7; color: #344b39; background: transparent; box-shadow: none; }
+#screen-number-maze .nm-action:focus-visible, #screen-number-maze .nm-mode:focus-visible, #screen-number-maze .nm-difficulty:focus-visible { outline-color: var(--nm-route-color); outline-offset: 3px; }
+#screen-number-maze .nm-cell.has-checkpoint { background: #edf1e9; border-color: #bac8b7; }
+#screen-number-maze .nm-checkpoint-number { background: #dce6d7; color: #2d4232; box-shadow: none; }
+#screen-number-maze .nm-cell.is-start .nm-checkpoint-number { background: var(--nm-route-color); color: #fff; outline: 2px solid #91a48e; outline-offset: 2px; }
+#screen-number-maze .nm-cell.is-finish .nm-checkpoint-number { background: #e2e8dc; color: #2d4232; border: 2px solid var(--nm-route-color); }
+#screen-number-maze .nm-cell.is-path, #screen-number-maze .nm-cell.is-path.has-checkpoint { background: #e8eee4; border-color: #a8b9a5; }
+#screen-number-maze .nm-route-svg { z-index: 2; pointer-events: none; }
+#screen-number-maze .nm-route-step { display: none; }
+#screen-number-maze .nm-cell.is-hint { outline-color: #8a987a; animation: nm-hint-pulse 1.25s ease-in-out infinite; }
+@keyframes nm-hint-pulse { 50% { box-shadow: 0 0 0 4px rgba(77,107,83,.14); } }
+#screen-number-maze .nm-complete { border-color: #9fb29a; background: #e9efe4; }
+@media (max-width: 760px) {
+  #screen-number-maze .nm-setup { margin-top: 6px; }
+  #screen-number-maze .nm-setup-hero { grid-template-columns: minmax(0,1fr) 170px; gap: 16px; padding: 14px 0 20px; }
+  #screen-number-maze #nm-setup-heading { font-size: clamp(1.9rem,5.2vw,2.5rem); }
+  #screen-number-maze .nm-setup-content { grid-template-columns: 1fr; gap: 24px; padding: 20px 0; }
+  #screen-number-maze .nm-mode-choice { padding-left: 0; border-left: 0; }
+  #screen-number-maze .nm-section-note { margin-bottom: 15px; }
+  #screen-number-maze .nm-difficulty-note { font-size: .76rem; }
+  #screen-number-maze .nm-setup-footer { gap: 12px; }
+  #screen-number-maze .nm-board-frame { width: min(calc(100dvh - 210px), calc(100vw - 20px), 840px); }
+}
+@media (max-width: 520px) {
+  #screen-number-maze .nm-shell { padding: 6px 12px 10px; }
+  #screen-number-maze .nm-header { gap: 9px; }
+  #screen-number-maze .nm-header h1 { font-size: 1.15rem; }
+  #screen-number-maze .nm-back, #screen-number-maze .nm-settings { padding: 7px 10px; font-size: .84rem; }
+  #screen-number-maze .nm-setup-hero { grid-template-columns: 1fr; gap: 8px; }
+  #screen-number-maze .nm-trail-art { width: 220px; max-height: 96px; justify-self: center; }
+  #screen-number-maze .nm-mode { min-height: 58px; grid-template-columns: 24px minmax(0,1fr) 22px; gap: 8px; padding: 8px 6px; }
+  #screen-number-maze .nm-mode-name { font-size: .95rem; }
+  #screen-number-maze .nm-mode-copy small { font-size: .78rem; }
+  #screen-number-maze .nm-setup-footer { align-items: stretch; flex-direction: column; }
+  #screen-number-maze .nm-code-details { max-width: none; }
+  #screen-number-maze .nm-start-game { width: 100%; }
+  #screen-number-maze .nm-board-frame { width: min(calc(100dvh - 200px), calc(100vw - 20px), 840px); }
+  #screen-number-maze .nm-play-actions .nm-action { font-size: .86rem; }
+}
+@media (max-width: 380px) {
+  #screen-number-maze .nm-trail-art { width: 190px; }
+  #screen-number-maze .nm-difficulty-note { font-size: .7rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #screen-number-maze .nm-difficulty-node, #screen-number-maze .nm-mode-check { transition: none; }
+}
