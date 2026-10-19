@@ -332,6 +332,16 @@ async function main() {
     assert(screen.querySelector("#nm-play").hidden, "The board should stay hidden until the learner starts the puzzle.");
     assert(screen.querySelectorAll("[data-nm-difficulty]").length === 3, "The setup menu should offer three difficulties.");
     assert(screen.querySelectorAll("[data-nm-mode]").length === 4, "The setup menu should offer the available play styles.");
+    assert(screen.querySelector(".nm-setup-hero") && screen.querySelector(".nm-setup-content"), "The setup page should use its custom field-journal layout.");
+    assert(!screen.querySelector(".nm-setup-card"), "Number Maze setup should not regress to generic cards.");
+    const quietLabel = getComputedStyle(screen.querySelector(".nm-mode-copy small")).color;
+    assert(quietLabel === "rgb(86, 102, 90)", "Muted setup text should remain readable on the soft sage palette.");
+    screen.querySelector('[data-nm-difficulty="gentle"]').click();
+    assert(NumberMaze.getSummary().difficulty === "gentle", "Clicking a difficulty on the setup page should select it.");
+    screen.querySelector('[data-nm-mode="daily"]').click();
+    assert(NumberMaze.getSummary().mode === "daily", "Clicking a play style on the setup page should select it.");
+    screen.querySelector('[data-nm-mode="explore"]').click();
+    assert(NumberMaze.getSummary().mode === "explore", "The setup page should return to Explore when selected.");
     assert(screen.querySelector("#nm-board"), "Number Maze board is missing.");
     assert(screen.querySelector("#nm-feedback[aria-live='polite']"), "Number Maze live feedback is missing.");
     screen.querySelector("#nm-start-game").click();
@@ -363,6 +373,8 @@ async function main() {
     assert(NumberMaze.getSummary().pathLength === 2, "Arrow keys should extend the path to an adjacent open square.");
     const routeLine = screen.querySelector("#nm-board .nm-route-svg .nm-route-line");
     assert(routeLine && routeLine.getAttribute("stroke-linecap") === "round" && routeLine.getAttribute("stroke-linejoin") === "round", "The route should render as a smooth connected line.");
+    assert(routeLine.getAttribute("stroke") === "#4d6b53", "The connected route should use the calm forest-sage palette.");
+    assert(!/orange|#ff6a00/i.test(routeLine.getAttribute("stroke")), "The path must not use the previous bright orange.");
     assert(document.activeElement.dataset.cell === String(keyboardPuzzle.solution[1]), "Keyboard movement should focus the next path cell.");
     NumberMaze.undo();
     assert(NumberMaze.getSummary().pathLength === 1, "Undo should remove the most recent keyboard step.");

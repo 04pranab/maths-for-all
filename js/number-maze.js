@@ -154,7 +154,7 @@ const NumberMaze = (() => {
     halo.setAttribute('class', 'nm-route-halo');
     halo.setAttribute('d', d);
     halo.setAttribute('fill', 'none');
-    halo.setAttribute('stroke', '#ffd0be');
+    halo.setAttribute('stroke', getComputedStyle(board).getPropertyValue('--nm-route-halo').trim() || '#dfe8dc');
     halo.setAttribute('stroke-width', String(lineWidth * 1.28));
     halo.setAttribute('stroke-linecap', 'round');
     halo.setAttribute('stroke-linejoin', 'round');
@@ -163,7 +163,7 @@ const NumberMaze = (() => {
     line.setAttribute('class', 'nm-route-line');
     line.setAttribute('d', d);
     line.setAttribute('fill', 'none');
-    line.setAttribute('stroke', '#ff6a00');
+    line.setAttribute('stroke', getComputedStyle(board).getPropertyValue('--nm-route-color').trim() || '#4d6b53');
     line.setAttribute('stroke-width', String(lineWidth));
     line.setAttribute('stroke-linecap', 'round');
     line.setAttribute('stroke-linejoin', 'round');

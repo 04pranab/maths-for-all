@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/probability-carnival.css?v=20261007-7" />
   <link rel="stylesheet" href="css/fraction-bakery.css?v=20261018-1" />
   <link rel="stylesheet" href="css/little-shop.css?v=20261019-1" />
-  <link rel="stylesheet" href="css/number-maze.css?v=20261019-2" />
+  <link rel="stylesheet" href="css/number-maze.css?v=20261019-5" />
   <link rel="stylesheet" href="css/interactions.css?v=20261018-1" />
 </head>
 <body>
@@ -751,7 +751,7 @@
   <script src="js/shape-architect.js?v=20261006-5"></script>
   <script src="js/fraction-bakery.js?v=20261008-4"></script>
   <script src="js/number-maze-engine.js?v=20261018-2"></script>
-  <script src="js/number-maze.js?v=20261019-1"></script>
+  <script src="js/number-maze.js?v=20261019-2"></script>
   <section id="screen-little-shop" class="screen" aria-labelledby="little-shop-title">
     <div class="ls-shell">
       <header class="ls-header">
@@ -844,48 +844,104 @@
     <div class="nm-shell">
       <header class="nm-header">
         <button type="button" class="nm-back" onclick="Game.goHome()">← Games</button>
-        <h1 id="number-maze-title" tabindex="-1">🧩 Number Maze</h1>
-        <button type="button" id="nm-change-settings" class="nm-settings" onclick="NumberMaze.showSetup()" hidden>⚙ Change level</button>
+        <h1 id="number-maze-title" tabindex="-1">Number Maze</h1>
+        <button type="button" class="nm-help nm-how-link" onclick="ControlsOverlay.forceShow('numberMaze')" aria-label="How to play Number Maze">How to play</button>
+        <button type="button" id="nm-change-settings" class="nm-settings" onclick="NumberMaze.showSetup()" hidden>Change level</button>
       </header>
 
       <section id="nm-setup" class="nm-setup" aria-labelledby="nm-setup-heading">
-        <div class="nm-setup-heading">
-          <h2 id="nm-setup-heading">Choose your challenge</h2>
-          <button type="button" class="nm-help" onclick="ControlsOverlay.forceShow('numberMaze')" aria-label="How to play Number Maze">?</button>
-        </div>
-        <div class="nm-setup-grid">
-          <section class="nm-setup-card" aria-labelledby="nm-difficulty-heading">
-            <h3 id="nm-difficulty-heading">Difficulty</h3>
-            <div class="nm-difficulty-list" role="group" aria-label="Puzzle difficulty">
-              <button type="button" class="nm-difficulty" data-nm-difficulty="gentle" aria-pressed="false" onclick="NumberMaze.setDifficulty('gentle')">Gentle</button>
-              <button type="button" class="nm-difficulty" data-nm-difficulty="steady" aria-pressed="true" onclick="NumberMaze.setDifficulty('steady')">Steady</button>
-              <button type="button" class="nm-difficulty" data-nm-difficulty="stretch" aria-pressed="false" onclick="NumberMaze.setDifficulty('stretch')">Stretch</button>
-            </div>
-          </section>
-
-          <section class="nm-setup-card" aria-labelledby="nm-mode-heading">
-            <h3 id="nm-mode-heading">Play style</h3>
-            <div class="nm-mode-list" role="group" aria-label="Puzzle mode">
-              <button type="button" class="nm-mode" data-nm-mode="tutorial" aria-pressed="false" onclick="NumberMaze.setMode('tutorial')">Guided Starters</button>
-              <button type="button" class="nm-mode" data-nm-mode="explore" aria-pressed="true" onclick="NumberMaze.setMode('explore')">Explore</button>
-              <button type="button" class="nm-mode" data-nm-mode="daily" aria-pressed="false" onclick="NumberMaze.setMode('daily')">Daily Challenge</button>
-              <button type="button" class="nm-mode" data-nm-mode="challenge" aria-pressed="false" onclick="NumberMaze.setMode('challenge')">Challenge Climb</button>
-            </div>
-          </section>
-        </div>
-
-        <details class="nm-code-details">
-          <summary>Load a puzzle code</summary>
-          <label class="nm-code-label" for="nm-puzzle-code">Puzzle code</label>
-          <input id="nm-puzzle-code" class="nm-code-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="NM1-S-ABC123" aria-describedby="nm-code-help">
-          <p id="nm-code-help" class="nm-code-help">Use a code to replay the same puzzle.</p>
-          <div class="nm-action-bar nm-code-actions">
-            <button type="button" class="nm-action soft" onclick="NumberMaze.copyPuzzleCode()">Copy code</button>
-            <button type="button" class="nm-action soft" onclick="NumberMaze.loadPuzzleCode()">Load code</button>
+        <div class="nm-setup-hero">
+          <div class="nm-setup-copy">
+            <p class="nm-overline">A LITTLE SPACE TO THINK</p>
+            <h2 id="nm-setup-heading">Find your own pace.</h2>
+            <p>No timer. No penalty. Choose a route and take it one square at a time.</p>
           </div>
-        </details>
+          <svg class="nm-trail-art" viewBox="0 0 360 150" role="img" aria-labelledby="nm-trail-title nm-trail-desc">
+            <title id="nm-trail-title">A winding path</title>
+            <desc id="nm-trail-desc">A quiet green line passing through three numbered waypoints.</desc>
+            <path class="nm-trail-echo" d="M24 112 H96 Q112 112 112 96 V53 Q112 37 128 37 H210 Q226 37 226 53 V88 Q226 104 242 104 H334" fill="none" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="nm-trail-line" d="M24 112 H96 Q112 112 112 96 V53 Q112 37 128 37 H210 Q226 37 226 53 V88 Q226 104 242 104 H334" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="24" cy="112" r="12" class="nm-trail-point"/>
+            <circle cx="168" cy="37" r="12" class="nm-trail-point"/>
+            <circle cx="334" cy="104" r="12" class="nm-trail-point"/>
+            <text x="24" y="116" text-anchor="middle">1</text>
+            <text x="168" y="41" text-anchor="middle">2</text>
+            <text x="334" y="108" text-anchor="middle">3</text>
+          </svg>
+        </div>
 
-        <button type="button" id="nm-start-game" class="nm-action primary nm-start-game" onclick="NumberMaze.startGame()">Start puzzle →</button>
+        <div class="nm-setup-content">
+          <section class="nm-choice-group" aria-labelledby="nm-difficulty-heading">
+            <div class="nm-section-heading">
+              <span class="nm-section-number" aria-hidden="true">01</span>
+              <h3 id="nm-difficulty-heading">Choose your pace</h3>
+            </div>
+            <p class="nm-section-note">Start small, then move up when it feels right.</p>
+            <div class="nm-difficulty-list" role="group" aria-label="Puzzle difficulty">
+              <button type="button" class="nm-difficulty" data-nm-difficulty="gentle" aria-pressed="false" onclick="NumberMaze.setDifficulty('gentle')">
+                <span class="nm-difficulty-node" aria-hidden="true"></span>
+                <span class="nm-difficulty-name">Gentle</span>
+                <span class="nm-difficulty-note">A small start</span>
+              </button>
+              <button type="button" class="nm-difficulty" data-nm-difficulty="steady" aria-pressed="true" onclick="NumberMaze.setDifficulty('steady')">
+                <span class="nm-difficulty-node" aria-hidden="true"></span>
+                <span class="nm-difficulty-name">Steady</span>
+                <span class="nm-difficulty-note">Find your rhythm</span>
+              </button>
+              <button type="button" class="nm-difficulty" data-nm-difficulty="stretch" aria-pressed="false" onclick="NumberMaze.setDifficulty('stretch')">
+                <span class="nm-difficulty-node" aria-hidden="true"></span>
+                <span class="nm-difficulty-name">Stretch</span>
+                <span class="nm-difficulty-note">A longer trail</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="nm-choice-group nm-mode-choice" aria-labelledby="nm-mode-heading">
+            <div class="nm-section-heading">
+              <span class="nm-section-number" aria-hidden="true">02</span>
+              <h3 id="nm-mode-heading">Choose your route</h3>
+            </div>
+            <p class="nm-section-note">Each one offers a different way to explore.</p>
+            <div class="nm-mode-list" role="group" aria-label="Puzzle mode">
+              <button type="button" class="nm-mode" data-nm-mode="tutorial" aria-pressed="false" onclick="NumberMaze.setMode('tutorial')">
+                <span class="nm-mode-index" aria-hidden="true">A</span>
+                <span class="nm-mode-copy"><span class="nm-mode-name">Guided Starters</span><small>Learn with three gentle boards</small></span>
+                <span class="nm-mode-check" aria-hidden="true"></span>
+              </button>
+              <button type="button" class="nm-mode" data-nm-mode="explore" aria-pressed="true" onclick="NumberMaze.setMode('explore')">
+                <span class="nm-mode-index" aria-hidden="true">B</span>
+                <span class="nm-mode-copy"><span class="nm-mode-name">Explore</span><small>A fresh maze each time</small></span>
+                <span class="nm-mode-check" aria-hidden="true"></span>
+              </button>
+              <button type="button" class="nm-mode" data-nm-mode="daily" aria-pressed="false" onclick="NumberMaze.setMode('daily')">
+                <span class="nm-mode-index" aria-hidden="true">C</span>
+                <span class="nm-mode-copy"><span class="nm-mode-name">Daily Challenge</span><small>One shared maze for today</small></span>
+                <span class="nm-mode-check" aria-hidden="true"></span>
+              </button>
+              <button type="button" class="nm-mode" data-nm-mode="challenge" aria-pressed="false" onclick="NumberMaze.setMode('challenge')">
+                <span class="nm-mode-index" aria-hidden="true">D</span>
+                <span class="nm-mode-copy"><span class="nm-mode-name">Challenge Climb</span><small>Build up step by step</small></span>
+                <span class="nm-mode-check" aria-hidden="true"></span>
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <div class="nm-setup-footer">
+          <details class="nm-code-details">
+            <summary>Have a puzzle code?</summary>
+            <label class="nm-code-label" for="nm-puzzle-code">Puzzle code</label>
+            <input id="nm-puzzle-code" class="nm-code-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="NM1-S-ABC123" aria-describedby="nm-code-help">
+            <p id="nm-code-help" class="nm-code-help">Use a code to replay the same puzzle.</p>
+            <div class="nm-action-bar nm-code-actions">
+              <button type="button" class="nm-action soft" onclick="NumberMaze.copyPuzzleCode()">Copy code</button>
+              <button type="button" class="nm-action soft" onclick="NumberMaze.loadPuzzleCode()">Load code</button>
+            </div>
+          </details>
+          <button type="button" id="nm-start-game" class="nm-action primary nm-start-game" onclick="NumberMaze.startGame()">
+            <span>Begin the path</span><span aria-hidden="true">→</span>
+          </button>
+        </div>
       </section>
 
       <main id="nm-play" class="nm-play" hidden aria-label="Number Maze game">
