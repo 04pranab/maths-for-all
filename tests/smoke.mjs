@@ -1015,6 +1015,12 @@ async function main() {
       'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
       'assert(gameCards.length === 9, "The visible game menu should contain nine current game cards, not " + gameCards.length + ".");' +
       'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
+      'assert(gameCards.every(card => getComputedStyle(card).rotate === "none"), "Home game cards should be level, not tilted.");' +
+      'const rowTop = gameCards[0]?.getBoundingClientRect().top ?? 0;' +
+      'const firstRowCount = gameCards.filter(card => Math.abs(card.getBoundingClientRect().top - rowTop) < 3).length;' +
+      'const expectedColumns = innerWidth >= 1101 ? 5 : innerWidth >= 701 ? 3 : innerWidth >= 421 ? 2 : 1;' +
+      'assert(firstRowCount === expectedColumns, "Home game grid should use " + expectedColumns + " columns at " + innerWidth + "px, got " + firstRowCount + ".");' +
+      'assert(document.querySelector("#screen-menu .menu-section-heading h2")?.textContent === "Choose a game", "Home game section heading is missing.");' +
       'return { width: innerWidth, height: innerHeight, fontScale: innerWidth <= 320 ? 1.35 : 1, screensChecked: checkedScreens, visibleGameCards: gameCards.length, horizontalOverflow: false, accessibleNamesChecked: true, derogatoryCopyFound: false };' +
     '})()');
     if (!result || result.screensChecked !== gamesForInterfaceAudit) {
