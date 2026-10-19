@@ -334,6 +334,12 @@ async function main() {
     assert(screen.querySelectorAll("[data-nm-mode]").length === 4, "The setup menu should offer the available play styles.");
     assert(screen.querySelector(".nm-setup-hero") && screen.querySelector(".nm-setup-content"), "The setup page should use its custom field-journal layout.");
     assert(!screen.querySelector(".nm-setup-card"), "Number Maze setup should not regress to generic cards.");
+    const difficultyButtonStyle = getComputedStyle(screen.querySelector('[data-nm-difficulty="gentle"]'));
+    assert(difficultyButtonStyle.borderTopStyle === "solid" && parseFloat(difficultyButtonStyle.borderTopWidth) >= 1, "Difficulty choices should visibly look like buttons.");
+    assert(parseFloat(difficultyButtonStyle.borderTopLeftRadius) >= 10, "Difficulty buttons should have a clear, comfortable touch shape.");
+    const modeButtonStyle = getComputedStyle(screen.querySelector('[data-nm-mode="daily"]'));
+    assert(modeButtonStyle.borderTopStyle === "solid" && parseFloat(modeButtonStyle.borderTopWidth) >= 1, "Play-style choices should visibly look like buttons.");
+    assert(parseFloat(modeButtonStyle.borderTopLeftRadius) >= 10, "Play-style buttons should have a clear, comfortable touch shape.");
     const quietLabel = getComputedStyle(screen.querySelector(".nm-mode-copy small")).color;
     assert(quietLabel === "rgb(86, 102, 90)", "Muted setup text should remain readable on the soft sage palette.");
     screen.querySelector('[data-nm-difficulty="gentle"]').click();
