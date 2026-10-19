@@ -334,6 +334,8 @@ async function main() {
     assert(screen.querySelectorAll("[data-nm-mode]").length === 4, "The setup menu should offer the available play styles.");
     assert(screen.querySelector(".nm-setup-hero") && screen.querySelector(".nm-setup-content"), "The setup page should use its custom field-journal layout.");
     assert(!screen.querySelector(".nm-setup-card"), "Number Maze setup should not regress to generic cards.");
+    const quietLabel = getComputedStyle(screen.querySelector(".nm-mode-copy small")).color;
+    assert(quietLabel === "rgb(86, 102, 90)", "Muted setup text should remain readable on the soft sage palette.");
     screen.querySelector('[data-nm-difficulty="gentle"]').click();
     assert(NumberMaze.getSummary().difficulty === "gentle", "Clicking a difficulty on the setup page should select it.");
     screen.querySelector('[data-nm-mode="daily"]').click();
