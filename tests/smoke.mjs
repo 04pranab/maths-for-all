@@ -1015,7 +1015,7 @@ async function main() {
       'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
       'assert(gameCards.length === 9, "The visible game menu should contain nine current game cards, not " + gameCards.length + ".");' +
       'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
-      'assert(gameCards.every(card => getComputedStyle(card).rotate === "none"), "Home game cards should be level, not tilted.");' +
+      'assert(gameCards.every(card => { const t = getComputedStyle(card).transform; if (t === "none") return true; const m = new DOMMatrixReadOnly(t); return Math.abs(m.b) < 0.01 && Math.abs(m.c) < 0.01; }), "Home game cards should be level, not tilted.");' +
       'const rowTop = gameCards[0]?.getBoundingClientRect().top ?? 0;' +
       'const firstRowCount = gameCards.filter(card => Math.abs(card.getBoundingClientRect().top - rowTop) < 3).length;' +
       'const expectedColumns = innerWidth >= 1101 ? 5 : innerWidth >= 701 ? 3 : innerWidth >= 421 ? 2 : 1;' +
