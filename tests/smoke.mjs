@@ -334,6 +334,12 @@ async function main() {
     assert(screen.querySelectorAll("[data-nm-mode]").length === 4, "The setup menu should offer the available play styles.");
     assert(screen.querySelector(".nm-setup-hero") && screen.querySelector(".nm-setup-content"), "The setup page should use its custom field-journal layout.");
     assert(!screen.querySelector(".nm-setup-card"), "Number Maze setup should not regress to generic cards.");
+    screen.querySelector('[data-nm-difficulty="gentle"]').click();
+    assert(NumberMaze.getSummary().difficulty === "gentle", "Clicking a difficulty on the setup page should select it.");
+    screen.querySelector('[data-nm-mode="daily"]').click();
+    assert(NumberMaze.getSummary().mode === "daily", "Clicking a play style on the setup page should select it.");
+    screen.querySelector('[data-nm-mode="explore"]').click();
+    assert(NumberMaze.getSummary().mode === "explore", "The setup page should return to Explore when selected.");
     assert(screen.querySelector("#nm-board"), "Number Maze board is missing.");
     assert(screen.querySelector("#nm-feedback[aria-live='polite']"), "Number Maze live feedback is missing.");
     screen.querySelector("#nm-start-game").click();
