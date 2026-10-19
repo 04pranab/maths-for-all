@@ -125,6 +125,54 @@ const NumberMaze = (() => {
     return label;
   }
 
+  function renderRouteLine(board) {
+    if (state.path.length < 2) return;
+    const bounds = board.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+
+    const points = [];
+    for (const cell of state.path) {
+      const node = board.querySelector('[data-cell="' + cell + '"]');
+      if (!node) return;
+      const rect = node.getBoundingClientRect();
+      points.push({ x: rect.left + rect.width / 2 - bounds.left, y: rect.top + rect.height / 2 - bounds.top });
+    }
+    const sample = board.querySelector('.nm-cell');
+    if (!sample) return;
+    const sampleRect = sample.getBoundingClientRect();
+    const lineWidth = Math.max(8, Math.min(sampleRect.width, sampleRect.height) * 0.58);
+    const d = points.map((point, index) => (index === 0 ? 'M ' : 'L ') + point.x.toFixed(2) + ' ' + point.y.toFixed(2)).join(' ');
+
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.classList.add('nm-route-svg');
+    svg.setAttribute('viewBox', '0 0 ' + bounds.width + ' ' + bounds.height);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-hidden', 'true');
+
+    const halo = document.createElementNS(ns, 'path');
+    halo.setAttribute('class', 'nm-route-halo');
+    halo.setAttribute('d', d);
+    halo.setAttribute('fill', 'none');
+    halo.setAttribute('stroke', '#ffd0be');
+    halo.setAttribute('stroke-width', String(lineWidth * 1.28));
+    halo.setAttribute('stroke-linecap', 'round');
+    halo.setAttribute('stroke-linejoin', 'round');
+
+    const line = document.createElementNS(ns, 'path');
+    line.setAttribute('class', 'nm-route-line');
+    line.setAttribute('d', d);
+    line.setAttribute('fill', 'none');
+    line.setAttribute('stroke', '#ff6a00');
+    line.setAttribute('stroke-width', String(lineWidth));
+    line.setAttribute('stroke-linecap', 'round');
+    line.setAttribute('stroke-linejoin', 'round');
+
+    svg.appendChild(halo);
+    svg.appendChild(line);
+    board.appendChild(svg);
+  }
+
   function renderBoard(restoreFocus) {
     const board = byId('nm-board');
     if (!board || !state.puzzle) return;
@@ -179,6 +227,7 @@ const NumberMaze = (() => {
       if (state.completed) button.classList.add('is-complete');
       board.appendChild(button);
     }
+    renderRouteLine(board);
     if (restoreFocus) {
       const focused = board.querySelector('[data-cell="' + state.focusCell + '"]');
       if (focused) focused.focus({ preventScroll: true });
@@ -530,6 +579,30 @@ const NumberMaze = (() => {
     document.addEventListener('keydown', handleArrow);
   }
 
+  function startGame() {
+    const setup = byId('nm-setup');
+    const play = byId('nm-play');
+    const settingsButton = byId('nm-change-settings');
+    if (setup) setup.hidden = true;
+    if (play) play.hidden = false;
+    if (settingsButton) settingsButton.hidden = false;
+    if (!state.puzzle) newPuzzle();
+    render(false);
+    const current = byId('nm-board')?.querySelector('[data-cell="' + state.focusCell + '"]');
+    if (current) current.focus({ preventScroll: true });
+  }
+
+  function showSetup() {
+    const setup = byId('nm-setup');
+    const play = byId('nm-play');
+    const settingsButton = byId('nm-change-settings');
+    if (setup) setup.hidden = false;
+    if (play) play.hidden = true;
+    if (settingsButton) settingsButton.hidden = true;
+    const selectedMode = document.querySelector('#nm-setup [data-nm-mode][aria-pressed="true"]');
+    if (selectedMode) selectedMode.focus({ preventScroll: true });
+  }
+
   function init() {
     bindOnce();
     if (!state.puzzle) newPuzzle();
@@ -544,6 +617,8 @@ const NumberMaze = (() => {
   return {
     init,
     stop,
+    startGame,
+    showSetup,
     newPuzzle,
     setMode,
     setDifficulty,
