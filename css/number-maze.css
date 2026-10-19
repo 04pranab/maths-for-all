@@ -192,3 +192,10 @@
 @media (prefers-reduced-motion: reduce) {
   #screen-number-maze .nm-difficulty-node, #screen-number-maze .nm-mode-check { transition: none; }
 }
+
+#screen-number-maze .nm-how-link { min-height: 40px; padding: 6px 2px; border: 0; border-bottom: 1px solid var(--nm-quiet-rule); border-radius: 0; background: transparent; color: #526458; box-shadow: none; font: 700 .9rem var(--font-body); }
+#screen-number-maze .nm-how-link:hover { border-bottom-color: var(--nm-route-color); background: transparent; color: var(--nm-quiet-ink); }
+#screen-number-maze .nm-how-link:focus-visible { outline: 3px solid var(--nm-route-color); outline-offset: 3px; }
+@media (max-width: 520px) {
+  #screen-number-maze .nm-how-link { padding-inline: 1px; font-size: .78rem; }
+}
