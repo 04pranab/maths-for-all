@@ -344,8 +344,14 @@ async function main() {
     assert(quietLabel === "rgb(86, 102, 90)", "Muted setup text should remain readable on the soft sage palette.");
     screen.querySelector('[data-nm-difficulty="gentle"]').click();
     assert(NumberMaze.getSummary().difficulty === "gentle", "Clicking a difficulty on the setup page should select it.");
+    const selectedDifficultyStyle = getComputedStyle(screen.querySelector('[data-nm-difficulty="gentle"]'));
+    assert(selectedDifficultyStyle.backgroundColor === "rgb(231, 238, 227)", "The selected difficulty should have a clearly visible sage fill.");
+    assert(selectedDifficultyStyle.borderTopColor === "rgb(77, 107, 83)", "The selected difficulty should have a strong sage outline.");
     screen.querySelector('[data-nm-mode="daily"]').click();
     assert(NumberMaze.getSummary().mode === "daily", "Clicking a play style on the setup page should select it.");
+    const selectedModeStyle = getComputedStyle(screen.querySelector('[data-nm-mode="daily"]'));
+    assert(selectedModeStyle.backgroundColor === "rgb(231, 238, 227)", "The selected play style should have a clearly visible sage fill.");
+    assert(selectedModeStyle.borderTopColor === "rgb(77, 107, 83)", "The selected play style should have a strong sage outline.");
     screen.querySelector('[data-nm-mode="explore"]').click();
     assert(NumberMaze.getSummary().mode === "explore", "The setup page should return to Explore when selected.");
     assert(screen.querySelector("#nm-board"), "Number Maze board is missing.");
