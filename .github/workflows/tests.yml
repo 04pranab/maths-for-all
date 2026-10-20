@@ -44,10 +44,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Chromium
+      - name: Install Chrome for Testing
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+          install-dependencies: true
+
+      - name: Verify browser executable
         run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium
+          echo "CHROMIUM=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
+          "${{ steps.setup-chrome.outputs.chrome-path }}" --version
 
       - name: Prepare PostgreSQL schema
         run: node tests/setup-postgres.mjs
