@@ -3685,307 +3685,298 @@ body {
 }
 
 
-/* Home: a compact, calm learning arcade with a level grid. */
+
+/* HOME: a compact, welcoming learning shelf. */
 #screen-menu {
-  min-height: calc(100dvh - 60px);
-  padding-bottom: 8px;
+  min-height: calc(100dvh - 68px);
+  padding: 0 0 10px;
 }
 #screen-menu .arcade-header {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
-  grid-template-rows: auto auto auto auto;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  column-gap: clamp(20px, 3.2vw, 48px);
-  row-gap: 2px;
-  width: min(1180px, 100%);
-  margin: 0 auto;
-  padding: 10px 20px 4px;
-  text-align: left;
+  gap: 5px;
+  width: min(1320px, calc(100% - 32px));
+  margin: 12px auto 0;
+  padding: 13px 20px 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(185,204,191,.72);
 }
 #screen-menu .arcade-badge {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  justify-self: start;
-  margin: 0 0 3px;
+  margin: 0 0 2px;
   padding: 4px 12px;
-  border-width: 1.5px;
+  border: 1.5px solid #8db89a;
   border-radius: 999px;
+  background: #edf5ee;
+  color: #376947;
   font-size: .78rem;
+  font-weight: 800;
   letter-spacing: .01em;
+  line-height: 1.3;
   transform: none;
 }
 #screen-menu .arena-title {
-  grid-column: 1;
-  grid-row: 2;
   margin: 0;
-  font-size: clamp(2.1rem, 4.1vw, 3.35rem);
+  font-size: clamp(2.5rem, 4.2vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -.04em;
   line-height: 1;
-  letter-spacing: -.035em;
-  white-space: nowrap;
 }
-#screen-menu .title-arena { margin-left: 8px; }
+#screen-menu .title-math { color: #765a72; }
+#screen-menu .title-arena {
+  margin-left: 8px;
+  color: #b87516;
+}
 #screen-menu .arena-subtitle-hi {
-  grid-column: 1;
-  grid-row: 3;
-  align-self: start;
-  margin: 4px 0 0;
-  font-size: 1.02rem;
-  line-height: 1.3;
-}
-#screen-menu .learning-promise {
-  grid-column: 2;
-  grid-row: 2 / 4;
-  align-self: center;
-  justify-self: stretch;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-content: center;
-  gap: 6px;
-  max-width: none;
   margin: 0;
-}
-#screen-menu .learning-promise span {
-  padding: 5px 9px;
-  border-width: 1px;
-  background: rgba(255,255,255,.72);
-  box-shadow: none;
-  font-size: .78rem;
+  color: #765a72;
+  font-size: 1.04rem;
   line-height: 1.25;
 }
-#screen-menu .math-wisdom {
-  grid-column: 1 / -1;
-  grid-row: 4;
+#screen-menu .learning-promise {
+  display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 7px;
-  margin: 6px 0 0;
-  padding-top: 6px;
-  border-top: 1px solid rgba(185,204,191,.55);
+  max-width: none;
+  margin: 5px auto 0;
 }
-#screen-menu .math-wisdom-sanskrit { font-size: 1.02rem; }
-#screen-menu .math-wisdom-meaning { font-size: .82rem; }
-
+#screen-menu .learning-promise span {
+  padding: 5px 10px;
+  border: 1px solid #d5e0d8;
+  border-radius: 999px;
+  background: rgba(255,255,255,.8);
+  color: #465b50;
+  font-size: .78rem;
+  font-weight: 700;
+  line-height: 1.25;
+  box-shadow: 0 1px 2px rgba(38,50,56,.04);
+}
+#screen-menu .math-wisdom {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 9px;
+  margin: 3px 0 0;
+  padding: 0;
+  border: 0;
+  color: var(--indigo);
+}
+#screen-menu .math-wisdom-sanskrit {
+  font-size: .97rem;
+  font-weight: 800;
+}
+#screen-menu .math-wisdom-meaning {
+  color: var(--ink-soft);
+  font-size: .78rem;
+}
 #screen-menu .menu-section-heading {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  width: min(1180px, 100%);
-  margin: 6px auto 0;
-  padding: 4px 20px 0;
+  gap: 14px;
+  width: min(1320px, calc(100% - 32px));
+  margin: 8px auto 0;
+  padding: 0 0 7px;
+  border-bottom: 1px solid #dce5dc;
 }
 #screen-menu .menu-section-heading h2 {
   margin: 0;
-  color: var(--ink);
-  font: 800 1.08rem/1.25 var(--font-head);
+  color: #34483b;
+  font: 800 1.12rem/1.3 var(--font-head);
+  letter-spacing: -.01em;
 }
 #screen-menu .menu-section-heading p {
   margin: 0;
-  color: var(--ink-soft);
+  color: #56666b;
   font-size: .82rem;
-  line-height: 1.3;
+  line-height: 1.35;
   text-align: right;
 }
 #screen-menu .menu-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: stretch;
-  justify-content: center;
-  gap: 12px;
-  width: min(1180px, 100%);
-  max-width: 1180px;
+  gap: 14px;
+  width: min(1320px, calc(100% - 32px));
+  max-width: none;
   margin: 0 auto;
-  padding: 8px 20px 4px;
+  padding: 12px 0 4px;
 }
 #screen-menu .menu-card {
+  --tile-accent: #6c8c72;
   display: flex;
-  flex: 0 1 calc((100% - 48px) / 5);
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  width: 100%;
   min-width: 0;
   max-width: none;
-  min-height: 192px;
-  padding: 12px 11px 11px;
-  border: 1.75px solid var(--ink);
-  border-radius: 16px 16px 16px 8px;
-  background: var(--card);
-  box-shadow: 0 3px 0 rgba(38,50,56,.10);
+  min-height: 206px;
+  padding: 13px 12px 12px;
+  border: 1.5px solid #34413a;
+  border-top: 3px solid var(--tile-accent);
+  border-radius: 15px;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 3px 0 rgba(38,50,56,.09);
   text-align: center;
   transform: none;
-  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+  transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease;
 }
+#screen-menu .card-quiz { --tile-accent: #b97937; }
+#screen-menu .card-race { --tile-accent: #92758b; }
+#screen-menu .card-sudoku { --tile-accent: #668b79; }
+#screen-menu .card-shape { --tile-accent: #478b9b; }
+#screen-menu .card-slab { --tile-accent: #b8787d; }
+#screen-menu .card-architect { --tile-accent: #ba8b48; }
+#screen-menu .card-fraction { --tile-accent: #bd9065; }
+#screen-menu .card-little-shop { --tile-accent: #638567; }
+#screen-menu .card-number-maze { --tile-accent: #4d6b53; }
 #screen-menu .menu-card[hidden] { display: none !important; }
 #screen-menu .menu-card:hover,
 #screen-menu .menu-card:focus-visible {
-  border-color: var(--leaf-deep);
+  border-color: #34413a;
+  border-top-color: var(--tile-accent);
   box-shadow: 0 5px 0 rgba(55,105,71,.15);
   transform: translateY(-2px);
+  outline-offset: 4px;
 }
 #screen-menu .card-badge-icon {
-  width: calc(54px + (var(--font-scale) - 1) * 12px);
-  height: calc(54px + (var(--font-scale) - 1) * 12px);
+  width: calc(56px + (var(--font-scale) - 1) * 10px);
+  height: calc(56px + (var(--font-scale) - 1) * 10px);
   min-width: 50px;
   min-height: 50px;
-  margin: 0 auto 8px;
-  border-width: 2px;
-  font-size: 1.65rem;
+  margin: 0 auto 9px;
+  border: 2px solid #34413a;
+  font-size: 1.68rem;
   flex: 0 0 auto;
 }
 #screen-menu .card-title {
-  margin-bottom: 5px;
-  font-size: 1rem;
+  margin: 0 0 6px;
+  color: #263238;
+  font-size: 1.03rem;
+  font-weight: 800;
   line-height: 1.25;
 }
 #screen-menu .card-desc {
   flex: 1 0 auto;
-  min-height: 3.6em;
-  margin-bottom: 9px;
-  font-size: .82rem;
-  line-height: 1.35;
+  min-height: 3.7em;
+  margin: 0 0 10px;
+  color: #56666b;
+  font-size: .84rem;
+  line-height: 1.38;
 }
 #screen-menu .card-tag {
+  display: inline-block;
   max-width: 100%;
   margin-top: auto;
-  padding: 4px 8px;
-  border-width: 1px;
-  font-size: .73rem;
-  line-height: 1.25;
+  padding: 4px 9px;
+  border: 1px solid #c5d3c8;
   border-radius: 999px;
+  background: #f5f8f4;
+  color: #4b6053;
+  font-size: .73rem;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: normal;
   overflow-wrap: anywhere;
 }
 #screen-menu .menu-footer {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
   justify-content: center;
-  column-gap: 10px;
-  row-gap: 3px;
-  width: min(1180px, 100%);
-  max-width: 1180px;
+  align-items: baseline;
+  gap: 4px 12px;
+  width: min(1120px, calc(100% - 32px));
+  max-width: none;
   margin: 0 auto;
-  padding: 9px 20px 4px;
+  padding: 8px 0 0;
+  color: #596a60;
   font-size: .78rem;
-  line-height: 1.35;
+  line-height: 1.4;
+  text-align: center;
 }
 #screen-menu .menu-footer .footer-welcome {
   flex: 0 0 100%;
-  font-size: .8rem;
+  color: #765a72;
+  font-size: .81rem;
+  font-weight: 800;
 }
 #screen-menu .menu-footer .footer-note,
 #screen-menu .menu-footer .type-credit {
   display: inline;
   margin: 0;
+  color: #596a60;
   font-size: .75rem;
   opacity: 1;
 }
-#screen-menu .menu-footer .type-credit { color: var(--ink-soft); }
-
 @media (max-width: 1100px) {
-  #screen-menu .menu-card { flex-basis: calc((100% - 24px) / 3); }
-  #screen-menu .arcade-header { column-gap: 24px; }
-  #screen-menu .learning-promise { gap: 5px; }
+  #screen-menu .menu-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+  #screen-menu .menu-card { min-height: 198px; }
+  #screen-menu .arcade-header { padding-top: 12px; }
 }
 @media (max-width: 700px) {
   #screen-menu .arcade-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: calc(100% - 24px);
+    margin-top: 6px;
+    padding: 10px 8px 8px;
     gap: 5px;
-    padding: 10px 14px 3px;
-    text-align: center;
   }
-  #screen-menu .arcade-badge {
-    align-self: center;
-    margin: 0 0 2px;
-    padding: 4px 10px;
-    font-size: .75rem;
-  }
-  #screen-menu .arena-title {
-    white-space: normal;
-    font-size: clamp(2.1rem, 8.5vw, 2.9rem);
-    line-height: 1.02;
-  }
+  #screen-menu .arcade-badge { font-size: .74rem; padding: 4px 10px; }
+  #screen-menu .arena-title { font-size: clamp(2.2rem, 8.8vw, 3rem); }
   #screen-menu .title-arena { margin-left: 5px; }
-  #screen-menu .arena-subtitle-hi { margin: 1px 0 0; font-size: 1rem; }
-  #screen-menu .learning-promise {
-    justify-content: center;
-    align-self: auto;
-    margin: 5px 0 0;
-    gap: 5px;
+  #screen-menu .arena-subtitle-hi { font-size: .98rem; }
+  #screen-menu .learning-promise { gap: 5px; margin-top: 4px; }
+  #screen-menu .learning-promise span { padding: 4px 8px; font-size: .72rem; }
+  #screen-menu .math-wisdom { gap: 3px 7px; margin-top: 2px; }
+  #screen-menu .math-wisdom-sanskrit { font-size: .9rem; }
+  #screen-menu .math-wisdom-meaning { font-size: .75rem; }
+  #screen-menu .menu-section-heading {
+    width: calc(100% - 24px);
+    gap: 8px;
+    margin-top: 7px;
   }
-  #screen-menu .learning-promise span { font-size: .74rem; padding: 4px 8px; }
-  #screen-menu .math-wisdom {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 4px 7px;
-    margin-top: 4px;
-    padding-top: 5px;
-  }
-  #screen-menu .math-wisdom-sanskrit { font-size: .96rem; }
-  #screen-menu .math-wisdom-meaning { font-size: .78rem; }
-  #screen-menu .menu-section-heading { padding: 4px 14px 0; }
   #screen-menu .menu-section-heading h2 { font-size: 1rem; }
-  #screen-menu .menu-section-heading p { font-size: .75rem; }
+  #screen-menu .menu-section-heading p { font-size: .74rem; }
   #screen-menu .menu-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    width: calc(100% - 24px);
     gap: 10px;
-    padding: 7px 14px 3px;
+    padding-top: 10px;
   }
-  #screen-menu .menu-card {
-    flex-basis: calc((100% - 10px) / 2);
-    min-height: 188px;
-    padding: 11px 9px 10px;
-  }
+  #screen-menu .menu-card { min-height: 194px; padding: 11px 9px 10px; }
   #screen-menu .card-badge-icon {
-    width: calc(50px + (var(--font-scale) - 1) * 10px);
-    height: calc(50px + (var(--font-scale) - 1) * 10px);
+    width: calc(50px + (var(--font-scale) - 1) * 9px);
+    height: calc(50px + (var(--font-scale) - 1) * 9px);
     min-width: 46px;
     min-height: 46px;
-    font-size: 1.5rem;
+    margin-bottom: 7px;
+    font-size: 1.48rem;
   }
-  #screen-menu .card-title { font-size: .96rem; }
-  #screen-menu .card-desc { font-size: .8rem; min-height: 3.7em; }
-  #screen-menu .card-tag { font-size: .7rem; }
-  #screen-menu .menu-footer { padding: 8px 14px 4px; row-gap: 4px; }
+  #screen-menu .card-title { font-size: .95rem; }
+  #screen-menu .card-desc { font-size: .79rem; min-height: 3.6em; }
+  #screen-menu .card-tag { font-size: .69rem; padding: 4px 7px; }
+  #screen-menu .menu-footer { width: calc(100% - 24px); padding-top: 7px; gap: 4px 8px; }
+  #screen-menu .menu-footer .footer-note,
+  #screen-menu .menu-footer .type-credit { font-size: .72rem; }
 }
 @media (max-width: 420px) {
-  #screen-menu .menu-section-heading {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 1px;
-    margin-top: 4px;
-  }
+  #screen-menu .menu-section-heading { align-items: flex-start; flex-direction: column; gap: 1px; }
   #screen-menu .menu-section-heading p { text-align: left; }
-  #screen-menu .menu-grid { padding-inline: 14px; }
-  #screen-menu .menu-card {
-    flex-basis: 100%;
-    max-width: 360px;
-    min-height: 0;
-    padding: 12px 12px 11px;
-  }
-  #screen-menu .card-badge-icon {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
-    font-size: 1.4rem;
-    margin-bottom: 6px;
-  }
-  #screen-menu .card-desc { min-height: 0; }
+  #screen-menu .menu-grid { grid-template-columns: minmax(0,1fr); gap: 9px; }
+  #screen-menu .menu-card { min-height: 0; padding: 12px 12px 11px; }
+  #screen-menu .card-badge-icon { width: 48px; height: 48px; min-width: 48px; min-height: 48px; margin-bottom: 6px; }
+  #screen-menu .card-desc { min-height: 0; max-width: 28em; }
 }
 @media (max-height: 760px) and (min-width: 701px) {
-  #screen-menu .arcade-header { padding-top: 6px; }
-  #screen-menu .menu-card { min-height: 174px; padding: 9px 10px 8px; }
-  #screen-menu .card-badge-icon {
-    width: calc(48px + (var(--font-scale) - 1) * 10px);
-    height: calc(48px + (var(--font-scale) - 1) * 10px);
-    min-width: 46px;
-    min-height: 46px;
-    margin-bottom: 6px;
-    font-size: 1.45rem;
-  }
-  #screen-menu .card-desc { min-height: 3.3em; margin-bottom: 7px; }
-  #screen-menu .menu-footer { padding-top: 5px; }
+  #screen-menu .arcade-header { padding-top: 7px; gap: 4px; }
+  #screen-menu .arena-title { font-size: clamp(2.3rem, 3.5vw, 3rem); }
+  #screen-menu .menu-card { min-height: 184px; padding: 10px 11px; }
+  #screen-menu .card-badge-icon { width: 49px; height: 49px; min-width: 49px; min-height: 49px; margin-bottom: 6px; font-size: 1.48rem; }
+  #screen-menu .card-desc { min-height: 3.25em; margin-bottom: 7px; font-size: .8rem; }
+  #screen-menu .menu-footer { padding-top: 6px; }
 }
 @media (prefers-reduced-motion: reduce) {
   #screen-menu .menu-card { transition: none; }
