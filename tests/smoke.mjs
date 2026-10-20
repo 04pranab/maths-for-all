@@ -350,9 +350,9 @@ async function main() {
     assert(selectedDifficultyStyle.borderTopColor === "rgb(77, 107, 83)", "The selected difficulty should have a strong sage outline.");
     screen.querySelector('[data-nm-mode="daily"]').click();
     assert(NumberMaze.getSummary().mode === "daily", "Clicking a play style on the setup page should select it.");
-    await new Promise(resolve => setTimeout(resolve, 160));
+    await new Promise(resolve => setTimeout(resolve, 250));
     const selectedModeStyle = getComputedStyle(screen.querySelector('[data-nm-mode="daily"]'));
-    assert(selectedModeStyle.backgroundColor === "rgb(231, 238, 227)", "The selected play style should have a clearly visible sage fill.");
+    assert(selectedModeStyle.backgroundColor === "rgb(231, 238, 227)", "The selected play style should have a clearly visible sage fill (got " + selectedModeStyle.backgroundColor + ", aria-pressed=" + screen.querySelector('[data-nm-mode="daily"]').getAttribute("aria-pressed") + ", disabled=" + screen.querySelector('[data-nm-mode="daily"]').disabled + ", hover=" + screen.querySelector('[data-nm-mode="daily"]').matches(":hover") + ").");
     assert(selectedModeStyle.borderTopColor === "rgb(77, 107, 83)", "The selected play style should have a strong sage outline.");
     screen.querySelector('[data-nm-mode="explore"]').click();
     assert(NumberMaze.getSummary().mode === "explore", "The setup page should return to Explore when selected.");
