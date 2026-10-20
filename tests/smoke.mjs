@@ -345,7 +345,7 @@ async function main() {
     screen.querySelector('[data-nm-difficulty="gentle"]').click();
     assert(NumberMaze.getSummary().difficulty === "gentle", "Clicking a difficulty on the setup page should select it.");
     const selectedDifficultyStyle = getComputedStyle(screen.querySelector('[data-nm-difficulty="gentle"]'));
-    assert(selectedDifficultyStyle.backgroundColor === "rgb(231, 238, 227)", "The selected difficulty should have a clearly visible sage fill.");
+    assert(selectedDifficultyStyle.backgroundColor === "rgb(231, 238, 227)", "The selected difficulty should have a clearly visible sage fill (got " + selectedDifficultyStyle.backgroundColor + ", aria-pressed=" + screen.querySelector('[data-nm-difficulty="gentle"]').getAttribute("aria-pressed") + ", disabled=" + screen.querySelector('[data-nm-difficulty="gentle"]').disabled + ", hover=" + screen.querySelector('[data-nm-difficulty="gentle"]').matches(":hover") + ").");
     assert(selectedDifficultyStyle.borderTopColor === "rgb(77, 107, 83)", "The selected difficulty should have a strong sage outline.");
     screen.querySelector('[data-nm-mode="daily"]').click();
     assert(NumberMaze.getSummary().mode === "daily", "Clicking a play style on the setup page should select it.");
