@@ -321,8 +321,16 @@ async function main() {
   '})()');
 
 
-  const numberMazeResult = await evaluate(`(() => {
+  const numberMazeResult = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    const waitForComputedStyle = async (element, property, expected, label) => {
+      const deadline = Date.now() + 1500;
+      while (Date.now() < deadline) {
+        if (getComputedStyle(element)[property] === expected) return;
+        await new Promise(resolve => setTimeout(resolve, 25));
+      }
+      throw new Error("Timed out waiting for " + label + " " + property + " to become " + expected + "; got " + getComputedStyle(element)[property] + ".");
+    };
     ControlsOverlay.close();
     Game.goHome();
     Game.startNumberMaze();
@@ -334,12 +342,30 @@ async function main() {
     assert(screen.querySelectorAll("[data-nm-mode]").length === 4, "The setup menu should offer the available play styles.");
     assert(screen.querySelector(".nm-setup-hero") && screen.querySelector(".nm-setup-content"), "The setup page should use its custom field-journal layout.");
     assert(!screen.querySelector(".nm-setup-card"), "Number Maze setup should not regress to generic cards.");
+    const difficultyButtonStyle = getComputedStyle(screen.querySelector('[data-nm-difficulty="gentle"]'));
+    assert(difficultyButtonStyle.borderTopStyle === "solid" && parseFloat(difficultyButtonStyle.borderTopWidth) >= 1, "Difficulty choices should visibly look like buttons.");
+    assert(parseFloat(difficultyButtonStyle.borderTopLeftRadius) >= 10, "Difficulty buttons should have a clear, comfortable touch shape.");
+    const modeButtonStyle = getComputedStyle(screen.querySelector('[data-nm-mode="daily"]'));
+    assert(modeButtonStyle.borderTopStyle === "solid" && parseFloat(modeButtonStyle.borderTopWidth) >= 1, "Play-style choices should visibly look like buttons.");
+    assert(parseFloat(modeButtonStyle.borderTopLeftRadius) >= 10, "Play-style buttons should have a clear, comfortable touch shape.");
     const quietLabel = getComputedStyle(screen.querySelector(".nm-mode-copy small")).color;
     assert(quietLabel === "rgb(86, 102, 90)", "Muted setup text should remain readable on the soft sage palette.");
-    screen.querySelector('[data-nm-difficulty="gentle"]').click();
+    const selectedDifficultyButton = screen.querySelector('[data-nm-difficulty="gentle"]');
+    selectedDifficultyButton.click();
     assert(NumberMaze.getSummary().difficulty === "gentle", "Clicking a difficulty on the setup page should select it.");
-    screen.querySelector('[data-nm-mode="daily"]').click();
+    await waitForComputedStyle(selectedDifficultyButton, "backgroundColor", "rgb(231, 238, 227)", "selected difficulty");
+    await waitForComputedStyle(selectedDifficultyButton, "borderTopColor", "rgb(77, 107, 83)", "selected difficulty outline");
+    const selectedDifficultyStyle = getComputedStyle(selectedDifficultyButton);
+    assert(selectedDifficultyStyle.backgroundColor === "rgb(231, 238, 227)", "The selected difficulty should have a clearly visible sage fill.");
+    assert(selectedDifficultyStyle.borderTopColor === "rgb(77, 107, 83)", "The selected difficulty should have a strong sage outline.");
+    const selectedModeButton = screen.querySelector('[data-nm-mode="daily"]');
+    selectedModeButton.click();
     assert(NumberMaze.getSummary().mode === "daily", "Clicking a play style on the setup page should select it.");
+    await waitForComputedStyle(selectedModeButton, "backgroundColor", "rgb(231, 238, 227)", "selected play style");
+    await waitForComputedStyle(selectedModeButton, "borderTopColor", "rgb(77, 107, 83)", "selected play-style outline");
+    const selectedModeStyle = getComputedStyle(selectedModeButton);
+    assert(selectedModeStyle.backgroundColor === "rgb(231, 238, 227)", "The selected play style should have a clearly visible sage fill.");
+    assert(selectedModeStyle.borderTopColor === "rgb(77, 107, 83)", "The selected play style should have a strong sage outline.");
     screen.querySelector('[data-nm-mode="explore"]').click();
     assert(NumberMaze.getSummary().mode === "explore", "The setup page should return to Explore when selected.");
     assert(screen.querySelector("#nm-board"), "Number Maze board is missing.");
