@@ -306,6 +306,7 @@ const NumberMaze = (() => {
     if (!Object.prototype.hasOwnProperty.call(NumberMazeEngine.DIFFICULTIES, difficulty) || state.mode === 'challenge' || state.mode === 'tutorial') return;
     state.difficulty = difficulty;
     newPuzzle();
+    updateControls();
   }
 
   function nextCheckpointNumber() {
