@@ -321,7 +321,7 @@ async function main() {
   '})()');
 
 
-  const numberMazeResult = await evaluate(`(() => {
+  const numberMazeResult = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     ControlsOverlay.close();
     Game.goHome();
@@ -344,11 +344,13 @@ async function main() {
     assert(quietLabel === "rgb(86, 102, 90)", "Muted setup text should remain readable on the soft sage palette.");
     screen.querySelector('[data-nm-difficulty="gentle"]').click();
     assert(NumberMaze.getSummary().difficulty === "gentle", "Clicking a difficulty on the setup page should select it.");
+    await new Promise(resolve => setTimeout(resolve, 160));
     const selectedDifficultyStyle = getComputedStyle(screen.querySelector('[data-nm-difficulty="gentle"]'));
-    assert(selectedDifficultyStyle.backgroundColor === "rgb(231, 238, 227)", "The selected difficulty should have a clearly visible sage fill (got " + selectedDifficultyStyle.backgroundColor + ", aria-pressed=" + screen.querySelector('[data-nm-difficulty="gentle"]').getAttribute("aria-pressed") + ", disabled=" + screen.querySelector('[data-nm-difficulty="gentle"]').disabled + ", hover=" + screen.querySelector('[data-nm-difficulty="gentle"]').matches(":hover") + ").");
+    assert(selectedDifficultyStyle.backgroundColor === "rgb(231, 238, 227)", "The selected difficulty should have a clearly visible sage fill.");
     assert(selectedDifficultyStyle.borderTopColor === "rgb(77, 107, 83)", "The selected difficulty should have a strong sage outline.");
     screen.querySelector('[data-nm-mode="daily"]').click();
     assert(NumberMaze.getSummary().mode === "daily", "Clicking a play style on the setup page should select it.");
+    await new Promise(resolve => setTimeout(resolve, 160));
     const selectedModeStyle = getComputedStyle(screen.querySelector('[data-nm-mode="daily"]'));
     assert(selectedModeStyle.backgroundColor === "rgb(231, 238, 227)", "The selected play style should have a clearly visible sage fill.");
     assert(selectedModeStyle.borderTopColor === "rgb(77, 107, 83)", "The selected play style should have a strong sage outline.");
