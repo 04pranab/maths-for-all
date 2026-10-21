@@ -2433,3 +2433,9 @@ body::after {
     margin-top: 7px;
   }
 }
+
+@media (max-width: 560px) {
+  #screen-menu .arcade-illustration {
+    display: none;
+  }
+}
