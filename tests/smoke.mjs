@@ -1042,7 +1042,7 @@ async function main() {
       'const heroIllustration = homeHero?.querySelector(".arcade-illustration");' +
       'assert(homeHero && homeHero.querySelector(".arcade-copy") && homeHero.querySelector(".arcade-intro"), "The homepage discovery hero is missing its clear text structure.");' +
       'assert(homeHero.getBoundingClientRect().height <= (innerWidth <= 560 ? 260 : 170), "The homepage intro should be compact so the games appear sooner (got " + Math.round(homeHero.getBoundingClientRect().height) + "px at " + innerWidth + "px).");' +
-      'assert(document.querySelector("#screen-menu .brand-icon")?.textContent.trim() === "∫∀", "The home page must use the integral-for-all logo.");' +
+      'assert(document.querySelector(".site-header .brand-icon")?.textContent.trim() === "∫∀", "The home page must use the integral-for-all logo.");' +
       'assert(heroIllustration && heroIllustration.getAttribute("aria-hidden") === "true" && heroIllustration.getAttribute("focusable") === "false", "The hero illustration must remain decorative and out of the accessibility tree.");' +
       'if (innerWidth > 560) assert(isVisible(heroIllustration), "The homepage illustration should be visible when there is room for it.");' +
       'else assert(!isVisible(heroIllustration), "The homepage illustration should step aside on narrow screens.");' +
