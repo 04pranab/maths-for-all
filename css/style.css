@@ -4143,3 +4143,455 @@ body {
   #screen-menu .card-tag { border-color: ButtonText; background: Canvas; }
   #screen-menu .menu-card:focus-visible { outline-color: Highlight; }
 }
+
+
+/* HOME: a warmer discovery garden, with one calm visual anchor. */
+#screen-menu {
+  color: #293d31;
+  background:
+    radial-gradient(ellipse at 7% 4%, rgba(207, 231, 197, .34), transparent 34rem),
+    radial-gradient(ellipse at 94% 8%, rgba(250, 220, 156, .24), transparent 30rem),
+    #fbfaf4;
+}
+
+#screen-menu .arcade-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(280px, .88fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 62px);
+  width: min(1540px, calc(100% - clamp(28px, 4vw, 64px)));
+  margin: 18px auto 17px;
+  padding: clamp(28px, 4vw, 52px) clamp(26px, 4.4vw, 64px);
+  border: 1px solid #e0e8d9;
+  border-radius: 32px;
+  background:
+    radial-gradient(ellipse at 12% 0%, rgba(210, 235, 198, .72), transparent 43%),
+    radial-gradient(ellipse at 90% 20%, rgba(252, 230, 185, .66), transparent 42%),
+    linear-gradient(125deg, #fffef9 0%, #f4f8ee 100%);
+  box-shadow: 0 5px 0 rgba(47, 73, 50, .045);
+  text-align: left;
+  overflow: hidden;
+}
+
+#screen-menu .arcade-copy {
+  min-width: 0;
+  max-width: 760px;
+  position: relative;
+  z-index: 1;
+  text-align: left;
+}
+
+#screen-menu .arcade-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 13px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #3c6c47;
+  font-size: .86rem;
+  font-weight: 800;
+  letter-spacing: .015em;
+  line-height: 1.4;
+  text-transform: none;
+  transform: none;
+}
+
+#screen-menu .arcade-badge::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #5d9564;
+  box-shadow: 0 0 0 4px #e3efdf;
+}
+
+#screen-menu .arena-title {
+  margin: 0;
+  color: #2e5037;
+  font-size: clamp(3rem, 5.5vw, 5.1rem);
+  font-weight: 850;
+  letter-spacing: -.055em;
+  line-height: .98;
+}
+
+#screen-menu .title-math {
+  color: #315b40;
+}
+
+#screen-menu .title-arena {
+  margin-left: 7px;
+  color: #a86a1e;
+}
+
+#screen-menu .arena-subtitle-hi {
+  margin: 8px 0 0;
+  color: #58745a;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+#screen-menu .arcade-intro {
+  max-width: 37rem;
+  margin: 13px 0 0;
+  color: #405648;
+  font-size: 1.12rem;
+  line-height: 1.5;
+}
+
+#screen-menu .learning-promise {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px clamp(14px, 2vw, 24px);
+  max-width: 100%;
+  margin: 17px 0 0;
+}
+
+#screen-menu .learning-promise span {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #405648;
+  font-size: .86rem;
+  font-weight: 700;
+  line-height: 1.45;
+  box-shadow: none;
+}
+
+#screen-menu .math-wisdom {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 9px;
+  margin: 13px 0 0;
+  padding: 0;
+  border: 0;
+  color: #566b59;
+}
+
+#screen-menu .math-wisdom-sanskrit {
+  color: #426747;
+  font-size: .86rem;
+  font-weight: 800;
+}
+
+#screen-menu .math-wisdom-meaning {
+  color: #596b5e;
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
+#screen-menu .arcade-illustration {
+  display: block;
+  width: min(100%, 460px);
+  height: auto;
+  justify-self: end;
+  overflow: visible;
+  filter: drop-shadow(0 8px 8px rgba(57, 82, 58, .055));
+}
+
+#screen-menu .menu-section-heading {
+  width: min(1540px, calc(100% - clamp(28px, 4vw, 64px)));
+  margin: 20px auto 0;
+}
+
+#screen-menu .menu-section-heading h2 {
+  color: #2e4936;
+  font-size: 1.5rem;
+  letter-spacing: -.025em;
+}
+
+#screen-menu .menu-section-heading p {
+  color: #53695a;
+  font-size: .9rem;
+}
+
+#screen-menu .menu-grid {
+  width: min(1540px, calc(100% - clamp(28px, 4vw, 64px)));
+  gap: 16px;
+  padding-top: 12px;
+}
+
+#screen-menu .menu-card {
+  min-height: 190px;
+  padding: 16px 16px 15px;
+  border: 1px solid var(--tile-border);
+  border-left: 4px solid var(--tile-accent);
+  border-radius: 19px;
+  background: linear-gradient(137deg, var(--tile-wash) 0%, #fffefa 96%);
+  box-shadow: 0 3px 0 rgba(47, 68, 50, .055);
+  transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease, background .14s ease;
+}
+
+#screen-menu .card-quiz {
+  --tile-accent: #875617;
+  --tile-wash: #fff0c9;
+  --tile-border: #e7d19e;
+}
+#screen-menu .card-race {
+  --tile-accent: #704b89;
+  --tile-wash: #f0e5fa;
+  --tile-border: #d8c4e8;
+}
+#screen-menu .card-sudoku {
+  --tile-accent: #326b4b;
+  --tile-wash: #e4f3e7;
+  --tile-border: #c4dec9;
+}
+#screen-menu .card-shape {
+  --tile-accent: #176f82;
+  --tile-wash: #def1f6;
+  --tile-border: #bddde4;
+}
+#screen-menu .card-slab {
+  --tile-accent: #9c4056;
+  --tile-wash: #ffeaee;
+  --tile-border: #e7c3cd;
+}
+#screen-menu .card-architect {
+  --tile-accent: #855810;
+  --tile-wash: #f8edcc;
+  --tile-border: #e4d1a5;
+}
+#screen-menu .card-fraction {
+  --tile-accent: #984b25;
+  --tile-wash: #ffeadb;
+  --tile-border: #e8c9b1;
+}
+#screen-menu .card-little-shop {
+  --tile-accent: #2e6a3d;
+  --tile-wash: #e3f1e1;
+  --tile-border: #c6ddc4;
+}
+#screen-menu .card-number-maze {
+  --tile-accent: #426448;
+  --tile-wash: #deebd9;
+  --tile-border: #bfd2b8;
+}
+
+#screen-menu .card-badge-icon {
+  width: calc(54px + (var(--font-scale) - 1) * 8px);
+  height: calc(54px + (var(--font-scale) - 1) * 8px);
+  min-width: 48px;
+  min-height: 48px;
+  margin: 0 0 11px;
+  border: 1px solid var(--tile-border);
+  border-radius: 18px 13px 18px 13px;
+  background: rgba(255, 255, 255, .64);
+  color: var(--tile-accent);
+  font-size: 1.62rem;
+  box-shadow: 0 2px 0 rgba(47, 68, 50, .035);
+}
+
+#screen-menu .card-title {
+  color: var(--tile-accent);
+  font-size: 1.09rem;
+  line-height: 1.28;
+}
+
+#screen-menu .card-desc {
+  color: #405449;
+  font-size: .91rem;
+  line-height: 1.48;
+}
+
+#screen-menu .card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  margin-top: 11px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--tile-accent);
+  font-size: .77rem;
+  font-weight: 800;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+#screen-menu .card-tag::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--tile-accent);
+  box-shadow: 0 0 0 3px var(--tile-wash);
+}
+
+@media (hover: hover) {
+  #screen-menu .menu-card:hover {
+    border-color: var(--tile-border);
+    border-left-color: var(--tile-accent);
+    background: linear-gradient(137deg, var(--tile-wash) 0%, #fff 96%);
+    box-shadow: 0 5px 0 rgba(47, 68, 50, .085);
+    transform: translateY(-3px);
+  }
+}
+
+#screen-menu .menu-card:focus-visible {
+  border-color: var(--tile-accent);
+  border-left-color: var(--tile-accent);
+  outline: 3px solid var(--tile-accent);
+  outline-offset: 3px;
+}
+
+#screen-menu .menu-card:active {
+  box-shadow: 0 1px 0 rgba(47, 68, 50, .06);
+  transform: translateY(0);
+}
+
+#screen-menu .menu-footer {
+  width: min(1420px, calc(100% - clamp(28px, 4vw, 64px)));
+  margin: 12px auto 0;
+  padding-top: 14px;
+}
+
+#screen-menu .menu-footer .footer-welcome {
+  color: #3d6846;
+}
+
+@media (min-width: 1500px) {
+  #screen-menu .menu-grid { gap: 18px; }
+  #screen-menu .menu-card { min-height: 196px; padding: 17px 18px 16px; }
+}
+
+@media (max-width: 1100px) {
+  #screen-menu .arcade-header {
+    grid-template-columns: minmax(0, 1.05fr) minmax(235px, .75fr);
+    gap: 22px;
+    padding: 30px 28px;
+  }
+  #screen-menu .arena-title { font-size: clamp(2.8rem, 5.5vw, 4rem); }
+  #screen-menu .menu-grid { gap: 13px; }
+  #screen-menu .menu-card { min-height: 184px; padding: 14px 13px; }
+}
+
+@media (max-width: 700px) {
+  #screen-menu .arcade-header {
+    grid-template-columns: minmax(0, 1fr);
+    width: calc(100% - 24px);
+    gap: 12px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    padding: 23px 20px 20px;
+    border-radius: 25px;
+  }
+  #screen-menu .arcade-copy { max-width: none; text-align: center; }
+  #screen-menu .arcade-badge { margin-bottom: 10px; font-size: .8rem; }
+  #screen-menu .arena-title { font-size: clamp(2.5rem, 9vw, 3.3rem); }
+  #screen-menu .title-arena { margin-left: 4px; }
+  #screen-menu .arena-subtitle-hi { margin-top: 6px; font-size: .94rem; }
+  #screen-menu .arcade-intro { margin: 10px auto 0; font-size: 1rem; }
+  #screen-menu .learning-promise { justify-content: center; gap: 8px 14px; margin-top: 13px; }
+  #screen-menu .learning-promise span { font-size: .8rem; }
+  #screen-menu .math-wisdom { justify-content: center; margin-top: 11px; }
+  #screen-menu .math-wisdom-sanskrit { font-size: .82rem; }
+  #screen-menu .math-wisdom-meaning { font-size: .74rem; }
+  #screen-menu .arcade-illustration { width: min(100%, 300px); max-height: 132px; justify-self: center; }
+  #screen-menu .menu-section-heading { width: calc(100% - 24px); margin-top: 15px; }
+  #screen-menu .menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: calc(100% - 24px);
+    gap: 11px;
+    padding-top: 10px;
+  }
+  #screen-menu .menu-card { min-height: 188px; padding: 13px 12px 12px; }
+  #screen-menu .card-badge-icon {
+    width: calc(48px + (var(--font-scale) - 1) * 7px);
+    height: calc(48px + (var(--font-scale) - 1) * 7px);
+    min-width: 44px;
+    min-height: 44px;
+    margin-bottom: 8px;
+    border-radius: 15px 11px 15px 11px;
+    font-size: 1.43rem;
+  }
+  #screen-menu .card-title { font-size: 1rem; }
+  #screen-menu .card-desc { min-height: 3.45em; font-size: .85rem; line-height: 1.45; }
+  #screen-menu .card-tag { margin-top: 10px; font-size: .73rem; }
+  #screen-menu .menu-footer { width: calc(100% - 24px); padding-top: 11px; gap: 5px 8px; }
+  #screen-menu .menu-footer .footer-note,
+  #screen-menu .menu-footer .type-credit { font-size: .73rem; }
+}
+
+@media (max-width: 560px) {
+  #screen-menu .arcade-illustration { display: none; }
+}
+
+@media (max-width: 420px) {
+  #screen-menu .menu-section-heading { margin-top: 13px; }
+  #screen-menu .menu-grid { grid-template-columns: minmax(0, 1fr); gap: 9px; }
+  #screen-menu .menu-card {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    grid-template-areas:
+      "icon title"
+      "icon desc"
+      "tag tag";
+    align-items: start;
+    column-gap: 12px;
+    min-height: 0;
+    padding: 12px;
+  }
+  #screen-menu .card-badge-icon {
+    grid-area: icon;
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    min-height: 46px;
+    margin: 0;
+  }
+  #screen-menu .card-title { grid-area: title; margin: 1px 0 0; }
+  #screen-menu .card-desc { grid-area: desc; min-height: 0; margin-top: 5px; font-size: .88rem; }
+  #screen-menu .card-tag { grid-area: tag; justify-self: start; margin-top: 10px; }
+}
+
+@media (max-height: 760px) and (min-width: 701px) {
+  #screen-menu .arcade-header { padding-top: 25px; padding-bottom: 25px; }
+  #screen-menu .menu-card { min-height: 174px; padding-top: 13px; padding-bottom: 12px; }
+  #screen-menu .card-badge-icon { width: 47px; height: 47px; min-width: 47px; min-height: 47px; margin-bottom: 8px; font-size: 1.42rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #screen-menu .menu-card,
+  #screen-menu .arcade-illustration { transition: none; }
+  #screen-menu .menu-card:hover,
+  #screen-menu .menu-card:focus-visible,
+  #screen-menu .menu-card:active { transform: none; }
+}
+
+@media (forced-colors: active) {
+  #screen-menu .arcade-header,
+  #screen-menu .menu-card {
+    border: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+    box-shadow: none;
+  }
+  #screen-menu .menu-card { border-left: 4px solid ButtonText; }
+  #screen-menu .arcade-badge,
+  #screen-menu .arcade-intro,
+  #screen-menu .learning-promise span,
+  #screen-menu .math-wisdom,
+  #screen-menu .menu-section-heading h2,
+  #screen-menu .menu-section-heading p,
+  #screen-menu .card-title,
+  #screen-menu .card-desc,
+  #screen-menu .card-tag { color: CanvasText; }
+  #screen-menu .arcade-badge::before,
+  #screen-menu .card-tag::before { background: Highlight; box-shadow: none; }
+  #screen-menu .card-badge-icon { border-color: ButtonText; background: Canvas; }
+  #screen-menu .menu-card:focus-visible { outline-color: Highlight; }
+  #screen-menu .arcade-illustration { filter: none; }
+}
