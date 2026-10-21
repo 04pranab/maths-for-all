@@ -4595,3 +4595,33 @@ body {
   #screen-menu .menu-card:focus-visible { outline-color: Highlight; }
   #screen-menu .arcade-illustration { filter: none; }
 }
+
+
+/* Maths for All identity: integral + universal quantifier. */
+.brand-mark .brand-icon {
+  box-sizing: border-box;
+  width: 48px;
+  min-width: 48px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7152a1 0%, #397984 100%);
+  color: #fffaf0;
+  font-family: "Cambria Math", Georgia, serif;
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: -.075em;
+  padding-right: .06em;
+  box-shadow: 0 2px 6px rgba(65, 63, 110, .16);
+}
+.brand-mark:focus-visible .brand-icon {
+  outline: 3px solid #9b75c9;
+  outline-offset: 3px;
+}
+@media (max-width: 560px) {
+  .brand-mark .brand-icon {
+    width: 43px;
+    min-width: 43px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
