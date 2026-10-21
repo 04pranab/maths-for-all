@@ -193,7 +193,7 @@ body::before {
   align-self: center;
   margin: 0;
   color: var(--tile-accent);
-  font-size: clamp(.95rem, 1.15vw, 1.04rem);
+  font-size: calc(clamp(.95rem, 1.15vw, 1.04rem) * var(--font-scale, 1));
   font-weight: 850;
   line-height: 1.22;
   overflow-wrap: anywhere;
@@ -204,7 +204,7 @@ body::before {
   min-height: 0;
   margin: 0;
   color: #45564a;
-  font-size: .83rem;
+  font-size: calc(.83rem * var(--font-scale, 1));
   line-height: 1.42;
   overflow-wrap: anywhere;
 }
@@ -219,7 +219,7 @@ body::before {
   border-radius: 0;
   background: transparent;
   color: var(--tile-accent);
-  font-size: .71rem;
+  font-size: calc(.71rem * var(--font-scale, 1));
   font-weight: 850;
   line-height: 1.35;
   white-space: normal;
@@ -368,16 +368,16 @@ body::before {
   }
 
   #screen-menu .card-title {
-    font-size: .94rem;
+    font-size: calc(.94rem * var(--font-scale, 1));
   }
 
   #screen-menu .card-desc {
-    font-size: .78rem;
+    font-size: calc(.78rem * var(--font-scale, 1));
     line-height: 1.38;
   }
 
   #screen-menu .card-tag {
-    font-size: .67rem;
+    font-size: calc(.67rem * var(--font-scale, 1));
   }
 
   #screen-menu .menu-footer {
@@ -428,12 +428,12 @@ body::before {
   #screen-menu .card-title {
     grid-area: title;
     align-self: center;
-    font-size: .98rem;
+    font-size: calc(.98rem * var(--font-scale, 1));
   }
 
   #screen-menu .card-desc {
     grid-area: desc;
-    font-size: .82rem;
+    font-size: calc(.82rem * var(--font-scale, 1));
   }
 
   #screen-menu .card-tag {
@@ -558,7 +558,7 @@ body::before {
 #screen-shape .topbar-title,
 #screen-slab .topbar-title,
 #screen-architect .topbar-title {
-  font-size: clamp(1rem, 1.35vw, 1.2rem);
+  font-size: calc(clamp(1rem, 1.35vw, 1.2rem) * var(--font-scale, 1));
   line-height: 1.25;
   text-align: left;
 }
@@ -648,7 +648,7 @@ body::before {
   background: #ffffff;
   color: var(--game-ink);
   box-shadow: 0 2px 0 var(--game-border);
-  font-size: 1rem;
+  font-size: calc(1rem * var(--font-scale, 1));
   line-height: 1.4;
 }
 
@@ -1081,7 +1081,7 @@ body::before {
 
 #screen-number-maze .nm-mode[aria-pressed="true"],
 #screen-number-maze .nm-difficulty[aria-pressed="true"] {
-  background: var(--game-wash);
+  background: rgba(223,232,220,.48);
   box-shadow: inset 3px 0 0 var(--game-accent);
 }
 
@@ -1136,7 +1136,7 @@ body::before {
   #screen-slab .topbar-title,
   #screen-architect .topbar-title {
     text-align: center;
-    font-size: .95rem;
+    font-size: calc(.95rem * var(--font-scale, 1));
   }
 
   #screen-quiz .difficulty-panel,
@@ -1151,11 +1151,12 @@ body::before {
   #screen-race .btn-diff,
   #screen-sudoku .btn-diff {
     padding: 10px 8px;
-    font-size: .9rem;
+    font-size: calc(.9rem * var(--font-scale, 1));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  #screen-menu *,
   #screen-quiz *,
   #screen-race *,
   #screen-sudoku *,
@@ -1165,6 +1166,9 @@ body::before {
   #screen-fraction-bakery *,
   #screen-little-shop *,
   #screen-number-maze * {
-    scroll-behavior: auto;
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
 }
