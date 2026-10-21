@@ -3453,531 +3453,451 @@ body {
 
 #screen-menu {
   min-height: calc(100dvh - 68px);
-  overflow: visible;
+  padding: 0 0 22px;
+  color: #293d31;
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(214, 232, 203, .24), transparent 32rem),
+    radial-gradient(ellipse at 94% 12%, rgba(249, 225, 172, .2), transparent 30rem),
+    #f8f9f3;
 }
 
 #screen-menu .arcade-header {
-  padding-top: 14px;
-}
-
-#screen-menu .menu-grid {
-  padding-top: 12px;
-  padding-bottom: 8px;
-  gap: 14px;
-}
-
-#screen-menu .menu-card {
-  padding: 16px 14px;
-}
-
-#screen-menu .menu-footer {
-  padding-top: 8px;
-}
-
-.modal-overlay {
-  overflow: hidden;
-}
-
-.modal-box {
-  max-height: calc(100dvh - 24px);
-  overflow-y: auto;
-}
-
-@media (max-width: 900px) {
-  .site-header {
-    height: auto;
-  }
-
-  .screen {
-    min-height: calc(100dvh - 68px);
-    overflow: visible;
-  }
-
-  .difficulty-panel {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "title"
-      "hint"
-      "guide"
-      "buttons";
-    max-height: none;
-    overflow: visible;
-  }
-
-  .difficulty-panel .level-guide {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  .difficulty-panel .level-guide strong {
-    grid-column: 1 / -1;
-  }
-
-  #race-setup-panel {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 900px) {
-  #screen-sudoku .play-panel {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "top"
-      "board"
-      "side"
-      "message";
-    row-gap: 8px;
-  }
-
-  #screen-sudoku .sudoku-top-row {
-    max-width: none;
-  }
-
-  #screen-sudoku .sudoku-grid {
-    width: min(620px, 100%);
-  }
-
-  #screen-sudoku .sudoku-side-column {
-    grid-area: side;
-    grid-column: 1;
-    grid-row: 3;
-    width: min(480px, 100%);
-    min-width: 0;
-    margin: 0 auto;
-    padding-top: 0;
-  }
-
-  #screen-sudoku .sudoku-keypad {
-    width: min(480px, 100%);
-    max-width: 480px;
-    margin: 8px auto;
-  }
-
-  #screen-sudoku .sudoku-controls {
-    width: 100%;
-    margin: 0;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  #screen-sudoku .sudoku-controls .btn-sudoku {
-    width: auto;
-  }
-}
-
-@media (max-width: 700px) {
-  .difficulty-panel {
-    width: calc(100vw - 20px);
-    padding: 10px;
-    gap: 7px;
-  }
-
-  .difficulty-panel .level-guide {
-    grid-template-columns: 1fr;
-    padding: 9px;
-    gap: 6px;
-  }
-
-  .difficulty-panel .level-guide strong {
-    grid-column: auto;
-  }
-
-  .difficulty-panel .level-guide span {
-    padding: 7px 9px;
-  }
-
-  .difficulty-panel .btn-diff {
-    min-height: 58px;
-    padding: 9px 12px;
-  }
-
-  #race-setup-panel {
-    width: calc(100vw - 20px);
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 8px 0;
-  }
-
-  .setup-card,
-  .leaderboard {
-    padding: 13px;
-  }
-
-  .leaderboard {
-    display: none;
-  }
-
-  #race-play-panel {
-    width: calc(100vw - 20px);
-  }
-
-  #race-play-panel .question-card {
-    min-height: 140px;
-    padding: 24px 16px;
-  }
-
-  #screen-slab .slab-puzzle-area {
-    width: calc(100vw - 20px);
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #screen-slab .slab-basket {
-    width: min(72vw, 340px);
-    height: 190px;
-  }
-
-  #screen-slab .slab-right-col {
-    width: 100%;
-  }
-}
-
-@media (max-height: 760px) and (min-width: 701px) {
-  .game-topbar {
-    padding: 9px 14px;
-  }
-
-  .difficulty-panel {
-    padding-top: 8px;
-    padding-bottom: 6px;
-    gap: 6px 18px;
-  }
-
-  .difficulty-panel .level-guide span {
-    padding: 6px 9px;
-  }
-
-  .difficulty-panel .btn-diff {
-    min-height: 54px;
-    padding: 9px 14px;
-  }
-
-  #race-setup-panel {
-    padding-top: 8px;
-  }
-
-  .setup-card,
-  .leaderboard {
-    padding: 14px;
-  }
-
-  #screen-menu .arcade-header {
-    padding-top: 7px;
-  }
-
-  #screen-menu .menu-card {
-    padding: 11px 10px;
-  }
-}
-
-
-.nav-link.nav-wiki-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-}
-
-.nav-link.nav-wiki-link:hover,
-.nav-link.nav-wiki-link:focus-visible,
-.nav-link.nav-wiki-link.active {
-  text-decoration: none;
-}
-
-
-
-/* HOME: a compact, welcoming learning shelf. */
-#screen-menu {
-  min-height: calc(100dvh - 68px);
-  padding: 0 0 10px;
-}
-#screen-menu .arcade-header {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  width: min(1320px, calc(100% - 32px));
-  margin: 12px auto 0;
-  padding: 13px 20px 10px;
+  gap: 8px;
+  width: min(1380px, calc(100% - 40px));
+  margin: 14px auto 18px;
+  padding: clamp(22px, 3vw, 36px) 20px 22px;
+  overflow: hidden;
+  border: 1px solid #e2e9dc;
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(211, 232, 201, .7), transparent 38%),
+    radial-gradient(ellipse at 91% 2%, rgba(250, 229, 181, .54), transparent 36%),
+    linear-gradient(132deg, #fffdf7 0%, #f5f8f0 100%);
+  box-shadow: 0 4px 0 rgba(45, 73, 50, .035);
   text-align: center;
-  border-bottom: 1px solid rgba(185,204,191,.72);
 }
+
 #screen-menu .arcade-badge {
-  margin: 0 0 2px;
-  padding: 4px 12px;
-  border: 1.5px solid #8db89a;
-  border-radius: 999px;
-  background: #edf5ee;
-  color: #376947;
+  margin: 0 0 1px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #41694a;
   font-size: .78rem;
   font-weight: 800;
-  letter-spacing: .01em;
-  line-height: 1.3;
+  letter-spacing: .085em;
+  line-height: 1.4;
+  text-transform: uppercase;
   transform: none;
 }
+
 #screen-menu .arena-title {
   margin: 0;
-  font-size: clamp(2.5rem, 4.2vw, 3.6rem);
-  font-weight: 800;
-  letter-spacing: -.04em;
-  line-height: 1;
+  color: #2f513a;
+  font-size: clamp(2.8rem, 5.2vw, 4.1rem);
+  font-weight: 850;
+  letter-spacing: -.055em;
+  line-height: .98;
 }
-#screen-menu .title-math { color: #765a72; }
+
+#screen-menu .title-math {
+  color: #315b40;
+}
+
 #screen-menu .title-arena {
-  margin-left: 8px;
-  color: #b87516;
+  margin-left: 7px;
+  color: #a96d1d;
 }
+
 #screen-menu .arena-subtitle-hi {
   margin: 0;
-  color: #765a72;
-  font-size: 1.04rem;
-  line-height: 1.25;
+  color: #58745a;
+  font-size: 1rem;
+  line-height: 1.35;
 }
+
 #screen-menu .learning-promise {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 7px;
-  max-width: none;
-  margin: 5px auto 0;
+  gap: 9px clamp(14px, 2.2vw, 28px);
+  max-width: 100%;
+  margin: 13px auto 0;
 }
+
 #screen-menu .learning-promise span {
-  padding: 5px 10px;
-  border: 1px solid #d5e0d8;
-  border-radius: 999px;
-  background: rgba(255,255,255,.8);
-  color: #465b50;
-  font-size: .78rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #405648;
+  font-size: .88rem;
   font-weight: 700;
-  line-height: 1.25;
-  box-shadow: 0 1px 2px rgba(38,50,56,.04);
+  line-height: 1.45;
+  box-shadow: none;
 }
+
 #screen-menu .math-wisdom {
   display: flex;
   justify-content: center;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 6px 9px;
-  margin: 3px 0 0;
+  gap: 4px 9px;
+  margin: 10px 0 0;
   padding: 0;
   border: 0;
-  color: var(--indigo);
+  color: #566b59;
 }
+
 #screen-menu .math-wisdom-sanskrit {
-  font-size: .97rem;
+  color: #4c6d50;
+  font-size: .9rem;
   font-weight: 800;
 }
+
 #screen-menu .math-wisdom-meaning {
-  color: var(--ink-soft);
-  font-size: .78rem;
+  color: #637165;
+  font-size: .8rem;
+  line-height: 1.4;
 }
+
 #screen-menu .menu-section-heading {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 14px;
-  width: min(1320px, calc(100% - 32px));
-  margin: 8px auto 0;
-  padding: 0 0 7px;
-  border-bottom: 1px solid #dce5dc;
+  width: min(1380px, calc(100% - 40px));
+  margin: 20px auto 0;
+  padding: 0 1px 2px;
+  border: 0;
 }
+
 #screen-menu .menu-section-heading h2 {
   margin: 0;
-  color: #34483b;
-  font: 800 1.12rem/1.3 var(--font-head);
-  letter-spacing: -.01em;
+  color: #2e4936;
+  font: 800 1.42rem/1.25 var(--font-head);
+  letter-spacing: -.025em;
 }
+
 #screen-menu .menu-section-heading p {
   margin: 0;
-  color: #56666b;
-  font-size: .82rem;
-  line-height: 1.35;
+  color: #596b5e;
+  font-size: .9rem;
+  line-height: 1.4;
   text-align: right;
 }
+
 #screen-menu .menu-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: stretch;
-  gap: 14px;
-  width: min(1320px, calc(100% - 32px));
+  gap: 15px;
+  width: min(1380px, calc(100% - 40px));
   max-width: none;
   margin: 0 auto;
   padding: 12px 0 4px;
 }
+
 #screen-menu .menu-card {
-  --tile-accent: #6c8c72;
+  --tile-accent: #55785a;
+  --tile-wash: #eff5ec;
+  --tile-border: #d4e2d1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
   min-width: 0;
   max-width: none;
-  min-height: 206px;
-  padding: 13px 12px 12px;
-  border: 1.5px solid #34413a;
-  border-top: 3px solid var(--tile-accent);
-  border-radius: 15px;
-  background: rgba(255,255,255,.94);
-  box-shadow: 0 3px 0 rgba(38,50,56,.09);
-  text-align: center;
+  min-height: 184px;
+  padding: 15px 15px 14px;
+  border: 1px solid var(--tile-border);
+  border-left: 4px solid var(--tile-accent);
+  border-radius: 17px;
+  background: linear-gradient(138deg, var(--tile-wash) 0%, #fffefa 88%);
+  color: #293d31;
+  box-shadow: 0 3px 0 rgba(47, 68, 50, .055);
+  text-align: left;
   transform: none;
-  transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease;
+  transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease, background-color .14s ease;
 }
-#screen-menu .card-quiz { --tile-accent: #b97937; }
-#screen-menu .card-race { --tile-accent: #92758b; }
-#screen-menu .card-sudoku { --tile-accent: #668b79; }
-#screen-menu .card-shape { --tile-accent: #478b9b; }
-#screen-menu .card-slab { --tile-accent: #b8787d; }
-#screen-menu .card-architect { --tile-accent: #ba8b48; }
-#screen-menu .card-fraction { --tile-accent: #bd9065; }
-#screen-menu .card-little-shop { --tile-accent: #638567; }
-#screen-menu .card-number-maze { --tile-accent: #4d6b53; }
-#screen-menu .menu-card[hidden] { display: none !important; }
+
+#screen-menu .card-quiz {
+  --tile-accent: #98621f;
+  --tile-wash: #fff4dc;
+  --tile-border: #ead7af;
+}
+#screen-menu .card-race {
+  --tile-accent: #76568c;
+  --tile-wash: #f5effa;
+  --tile-border: #dfd2eb;
+}
+#screen-menu .card-sudoku {
+  --tile-accent: #3e7657;
+  --tile-wash: #edf6ef;
+  --tile-border: #cfe1d2;
+}
+#screen-menu .card-shape {
+  --tile-accent: #23798b;
+  --tile-wash: #edf7f9;
+  --tile-border: #c8e1e5;
+}
+#screen-menu .card-slab {
+  --tile-accent: #a65061;
+  --tile-wash: #fff0f2;
+  --tile-border: #ebcdd3;
+}
+#screen-menu .card-architect {
+  --tile-accent: #95651d;
+  --tile-wash: #faf3e3;
+  --tile-border: #e7d7b4;
+}
+#screen-menu .card-fraction {
+  --tile-accent: #a75e33;
+  --tile-wash: #fff2e8;
+  --tile-border: #ebd2bf;
+}
+#screen-menu .card-little-shop {
+  --tile-accent: #367248;
+  --tile-wash: #edf6ed;
+  --tile-border: #cfe2ce;
+}
+#screen-menu .card-number-maze {
+  --tile-accent: #4d6b53;
+  --tile-wash: #eaf2e7;
+  --tile-border: #cadbc6;
+}
+
+#screen-menu .menu-card[hidden] {
+  display: none !important;
+}
+
 #screen-menu .menu-card:hover,
 #screen-menu .menu-card:focus-visible {
-  border-color: #34413a;
-  border-top-color: var(--tile-accent);
-  box-shadow: 0 5px 0 rgba(55,105,71,.15);
+  border-color: var(--tile-accent);
+  border-left-color: var(--tile-accent);
+  background: linear-gradient(138deg, var(--tile-wash) 0%, #fff 94%);
+  box-shadow: 0 4px 0 rgba(47, 68, 50, .09);
   transform: translateY(-2px);
-  outline-offset: 4px;
+  outline: 3px solid var(--tile-accent);
+  outline-offset: 3px;
 }
+
+#screen-menu .menu-card:active {
+  box-shadow: 0 1px 0 rgba(47, 68, 50, .07);
+  transform: translateY(0);
+}
+
 #screen-menu .card-badge-icon {
-  width: calc(56px + (var(--font-scale) - 1) * 10px);
-  height: calc(56px + (var(--font-scale) - 1) * 10px);
-  min-width: 50px;
-  min-height: 50px;
-  margin: 0 auto 9px;
-  border: 2px solid #34413a;
-  font-size: 1.68rem;
+  display: grid;
+  place-items: center;
+  width: calc(50px + (var(--font-scale) - 1) * 8px);
+  height: calc(50px + (var(--font-scale) - 1) * 8px);
+  min-width: 48px;
+  min-height: 48px;
+  margin: 0 0 10px;
+  border: 1px solid var(--tile-border);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, .78);
+  color: var(--tile-accent);
+  font-size: 1.52rem;
+  line-height: 1;
+  box-shadow: none;
   flex: 0 0 auto;
 }
+
 #screen-menu .card-title {
-  margin: 0 0 6px;
-  color: #263238;
-  font-size: 1.03rem;
+  margin: 0 0 5px;
+  color: #263d2f;
+  font-size: 1.06rem;
   font-weight: 800;
-  line-height: 1.25;
+  line-height: 1.28;
 }
+
 #screen-menu .card-desc {
   flex: 1 0 auto;
-  min-height: 3.7em;
-  margin: 0 0 10px;
-  color: #56666b;
-  font-size: .84rem;
-  line-height: 1.38;
+  min-height: 3em;
+  margin: 0;
+  color: #4b5e51;
+  font-size: .9rem;
+  font-weight: 450;
+  line-height: 1.48;
 }
+
 #screen-menu .card-tag {
   display: inline-block;
   max-width: 100%;
-  margin-top: auto;
-  padding: 4px 9px;
-  border: 1px solid #c5d3c8;
-  border-radius: 999px;
-  background: #f5f8f4;
-  color: #4b6053;
-  font-size: .73rem;
+  margin-top: 12px;
+  padding: 5px 9px;
+  border: 1px solid var(--tile-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .82);
+  color: #435849;
+  font-size: .76rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.35;
   white-space: normal;
   overflow-wrap: anywhere;
 }
+
 #screen-menu .menu-footer {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: baseline;
-  gap: 4px 12px;
-  width: min(1120px, calc(100% - 32px));
+  gap: 5px 12px;
+  width: min(1240px, calc(100% - 40px));
   max-width: none;
-  margin: 0 auto;
-  padding: 8px 0 0;
-  color: #596a60;
-  font-size: .78rem;
-  line-height: 1.4;
+  margin: 9px auto 0;
+  padding: 13px 0 0;
+  border-top: 1px solid #e3e9df;
+  color: #5b6a5e;
+  font-size: .8rem;
+  line-height: 1.45;
   text-align: center;
 }
+
 #screen-menu .menu-footer .footer-welcome {
   flex: 0 0 100%;
-  color: #765a72;
-  font-size: .81rem;
+  color: #426a49;
+  font-size: .89rem;
   font-weight: 800;
 }
+
 #screen-menu .menu-footer .footer-note,
 #screen-menu .menu-footer .type-credit {
   display: inline;
   margin: 0;
-  color: #596a60;
-  font-size: .75rem;
+  color: #5b6a5e;
+  font-size: .77rem;
   opacity: 1;
 }
-@media (max-width: 1100px) {
-  #screen-menu .menu-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
-  #screen-menu .menu-card { min-height: 198px; }
-  #screen-menu .arcade-header { padding-top: 12px; }
+
+@media (min-width: 1500px) {
+  #screen-menu .menu-grid { gap: 17px; }
+  #screen-menu .menu-card { min-height: 190px; padding: 17px 17px 15px; }
 }
+
+@media (max-width: 1100px) {
+  #screen-menu .menu-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+  #screen-menu .menu-card { min-height: 180px; }
+  #screen-menu .arcade-header { padding-top: 25px; padding-bottom: 21px; }
+}
+
 @media (max-width: 700px) {
   #screen-menu .arcade-header {
     width: calc(100% - 24px);
-    margin-top: 6px;
-    padding: 10px 8px 8px;
-    gap: 5px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    padding: 21px 13px 18px;
+    gap: 7px;
+    border-radius: 23px;
   }
-  #screen-menu .arcade-badge { font-size: .74rem; padding: 4px 10px; }
-  #screen-menu .arena-title { font-size: clamp(2.2rem, 8.8vw, 3rem); }
-  #screen-menu .title-arena { margin-left: 5px; }
-  #screen-menu .arena-subtitle-hi { font-size: .98rem; }
-  #screen-menu .learning-promise { gap: 5px; margin-top: 4px; }
-  #screen-menu .learning-promise span { padding: 4px 8px; font-size: .72rem; }
-  #screen-menu .math-wisdom { gap: 3px 7px; margin-top: 2px; }
-  #screen-menu .math-wisdom-sanskrit { font-size: .9rem; }
+  #screen-menu .arcade-badge { font-size: .72rem; letter-spacing: .065em; }
+  #screen-menu .arena-title { font-size: clamp(2.35rem, 9vw, 3.15rem); }
+  #screen-menu .title-arena { margin-left: 4px; }
+  #screen-menu .arena-subtitle-hi { font-size: .94rem; }
+  #screen-menu .learning-promise { gap: 7px 14px; margin-top: 10px; }
+  #screen-menu .learning-promise span { font-size: .8rem; }
+  #screen-menu .math-wisdom { gap: 3px 7px; margin-top: 8px; }
+  #screen-menu .math-wisdom-sanskrit { font-size: .84rem; }
   #screen-menu .math-wisdom-meaning { font-size: .75rem; }
   #screen-menu .menu-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
     width: calc(100% - 24px);
-    gap: 8px;
-    margin-top: 7px;
+    margin-top: 15px;
   }
-  #screen-menu .menu-section-heading h2 { font-size: 1rem; }
-  #screen-menu .menu-section-heading p { font-size: .74rem; }
+  #screen-menu .menu-section-heading h2 { font-size: 1.28rem; }
+  #screen-menu .menu-section-heading p { font-size: .84rem; text-align: left; }
   #screen-menu .menu-grid {
-    grid-template-columns: repeat(2, minmax(0,1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: calc(100% - 24px);
-    gap: 10px;
+    gap: 11px;
     padding-top: 10px;
   }
-  #screen-menu .menu-card { min-height: 194px; padding: 11px 9px 10px; }
+  #screen-menu .menu-card { min-height: 188px; padding: 12px 11px 11px; }
   #screen-menu .card-badge-icon {
-    width: calc(50px + (var(--font-scale) - 1) * 9px);
-    height: calc(50px + (var(--font-scale) - 1) * 9px);
+    width: calc(46px + (var(--font-scale) - 1) * 7px);
+    height: calc(46px + (var(--font-scale) - 1) * 7px);
+    min-width: 44px;
+    min-height: 44px;
+    margin-bottom: 8px;
+    border-radius: 13px;
+    font-size: 1.4rem;
+  }
+  #screen-menu .card-title { font-size: .99rem; }
+  #screen-menu .card-desc { min-height: 3.5em; font-size: .86rem; line-height: 1.45; }
+  #screen-menu .card-tag { margin-top: 10px; padding: 4px 7px; font-size: .73rem; }
+  #screen-menu .menu-footer { width: calc(100% - 24px); padding-top: 11px; gap: 5px 8px; }
+  #screen-menu .menu-footer .footer-note,
+  #screen-menu .menu-footer .type-credit { font-size: .73rem; }
+}
+
+@media (max-width: 420px) {
+  #screen-menu .menu-section-heading { margin-top: 13px; }
+  #screen-menu .menu-grid { grid-template-columns: minmax(0, 1fr); gap: 9px; }
+  #screen-menu .menu-card {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    grid-template-areas:
+      "icon title"
+      "icon desc"
+      "tag tag";
+    align-items: start;
+    column-gap: 12px;
+    min-height: 0;
+    padding: 12px;
+  }
+  #screen-menu .card-badge-icon {
+    grid-area: icon;
+    width: 46px;
+    height: 46px;
     min-width: 46px;
     min-height: 46px;
-    margin-bottom: 7px;
-    font-size: 1.48rem;
+    margin: 0;
   }
-  #screen-menu .card-title { font-size: .95rem; }
-  #screen-menu .card-desc { font-size: .79rem; min-height: 3.6em; }
-  #screen-menu .card-tag { font-size: .69rem; padding: 4px 7px; }
-  #screen-menu .menu-footer { width: calc(100% - 24px); padding-top: 7px; gap: 4px 8px; }
-  #screen-menu .menu-footer .footer-note,
-  #screen-menu .menu-footer .type-credit { font-size: .72rem; }
+  #screen-menu .card-title { grid-area: title; margin: 1px 0 0; }
+  #screen-menu .card-desc { grid-area: desc; min-height: 0; margin-top: 5px; font-size: .88rem; }
+  #screen-menu .card-tag { grid-area: tag; justify-self: start; margin-top: 10px; }
 }
-@media (max-width: 420px) {
-  #screen-menu .menu-section-heading { align-items: flex-start; flex-direction: column; gap: 1px; }
-  #screen-menu .menu-section-heading p { text-align: left; }
-  #screen-menu .menu-grid { grid-template-columns: minmax(0,1fr); gap: 9px; }
-  #screen-menu .menu-card { min-height: 0; padding: 12px 12px 11px; }
-  #screen-menu .card-badge-icon { width: 48px; height: 48px; min-width: 48px; min-height: 48px; margin-bottom: 6px; }
-  #screen-menu .card-desc { min-height: 0; max-width: 28em; }
-}
+
 @media (max-height: 760px) and (min-width: 701px) {
-  #screen-menu .arcade-header { padding-top: 7px; gap: 4px; }
-  #screen-menu .arena-title { font-size: clamp(2.3rem, 3.5vw, 3rem); }
-  #screen-menu .menu-card { min-height: 184px; padding: 10px 11px; }
-  #screen-menu .card-badge-icon { width: 49px; height: 49px; min-width: 49px; min-height: 49px; margin-bottom: 6px; font-size: 1.48rem; }
-  #screen-menu .card-desc { min-height: 3.25em; margin-bottom: 7px; font-size: .8rem; }
-  #screen-menu .menu-footer { padding-top: 6px; }
+  #screen-menu .arcade-header { padding-top: 18px; padding-bottom: 16px; gap: 6px; }
+  #screen-menu .arena-title { font-size: clamp(2.65rem, 4.3vw, 3.5rem); }
+  #screen-menu .learning-promise { margin-top: 8px; }
+  #screen-menu .math-wisdom { margin-top: 6px; }
+  #screen-menu .menu-card { min-height: 170px; padding-top: 12px; padding-bottom: 11px; }
+  #screen-menu .card-badge-icon { width: 45px; height: 45px; min-width: 45px; min-height: 45px; margin-bottom: 7px; font-size: 1.38rem; }
 }
+
 @media (prefers-reduced-motion: reduce) {
   #screen-menu .menu-card { transition: none; }
+  #screen-menu .menu-card:hover,
+  #screen-menu .menu-card:focus-visible,
+  #screen-menu .menu-card:active { transform: none; }
+}
+
+@media (forced-colors: active) {
+  #screen-menu .menu-card {
+    border: 1px solid ButtonText;
+    border-left: 4px solid ButtonText;
+    background: Canvas;
+    color: CanvasText;
+    box-shadow: none;
+  }
+  #screen-menu .card-title,
+  #screen-menu .card-desc,
+  #screen-menu .card-tag { color: CanvasText; }
+  #screen-menu .card-badge-icon,
+  #screen-menu .card-tag { border-color: ButtonText; background: Canvas; }
+  #screen-menu .menu-card:focus-visible { outline-color: Highlight; }
 }
