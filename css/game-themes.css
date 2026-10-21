@@ -2264,3 +2264,178 @@ body::after {
     gap: 9px;
   }
 }
+
+
+/* Balanced home welcome: generous enough to breathe, compact enough to reach the games. */
+#screen-menu .arcade-header {
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 235px);
+  gap: clamp(16px, 2.5vw, 32px);
+  width: min(1500px, calc(100% - 36px));
+  margin-top: 9px;
+  padding: 11px 12px 6px;
+  align-items: center;
+}
+#screen-menu .arcade-copy {
+  max-width: 780px;
+}
+#screen-menu .arcade-badge {
+  margin: 0 0 6px;
+  padding: 4px 10px;
+  font-size: .72rem;
+  line-height: 1.3;
+  background: #fff0d7;
+  color: #815a24;
+}
+#screen-menu .arena-title {
+  display: block;
+  font-size: clamp(2.05rem, 3.2vw, 2.75rem);
+  line-height: 1.04;
+  letter-spacing: -.04em;
+}
+#screen-menu .title-arena {
+  margin-left: 5px;
+}
+#screen-menu .arena-subtitle-hi {
+  display: block;
+  margin: 5px 0 0;
+  font-size: .9rem;
+  line-height: 1.35;
+  color: #52735a;
+}
+#screen-menu .arcade-intro {
+  max-width: 590px;
+  margin: 7px 0 0;
+  font-size: .96rem;
+  line-height: 1.48;
+  color: #405648;
+}
+#screen-menu .learning-promise {
+  justify-content: flex-start;
+  gap: 7px 10px;
+  margin: 11px 0 0;
+}
+#screen-menu .learning-promise span {
+  padding: 4px 9px;
+  border: 1px solid #e2e5d9;
+  border-radius: 999px;
+  background: rgba(255,255,255,.88);
+  color: #465548;
+  font-size: .76rem;
+  line-height: 1.35;
+  font-weight: 700;
+}
+#screen-menu .math-wisdom {
+  justify-content: flex-start;
+  gap: 0;
+  margin: 10px 0 0;
+  color: #586b59;
+}
+#screen-menu .math-wisdom-sanskrit {
+  font-size: .86rem;
+  line-height: 1.45;
+  color: #496f50;
+}
+#screen-menu .arcade-illustration {
+  display: block;
+  width: min(100%, 224px);
+  max-height: 128px;
+  justify-self: end;
+  margin-right: 0;
+}
+#screen-menu .menu-section-heading {
+  margin-top: 9px;
+}
+@media (max-width: 760px) {
+  #screen-menu .arcade-header {
+    grid-template-columns: minmax(0, 1fr) 154px;
+    gap: 14px;
+    padding: 9px 7px 5px;
+  }
+  #screen-menu .arcade-illustration {
+    width: min(100%, 154px);
+    max-height: 100px;
+  }
+  #screen-menu .arena-title {
+    font-size: clamp(1.85rem, 4.3vw, 2.25rem);
+  }
+  #screen-menu .learning-promise {
+    gap: 6px;
+    margin-top: 9px;
+  }
+  #screen-menu .learning-promise span {
+    font-size: .72rem;
+    padding: 4px 8px;
+  }
+  #screen-menu .math-wisdom {
+    margin-top: 8px;
+  }
+}
+@media (max-width: 560px) {
+  #screen-menu .arcade-header {
+    grid-template-columns: minmax(0, 1fr);
+    width: calc(100% - 24px);
+    margin-top: 7px;
+    padding: 6px 0 4px;
+    gap: 0;
+  }
+  #screen-menu .arcade-copy {
+    max-width: none;
+  }
+  #screen-menu .arcade-badge {
+    margin-bottom: 6px;
+  }
+  #screen-menu .arena-title {
+    display: block;
+    font-size: clamp(1.9rem, 7.3vw, 2.25rem);
+    line-height: 1.06;
+  }
+  #screen-menu .arena-subtitle-hi {
+    margin-top: 5px;
+    font-size: .88rem;
+  }
+  #screen-menu .arcade-intro {
+    margin-top: 7px;
+    font-size: .91rem;
+    line-height: 1.48;
+  }
+  #screen-menu .learning-promise {
+    margin-top: 10px;
+    gap: 6px;
+  }
+  #screen-menu .learning-promise span {
+    padding: 4px 8px;
+    font-size: .72rem;
+  }
+  #screen-menu .math-wisdom {
+    margin-top: 9px;
+  }
+  #screen-menu .math-wisdom-sanskrit {
+    font-size: .85rem;
+  }
+  #screen-menu .menu-section-heading {
+    margin-top: 10px;
+  }
+}
+
+
+/* On phones, the brand title already says what the eyebrow repeats. */
+@media (max-width: 560px) {
+  #screen-menu .arcade-badge {
+    display: none;
+  }
+  #screen-menu .arcade-intro {
+    margin-top: 5px;
+  }
+  #screen-menu .learning-promise {
+    margin-top: 8px;
+  }
+  #screen-menu .math-wisdom {
+    margin-top: 7px;
+  }
+}
+
+@media (max-width: 560px) {
+  #screen-menu .arcade-illustration {
+    display: none;
+  }
+}

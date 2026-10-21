@@ -4625,3 +4625,56 @@ body {
     font-size: 1rem;
   }
 }
+
+
+/* A quieter, smaller mathematical monogram: integral with a subtle forall. */
+.brand-mark {
+  gap: 7px;
+}
+.brand-mark .brand-icon {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 35px;
+  min-width: 35px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #ded5ed;
+  border-radius: 10px;
+  background: #f1ebf8;
+  color: #665087;
+  box-shadow: none;
+  font-family: "Cambria Math", Georgia, serif;
+  letter-spacing: 0;
+}
+.brand-integral {
+  display: inline-block;
+  font-size: 1.22rem;
+  line-height: 1;
+  font-weight: 700;
+}
+.brand-universal {
+  display: inline-block;
+  align-self: flex-start;
+  margin: 5px 0 0 -1px;
+  color: #347a7d;
+  font-size: .59rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.brand-mark:focus-visible .brand-icon {
+  outline: 2px solid #8b70b4;
+  outline-offset: 3px;
+}
+@media (max-width: 560px) {
+  .brand-mark .brand-icon {
+    width: 32px;
+    min-width: 32px;
+    height: 30px;
+  }
+  .brand-integral { font-size: 1.12rem; }
+  .brand-universal { font-size: .55rem; margin-top: 5px; }
+}
