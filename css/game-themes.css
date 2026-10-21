@@ -1081,7 +1081,7 @@ body::before {
 
 #screen-number-maze .nm-mode[aria-pressed="true"],
 #screen-number-maze .nm-difficulty[aria-pressed="true"] {
-  background: rgba(223,232,220,.48);
+  background: #e7eee3;
   box-shadow: inset 3px 0 0 var(--game-accent);
 }
 
