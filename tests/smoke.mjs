@@ -1041,6 +1041,8 @@ async function main() {
       'const homeHero = document.querySelector("#screen-menu .arcade-header");' +
       'const heroIllustration = homeHero?.querySelector(".arcade-illustration");' +
       'assert(homeHero && homeHero.querySelector(".arcade-copy") && homeHero.querySelector(".arcade-intro"), "The homepage discovery hero is missing its clear text structure.");' +
+      'assert(homeHero.getBoundingClientRect().height <= (innerWidth <= 560 ? 260 : 170), "The homepage intro should be compact so the games appear sooner (got " + Math.round(homeHero.getBoundingClientRect().height) + "px at " + innerWidth + "px).");' +
+      'assert(document.querySelector(".site-header .brand-icon")?.textContent.trim() === "∫∀", "The home page must use the integral-for-all logo.");' +
       'assert(heroIllustration && heroIllustration.getAttribute("aria-hidden") === "true" && heroIllustration.getAttribute("focusable") === "false", "The hero illustration must remain decorative and out of the accessibility tree.");' +
       'if (innerWidth > 560) assert(isVisible(heroIllustration), "The homepage illustration should be visible when there is room for it.");' +
       'else assert(!isVisible(heroIllustration), "The homepage illustration should step aside on narrow screens.");' +
@@ -1294,6 +1296,7 @@ async function main() {
       'const visible = node => { const style=getComputedStyle(node), rect=node.getBoundingClientRect(); return !node.hidden && !node.closest("[hidden]") && style.display!=="none" && style.visibility!=="hidden" && rect.width>0 && rect.height>0; };' +
       'assert(document.documentElement.scrollWidth <= innerWidth + 2, "Wiki page overflows horizontally at " + innerWidth + "px.");' +
       'assert(document.querySelectorAll("#offering").length === 1, "Wiki must contain exactly one offering section.");' +
+      'assert(document.querySelector(".wiki-brand .brand-icon")?.textContent.trim() === "∫∀", "The wiki must use the same integral-for-all logo.");' +
       'assert(!document.body.innerText.includes("I can change my mind"), "Wiki still contains wording the author flagged as potentially diminishing.");' +
       'const missingTargets = Array.from(document.querySelectorAll("a")).filter(a => { const href=a.getAttribute("href"); return href && href.startsWith("#") && !document.getElementById(decodeURIComponent(href.slice(1))); });' +
       'assert(missingTargets.length===0, "Wiki has a broken in-page link: " + (missingTargets[0]?.getAttribute("href") || ""));' +
