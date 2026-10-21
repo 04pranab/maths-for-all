@@ -1051,9 +1051,10 @@ async function main() {
       'const themedWashes = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-wash").trim());' +
       'assert(themedAccents.every(Boolean) && new Set(themedAccents).size === 9, "Every visible home game should have its own distinct theme colour.");' +
       'assert(themedWashes.every(Boolean) && new Set(themedWashes).size === 9, "Every visible home game should have its own calm background wash.");' +
-      'const expectedColumns = innerWidth >= 701 ? 3 : innerWidth >= 421 ? 2 : 1;' +
+      'const expectedColumns = innerWidth >= 1101 ? 3 : innerWidth >= 421 ? 2 : 1;' +
       'const symmetricRowWidths = gameCards.slice(0, expectedColumns).map(card => card.getBoundingClientRect().width);' +
       'assert(Math.max(...symmetricRowWidths) - Math.min(...symmetricRowWidths) < 2, "Home game cards should have matching widths within each row.");' +
+      'assert(innerWidth < 1101 || new Set(gameCards.map(card => Math.round(card.getBoundingClientRect().width))).size >= 3, "Wide screens should mix card sizes instead of presenting a rigid dashboard grid.");' +
       'assert(gameCards.every(card => card.getBoundingClientRect().height <= 240), "Home game cards should stay compact at " + innerWidth + "px.");' +
       'const themePairs = [["card-quiz","screen-quiz"],["card-race","screen-race"],["card-sudoku","screen-sudoku"],["card-shape","screen-shape"],["card-slab","screen-slab"],["card-architect","screen-architect"],["card-fraction","screen-fraction-bakery"],["card-little-shop","screen-little-shop"],["card-number-maze","screen-number-maze"]];' +
       'assert(themePairs.every(([cardClass, screenId]) => { const card = document.querySelector("#screen-menu ." + cardClass); const screen = document.getElementById(screenId); const cardStyle = card && getComputedStyle(card); const screenStyle = screen && getComputedStyle(screen); return cardStyle && screenStyle && cardStyle.getPropertyValue("--tile-accent").trim() === screenStyle.getPropertyValue("--game-accent").trim() && cardStyle.getPropertyValue("--tile-wash").trim() === screenStyle.getPropertyValue("--game-wash").trim(); }), "Each game screen must use the same accent and wash as its matching menu card.");' +
@@ -1066,7 +1067,7 @@ async function main() {
       'const firstRowCount = gameCards.filter(card => Math.abs(card.getBoundingClientRect().top - rowTop) < 3).length;' +
 
       'assert(firstRowCount === expectedColumns, "Home game grid should use " + expectedColumns + " columns at " + innerWidth + "px, got " + firstRowCount + ".");' +
-      'assert(document.querySelector("#screen-menu .menu-section-heading h2")?.textContent === "Choose a game", "Home game section heading is missing.");' +
+      'assert(document.querySelector("#screen-menu .menu-section-heading h2")?.textContent === "Pick your next adventure", "The playful home game heading is missing.");' +
       'return { width: innerWidth, height: innerHeight, fontScale: innerWidth <= 320 ? 1.35 : 1, screensChecked: checkedScreens, visibleGameCards: gameCards.length, horizontalOverflow: false, accessibleNamesChecked: true, derogatoryCopyFound: false };' +
     '})()');
     if (!result || result.screensChecked !== gamesForInterfaceAudit) {
