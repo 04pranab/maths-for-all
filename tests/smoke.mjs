@@ -1041,8 +1041,10 @@ async function main() {
       'const homeHero = document.querySelector("#screen-menu .arcade-header");' +
       'const heroIllustration = homeHero?.querySelector(".arcade-illustration");' +
       'assert(homeHero && homeHero.querySelector(".arcade-copy") && homeHero.querySelector(".arcade-intro"), "The homepage discovery hero is missing its clear text structure.");' +
-      'assert(homeHero.getBoundingClientRect().height <= (innerWidth <= 560 ? 260 : 170), "The homepage intro should be compact so the games appear sooner (got " + Math.round(homeHero.getBoundingClientRect().height) + "px at " + innerWidth + "px).");' +
+      'assert(homeHero.getBoundingClientRect().height <= (innerWidth <= 560 ? 300 : innerWidth <= 760 ? 245 : 225), "The homepage intro should stay balanced and give the games priority (got " + Math.round(homeHero.getBoundingClientRect().height) + "px at " + innerWidth + "px).");' +
       'assert(document.querySelector(".site-header .brand-icon")?.textContent.trim() === "∫∀", "The home page must use the integral-for-all logo.");' +
+      'assert(document.querySelector(".site-header .brand-integral") && document.querySelector(".site-header .brand-universal"), "The logo must give the forall symbol its own subtle typographic treatment.");' +
+      'assert(Number.parseFloat(getComputedStyle(document.querySelector(".site-header .brand-universal")).fontSize) < Number.parseFloat(getComputedStyle(document.querySelector(".site-header .brand-integral")).fontSize), "The universal quantifier should be smaller than the integral sign in the logo.");' +
       'assert(heroIllustration && heroIllustration.getAttribute("aria-hidden") === "true" && heroIllustration.getAttribute("focusable") === "false", "The hero illustration must remain decorative and out of the accessibility tree.");' +
       'if (innerWidth > 560) assert(isVisible(heroIllustration), "The homepage illustration should be visible when there is room for it.");' +
       'else assert(!isVisible(heroIllustration), "The homepage illustration should step aside on narrow screens.");' +
