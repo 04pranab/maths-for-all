@@ -3679,15 +3679,21 @@ body {
   display: none !important;
 }
 
-#screen-menu .menu-card:hover,
 #screen-menu .menu-card:focus-visible {
   border-color: var(--tile-accent);
   border-left-color: var(--tile-accent);
-  background: linear-gradient(138deg, var(--tile-wash) 0%, #fff 94%);
-  box-shadow: 0 4px 0 rgba(47, 68, 50, .09);
-  transform: translateY(-2px);
   outline: 3px solid var(--tile-accent);
   outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  #screen-menu .menu-card:hover {
+    border-color: var(--tile-accent);
+    border-left-color: var(--tile-accent);
+    background: linear-gradient(138deg, var(--tile-wash) 0%, #fff 94%);
+    box-shadow: 0 4px 0 rgba(47, 68, 50, .09);
+    transform: translateY(-2px);
+  }
 }
 
 #screen-menu .menu-card:active {
