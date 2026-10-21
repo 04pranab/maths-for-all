@@ -1038,6 +1038,12 @@ async function main() {
       'assert(document.documentElement.scrollWidth <= innerWidth + 2, "The home screen overflows horizontally at " + innerWidth + "px.");' +
       'assert(!document.querySelector(".seva-dedication"), "The dedication block must not appear on the main game page.");' +
       'assert(!(document.getElementById("screen-menu").innerText || "").includes("At the Lotus Feet of Bhagawan Sri Sathya Sai Baba"), "The main game page must keep the dedication on the Wiki only.");' +
+      'const homeHero = document.querySelector("#screen-menu .arcade-header");' +
+      'const heroIllustration = homeHero?.querySelector(".arcade-illustration");' +
+      'assert(homeHero && homeHero.querySelector(".arcade-copy") && homeHero.querySelector(".arcade-intro"), "The homepage discovery hero is missing its clear text structure.");' +
+      'assert(heroIllustration && heroIllustration.getAttribute("aria-hidden") === "true" && heroIllustration.getAttribute("focusable") === "false", "The hero illustration must remain decorative and out of the accessibility tree.");' +
+      'if (innerWidth > 560) assert(isVisible(heroIllustration), "The homepage illustration should be visible when there is room for it.");' +
+      'else assert(!isVisible(heroIllustration), "The homepage illustration should step aside on narrow screens.");' +
       'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
       'assert(gameCards.length === 9, "The visible game menu should contain nine current game cards, not " + gameCards.length + ".");' +
       'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
