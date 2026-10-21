@@ -1700,7 +1700,7 @@ body::after {
   #screen-menu .menu-footer { width: calc(100% - 24px); gap: 5px 12px; }
 }
 @media (max-width: 560px) {
-  #screen-menu .arcade-illustration { display: block; width: min(100%, 250px); max-height: 110px; }
+  #screen-menu .arcade-illustration { display: none; }
 }
 @media (max-width: 420px) {
   #screen-menu .menu-section-heading { margin-top: 6px; }
