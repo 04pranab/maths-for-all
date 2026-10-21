@@ -2074,3 +2074,193 @@ body::after {
   #screen-number-maze .nm-mode:hover,
   #screen-number-maze .nm-start-game:hover { transform: none; }
 }
+
+
+/* Compact first fold: the game library, not the introduction, is the star. */
+#screen-menu .arcade-header {
+  width: min(1500px, calc(100% - 32px));
+  grid-template-columns: minmax(0, 1fr) minmax(105px, 158px);
+  align-items: center;
+  gap: 10px;
+  margin: 4px auto 0;
+  padding: 5px 8px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+#screen-menu .arcade-copy {
+  max-width: none;
+}
+#screen-menu .arcade-badge {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 3px;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff0ce;
+  color: #80551b;
+  font-size: .68rem;
+  line-height: 1.25;
+}
+#screen-menu .arena-title {
+  display: inline-block;
+  margin: 0;
+  font-size: clamp(1.8rem, 3.25vw, 2.65rem);
+  line-height: 1.04;
+  letter-spacing: -.045em;
+}
+#screen-menu .title-arena {
+  margin-left: 4px;
+}
+#screen-menu .arena-subtitle-hi {
+  display: inline-block;
+  margin: 0 0 0 9px;
+  font-size: .86rem;
+  line-height: 1.2;
+  vertical-align: baseline;
+}
+#screen-menu .arcade-intro {
+  max-width: 650px;
+  margin: 4px 0 0;
+  font-size: .9rem;
+  line-height: 1.36;
+}
+#screen-menu .learning-promise {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 7px;
+  margin-top: 6px;
+}
+#screen-menu .learning-promise span {
+  padding: 3px 8px;
+  border: 1px solid rgba(203, 210, 194, .72);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .76);
+  color: #465548;
+  font-size: .72rem;
+  line-height: 1.3;
+}
+#screen-menu .math-wisdom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin-top: 5px;
+}
+#screen-menu .math-wisdom-sanskrit {
+  font-size: .74rem;
+  line-height: 1.25;
+}
+#screen-menu .math-wisdom-meaning {
+  font-size: .70rem;
+  line-height: 1.3;
+}
+#screen-menu .arcade-illustration {
+  display: block;
+  width: min(100%, 158px);
+  max-height: 88px;
+  justify-self: end;
+  margin-right: 4px;
+}
+#screen-menu .menu-section-heading {
+  width: min(1500px, calc(100% - 32px));
+  margin: 8px auto 0;
+}
+#screen-menu .menu-section-heading h2 {
+  font-size: 1.12rem;
+  line-height: 1.22;
+}
+#screen-menu .menu-section-heading p {
+  margin-top: 2px;
+  font-size: .79rem;
+  line-height: 1.35;
+}
+#screen-menu .menu-grid {
+  width: min(1500px, calc(100% - 32px));
+  gap: 12px;
+  margin: 0 auto;
+  padding: 8px 0 3px;
+}
+@media (max-width: 760px) {
+  #screen-menu .arcade-header {
+    grid-template-columns: minmax(0, 1fr) 112px;
+    gap: 7px;
+    padding-right: 2px;
+    padding-left: 2px;
+  }
+  #screen-menu .arcade-illustration {
+    width: min(100%, 112px);
+    max-height: 72px;
+  }
+  #screen-menu .arena-title {
+    font-size: clamp(1.65rem, 4.8vw, 2.1rem);
+  }
+  #screen-menu .arena-subtitle-hi {
+    margin-left: 6px;
+    font-size: .80rem;
+  }
+}
+@media (max-width: 560px) {
+  #screen-menu .arcade-header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    width: calc(100% - 24px);
+    margin-top: 2px;
+    padding: 3px 0 0;
+  }
+  #screen-menu .arcade-illustration {
+    display: none;
+  }
+  #screen-menu .arcade-badge {
+    margin-bottom: 4px;
+  }
+  #screen-menu .arena-title {
+    display: block;
+    font-size: clamp(1.68rem, 7vw, 2rem);
+    line-height: 1.05;
+  }
+  #screen-menu .title-arena {
+    margin-left: 4px;
+  }
+  #screen-menu .arena-subtitle-hi {
+    margin: 2px 0 0;
+    font-size: .83rem;
+  }
+  #screen-menu .arcade-intro {
+    margin-top: 4px;
+    font-size: .86rem;
+  }
+  #screen-menu .learning-promise {
+    margin-top: 5px;
+    gap: 4px;
+  }
+  #screen-menu .learning-promise span {
+    padding: 3px 7px;
+    font-size: .68rem;
+  }
+  #screen-menu .math-wisdom {
+    gap: 3px 7px;
+    margin-top: 4px;
+  }
+  #screen-menu .math-wisdom-sanskrit {
+    font-size: .72rem;
+  }
+  #screen-menu .math-wisdom-meaning {
+    font-size: .68rem;
+  }
+  #screen-menu .menu-section-heading {
+    width: calc(100% - 24px);
+    margin-top: 8px;
+  }
+  #screen-menu .menu-section-heading h2 {
+    font-size: 1.08rem;
+  }
+  #screen-menu .menu-grid {
+    width: calc(100% - 24px);
+    padding-top: 7px;
+    gap: 9px;
+  }
+}
