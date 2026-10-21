@@ -354,18 +354,18 @@ async function main() {
     selectedDifficultyButton.click();
     assert(NumberMaze.getSummary().difficulty === "gentle", "Clicking a difficulty on the setup page should select it.");
     await waitForComputedStyle(selectedDifficultyButton, "backgroundColor", "rgb(231, 238, 227)", "selected difficulty");
-    await waitForComputedStyle(selectedDifficultyButton, "borderTopColor", "rgb(77, 107, 83)", "selected difficulty outline");
+    await waitForComputedStyle(selectedDifficultyButton, "borderTopColor", "rgb(66, 100, 72)", "selected difficulty outline");
     const selectedDifficultyStyle = getComputedStyle(selectedDifficultyButton);
     assert(selectedDifficultyStyle.backgroundColor === "rgb(231, 238, 227)", "The selected difficulty should have a clearly visible sage fill.");
-    assert(selectedDifficultyStyle.borderTopColor === "rgb(77, 107, 83)", "The selected difficulty should have a strong sage outline.");
+    assert(selectedDifficultyStyle.borderTopColor === "rgb(66, 100, 72)", "The selected difficulty should have a strong sage outline.");
     const selectedModeButton = screen.querySelector('[data-nm-mode="daily"]');
     selectedModeButton.click();
     assert(NumberMaze.getSummary().mode === "daily", "Clicking a play style on the setup page should select it.");
     await waitForComputedStyle(selectedModeButton, "backgroundColor", "rgb(231, 238, 227)", "selected play style");
-    await waitForComputedStyle(selectedModeButton, "borderTopColor", "rgb(77, 107, 83)", "selected play-style outline");
+    await waitForComputedStyle(selectedModeButton, "borderTopColor", "rgb(66, 100, 72)", "selected play-style outline");
     const selectedModeStyle = getComputedStyle(selectedModeButton);
     assert(selectedModeStyle.backgroundColor === "rgb(231, 238, 227)", "The selected play style should have a clearly visible sage fill.");
-    assert(selectedModeStyle.borderTopColor === "rgb(77, 107, 83)", "The selected play style should have a strong sage outline.");
+    assert(selectedModeStyle.borderTopColor === "rgb(66, 100, 72)", "The selected play style should have a strong sage outline.");
     screen.querySelector('[data-nm-mode="explore"]').click();
     assert(NumberMaze.getSummary().mode === "explore", "The setup page should return to Explore when selected.");
     assert(screen.querySelector("#nm-board"), "Number Maze board is missing.");
@@ -399,7 +399,7 @@ async function main() {
     assert(NumberMaze.getSummary().pathLength === 2, "Arrow keys should extend the path to an adjacent open square.");
     const routeLine = screen.querySelector("#nm-board .nm-route-svg .nm-route-line");
     assert(routeLine && routeLine.getAttribute("stroke-linecap") === "round" && routeLine.getAttribute("stroke-linejoin") === "round", "The route should render as a smooth connected line.");
-    assert(routeLine.getAttribute("stroke") === "#4d6b53", "The connected route should use the calm forest-sage palette.");
+    assert(routeLine.getAttribute("stroke") === "#426448", "The connected route should use the calm forest-sage palette.");
     assert(!/orange|#ff6a00/i.test(routeLine.getAttribute("stroke")), "The path must not use the previous bright orange.");
     assert(document.activeElement.dataset.cell === String(keyboardPuzzle.solution[1]), "Keyboard movement should focus the next path cell.");
     NumberMaze.undo();
@@ -1051,11 +1051,20 @@ async function main() {
       'const themedWashes = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-wash").trim());' +
       'assert(themedAccents.every(Boolean) && new Set(themedAccents).size === 9, "Every visible home game should have its own distinct theme colour.");' +
       'assert(themedWashes.every(Boolean) && new Set(themedWashes).size === 9, "Every visible home game should have its own calm background wash.");' +
+      'const expectedColumns = innerWidth >= 701 ? 3 : innerWidth >= 421 ? 2 : 1;' +
+      'const symmetricRowWidths = gameCards.slice(0, expectedColumns).map(card => card.getBoundingClientRect().width);' +
+      'assert(Math.max(...symmetricRowWidths) - Math.min(...symmetricRowWidths) < 2, "Home game cards should have matching widths within each row.");' +
+      'assert(gameCards.every(card => card.getBoundingClientRect().height <= 240), "Home game cards should stay compact at " + innerWidth + "px.");' +
+      'const themePairs = [["card-quiz","screen-quiz"],["card-race","screen-race"],["card-sudoku","screen-sudoku"],["card-shape","screen-shape"],["card-slab","screen-slab"],["card-architect","screen-architect"],["card-fraction","screen-fraction-bakery"],["card-little-shop","screen-little-shop"],["card-number-maze","screen-number-maze"]];' +
+      'assert(themePairs.every(([cardClass, screenId]) => { const card = document.querySelector("#screen-menu ." + cardClass); const screen = document.getElementById(screenId); const cardStyle = card && getComputedStyle(card); const screenStyle = screen && getComputedStyle(screen); return cardStyle && screenStyle && cardStyle.getPropertyValue("--tile-accent").trim() === screenStyle.getPropertyValue("--game-accent").trim() && cardStyle.getPropertyValue("--tile-wash").trim() === screenStyle.getPropertyValue("--game-wash").trim(); }), "Each game screen must use the same accent and wash as its matching menu card.");' +
+      'const themedSurfaces = [["screen-quiz","#screen-quiz .game-topbar"],["screen-race","#screen-race .game-topbar"],["screen-sudoku","#screen-sudoku .game-topbar"],["screen-shape","#screen-shape .game-topbar"],["screen-slab","#screen-slab .game-topbar"],["screen-architect","#screen-architect .game-topbar"],["screen-fraction-bakery","#screen-fraction-bakery .fb-head"],["screen-little-shop","#screen-little-shop .ls-primary"],["screen-number-maze","#screen-number-maze .nm-action.primary"]];' +
+      'const normalizedColor = value => { const probe = document.createElement("span"); probe.style.color = value; document.body.appendChild(probe); const color = getComputedStyle(probe).color; probe.remove(); return color; };' +
+      'assert(themedSurfaces.every(([screenId, selector]) => { const screen = document.getElementById(screenId); const surface = document.querySelector(selector); const accent = screen && getComputedStyle(screen).getPropertyValue("--game-accent").trim(); return accent && surface && getComputedStyle(surface).backgroundColor === normalizedColor(accent); }), "Every game needs a visible primary surface in its card-matched theme.");' +
       'assert(gameCards.every(card => { const rect = card.getBoundingClientRect(); return rect.width >= 44 && rect.height >= 44; }), "Home game cards should remain comfortable touch targets.");' +
       'assert(gameCards.every(card => { const t = getComputedStyle(card).transform; if (t === "none") return true; const m = new DOMMatrixReadOnly(t); return Math.abs(m.b) < 0.01 && Math.abs(m.c) < 0.01; }), "Home game cards should be level, not tilted.");' +
       'const rowTop = gameCards[0]?.getBoundingClientRect().top ?? 0;' +
       'const firstRowCount = gameCards.filter(card => Math.abs(card.getBoundingClientRect().top - rowTop) < 3).length;' +
-      'const expectedColumns = innerWidth >= 1101 ? 4 : innerWidth >= 701 ? 3 : innerWidth >= 421 ? 2 : 1;' +
+
       'assert(firstRowCount === expectedColumns, "Home game grid should use " + expectedColumns + " columns at " + innerWidth + "px, got " + firstRowCount + ".");' +
       'assert(document.querySelector("#screen-menu .menu-section-heading h2")?.textContent === "Choose a game", "Home game section heading is missing.");' +
       'return { width: innerWidth, height: innerHeight, fontScale: innerWidth <= 320 ? 1.35 : 1, screensChecked: checkedScreens, visibleGameCards: gameCards.length, horizontalOverflow: false, accessibleNamesChecked: true, derogatoryCopyFound: false };' +
