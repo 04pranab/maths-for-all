@@ -2416,3 +2416,20 @@ body::after {
     margin-top: 10px;
   }
 }
+
+
+/* On phones, the brand title already says what the eyebrow repeats. */
+@media (max-width: 560px) {
+  #screen-menu .arcade-badge {
+    display: none;
+  }
+  #screen-menu .arcade-intro {
+    margin-top: 5px;
+  }
+  #screen-menu .learning-promise {
+    margin-top: 8px;
+  }
+  #screen-menu .math-wisdom {
+    margin-top: 7px;
+  }
+}
