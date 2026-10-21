@@ -3453,6 +3453,242 @@ body {
 
 #screen-menu {
   min-height: calc(100dvh - 68px);
+  overflow: visible;
+}
+
+#screen-menu .arcade-header {
+  padding-top: 14px;
+}
+
+#screen-menu .menu-grid {
+  padding-top: 12px;
+  padding-bottom: 8px;
+  gap: 14px;
+}
+
+#screen-menu .menu-card {
+  padding: 16px 14px;
+}
+
+#screen-menu .menu-footer {
+  padding-top: 8px;
+}
+
+.modal-overlay {
+  overflow: hidden;
+}
+
+.modal-box {
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .site-header {
+    height: auto;
+  }
+
+  .screen {
+    min-height: calc(100dvh - 68px);
+    overflow: visible;
+  }
+
+  .difficulty-panel {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "title"
+      "hint"
+      "guide"
+      "buttons";
+    max-height: none;
+    overflow: visible;
+  }
+
+  .difficulty-panel .level-guide {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .difficulty-panel .level-guide strong {
+    grid-column: 1 / -1;
+  }
+
+  #race-setup-panel {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  #screen-sudoku .play-panel {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "top"
+      "board"
+      "side"
+      "message";
+    row-gap: 8px;
+  }
+
+  #screen-sudoku .sudoku-top-row {
+    max-width: none;
+  }
+
+  #screen-sudoku .sudoku-grid {
+    width: min(620px, 100%);
+  }
+
+  #screen-sudoku .sudoku-side-column {
+    grid-area: side;
+    grid-column: 1;
+    grid-row: 3;
+    width: min(480px, 100%);
+    min-width: 0;
+    margin: 0 auto;
+    padding-top: 0;
+  }
+
+  #screen-sudoku .sudoku-keypad {
+    width: min(480px, 100%);
+    max-width: 480px;
+    margin: 8px auto;
+  }
+
+  #screen-sudoku .sudoku-controls {
+    width: 100%;
+    margin: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #screen-sudoku .sudoku-controls .btn-sudoku {
+    width: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .difficulty-panel {
+    width: calc(100vw - 20px);
+    padding: 10px;
+    gap: 7px;
+  }
+
+  .difficulty-panel .level-guide {
+    grid-template-columns: 1fr;
+    padding: 9px;
+    gap: 6px;
+  }
+
+  .difficulty-panel .level-guide strong {
+    grid-column: auto;
+  }
+
+  .difficulty-panel .level-guide span {
+    padding: 7px 9px;
+  }
+
+  .difficulty-panel .btn-diff {
+    min-height: 58px;
+    padding: 9px 12px;
+  }
+
+  #race-setup-panel {
+    width: calc(100vw - 20px);
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 8px 0;
+  }
+
+  .setup-card,
+  .leaderboard {
+    padding: 13px;
+  }
+
+  .leaderboard {
+    display: none;
+  }
+
+  #race-play-panel {
+    width: calc(100vw - 20px);
+  }
+
+  #race-play-panel .question-card {
+    min-height: 140px;
+    padding: 24px 16px;
+  }
+
+  #screen-slab .slab-puzzle-area {
+    width: calc(100vw - 20px);
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #screen-slab .slab-basket {
+    width: min(72vw, 340px);
+    height: 190px;
+  }
+
+  #screen-slab .slab-right-col {
+    width: 100%;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 701px) {
+  .game-topbar {
+    padding: 9px 14px;
+  }
+
+  .difficulty-panel {
+    padding-top: 8px;
+    padding-bottom: 6px;
+    gap: 6px 18px;
+  }
+
+  .difficulty-panel .level-guide span {
+    padding: 6px 9px;
+  }
+
+  .difficulty-panel .btn-diff {
+    min-height: 54px;
+    padding: 9px 14px;
+  }
+
+  #race-setup-panel {
+    padding-top: 8px;
+  }
+
+  .setup-card,
+  .leaderboard {
+    padding: 14px;
+  }
+
+  #screen-menu .arcade-header {
+    padding-top: 7px;
+  }
+
+  #screen-menu .menu-card {
+    padding: 11px 10px;
+  }
+}
+
+
+.nav-link.nav-wiki-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.nav-link.nav-wiki-link:hover,
+.nav-link.nav-wiki-link:focus-visible,
+.nav-link.nav-wiki-link.active {
+  text-decoration: none;
+}
+
+
+
+/* HOME: a compact, welcoming learning shelf. */
+#screen-menu {
+  min-height: calc(100dvh - 68px);
   padding: 0 0 22px;
   color: #293d31;
   background:
