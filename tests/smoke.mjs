@@ -1041,10 +1041,15 @@ async function main() {
       'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
       'assert(gameCards.length === 9, "The visible game menu should contain nine current game cards, not " + gameCards.length + ".");' +
       'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
+      'const themedAccents = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-accent").trim());' +
+      'const themedWashes = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-wash").trim());' +
+      'assert(themedAccents.every(Boolean) && new Set(themedAccents).size === 9, "Every visible home game should have its own distinct theme colour.");' +
+      'assert(themedWashes.every(Boolean) && new Set(themedWashes).size === 9, "Every visible home game should have its own calm background wash.");' +
+      'assert(gameCards.every(card => { const rect = card.getBoundingClientRect(); return rect.width >= 44 && rect.height >= 44; }), "Home game cards should remain comfortable touch targets.");' +
       'assert(gameCards.every(card => { const t = getComputedStyle(card).transform; if (t === "none") return true; const m = new DOMMatrixReadOnly(t); return Math.abs(m.b) < 0.01 && Math.abs(m.c) < 0.01; }), "Home game cards should be level, not tilted.");' +
       'const rowTop = gameCards[0]?.getBoundingClientRect().top ?? 0;' +
       'const firstRowCount = gameCards.filter(card => Math.abs(card.getBoundingClientRect().top - rowTop) < 3).length;' +
-      'const expectedColumns = innerWidth >= 1101 ? 5 : innerWidth >= 701 ? 3 : innerWidth >= 421 ? 2 : 1;' +
+      'const expectedColumns = innerWidth >= 1101 ? 4 : innerWidth >= 701 ? 3 : innerWidth >= 421 ? 2 : 1;' +
       'assert(firstRowCount === expectedColumns, "Home game grid should use " + expectedColumns + " columns at " + innerWidth + "px, got " + firstRowCount + ".");' +
       'assert(document.querySelector("#screen-menu .menu-section-heading h2")?.textContent === "Choose a game", "Home game section heading is missing.");' +
       'return { width: innerWidth, height: innerHeight, fontScale: innerWidth <= 320 ? 1.35 : 1, screensChecked: checkedScreens, visibleGameCards: gameCards.length, horizontalOverflow: false, accessibleNamesChecked: true, derogatoryCopyFound: false };' +
