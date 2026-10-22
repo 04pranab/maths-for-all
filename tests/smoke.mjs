@@ -185,7 +185,7 @@ async function main() {
   await sleep(500);
 
   const baseline = await evaluate('(() => {' +
-    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","screen-architect","screen-fraction-bakery","screen-number-maze","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
+    'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","screen-architect","screen-fraction-bakery","screen-number-maze","screen-math-court","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
     'const missing = required.filter(id => !document.getElementById(id));' +
     'const resources = [...Array.from(document.scripts).map(s => s.src), ...Array.from(document.querySelectorAll("link[rel=stylesheet]")).map(l => l.href)];' +
     'return { missing, resources };' +
@@ -244,7 +244,7 @@ async function main() {
         'linksChecked++;' +
       '}' +
     '}' +
-    'const applicationNamespaces = new Set(["Accessibility","Analytics","ControlsOverlay","FractionBakery","Game","Navigation","ProbabilityCarnival","Progress","Quiz","Racing","ResearchConsent","ShapeArchitect","ShapePuzzle","SlabMath","Sudoku"]);' +
+    'const applicationNamespaces = new Set(["Accessibility","Analytics","ControlsOverlay","FractionBakery","Game","MathCourt","Navigation","ProbabilityCarnival","Progress","Quiz","Racing","ResearchConsent","ShapeArchitect","ShapePuzzle","SlabMath","Sudoku"]);' +
     'let inlineHandlersChecked = 0, inlineCallsChecked = 0;' +
     'for (const node of document.querySelectorAll("[onclick]")) {' +
       'const handler = node.getAttribute("onclick") || "";' +
@@ -320,6 +320,37 @@ async function main() {
     'return { ok: true };' +
   '})()');
 
+
+  const mathCourtResult = await evaluate('(async () => {' +
+    'const assert = (condition, message) => { if (!condition) throw new Error(message); };' +
+    'localStorage.removeItem("mfa_math_court_v1");' +
+    'Game.goHome(); MathCourt.open();' +
+    'const screen = document.getElementById("screen-math-court");' +
+    'assert(screen && screen.classList.contains("active"), "Math Court did not open from the home arcade.");' +
+    'assert(MathCourtData.isValid() && MathCourtData.cases.length === 100, "Math Court case catalogue failed validation.");' +
+    'assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "The docket must render all 100 cases.");' +
+    'assert(document.querySelectorAll("#mc-docket .mc-chapter").length === 10, "The docket must group cases into ten chapters.");' +
+    'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");' +
+    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Witness examination", "Opening did not progress to witness examination.");' +
+    'MathCourt.chooseEvidence("claim"); MathCourt.chooseEvidence("evidence"); MathCourt.advance();' +
+    'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "Witness stage did not progress after both exhibits were inspected.");' +
+    'MathCourt.answerInvestigation(MathCourtData.getCase(1).answer);' +
+    'assert(document.getElementById("mc-feedback").textContent.includes("Exhibit verified"), "A correct mathematical answer did not receive useful feedback.");' +
+    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
+    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
+    'const correctCrossIndex = (0 - (1 % 3) + 3) % 3; MathCourt.answerCross(correctCrossIndex);' +
+    'assert(document.getElementById("mc-feedback").textContent.includes("Objection sustained"), "The cross-examination skill check did not accept the keyed strategy.");' +
+    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Verdict", "The verdict stage is missing.");' +
+    'MathCourt.selectVerdict("disproved"); MathCourt.advance();' +
+    'assert(document.getElementById("mc-stage-name").textContent === "The court" + String.fromCharCode(39) + "s reflection", "The case did not reach the reflection stage.");' +
+    'assert(document.getElementById("mc-stage-content").innerText.includes("Beyond the calculation"), "The moral reflection is missing.");' +
+    'MathCourt.advance();' +
+    'const saved = JSON.parse(localStorage.getItem("mfa_math_court_v1"));' +
+    'assert(saved.completed.includes(1), "Closing a case did not save its completion.");' +
+    'assert(saved.session.caseId === 2, "The next case was not opened after closing the first.");' +
+    'MathCourt.goDocket(); assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "Returning to the docket lost cases.");' +
+    'return { ok: true, cases: 100, chapters: 10, stagesCompleted: 7, progressSaved: true };' +
+  '})()');
 
   const numberMazeResult = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
@@ -981,7 +1012,7 @@ async function main() {
     { width: 1366, height: 768, mobile: false },
     { width: 1920, height: 1080, mobile: false }
   ];
-  const gamesForInterfaceAudit = 10;
+  const gamesForInterfaceAudit = 11;
 
   for (const viewport of interactionViewports) {
     await cdp('Emulation.setDeviceMetricsOverride', { ...viewport, deviceScaleFactor: 1 });
@@ -998,7 +1029,7 @@ async function main() {
         '["Shape Architect", () => Game.startShapeArchitect()], ' +
         '["Fraction Bakery", () => FractionBakery.open()], ' +
         '["Little Shop", () => Game.startLittleShop()], ' +
-        '["Number Maze", () => Game.startNumberMaze()], ' +
+        '["Number Maze", () => Game.startNumberMaze()], ["Math Court", () => MathCourt.open()], ' +
       '["Probability Machine", () => ProbabilityCarnival.open()]' +
       '];' +
       'let checkedScreens = 0;' +
@@ -1048,20 +1079,20 @@ async function main() {
       'if (innerWidth > 560) assert(isVisible(heroIllustration), "The homepage illustration should be visible when there is room for it.");' +
       'else assert(!isVisible(heroIllustration), "The homepage illustration should step aside on narrow screens.");' +
       'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
-      'assert(gameCards.length === 9, "The visible game menu should contain nine current game cards, not " + gameCards.length + ".");' +
+      'assert(gameCards.length === 10, "The visible game menu should contain ten current game cards, not " + gameCards.length + ".");' +
       'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
       'const themedAccents = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-accent").trim());' +
       'const themedWashes = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-wash").trim());' +
-      'assert(themedAccents.every(Boolean) && new Set(themedAccents).size === 9, "Every visible home game should have its own distinct theme colour.");' +
-      'assert(themedWashes.every(Boolean) && new Set(themedWashes).size === 9, "Every visible home game should have its own calm background wash.");' +
+      'assert(themedAccents.every(Boolean) && new Set(themedAccents).size === 10, "Every visible home game should have its own distinct theme colour.");' +
+      'assert(themedWashes.every(Boolean) && new Set(themedWashes).size === 10, "Every visible home game should have its own calm background wash.");' +
       'const expectedColumns = innerWidth >= 1101 ? 3 : innerWidth >= 421 ? 2 : 1;' +
       'const symmetricRowWidths = gameCards.slice(0, expectedColumns).map(card => card.getBoundingClientRect().width);' +
       'assert(Math.max(...symmetricRowWidths) - Math.min(...symmetricRowWidths) < 2, "Home game cards should have matching widths within each row.");' +
       'assert(innerWidth < 1101 || new Set(gameCards.map(card => Math.round(card.getBoundingClientRect().width))).size >= 3, "Wide screens should mix card sizes instead of presenting a rigid dashboard grid.");' +
       'assert(gameCards.every(card => card.getBoundingClientRect().height <= 240), "Home game cards should stay compact at " + innerWidth + "px.");' +
-      'const themePairs = [["card-quiz","screen-quiz"],["card-race","screen-race"],["card-sudoku","screen-sudoku"],["card-shape","screen-shape"],["card-slab","screen-slab"],["card-architect","screen-architect"],["card-fraction","screen-fraction-bakery"],["card-little-shop","screen-little-shop"],["card-number-maze","screen-number-maze"]];' +
+      'const themePairs = [["card-quiz","screen-quiz"],["card-race","screen-race"],["card-sudoku","screen-sudoku"],["card-shape","screen-shape"],["card-slab","screen-slab"],["card-architect","screen-architect"],["card-fraction","screen-fraction-bakery"],["card-little-shop","screen-little-shop"],["card-number-maze","screen-number-maze"],["card-math-court","screen-math-court"]];' +
       'assert(themePairs.every(([cardClass, screenId]) => { const card = document.querySelector("#screen-menu ." + cardClass); const screen = document.getElementById(screenId); const cardStyle = card && getComputedStyle(card); const screenStyle = screen && getComputedStyle(screen); return cardStyle && screenStyle && cardStyle.getPropertyValue("--tile-accent").trim() === screenStyle.getPropertyValue("--game-accent").trim() && cardStyle.getPropertyValue("--tile-wash").trim() === screenStyle.getPropertyValue("--game-wash").trim(); }), "Each game screen must use the same accent and wash as its matching menu card.");' +
-      'const themedSurfaces = [["screen-quiz","#screen-quiz .game-topbar"],["screen-race","#screen-race .game-topbar"],["screen-sudoku","#screen-sudoku .game-topbar"],["screen-shape","#screen-shape .game-topbar"],["screen-slab","#screen-slab .game-topbar"],["screen-architect","#screen-architect .game-topbar"],["screen-fraction-bakery","#screen-fraction-bakery .fb-head"],["screen-little-shop","#screen-little-shop .ls-primary"],["screen-number-maze","#screen-number-maze .nm-action.primary"]];' +
+      'const themedSurfaces = [["screen-quiz","#screen-quiz .game-topbar"],["screen-race","#screen-race .game-topbar"],["screen-sudoku","#screen-sudoku .game-topbar"],["screen-shape","#screen-shape .game-topbar"],["screen-slab","#screen-slab .game-topbar"],["screen-architect","#screen-architect .game-topbar"],["screen-fraction-bakery","#screen-fraction-bakery .fb-head"],["screen-little-shop","#screen-little-shop .ls-primary"],["screen-number-maze","#screen-number-maze .nm-action.primary"],["screen-math-court","#screen-math-court .mc-button-primary"]];' +
       'const normalizedColor = value => { const probe = document.createElement("span"); probe.style.color = value; document.body.appendChild(probe); const color = getComputedStyle(probe).color; probe.remove(); return color; };' +
       'assert(themedSurfaces.every(([screenId, selector]) => { const screen = document.getElementById(screenId); const surface = document.querySelector(selector); const accent = screen && getComputedStyle(screen).getPropertyValue("--game-accent").trim(); return accent && surface && getComputedStyle(surface).backgroundColor === normalizedColor(accent); }), "Every game needs a visible primary surface in its card-matched theme.");' +
       'assert(gameCards.every(card => { const rect = card.getBoundingClientRect(); return rect.width >= 44 && rect.height >= 44; }), "Home game cards should remain comfortable touch targets.");' +
@@ -1315,7 +1346,7 @@ async function main() {
         'assert(style.color!=="rgb(0, 0, 238)" && style.color!=="rgb(85, 26, 139)", "Wiki link uses a browser-default blue or purple colour.");' +
       '}' +
       'const cardButtons=Array.from(document.querySelectorAll(".game-choice"));' +
-      'assert(cardButtons.length===9, "Wiki should expose all nine currently listed games.");' +
+      'assert(cardButtons.length===10, "Wiki should expose all ten currently listed games.");' +
       'for (const card of cardButtons) { card.click(); const detail=document.getElementById("game-detail"); assert(detail&&!detail.hidden,"Selecting "+card.dataset.game+" did not reveal game details."); assert(document.getElementById("game-detail-title").textContent.trim().length>0,"Game detail title is empty."); assert(card.getAttribute("aria-expanded")==="true","Selected game card did not expose expanded state."); assert(cardButtons.filter(other=>other.getAttribute("aria-expanded")==="true").length===1,"Game guide has more than one selected card."); }' +
       'document.getElementById("game-detail-close").click();' +
       'assert(document.getElementById("game-detail").hidden,"Close did not hide game details.");' +
