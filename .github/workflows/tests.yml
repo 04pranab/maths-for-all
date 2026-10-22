@@ -75,6 +75,9 @@ jobs:
       - name: Number Maze generator tests
         run: npm run test:number-maze
 
+      - name: Math Court case catalogue tests
+        run: npm run test:math-court
+
       - name: PostgreSQL connectivity check
         run: node tests/postgres-auth.mjs
 
