@@ -1602,6 +1602,10 @@ body::after {
 }
 #screen-menu .menu-card:nth-child(9) .card-title { font-size: clamp(1.3rem, 1.7vw, 1.65rem); }
 #screen-menu .menu-card:nth-child(9) .card-desc { max-width: 780px; font-size: 1.06rem; }
+#screen-menu .menu-card:nth-child(10) {
+  grid-column: span 4;
+  border-radius: 22px 18px 27px 16px;
+}
 @media (hover: hover) {
   #screen-menu .menu-card:hover {
     border-color: var(--tile-accent);
