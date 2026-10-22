@@ -35,7 +35,7 @@
       "73"
     ],
     "answer": 1,
-    "explanation": "470 − 407 = 63.",
+    "explanation": "470 − 407 = 63. Check the difference by adding it back: 407 + 63 = 470.",
     "twist": "The original page shows the last digit of 407 was smudged, so arithmetic alone cannot tell which total was intended.",
     "moral": "Verify the source as well as the calculation.",
     "verdict": "disproved",
@@ -75,7 +75,7 @@
       "56"
     ],
     "answer": 1,
-    "explanation": "6 × 8 = 48 seats.",
+    "explanation": "Six complete rows of eight seats give 6 × 8 = 48 seats. The nearby crowd is not part of the seating capacity.",
     "twist": "The marshal included people outside the seating rows in the estimate.",
     "moral": "State whether a number is a count, estimate, or capacity.",
     "verdict": "disproved",
@@ -115,7 +115,7 @@
       "370"
     ],
     "answer": 0,
-    "explanation": "304 − 34 = 270.",
+    "explanation": "304 − 34 = 270 coins. The difference can be checked by adding 270 back to 34 to get 304.",
     "twist": "The smaller total was written before the day's final deposit, so the records refer to different times.",
     "moral": "Check dates and context before treating records as contradictory.",
     "verdict": "disproved",
@@ -295,7 +295,7 @@
       "17"
     ],
     "answer": 1,
-    "explanation": "13 + 3 = 16.",
+    "explanation": "The pattern adds three each time, so 13 + 3 = 16. Merely increasing is not enough to establish the size of the step.",
     "twist": "The witness noticed direction but not the size of each change.",
     "moral": "Identify a rule precisely and test it.",
     "verdict": "supported",
@@ -395,7 +395,7 @@
       "7°C"
     ],
     "answer": 1,
-    "explanation": "−2 + 5 = 3°C.",
+    "explanation": "The temperature starts at −2°C and rises by five degrees: −2 + 5 = 3°C. Moving right on the number line reaches 3.",
     "twist": "The witness confused a negative starting value with a negative change.",
     "moral": "Represent signed quantities before calculating.",
     "verdict": "disproved",
@@ -875,7 +875,7 @@
       "3.6 kg"
     ],
     "answer": 0,
-    "explanation": "3.2 − 0.4 = 2.8 kg.",
+    "explanation": "The fruit alone weighs 3.2 − 0.4 = 2.8 kg. Remove the empty basket's mass before charging for the fruit.",
     "twist": "The scale reading included the basket.",
     "moral": "Separate the measured object from its container.",
     "verdict": "disproved",
