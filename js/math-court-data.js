@@ -1266,7 +1266,7 @@
     "id": 64,
     "chapter": 7,
     "title": "The Two Contracts",
-    "story": "Contract A costs 10 + 4n; Contract B costs 2n + 18. They both cost 22 when n = 3. A clerk says they are equivalent.",
+    "story": "Contract A costs 10 + 4n; Contract B costs 2n + 18. They both cost 26 when n = 4. A clerk says they are equivalent.",
     "claim": "The clerk claims the expressions are identical for every n.",
     "prompt": "What is the best test?",
     "options": [
@@ -1275,7 +1275,7 @@
       "The letters make them equivalent"
     ],
     "answer": 1,
-    "explanation": "At n = 1, A costs 14 and B costs 20, so they are not equivalent.",
+    "explanation": "At n = 1, A costs 14 and B costs 20, so they are not equivalent. The matching total at n = 4 is only one shared example.",
     "twist": "The matching total at n = 3 was accidental.",
     "moral": "One matching example does not prove two rules identical.",
     "verdict": "disproved",
@@ -1598,7 +1598,7 @@
     "explanation": "The group has 19 members and misses the stated threshold. The rule alone does not measure need or impact.",
     "twist": "The policy never accounted for isolated neighbourhoods.",
     "moral": "Consistent rules can still omit relevant circumstances.",
-    "verdict": "partly",
+    "verdict": "disproved",
     "check": "assumptions",
     "evidence": "A recreation grant automatically goes to groups with at least 20 members. A group of 19 serves a remote area with few services and receives nothing."
   },
