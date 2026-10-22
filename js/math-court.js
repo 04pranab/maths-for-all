@@ -318,6 +318,32 @@
     state.visualFocus=Math.max(0,Math.min(4,Number(index)||0));syncSession();renderCase();
   }
 
+
+  function renderAnswerTiles(options,task) {
+    const action=task==="investigation"?"answerInvestigation":"answerChallenge";
+    const symbols=["◆","◉","△"];
+    return '<div class="mc-answer-game"><p class="mc-answer-instruction">Choose the result you can prove. Tap a tile to test it, or drag it onto the evidence tray.</p>'+
+      '<div class="mc-answer-tiles">'+options.map((option,i)=>'<button type="button" class="mc-answer-tile" draggable="true" data-task="'+task+'" aria-label="Test result '+esc(String(option))+'" ondragstart="MathCourt.startAnswerDrag('+i+', this.dataset.task, event)" onclick="MathCourt.'+action+'('+i+')"><span class="mc-answer-symbol" aria-hidden="true">'+symbols[i%symbols.length]+'</span><span class="mc-answer-letter">RESULT '+String.fromCharCode(65+i)+'</span><strong>'+esc(String(option))+'</strong></button>').join("")+'</div>'+
+      '<div class="mc-answer-dropzone" data-task="'+task+'" role="group" aria-label="Evidence tray" ondragover="event.preventDefault()" ondrop="MathCourt.dropAnswer(this.dataset.task,event)"><span class="mc-tray-symbol" aria-hidden="true">⚖️</span><span><strong>Evidence tray</strong><small>Drop your chosen result here</small></span><span class="mc-tray-arrow" aria-hidden="true">↓</span></div></div>';
+  }
+  function startAnswerDrag(index,task,event) {
+    if(!event||!event.dataTransfer)return;
+    event.dataTransfer.setData("text/plain",String(index));
+    event.dataTransfer.setData("application/x-mfa-math-court-task",task);
+    event.dataTransfer.effectAllowed="copy";
+  }
+  function dropAnswer(task,event) {
+    if(!event)return;
+    event.preventDefault();
+    if(!event.dataTransfer)return;
+    const carriedTask=event.dataTransfer.getData("application/x-mfa-math-court-task");
+    const index=Number(event.dataTransfer.getData("text/plain"));
+    if(carriedTask&&carriedTask!==task){setFeedback("Keep the result with its matching mathematical exhibit.","hint");return;}
+    if(!Number.isInteger(index)||index<0){setFeedback("Pick up a result tile first.","hint");return;}
+    if(task==="investigation")answerInvestigation(index);
+    else if(task==="challenge")answerChallenge(index);
+  }
+
   function renderCase() {
     const item=data().getCase(state.caseId),host=$("mc-stage-content");
     if(!item||!host)return;
@@ -345,9 +371,9 @@
     } else if(state.phase===2) {
       html+=renderVisualBoard(item);
       if(!state.investigationSolved) {
-        html+=panel("BUILD THE EVIDENCE · TASK 1 OF 2","Solve the first mathematical exhibit",'<p>'+esc(item.prompt)+'</p><div class="mc-answer-options">'+item.options.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerInvestigation('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Work it out, then choose an answer. You can retry without losing progress.</p>');
+        html+=panel("BUILD THE EVIDENCE · TASK 1 OF 2","Solve the first mathematical exhibit",'<p>'+esc(item.prompt)+'</p>'+renderAnswerTiles(item.options,"investigation")+'<p class="mc-soft-note">Work it out, then choose an answer. You can retry without losing progress.</p>');
       } else if(!state.challengeSolved) {
-        html+=panel("BUILD THE EVIDENCE · TASK 2 OF 2","Test the finding with a second case-linked challenge",'<div class="mc-solution"><strong>First exhibit admitted</strong><p>'+esc(item.explanation)+'</p></div><p>'+esc(item.challenge.prompt)+'</p><div class="mc-answer-options">'+item.challenge.options.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerChallenge('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Use the first result as evidence, then check what follows from it.</p>');
+        html+=panel("BUILD THE EVIDENCE · TASK 2 OF 2","Test the finding with a second case-linked challenge",'<div class="mc-solution"><strong>First exhibit admitted</strong><p>'+esc(item.explanation)+'</p></div><p>'+esc(item.challenge.prompt)+'</p>'+renderAnswerTiles(item.challenge.options,"challenge")+'<p class="mc-soft-note">Use the first result as evidence, then check what follows from it.</p>');
       } else {
         html+=panel("BOTH EXHIBITS ADMITTED","The mathematical evidence is ready",'<div class="mc-solution"><strong>Exhibit A · Main finding</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>Exhibit B · Follow-up check</strong><p>'+esc(item.challenge.explanation)+'</p></div><p class="mc-soft-note">Two linked checks give the court a stronger foundation than a single answer.</p>');
       }
@@ -385,5 +411,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer};
 })(window);
