@@ -330,7 +330,8 @@ async function main() {
     'assert(MathCourtData.isValid() && MathCourtData.cases.length === 100, "Math Court case catalogue failed validation.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "The docket must render all 100 cases.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-chapter").length === 10, "The docket must group cases into ten chapters.");' +
-    'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");' +
+    'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const board=document.querySelector("#mc-stage-content .mc-visual-lab");assert(board&&board.querySelector("svg"),"Case "+caseId+" needs a visible SVG maths board.");assert(board.querySelectorAll(".mc-visual-tab").length===3,"Case "+caseId+" needs all three visual learning views.");}' +
+    'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");'
     'assert(document.querySelector("#mc-stage-content .mc-visual-lab"), "The opening of a case must include a visual evidence board.");' +
     'assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"model\\"]"), "The model view should be visible first.");' +
     'MathCourt.setVisualMode("compare"); assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"compare\\"]"), "Compare mode did not change the visual representation.");' +
@@ -341,12 +342,18 @@ async function main() {
     'MathCourt.chooseEvidence("claim"); MathCourt.chooseEvidence("evidence"); MathCourt.advance();' +
     'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "Witness stage did not progress after both exhibits were inspected.");' +
     'assert(document.querySelector("#mc-stage-content .mc-visual-lab"), "The mathematical task must retain its visual workbench.");' +
+    'assert(document.querySelectorAll("#mc-stage-content .mc-answer-tile[draggable=true]").length===3,"The first task should present three draggable answer tiles.");' +
     'MathCourt.answerInvestigation((MathCourtData.getCase(1).answer + 1) % MathCourtData.getCase(1).options.length);' +
     'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "A wrong first answer should allow a retry within the same stage.");' +
+    'const task1Data={};const task1Transfer={setData:(k,v)=>task1Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).answer,"investigation",{dataTransfer:task1Transfer});' +
+    'assert(task1Data["text/plain"]===String(MathCourtData.getCase(1).answer),"Dragging a result tile should carry the selected answer.");' +
+    'MathCourt.dropAnswer("investigation",{preventDefault:()=>{},dataTransfer:{getData:k=>task1Data[k]||""}});' +
     'MathCourt.answerInvestigation(MathCourtData.getCase(1).answer);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Exhibit verified"), "A correct mathematical answer did not receive useful feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "The second linked challenge must be completed before admitting evidence.");' +
     'MathCourt.answerChallenge((MathCourtData.getCase(1).challenge.answer + 1) % MathCourtData.getCase(1).challenge.options.length);' +
+    'const task2Data={};const task2Transfer={setData:(k,v)=>task2Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).challenge.answer,"challenge",{dataTransfer:task2Transfer});' +
+    'MathCourt.dropAnswer("challenge",{preventDefault:()=>{},dataTransfer:{getData:k=>task2Data[k]||""}});' +
     'MathCourt.answerChallenge(MathCourtData.getCase(1).challenge.answer);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Second exhibit verified"), "The linked challenge did not provide mathematical feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
