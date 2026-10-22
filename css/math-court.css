@@ -1,0 +1,112 @@
+/* Math Court: calm court-room palette, high-contrast controls, responsive evidence cards. */
+#screen-math-court { --mc-ink:#28343a; --mc-muted:#5b6a70; --mc-plum:#694c83; --mc-plum-dark:#4e3565; --mc-teal:#267b70; --mc-paper:#fffdf8; --mc-line:#ded8e4; --mc-wash:#f3eef8; color:var(--mc-ink); padding:clamp(12px,2.5vw,28px); }
+#screen-math-court .mc-shell { max-width:1080px; margin:0 auto; }
+#screen-math-court .mc-back { border:1px solid var(--mc-line); border-radius:999px; padding:10px 15px; background:#fff; color:var(--mc-ink); font:inherit; font-weight:700; cursor:pointer; }
+#screen-math-court .mc-header { display:flex; align-items:center; gap:14px; margin:0 0 18px; flex-wrap:wrap; }
+#screen-math-court .mc-header-title { flex:1; min-width:200px; }
+#screen-math-court .mc-header-title h1 { font-size:clamp(1.45rem,3vw,2.1rem); margin:0; line-height:1.15; }
+#screen-math-court .mc-header-title p { color:var(--mc-muted); margin-top:5px; }
+#screen-math-court button { font:inherit; }
+#screen-math-court .mc-docket-hero { background:linear-gradient(135deg,#f5effb 0%,#f4fbf6 100%); border:1px solid #ded2e9; border-radius:24px; padding:clamp(20px,4vw,38px); }
+#screen-math-court .mc-eyebrow,#screen-math-court .mc-kicker { display:block; color:var(--mc-plum); font-size:.78rem; font-weight:800; letter-spacing:.09em; line-height:1.45; }
+#screen-math-court .mc-docket-hero h2 { font-size:clamp(1.6rem,4vw,2.5rem); line-height:1.13; max-width:760px; margin:10px 0 12px; }
+#screen-math-court .mc-docket-hero>p { color:#48585e; max-width:760px; font-size:1.05rem; line-height:1.6; }
+#screen-math-court .mc-progress-track { margin-top:23px; height:12px; border-radius:99px; background:#ded7e6; overflow:hidden; }
+#screen-math-court .mc-progress-track span { display:block; height:100%; background:var(--mc-teal); border-radius:inherit; transition:width .2s ease; }
+#screen-math-court .mc-progress-caption { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:9px; font-size:.9rem; }
+#screen-math-court .mc-progress-caption span { color:var(--mc-muted); }
+#screen-math-court .mc-hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+#screen-math-court .mc-button { border:1px solid var(--mc-line); border-radius:12px; padding:11px 16px; background:white; color:var(--mc-ink); font-weight:750; line-height:1.35; cursor:pointer; min-height:44px; }
+#screen-math-court .mc-button:disabled { cursor:not-allowed; opacity:.48; }
+#screen-math-court .mc-button-primary { background:var(--mc-plum); border-color:var(--mc-plum); color:white; }
+#screen-math-court .mc-button-primary:hover:not(:disabled) { background:var(--mc-plum-dark); }
+#screen-math-court .mc-button-quiet { background:transparent; }
+#screen-math-court .mc-charter-note { margin:14px 0 24px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; background:#f4faf7; border:1px solid #cfe4db; border-radius:16px; }
+#screen-math-court .mc-charter-note>span { font-size:1.5rem; }
+#screen-math-court .mc-charter-note p { line-height:1.55; }
+#screen-math-court .mc-chapter-list { display:grid; gap:12px; }
+#screen-math-court .mc-chapter { border:1px solid var(--mc-line); border-radius:16px; overflow:hidden; background:#fff; }
+#screen-math-court .mc-chapter summary { list-style:none; cursor:pointer; display:flex; align-items:center; gap:12px; padding:16px; }
+#screen-math-court .mc-chapter summary::-webkit-details-marker { display:none; }
+#screen-math-court .mc-chapter summary:after { content:"＋"; margin-left:2px; color:var(--mc-plum); font-size:1.1rem; font-weight:800; }
+#screen-math-court .mc-chapter[open] summary:after { content:"−"; }
+#screen-math-court .mc-chapter-number { flex:0 0 42px; height:42px; display:grid; place-items:center; border-radius:12px; background:var(--mc-wash); color:var(--mc-plum); font-weight:850; }
+#screen-math-court .mc-chapter-copy { flex:1; display:grid; gap:3px; }
+#screen-math-court .mc-chapter-copy strong { font-size:1rem; }
+#screen-math-court .mc-chapter-copy small { font-size:.88rem; color:var(--mc-muted); }
+#screen-math-court .mc-chapter-progress { color:var(--mc-teal); font-size:.85rem; font-weight:800; white-space:nowrap; }
+#screen-math-court .mc-case-grid { padding:0 12px 14px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+#screen-math-court .mc-case-card { min-width:0; text-align:left; display:grid; align-content:start; gap:7px; padding:14px; border:1px solid #e1dce7; border-radius:13px; background:#fffefa; color:var(--mc-ink); cursor:pointer; min-height:154px; }
+#screen-math-court .mc-case-card:hover { border-color:#9e85b7; background:#fbf8ff; }
+#screen-math-court .mc-case-card:focus-visible,#screen-math-court .mc-button:focus-visible,#screen-math-court .mc-option:focus-visible,#screen-math-court .mc-evidence-button:focus-visible,#screen-math-court .mc-verdict-button:focus-visible { outline:3px solid #347e75; outline-offset:3px; }
+#screen-math-court .mc-case-card.is-complete { border-color:#b7d7c7; background:#f4fbf6; }
+#screen-math-court .mc-case-card.is-resume { box-shadow:inset 4px 0 var(--mc-plum); }
+#screen-math-court .mc-case-number { font-size:.75rem; font-weight:850; letter-spacing:.08em; color:var(--mc-plum); }
+#screen-math-court .mc-case-card strong { line-height:1.3; }
+#screen-math-court .mc-case-card>span:not(.mc-case-number) { color:var(--mc-muted); font-size:.88rem; line-height:1.4; }
+#screen-math-court .mc-case-card small { align-self:end; margin-top:auto; color:var(--mc-teal); font-weight:750; }
+#screen-math-court .mc-case-header { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; margin:0 0 13px; }
+#screen-math-court .mc-case-header p { color:var(--mc-muted); font-size:.9rem; }
+#screen-math-court .mc-case-header h2 { font-size:clamp(1.15rem,2.8vw,1.65rem); margin-top:5px; line-height:1.25; }
+#screen-math-court .mc-step-count { background:var(--mc-wash); color:var(--mc-plum); border-radius:999px; padding:7px 11px; font-size:.85rem; font-weight:800; white-space:nowrap; }
+#screen-math-court .mc-stage-track { height:7px; background:#e9e4ed; border-radius:99px; overflow:hidden; margin-bottom:20px; }
+#screen-math-court .mc-stage-track span { display:block; height:100%; background:var(--mc-teal); border-radius:inherit; transition:width .18s ease; }
+#screen-math-court .mc-phase-card { max-width:860px; margin:0 auto; }
+#screen-math-court .mc-speaker { display:flex; gap:10px; align-items:center; margin:0 0 13px; }
+#screen-math-court .mc-avatar { display:grid; place-items:center; width:44px; height:44px; flex:0 0 44px; background:#f5effb; border:1px solid #e0d1ec; border-radius:15px; font-size:1.35rem; }
+#screen-math-court .mc-speaker div { display:grid; gap:2px; }
+#screen-math-court .mc-speaker small { color:var(--mc-muted); }
+#screen-math-court .mc-panel { background:var(--mc-paper); border:1px solid var(--mc-line); border-radius:20px; padding:clamp(18px,3.5vw,30px); box-shadow:0 4px 16px rgba(57,39,69,.04); }
+#screen-math-court .mc-panel h3 { font-size:clamp(1.2rem,2.8vw,1.65rem); margin:7px 0 13px; line-height:1.2; }
+#screen-math-court .mc-panel p { line-height:1.65; margin:9px 0; font-size:1rem; }
+#screen-math-court .mc-claim { margin-top:19px; padding:16px; border-radius:14px; background:#f1ebf8; border-left:4px solid var(--mc-plum); display:grid; gap:7px; }
+#screen-math-court .mc-claim span { font-size:.75rem; font-weight:850; letter-spacing:.08em; color:var(--mc-plum); }
+#screen-math-court .mc-claim strong { font-size:1.04rem; line-height:1.5; }
+#screen-math-court .mc-claim-soft { background:#eff7f4; border-left-color:var(--mc-teal); }
+#screen-math-court .mc-claim-soft span { color:var(--mc-teal); }
+#screen-math-court .mc-two-facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+#screen-math-court .mc-two-facts>div { background:#fff; border:1px solid #e6e0e9; border-radius:12px; padding:12px; display:grid; gap:5px; }
+#screen-math-court .mc-two-facts small { color:var(--mc-muted); }
+#screen-math-court .mc-evidence-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:17px; }
+#screen-math-court .mc-evidence-button { display:grid; gap:7px; text-align:left; padding:16px; border:1px solid var(--mc-line); border-radius:14px; background:white; cursor:pointer; color:var(--mc-ink); min-height:110px; }
+#screen-math-court .mc-evidence-button>span { color:var(--mc-plum); font-size:.78rem; font-weight:850; }
+#screen-math-court .mc-evidence-button small { color:var(--mc-muted); line-height:1.4; }
+#screen-math-court .mc-evidence-button.is-open { border-color:#81b7a0; background:#f2faf5; }
+#screen-math-court .mc-testimony { margin-top:12px; padding:13px 15px; background:#f5f8f6; border-left:3px solid var(--mc-teal); border-radius:8px; line-height:1.6; }
+#screen-math-court .mc-answer-options,#screen-math-court .mc-verdict-options { display:grid; gap:10px; margin-top:18px; }
+#screen-math-court .mc-option { border:1px solid var(--mc-line); border-radius:13px; background:#fff; color:var(--mc-ink); padding:14px; min-height:54px; text-align:left; display:flex; align-items:center; gap:12px; cursor:pointer; line-height:1.45; }
+#screen-math-court .mc-option:hover { background:#faf7fd; border-color:#b7a2c8; }
+#screen-math-court .mc-option span { display:grid; place-items:center; border-radius:9px; width:30px; height:30px; flex:0 0 30px; background:#f1ebf8; color:var(--mc-plum); font-weight:850; }
+#screen-math-court .mc-solution { background:#edf7f0; border:1px solid #c6dfce; padding:14px 16px; border-radius:13px; margin-top:15px; }
+#screen-math-court .mc-solution p { margin:5px 0 0; }
+#screen-math-court .mc-twist-mark { display:grid; place-items:center; width:46px; height:46px; border-radius:50%; background:#fff1d9; color:#88570f; font-size:1.7rem; font-weight:900; margin:14px 0; }
+#screen-math-court .mc-verdict-button { border:1px solid var(--mc-line); border-radius:13px; background:white; padding:14px 16px; display:grid; gap:5px; text-align:left; cursor:pointer; color:var(--mc-ink); min-height:66px; }
+#screen-math-court .mc-verdict-button:hover { border-color:#a58bbb; background:#fbf8ff; }
+#screen-math-court .mc-verdict-button small { color:var(--mc-muted); line-height:1.45; }
+#screen-math-court .mc-value-note,#screen-math-court .mc-verdict-ribbon { display:flex; align-items:flex-start; gap:12px; background:#eff8f2; border:1px solid #d1e6d7; border-radius:14px; padding:15px; margin:17px 0; }
+#screen-math-court .mc-value-note>span,#screen-math-court .mc-verdict-ribbon>span { font-size:1.5rem; }
+#screen-math-court .mc-value-note p,#screen-math-court .mc-verdict-ribbon p { margin:4px 0 0; }
+#screen-math-court .mc-panel h4 { font-size:1rem; margin:17px 0 5px; }
+#screen-math-court .mc-soft-note { color:var(--mc-muted); font-size:.9rem!important; }
+#screen-math-court .mc-play-actions { display:flex; flex-wrap:wrap; gap:9px; max-width:860px; margin:15px auto 0; }
+#screen-math-court .mc-feedback { display:none; max-width:860px; margin:13px auto 0; border-radius:12px; padding:12px 15px; line-height:1.55; }
+#screen-math-court .mc-feedback.is-visible { display:block; }
+#screen-math-court .mc-feedback-success { background:#edf7f0; border:1px solid #c6dfce; color:#245c42; }
+#screen-math-court .mc-feedback-hint { background:#fff6e6; border:1px solid #ead2a3; color:#704c13; }
+#screen-math-court .mc-feedback-info { background:#f3eef8; border:1px solid #e0d1ec; color:#4e3565; }
+#screen-math-court [hidden] { display:none!important; }
+@media (max-width:650px) {
+  #screen-math-court { padding:12px; }
+  #screen-math-court .mc-case-grid { grid-template-columns:1fr; padding:0 8px 10px; }
+  #screen-math-court .mc-case-card { min-height:0; }
+  #screen-math-court .mc-chapter summary { padding:12px; gap:8px; }
+  #screen-math-court .mc-chapter-number { flex-basis:36px; height:36px; }
+  #screen-math-court .mc-chapter-copy small { line-height:1.3; }
+  #screen-math-court .mc-chapter-progress { font-size:.78rem; }
+  #screen-math-court .mc-evidence-actions,#screen-math-court .mc-two-facts { grid-template-columns:1fr; }
+  #screen-math-court .mc-play-actions .mc-button { flex:1 1 100%; }
+  #screen-math-court .mc-progress-caption { align-items:flex-start; flex-direction:column; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #screen-math-court .mc-progress-track span,#screen-math-court .mc-stage-track span { transition:none; }
+}
