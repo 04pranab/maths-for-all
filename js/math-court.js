@@ -23,7 +23,7 @@
   const state = {
     caseId:1, phase:0, seenClaim:false, seenEvidence:false,
     investigationSolved:false, challengeSolved:false, crossSolved:false, verdictChosen:null,
-    completed:new Set(), session:null, feedback:"", feedbackKind:""
+    visualMode:"model", visualFocus:0, completed:new Set(), session:null, feedback:"", feedbackKind:""
   };
   function normalVerdict(value) { return value === "insufficient" ? "uncertain" : value; }
   function load() {
@@ -47,7 +47,8 @@
     state.session = {
       caseId:state.caseId, phase:state.phase, seenClaim:state.seenClaim,
       seenEvidence:state.seenEvidence, investigationSolved:state.investigationSolved,
-      challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, verdictChosen:state.verdictChosen
+      challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, verdictChosen:state.verdictChosen,
+      visualMode:state.visualMode, visualFocus:state.visualFocus
     };
     persist();
   }
@@ -121,6 +122,8 @@
     state.investigationSolved=saved?saved.investigationSolved:false;
     state.challengeSolved=saved?Boolean(saved.challengeSolved):false;
     state.crossSolved=saved?saved.crossSolved:false;
+    state.visualMode=saved&&["model","compare","trace"].includes(saved.visualMode)?saved.visualMode:"model";
+    state.visualFocus=saved&&Number.isInteger(saved.visualFocus)?Math.max(0,Math.min(4,saved.visualFocus)):0;
     state.verdictChosen=saved?saved.verdictChosen:null;
     state.feedback="";state.feedbackKind="";
     syncSession();
@@ -209,6 +212,112 @@
     };
     return hints[item.check]||"Return to the source exhibit and check what the claim really says.";
   }
+
+  function visualNumbers(item) {
+    const textSource=[item.evidence,item.story,item.prompt,item.challenge&&item.challenge.prompt].join(" ");
+    const matches=[...textSource.matchAll(/-?\d[\d,]*(?:\.\d+)?/g)];
+    const values=[];
+    for(const match of matches){
+      const number=Number(match[0].replace(/,/g,""));
+      if(Number.isFinite(number)&&Math.abs(number)<=100000&&!values.includes(number))values.push(number);
+      if(values.length===5)break;
+    }
+    return values.length?values:[3,5,8,13];
+  }
+  function visualHeading(item) {
+    const headings={
+      1:"Number blocks & quantities",2:"Number patterns & properties",3:"Fractions & fair shares",
+      4:"Shapes, space & measurement",5:"Time, distance & units",6:"Data you can see",
+      7:"Rules, equations & logic",8:"Fair shares & decisions",9:"Routes & constraints",
+      10:"The town-planning evidence board"
+    };
+    return headings[item.chapter]||"Explore the evidence";
+  }
+  function svgBars(values,focus,labels) {
+    const max=Math.max(1,...values.map(v=>Math.abs(v)));
+    return '<svg viewBox="0 0 720 250" role="img" aria-label="Interactive evidence bars" data-visual-mode="compare">'+
+      '<line x1="160" y1="32" x2="160" y2="210" stroke="#c9c0d3" stroke-width="2"/>'+
+      values.map((v,i)=>{
+        const y=38+i*39,w=Math.max(4,Math.abs(v)/max*445);
+        return '<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" aria-label="Focus '+esc(labels[i])+'" onclick="MathCourt.focusVisual('+i+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();MathCourt.focusVisual('+i+')}">'+
+          '<text x="12" y="'+(y+17)+'" class="mc-svg-label">'+esc(labels[i])+'</text>'+
+          '<rect x="160" y="'+y+'" width="'+w+'" height="24" rx="7" class="mc-svg-bar '+(focus===i?'is-focused':'')+'"/>'+
+          '<text x="'+Math.min(665,174+w)+'" y="'+(y+17)+'" class="mc-svg-number">'+esc(String(v))+'</text></g>';
+      }).join("")+
+      '<text x="160" y="235" class="mc-svg-note">Each bar uses the recorded value as its scale.</text></svg>';
+  }
+  function renderModelSvg(item,values,focus) {
+    const v=values.slice(0,4),max=Math.max(1,...v.map(n=>Math.abs(n)));
+    const title=item.title.toLowerCase();
+    if(item.chapter<=2){
+      const cards=v.map((n,i)=>'<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" onclick="MathCourt.focusVisual('+i+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();MathCourt.focusVisual('+i+')}" aria-label="Inspect value '+esc(String(n))+'"><rect x="'+(22+i*172)+'" y="35" width="150" height="104" rx="16" class="mc-svg-card '+(focus===i?'is-focused':'')+'"/><text x="'+(97+i*172)+'" y="63" text-anchor="middle" class="mc-svg-note">RECORD '+(i+1)+'</text><text x="'+(97+i*172)+'" y="105" text-anchor="middle" class="mc-svg-big">'+esc(String(n))+'</text><rect x="'+(34+i*172)+'" y="151" width="'+(126*Math.abs(n)/max)+'" height="12" rx="6" class="mc-svg-bar '+(focus===i?'is-focused':'')+'"/></g>').join("");
+      return '<svg viewBox="0 0 720 205" role="img" aria-label="Number blocks showing quantities from the case" data-visual-mode="model">'+cards+'<text x="22" y="192" class="mc-svg-note">Select a number block. The matching value is highlighted below.</text></svg>';
+    }
+    if(item.chapter===3){
+      const fractions=[...([item.evidence,item.story,item.prompt].join(" ").matchAll(/(\d+)\s*\/\s*(\d+)/g))].slice(0,2).map(m=>({n:Number(m[1]),d:Number(m[2])}));
+      if(fractions.length){
+        return '<svg viewBox="0 0 720 205" role="img" aria-label="Fraction strips split into equal parts" data-visual-mode="model">'+fractions.map((f,i)=>{
+          const y=34+i*76,segments=Math.min(20,Math.max(1,f.d)),width=520/segments,filled=Math.min(f.n,segments);
+          return '<text x="20" y="'+(y+23)+'" class="mc-svg-label">SHARE '+(i+1)+' · '+f.n+'/'+f.d+'</text>'+
+            Array.from({length:segments},(_,j)=>'<rect x="'+(185+j*width)+'" y="'+y+'" width="'+(width-3)+'" height="40" rx="3" class="mc-svg-segment '+(j<filled?'is-filled':'')+' '+(focus===i?'is-focused':'')+'"/>').join("")+
+            '<text x="715" y="'+(y+58)+'" text-anchor="end" class="mc-svg-note">'+f.n+' of '+f.d+' equal parts</text>';
+        }).join("")+'</svg>';
+      }
+      return svgBars(v,focus,v.map((_,i)=>"Share "+(i+1))).replace('data-visual-mode="compare"','data-visual-mode="model"');
+    }
+    if(item.chapter===4){
+      if(/wheel|round|circle|circumference/.test(title)){
+        return '<svg viewBox="0 0 720 220" role="img" aria-label="Circle with diameter and circumference" data-visual-mode="model"><circle cx="260" cy="110" r="76" fill="#e6f2ec" stroke="#267b70" stroke-width="4"/><line x1="184" y1="110" x2="336" y2="110" stroke="#694c83" stroke-width="3" stroke-dasharray="6 5"/><text x="260" y="99" text-anchor="middle" class="mc-svg-big">'+esc(String(v[0]||7))+'</text><text x="390" y="80" class="mc-svg-label">ACROSS THE STAGE</text><text x="390" y="113" class="mc-svg-big">diameter</text><text x="390" y="152" class="mc-svg-note">Around the edge = circumference</text></svg>';
+      }
+      if(/turn|direction|compass|sign|coordinate|map/.test(title)){
+        return '<svg viewBox="0 0 720 220" role="img" aria-label="Compass and ordered coordinate grid" data-visual-mode="model"><g transform="translate(150 108)"><circle r="76" fill="#f4eef8" stroke="#b8a6c8" stroke-width="2"/><path d="M0 -62 L18 0 L0 15 L-18 0 Z" fill="#694c83"/><path d="M0 62 L-12 5 L0 16 L12 5 Z" fill="#c9bfd3"/><text x="0" y="-91" text-anchor="middle" class="mc-svg-label">N</text><text x="91" y="5" class="mc-svg-label">E</text><text x="0" y="101" text-anchor="middle" class="mc-svg-label">S</text><text x="-103" y="5" text-anchor="middle" class="mc-svg-label">W</text></g><g transform="translate(375 24)">'+Array.from({length:7},(_,i)=>'<line x1="'+(i*40)+'" y1="0" x2="'+(i*40)+'" y2="170" stroke="#ddd7e4"/><line x1="0" y1="'+(i*28)+'" x2="240" y2="'+(i*28)+'" stroke="#ddd7e4"/>').join("")+'<circle cx="'+(Math.min(5,Math.abs(v[0]||3)%6)*40)+'" cy="'+(Math.min(5,Math.abs(v[1]||2)%6)*28)+'" r="8" fill="#267b70"/><text x="0" y="194" class="mc-svg-note">Ordered positions: (x, y)</text></g></svg>';
+      }
+      if(/ramp|shadow|tower|slope/.test(title)){
+        return '<svg viewBox="0 0 720 220" role="img" aria-label="Rise and run triangle" data-visual-mode="model"><path d="M95 180 L95 54 L470 180 Z" fill="#f3eef8" stroke="#694c83" stroke-width="4"/><path d="M95 180 L470 180" stroke="#267b70" stroke-width="5"/><text x="55" y="110" class="mc-svg-label" transform="rotate(-90 55 110)">RISE</text><text x="260" y="210" text-anchor="middle" class="mc-svg-label">RUN</text><text x="520" y="90" class="mc-svg-big">'+esc(String(v[0]||2))+' : '+esc(String(v[1]||5))+'</text><text x="520" y="124" class="mc-svg-note">rise : run</text></svg>';
+      }
+      return '<svg viewBox="0 0 720 220" role="img" aria-label="Rectangle grid to explore area and perimeter" data-visual-mode="model"><g transform="translate(35 24)">'+Array.from({length:8},(_,i)=>Array.from({length:12},(_,j)=>'<rect x="'+(j*25)+'" y="'+(i*20)+'" width="23" height="18" rx="2" fill="'+((i+j)%2===0?'#e7f2ec':'#f3eef8')+'" stroke="#c8bcd4" stroke-width=".8"/>').join("")).join("")+'</g><path d="M35 209 L335 209 M35 205 L35 213 M335 205 L335 213" stroke="#694c83" stroke-width="2"/><text x="390" y="76" class="mc-svg-label">MEASUREMENTS IN RECORD</text><text x="390" y="110" class="mc-svg-big">'+esc(String(v[0]||3))+' × '+esc(String(v[1]||8))+'</text><text x="390" y="145" class="mc-svg-note">Inside squares show area.</text><text x="390" y="170" class="mc-svg-note">Outside edges show perimeter.</text></svg>';
+    }
+    if(item.chapter===5){
+      const maxT=Math.max(1,...v.map(n=>Math.abs(n)));
+      return '<svg viewBox="0 0 720 205" role="img" aria-label="Timeline or measuring scale" data-visual-mode="model"><line x1="40" y1="105" x2="680" y2="105" stroke="#694c83" stroke-width="4" stroke-linecap="round"/>'+v.map((n,i)=>{
+        const x=55+(Math.abs(n)/maxT)*590;
+        return '<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" onclick="MathCourt.focusVisual('+i+')" aria-label="Inspect marker '+esc(String(n))+'"><line x1="'+x+'" y1="84" x2="'+x+'" y2="128" stroke="#267b70" stroke-width="4"/><circle cx="'+x+'" cy="105" r="'+(focus===i?12:8)+'" fill="'+(focus===i?'#694c83':'#267b70')+'"/><text x="'+x+'" y="64" text-anchor="middle" class="mc-svg-number">'+esc(String(n))+'</text><text x="'+x+'" y="151" text-anchor="middle" class="mc-svg-note">'+(i===0?'START':i===v.length-1?'END':'MARK '+(i+1))+'</text></g>';
+      }).join("")+'<text x="40" y="190" class="mc-svg-note">Compare gaps between marks, not only their positions.</text></svg>';
+    }
+    if(item.chapter===6) return svgBars(v,focus,v.map((_,i)=>"Record "+(i+1))).replace('data-visual-mode="compare"','data-visual-mode="model"');
+    if(item.chapter===7){
+      return '<svg viewBox="0 0 720 220" role="img" aria-label="Rule machine and equation model" data-visual-mode="model"><rect x="25" y="60" width="155" height="92" rx="17" class="mc-svg-card"/><text x="102" y="88" text-anchor="middle" class="mc-svg-note">INPUT</text><text x="102" y="127" text-anchor="middle" class="mc-svg-big">'+esc(String(v[0]||3))+'</text><path d="M186 106 L251 106 M239 95 L251 106 L239 117" fill="none" stroke="#694c83" stroke-width="4"/><rect x="260" y="45" width="195" height="122" rx="18" fill="#f3eef8" stroke="#c9bad8" stroke-width="2"/><text x="357" y="80" text-anchor="middle" class="mc-svg-note">TEST THE RULE</text><text x="357" y="119" text-anchor="middle" class="mc-svg-big">f(x)</text><text x="357" y="143" text-anchor="middle" class="mc-svg-note">same input → same output</text><path d="M461 106 L523 106 M511 95 L523 106 L511 117" fill="none" stroke="#267b70" stroke-width="4"/><rect x="532" y="60" width="160" height="92" rx="17" class="mc-svg-card '+(focus===1?'is-focused':'')+'"/><text x="612" y="88" text-anchor="middle" class="mc-svg-note">OUTPUT</text><text x="612" y="127" text-anchor="middle" class="mc-svg-big">'+esc(String(v[1]||7))+'</text><text x="25" y="195" class="mc-svg-note">Change one condition at a time; test whether the rule still fits.</text></svg>';
+    }
+    if(item.chapter===8){
+      return '<svg viewBox="0 0 720 225" role="img" aria-label="Allocation bars for comparing fair shares" data-visual-mode="model">'+v.slice(0,3).map((n,i)=>{
+        const x=34+i*230,w=Math.max(5,Math.abs(n)/max*174);
+        return '<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" onclick="MathCourt.focusVisual('+i+')" aria-label="Inspect share '+(i+1)+'"><text x="'+x+'" y="32" class="mc-svg-label">GROUP '+String.fromCharCode(65+i)+'</text><rect x="'+x+'" y="52" width="184" height="108" rx="12" fill="#f4f0f8" stroke="#d5c9e0"/><rect x="'+(x+5)+'" y="'+(155-w*.48)+'" width="174" height="'+(w*.48)+'" rx="7" class="mc-svg-bar '+(focus===i?'is-focused':'')+'"/><text x="'+(x+92)+'" y="190" text-anchor="middle" class="mc-svg-big">'+esc(String(n))+'</text><text x="'+(x+92)+'" y="213" text-anchor="middle" class="mc-svg-note">Compare the rule</text></g>';
+      }).join("")+'</svg>';
+    }
+    if(item.chapter===9){
+      return '<svg viewBox="0 0 720 225" role="img" aria-label="Route network with weighted paths" data-visual-mode="model"><path d="M105 62 L338 43 L598 83 L511 178 L250 183 Z M105 62 L250 183 M338 43 L511 178" fill="none" stroke="#b8a8c8" stroke-width="5" stroke-linejoin="round"/>'+[[105,62],[338,43],[598,83],[511,178],[250,183]].map((p,i)=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="18" fill="'+(focus===i?'#694c83':'#d9eee5')+'" stroke="'+(focus===i?'#4e3565':'#267b70')+'" stroke-width="3"/><text x="'+p[0]+'" y="'+(p[1]+5)+'" text-anchor="middle" class="mc-svg-label">'+String.fromCharCode(65+i)+'</text>').join("")+'<text x="360" y="216" text-anchor="middle" class="mc-svg-note">Compare the total route cost, not just the number of edges.</text></svg>';
+    }
+    return '<svg viewBox="0 0 720 225" role="img" aria-label="Connected planning board showing resources, rules and outcomes" data-visual-mode="model">'+["RESOURCE","RULE","OUTCOME"].map((label,i)=>'<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" onclick="MathCourt.focusVisual('+i+')" aria-label="Inspect '+label+'"><rect x="'+(20+i*240)+'" y="37" width="205" height="124" rx="18" class="mc-svg-card '+(focus===i?'is-focused':'')+'"/><text x="'+(122+i*240)+'" y="67" text-anchor="middle" class="mc-svg-note">'+label+'</text><text x="'+(122+i*240)+'" y="115" text-anchor="middle" class="mc-svg-big">'+esc(String(v[i]===undefined?"?":v[i]))+'</text></g>'+(i<2?'<path d="M230 96 L252 96 M244 88 L252 96 L244 104" stroke="#694c83" stroke-width="4" fill="none"/>':"")).join("")+'<text x="360" y="199" text-anchor="middle" class="mc-svg-note">A sound plan must satisfy every constraint.</text></svg>';
+  }
+  function renderVisualBoard(item) {
+    const values=visualNumbers(item),focus=Math.min(state.visualFocus,values.length-1);
+    const labels=values.map((_,i)=>"Value "+(i+1)),mode=state.visualMode;
+    const svg=mode==="compare"?svgBars(values,focus,labels):mode==="trace"?
+      '<svg viewBox="0 0 720 205" role="img" aria-label="Trace how the evidence becomes a conclusion" data-visual-mode="trace">'+["SOURCE","MATHEMATICAL MODEL","CHECK THE CLAIM"].map((label,i)=>'<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" onclick="MathCourt.focusVisual('+i+')" aria-label="Inspect '+label+'"><rect x="'+(18+i*240)+'" y="40" width="206" height="112" rx="18" class="mc-svg-card '+(focus===i?'is-focused':'')+'"/><text x="'+(121+i*240)+'" y="70" text-anchor="middle" class="mc-svg-note">'+label+'</text><text x="'+(121+i*240)+'" y="117" text-anchor="middle" class="mc-svg-big">'+esc(String(values[i]===undefined?"?":values[i]))+'</text></g>'+(i<2?'<path d="M229 96 L251 96 M243 88 L251 96 L243 104" stroke="#267b70" stroke-width="3" fill="none"/>':"")).join("")+'<text x="360" y="185" text-anchor="middle" class="mc-svg-note">Do the records, model and conclusion agree?</text></svg>':renderModelSvg(item,values,focus);
+    const explanation=mode==="compare"?"Compare the size and gaps between evidence values. A longer bar means a larger value on this shared scale.":mode==="trace"?"Follow the evidence from source to model to check. If one link is weak, the conclusion needs review.":"This is a visual model of the quantities or relationships mentioned in the case. Select a value to highlight it before answering.";
+    return '<section class="mc-visual-lab" aria-label="Interactive visual maths workbench"><div class="mc-visual-header"><div><span class="mc-kicker">VISUAL EVIDENCE TABLE</span><h3>'+esc(visualHeading(item))+'</h3><p>Explore the picture, compare the evidence and work out what it really shows.</p></div><span class="mc-visual-stamp" aria-hidden="true">✦</span></div>'+
+      '<div class="mc-visual-tabs" role="group" aria-label="Choose a visual representation">'+
+      [{id:"model",label:"Build the model"},{id:"compare",label:"Compare values"},{id:"trace",label:"Trace the evidence"}].map(t=>'<button type="button" class="mc-visual-tab '+(mode===t.id?'is-active':'')+'" aria-pressed="'+(mode===t.id?'true':'false')+'" onclick="MathCourt.setVisualMode(\\''+t.id+'\\')">'+t.label+'</button>').join("")+
+      '</div><div class="mc-visual-stage">'+svg+'</div><div class="mc-visual-footer"><p>'+explanation+'</p><div class="mc-visual-picks" role="group" aria-label="Inspect a source value">'+values.map((v,i)=>'<button type="button" class="mc-value-chip '+(focus===i?'is-active':'')+'" aria-pressed="'+(focus===i?'true':'false')+'" onclick="MathCourt.focusVisual('+i+')"><span>'+(i+1)+'</span>'+esc(String(v))+'</button>').join("")+'</div></div></section>';
+  }
+  function setVisualMode(mode) {
+    if(!["model","compare","trace"].includes(mode))return;
+    state.visualMode=mode;syncSession();renderCase();
+  }
+  function focusVisual(index) {
+    state.visualFocus=Math.max(0,Math.min(4,Number(index)||0));syncSession();renderCase();
+  }
+
   function renderCase() {
     const item=data().getCase(state.caseId),host=$("mc-stage-content");
     if(!item||!host)return;
@@ -228,11 +337,13 @@
     let action="";
     if(state.phase===0){
       html+=panel("THE CASE IS CALLED", "What has the court been asked to decide?",'<p>'+esc(item.story)+'</p><div class="mc-claim"><span>CLAIM BEFORE THE COURT</span><strong>'+esc(item.claim)+'</strong></div><div class="mc-two-facts"><div><small>Mathematical focus</small><strong>'+esc(topicFor(item.check,item.chapter))+'</strong></div><div><small>Case file</small><strong>'+String(item.id).padStart(3,"0")+' / 100</strong></div></div>');
+      html+=renderVisualBoard(item);
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Call the witnesses →</button>';
     } else if(state.phase===1) {
       html+=panel("WITNESS EXAMINATION","Ask for the record before deciding",'<p>The witness is confident, but confidence is not a substitute for evidence. Open both cards to hear the claim precisely and inspect the source exhibit.</p><div class="mc-evidence-actions"><button class="mc-evidence-button '+(state.seenClaim?'is-open':'')+'" onclick="MathCourt.chooseEvidence(\'claim\')"><span>01</span><strong>Clarify the claim</strong><small>'+(state.seenClaim?'✓ Examined':'Ask what is being asserted')+'</small></button><button class="mc-evidence-button '+(state.seenEvidence?'is-open':'')+'" onclick="MathCourt.chooseEvidence(\'evidence\')"><span>02</span><strong>Inspect Exhibit A</strong><small>'+(state.seenEvidence?'✓ Examined':'Open the original record')+'</small></button></div>'+(state.seenClaim?'<blockquote class="mc-testimony"><b>Claim clarified:</b> '+esc(item.claim)+'</blockquote>':'')+(state.seenEvidence?'<blockquote class="mc-testimony"><b>Exhibit A:</b> '+esc(item.evidence)+'</blockquote>':''));
       action='<button class="mc-button mc-button-primary" '+(state.seenClaim&&state.seenEvidence?'':'disabled')+' onclick="MathCourt.advance()">Build the mathematical exhibit →</button>';
     } else if(state.phase===2) {
+      html+=renderVisualBoard(item);
       if(!state.investigationSolved) {
         html+=panel("BUILD THE EVIDENCE · TASK 1 OF 2","Solve the first mathematical exhibit",'<p>'+esc(item.prompt)+'</p><div class="mc-answer-options">'+item.options.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerInvestigation('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Work it out, then choose an answer. You can retry without losing progress.</p>');
       } else if(!state.challengeSolved) {
@@ -274,5 +385,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual};
 })(window);
