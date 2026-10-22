@@ -1,5 +1,6 @@
 /* Math Court: calm court-room palette, high-contrast controls, responsive evidence cards. */
-#screen-math-court { --mc-ink:#28343a; --mc-muted:#5b6a70; --mc-plum:#694c83; --mc-plum-dark:#4e3565; --mc-teal:#267b70; --mc-paper:#fffdf8; --mc-line:#ded8e4; --mc-wash:#f3eef8; color:var(--mc-ink); padding:clamp(12px,2.5vw,28px); }
+.menu-card.card-math-court { --tile-accent:#694c83; --tile-wash:#f3eef8; }
+#screen-math-court { --game-accent:#694c83; --game-wash:#f3eef8; --mc-ink:#28343a; --mc-muted:#5b6a70; --mc-plum:#694c83; --mc-plum-dark:#4e3565; --mc-teal:#267b70; --mc-paper:#fffdf8; --mc-line:#ded8e4; --mc-wash:#f3eef8; color:var(--mc-ink); padding:clamp(12px,2.5vw,28px); }
 #screen-math-court .mc-shell { max-width:1080px; margin:0 auto; }
 #screen-math-court .mc-back { border:1px solid var(--mc-line); border-radius:999px; padding:10px 15px; background:#fff; color:var(--mc-ink); font:inherit; font-weight:700; cursor:pointer; }
 #screen-math-court .mc-header { display:flex; align-items:center; gap:14px; margin:0 0 18px; flex-wrap:wrap; }
