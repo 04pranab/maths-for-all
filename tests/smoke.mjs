@@ -334,8 +334,14 @@ async function main() {
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Witness examination", "Opening did not progress to witness examination.");' +
     'MathCourt.chooseEvidence("claim"); MathCourt.chooseEvidence("evidence"); MathCourt.advance();' +
     'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "Witness stage did not progress after both exhibits were inspected.");' +
+    'MathCourt.answerInvestigation((MathCourtData.getCase(1).answer + 1) % MathCourtData.getCase(1).options.length);' +
+    'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "A wrong first answer should allow a retry within the same stage.");' +
     'MathCourt.answerInvestigation(MathCourtData.getCase(1).answer);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Exhibit verified"), "A correct mathematical answer did not receive useful feedback.");' +
+    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "The second linked challenge must be completed before admitting evidence.");' +
+    'MathCourt.answerChallenge((MathCourtData.getCase(1).challenge.answer + 1) % MathCourtData.getCase(1).challenge.options.length);' +
+    'MathCourt.answerChallenge(MathCourtData.getCase(1).challenge.answer);' +
+    'assert(document.getElementById("mc-feedback").textContent.includes("Second exhibit verified"), "The linked challenge did not provide mathematical feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
     'const correctCrossIndex = (0 - (1 % 3) + 3) % 3; MathCourt.answerCross(correctCrossIndex);' +
@@ -349,7 +355,7 @@ async function main() {
     'assert(saved.completed.includes(1), "Closing a case did not save its completion.");' +
     'assert(saved.session.caseId === 2, "The next case was not opened after closing the first.");' +
     'MathCourt.goDocket(); assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "Returning to the docket lost cases.");' +
-    'return { ok: true, cases: 100, chapters: 10, stagesCompleted: 7, progressSaved: true };' +
+    'return { ok: true, cases: 100, chapters: 10, linkedTasksPerCase: 2, stagesCompleted: 7, progressSaved: true };' +
   '})()');
 
   const numberMazeResult = await evaluate(`(async () => {

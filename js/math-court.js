@@ -22,7 +22,7 @@
   ];
   const state = {
     caseId:1, phase:0, seenClaim:false, seenEvidence:false,
-    investigationSolved:false, crossSolved:false, verdictChosen:null,
+    investigationSolved:false, challengeSolved:false, crossSolved:false, verdictChosen:null,
     completed:new Set(), session:null, feedback:"", feedbackKind:""
   };
   function normalVerdict(value) { return value === "insufficient" ? "uncertain" : value; }
@@ -47,7 +47,7 @@
     state.session = {
       caseId:state.caseId, phase:state.phase, seenClaim:state.seenClaim,
       seenEvidence:state.seenEvidence, investigationSolved:state.investigationSolved,
-      crossSolved:state.crossSolved, verdictChosen:state.verdictChosen
+      challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, verdictChosen:state.verdictChosen
     };
     persist();
   }
@@ -119,6 +119,7 @@
     state.seenClaim=saved?saved.seenClaim:false;
     state.seenEvidence=saved?saved.seenEvidence:false;
     state.investigationSolved=saved?saved.investigationSolved:false;
+    state.challengeSolved=saved?Boolean(saved.challengeSolved):false;
     state.crossSolved=saved?saved.crossSolved:false;
     state.verdictChosen=saved?saved.verdictChosen:null;
     state.feedback="";state.feedbackKind="";
@@ -138,7 +139,7 @@
     if(state.phase===1&&!(state.seenClaim&&state.seenEvidence)){
       setFeedback("Examine both the claim and the source exhibit before proceeding.","hint");return;
     }
-    if(state.phase===2&&!state.investigationSolved){setFeedback("Solve the mathematical exhibit first. You can try again without losing progress.","hint");return;}
+    if(state.phase===2&&!(state.investigationSolved&&state.challengeSolved)){setFeedback("Solve both linked mathematical tasks before admitting the exhibits. You can retry without losing progress.","hint");return;}
     if(state.phase===4&&!state.crossSolved){setFeedback("Choose the strongest line of cross-examination first.","hint");return;}
     if(state.phase===5&&!state.verdictChosen){setFeedback("Select a verdict and support it with what you have learned.","hint");return;}
     if(state.phase===5&&normalVerdict(state.verdictChosen)!==normalVerdict(item.verdict)){
@@ -166,6 +167,12 @@
     }else{
       setFeedback("That does not fit all the evidence yet. "+hintFor(item),"hint");
     }
+    syncSession();renderCase();
+  }
+  function answerChallenge(index) {
+    const item=data().getCase(state.caseId),challenge=item.challenge;
+    if(index===challenge.answer){state.challengeSolved=true;setFeedback("Second exhibit verified. "+challenge.explanation,"success");}
+    else{setFeedback("That result does not fit the second exhibit yet. Recheck the quantities and try again.","hint");}
     syncSession();renderCase();
   }
   function answerCross(index) {
@@ -226,8 +233,14 @@
       html+=panel("WITNESS EXAMINATION","Ask for the record before deciding",'<p>The witness is confident, but confidence is not a substitute for evidence. Open both cards to hear the claim precisely and inspect the source exhibit.</p><div class="mc-evidence-actions"><button class="mc-evidence-button '+(state.seenClaim?'is-open':'')+'" onclick="MathCourt.chooseEvidence(\'claim\')"><span>01</span><strong>Clarify the claim</strong><small>'+(state.seenClaim?'✓ Examined':'Ask what is being asserted')+'</small></button><button class="mc-evidence-button '+(state.seenEvidence?'is-open':'')+'" onclick="MathCourt.chooseEvidence(\'evidence\')"><span>02</span><strong>Inspect Exhibit A</strong><small>'+(state.seenEvidence?'✓ Examined':'Open the original record')+'</small></button></div>'+(state.seenClaim?'<blockquote class="mc-testimony"><b>Claim clarified:</b> '+esc(item.claim)+'</blockquote>':'')+(state.seenEvidence?'<blockquote class="mc-testimony"><b>Exhibit A:</b> '+esc(item.evidence)+'</blockquote>':''));
       action='<button class="mc-button mc-button-primary" '+(state.seenClaim&&state.seenEvidence?'':'disabled')+' onclick="MathCourt.advance()">Build the mathematical exhibit →</button>';
     } else if(state.phase===2) {
-      html+=panel("BUILD THE EVIDENCE","Solve the mathematical exhibit",'<p>'+esc(item.prompt)+'</p><div class="mc-answer-options">'+item.options.map((opt,i)=>'<button class="mc-option" aria-pressed="false" onclick="MathCourt.answerInvestigation('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div>'+(state.investigationSolved?'<div class="mc-solution"><strong>Mathematical finding</strong><p>'+esc(item.explanation)+'</p></div>':'<p class="mc-soft-note">Choose an answer. Incorrect attempts do not cost points, and a hint is available below.</p>'));
-      action='<button class="mc-button mc-button-primary" '+(state.investigationSolved?'':'disabled')+' onclick="MathCourt.advance()">Admit the exhibit and hear new evidence →</button><button class="mc-button mc-button-quiet" onclick="MathCourt.showHint()">Give me a hint</button>';
+      if(!state.investigationSolved) {
+        html+=panel("BUILD THE EVIDENCE · TASK 1 OF 2","Solve the first mathematical exhibit",'<p>'+esc(item.prompt)+'</p><div class="mc-answer-options">'+item.options.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerInvestigation('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Work it out, then choose an answer. You can retry without losing progress.</p>');
+      } else if(!state.challengeSolved) {
+        html+=panel("BUILD THE EVIDENCE · TASK 2 OF 2","Test the finding with a second case-linked challenge",'<div class="mc-solution"><strong>First exhibit admitted</strong><p>'+esc(item.explanation)+'</p></div><p>'+esc(item.challenge.prompt)+'</p><div class="mc-answer-options">'+item.challenge.options.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerChallenge('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Use the first result as evidence, then check what follows from it.</p>');
+      } else {
+        html+=panel("BOTH EXHIBITS ADMITTED","The mathematical evidence is ready",'<div class="mc-solution"><strong>Exhibit A · Main finding</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>Exhibit B · Follow-up check</strong><p>'+esc(item.challenge.explanation)+'</p></div><p class="mc-soft-note">Two linked checks give the court a stronger foundation than a single answer.</p>');
+      }
+      action='<button class="mc-button mc-button-primary" '+(state.investigationSolved&&state.challengeSolved?'':'disabled')+' onclick="MathCourt.advance()">Admit both exhibits and hear new evidence →</button><button class="mc-button mc-button-quiet" onclick="MathCourt.showHint()">Give me a hint</button>';
     } else if(state.phase===3) {
       html+=panel("NEW EVIDENCE · THE TWIST","The case changes",'<div class="mc-twist-mark" aria-hidden="true">!</div><p>'+esc(item.twist)+'</p><div class="mc-claim mc-claim-soft"><span>THE MATHEMATICAL FINDING SO FAR</span><strong>'+esc(item.explanation)+'</strong></div><p class="mc-soft-note">A responsible advocate can change their mind when evidence changes. The court records what the new evidence adds, not what it wishes had happened.</p>');
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Cross-examine the reasoning →</button>';
@@ -261,5 +274,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerCross,selectVerdict,showHint,previous,resetProgress};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress};
 })(window);

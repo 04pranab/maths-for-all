@@ -20,7 +20,17 @@
     "moral": "Check the whole record before blaming someone.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "Order: 52 crates. First unloading tally: 37. Second cart manifest: 15 crates logged later."
+    "evidence": "Order: 52 crates. First unloading tally: 37. Second cart manifest: 15 crates logged later.",
+    "challenge": {
+      "prompt": "Use the two records to check the total shipment: 37 crates were unloaded first and 15 were on the later cart. How many crates were delivered altogether?",
+      "options": [
+        "52 crates",
+        "42 crates",
+        "62 crates"
+      ],
+      "answer": 0,
+      "explanation": "37 + 15 = 52. The later manifest reconciles the shipment."
+    }
   },
   {
     "id": 2,
@@ -40,7 +50,17 @@
     "moral": "Verify the source as well as the calculation.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "Two copies read 407 and 470; the original is smudged."
+    "evidence": "Two copies read 407 and 470; the original is smudged.",
+    "challenge": {
+      "prompt": "Add the correct difference back to the smaller quantity. What should you get?",
+      "options": [
+        "470",
+        "460",
+        "480"
+      ],
+      "answer": 0,
+      "explanation": "407 + 63 = 470, returning to the larger recorded quantity."
+    }
   },
   {
     "id": 3,
@@ -60,7 +80,17 @@
     "moral": "Correct the record without assuming bad intentions.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "The second ₹12 entry refers to the same item as the first."
+    "evidence": "The second ₹12 entry refers to the same item as the first.",
+    "challenge": {
+      "prompt": "The corrected bill is ₹30 and the customer pays ₹50. How much change should be returned?",
+      "options": [
+        "₹20",
+        "₹18",
+        "₹30"
+      ],
+      "answer": 0,
+      "explanation": "₹50 − ₹30 = ₹20 change."
+    }
   },
   {
     "id": 4,
@@ -80,7 +110,17 @@
     "moral": "State whether a number is a count, estimate, or capacity.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "There are six rows and eight seats in every row."
+    "evidence": "There are six rows and eight seats in every row.",
+    "challenge": {
+      "prompt": "If two more rows with eight seats each are added, how many seats will there be?",
+      "options": [
+        "64 seats",
+        "56 seats",
+        "72 seats"
+      ],
+      "answer": 0,
+      "explanation": "Eight rows × eight seats = 64 seats."
+    }
   },
   {
     "id": 5,
@@ -100,7 +140,17 @@
     "moral": "Account for partial groups rather than treating them as complete.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "Six carts have 12 jars each; the last cart has 6 jars."
+    "evidence": "Six carts have 12 jars each; the last cart has 6 jars.",
+    "challenge": {
+      "prompt": "How many jars are carried by the six full carts, not including the half-full final cart?",
+      "options": [
+        "72 jars",
+        "78 jars",
+        "66 jars"
+      ],
+      "answer": 0,
+      "explanation": "Six full carts × 12 jars = 72 jars."
+    }
   },
   {
     "id": 6,
@@ -120,7 +170,17 @@
     "moral": "Check dates and context before treating records as contradictory.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "The two ledgers were written at different times."
+    "evidence": "The two ledgers were written at different times.",
+    "challenge": {
+      "prompt": "Check the subtraction using addition. What is 34 + 270?",
+      "options": [
+        "304",
+        "338",
+        "270"
+      ],
+      "answer": 0,
+      "explanation": "34 + 270 = 304, confirming the subtraction."
+    }
   },
   {
     "id": 7,
@@ -140,7 +200,17 @@
     "moral": "Define what is being counted and remove duplicates.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "North gate: 28. South gate: 17. Duplicates: 5."
+    "evidence": "North gate: 28. South gate: 17. Duplicates: 5.",
+    "challenge": {
+      "prompt": "If only three people appeared on both gate lists rather than five, how many distinct visitors would the lists represent?",
+      "options": [
+        "42",
+        "40",
+        "45"
+      ],
+      "answer": 0,
+      "explanation": "28 + 17 − 3 = 42 distinct visitors."
+    }
   },
   {
     "id": 8,
@@ -160,7 +230,17 @@
     "moral": "Use an inverse operation to check an answer.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The result should add back to 83 when 47 is added."
+    "evidence": "The result should add back to 83 when 47 is added.",
+    "challenge": {
+      "prompt": "Which sum checks the corrected answer to 83 − 47?",
+      "options": [
+        "36 + 47 = 83",
+        "46 + 47 = 83",
+        "36 + 57 = 83"
+      ],
+      "answer": 0,
+      "explanation": "Adding the subtracted quantity back must recover the starting number."
+    }
   },
   {
     "id": 9,
@@ -180,7 +260,17 @@
     "moral": "Be honest about the precision of evidence.",
     "verdict": "uncertain",
     "check": "assumptions",
-    "evidence": "The only surviving record is rounded to the nearest ten."
+    "evidence": "The only surviving record is rounded to the nearest ten.",
+    "challenge": {
+      "prompt": "Which count cannot round to 80 to the nearest ten?",
+      "options": [
+        "74",
+        "77",
+        "82"
+      ],
+      "answer": 0,
+      "explanation": "74 rounds to 70; 77 and 82 round to 80."
+    }
   },
   {
     "id": 10,
@@ -200,7 +290,17 @@
     "moral": "Show each step so mistakes can be traced.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "Opening stock 120; delivery 65; used 143."
+    "evidence": "Opening stock 120; delivery 65; used 143.",
+    "challenge": {
+      "prompt": "How many candles were available immediately before the ceremony?",
+      "options": [
+        "185",
+        "143",
+        "42"
+      ],
+      "answer": 0,
+      "explanation": "120 opening candles + 65 delivered candles = 185 available."
+    }
   },
   {
     "id": 11,
@@ -220,7 +320,17 @@
     "moral": "Use the stated rule rather than a superficial pattern.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "The code must be divisible by 3."
+    "evidence": "The code must be divisible by 3.",
+    "challenge": {
+      "prompt": "What is the digit sum of 425, the candidate that fails the divisibility-by-three test?",
+      "options": [
+        "11",
+        "12",
+        "14"
+      ],
+      "answer": 0,
+      "explanation": "4 + 2 + 5 = 11, which is not divisible by three."
+    }
   },
   {
     "id": 12,
@@ -240,7 +350,17 @@
     "moral": "Check definitions, not appearances.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "21 = 3 × 7 and 27 = 3 × 9."
+    "evidence": "21 = 3 × 7 and 27 = 3 × 9.",
+    "challenge": {
+      "prompt": "Which factorisation explains why 21 is not prime?",
+      "options": [
+        "3 × 7",
+        "3 × 8",
+        "2 × 11"
+      ],
+      "answer": 0,
+      "explanation": "21 = 3 × 7, so it has factors besides 1 and itself."
+    }
   },
   {
     "id": 13,
@@ -260,7 +380,17 @@
     "moral": "Explain the remainder instead of hiding it.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "29 lanterns are split into four equal whole-number groups."
+    "evidence": "29 lanterns are split into four equal whole-number groups.",
+    "challenge": {
+      "prompt": "One more lantern arrives, making 30. If four teams receive equal whole-number shares, what is the result?",
+      "options": [
+        "7 each, with 2 left",
+        "8 each, with none left",
+        "6 each, with 6 left"
+      ],
+      "answer": 0,
+      "explanation": "4 × 7 = 28, leaving two lanterns."
+    }
   },
   {
     "id": 14,
@@ -280,7 +410,17 @@
     "moral": "A fair rule must satisfy every group in the agreement.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "Both 24 and 36 must be divisible by the team size."
+    "evidence": "Both 24 and 36 must be divisible by the team size.",
+    "challenge": {
+      "prompt": "If every team has 12 volunteers, how many teams can be formed from each group?",
+      "options": [
+        "2 teams from 24 and 3 from 36",
+        "3 teams from 24 and 2 from 36",
+        "4 teams from 24 and 6 from 36"
+      ],
+      "answer": 0,
+      "explanation": "24 ÷ 12 = 2 teams and 36 ÷ 12 = 3 teams."
+    }
   },
   {
     "id": 15,
@@ -300,7 +440,17 @@
     "moral": "Identify a rule precisely and test it.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The first four terms increase by three each time."
+    "evidence": "The first four terms increase by three each time.",
+    "challenge": {
+      "prompt": "Following the same add-three rule, what is the tenth term of 4, 7, 10, 13, …?",
+      "options": [
+        "31",
+        "28",
+        "34"
+      ],
+      "answer": 0,
+      "explanation": "The tenth term is 4 + 9 × 3 = 31."
+    }
   },
   {
     "id": 16,
@@ -320,7 +470,17 @@
     "moral": "Test how a change in dimensions affects area.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Original grid: 4 by 4. New grid: 8 by 8."
+    "evidence": "Original grid: 4 by 4. New grid: 8 by 8.",
+    "challenge": {
+      "prompt": "The original grid had 16 stones. How many additional stones does the 8 by 8 grid use?",
+      "options": [
+        "48 more",
+        "32 more",
+        "64 more"
+      ],
+      "answer": 0,
+      "explanation": "64 − 16 = 48 additional stones."
+    }
   },
   {
     "id": 17,
@@ -340,7 +500,17 @@
     "moral": "Use a quick check, then verify the original record.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "A number is divisible by 3 when its digit sum is divisible by 3."
+    "evidence": "A number is divisible by 3 when its digit sum is divisible by 3.",
+    "challenge": {
+      "prompt": "Why does 574 fail the divisibility-by-three test?",
+      "options": [
+        "Its digit sum is 16",
+        "Its digit sum is 15",
+        "Its digit sum is 17"
+      ],
+      "answer": 0,
+      "explanation": "5 + 7 + 4 = 16, not divisible by three."
+    }
   },
   {
     "id": 18,
@@ -360,7 +530,17 @@
     "moral": "Do not turn a rounded value into a false exact count.",
     "verdict": "partly",
     "check": "assumptions",
-    "evidence": "The report was rounded to the nearest ten."
+    "evidence": "The report was rounded to the nearest ten.",
+    "challenge": {
+      "prompt": "Which count would not round to 340 to the nearest ten?",
+      "options": [
+        "334",
+        "338",
+        "344"
+      ],
+      "answer": 0,
+      "explanation": "334 rounds to 330; 338 and 344 round to 340."
+    }
   },
   {
     "id": 19,
@@ -380,7 +560,17 @@
     "moral": "State whether spare capacity is permitted.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "Each boat carries at most two people; a boat may carry one."
+    "evidence": "Each boat carries at most two people; a boat may carry one.",
+    "challenge": {
+      "prompt": "Eight two-person boats have how many seats total, and how many are unused if all 15 people board?",
+      "options": [
+        "16 seats, 1 unused",
+        "15 seats, none unused",
+        "18 seats, 3 unused"
+      ],
+      "answer": 0,
+      "explanation": "Eight boats hold 16 people, leaving one seat empty."
+    }
   },
   {
     "id": 20,
@@ -400,7 +590,17 @@
     "moral": "Represent signed quantities before calculating.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A thermometer reads −2°C before sunrise. By noon, the temperature rises by 5 degrees. A witness treats the rise as a negative change."
+    "evidence": "A thermometer reads −2°C before sunrise. By noon, the temperature rises by 5 degrees. A witness treats the rise as a negative change.",
+    "challenge": {
+      "prompt": "After noon, the temperature falls by another 4 degrees from 3°C. What is the new temperature?",
+      "options": [
+        "−1°C",
+        "1°C",
+        "7°C"
+      ],
+      "answer": 0,
+      "explanation": "3 − 4 = −1°C. This confirms the stated relationship."
+    }
   },
   {
     "id": 21,
@@ -420,7 +620,17 @@
     "moral": "Explain what the denominator counts.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "Two identical pies are compared. One slice is 1/4 of a pie and another is 1/6. A witness says the sixth must be larger because six is larger than four."
+    "evidence": "Two identical pies are compared. One slice is 1/4 of a pie and another is 1/6. A witness says the sixth must be larger because six is larger than four.",
+    "challenge": {
+      "prompt": "Which fraction with denominator 12 is equivalent to one quarter?",
+      "options": [
+        "3/12",
+        "2/12",
+        "4/12"
+      ],
+      "answer": 0,
+      "explanation": "Multiplying numerator and denominator of 1/4 by 3 gives 3/12."
+    }
   },
   {
     "id": 22,
@@ -440,7 +650,17 @@
     "moral": "Compare ratios, not just totals.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "One jug mixes 2 cups concentrate with 3 cups water. Another mixes 3 cups concentrate with 6 cups water. The second contains more liquid overall."
+    "evidence": "One jug mixes 2 cups concentrate with 3 cups water. Another mixes 3 cups concentrate with 6 cups water. The second contains more liquid overall.",
+    "challenge": {
+      "prompt": "To keep the first jug's 2:3 concentrate-to-water ratio, how much concentrate is needed with 6 cups of water?",
+      "options": [
+        "4 cups",
+        "3 cups",
+        "2 cups"
+      ],
+      "answer": 0,
+      "explanation": "Doubling the water from 3 to 6 cups doubles concentrate from 2 to 4 cups."
+    }
   },
   {
     "id": 23,
@@ -460,7 +680,17 @@
     "moral": "Distinguish value from measurement precision.",
     "verdict": "disproved",
     "check": "units",
-    "evidence": "Two devices show 2.4 m and 2.40 m. A clerk declares one must be longer because it has more digits."
+    "evidence": "Two devices show 2.4 m and 2.40 m. A clerk declares one must be longer because it has more digits.",
+    "challenge": {
+      "prompt": "How many centimetres are in 2.4 metres?",
+      "options": [
+        "240 cm",
+        "24 cm",
+        "204 cm"
+      ],
+      "answer": 0,
+      "explanation": "2.4 × 100 = 240 cm. This confirms the stated relationship."
+    }
   },
   {
     "id": 24,
@@ -480,7 +710,17 @@
     "moral": "Identify the whole to which a percentage applies.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A jacket costs ₹500. A sign says 20% off. The cashier reduces the price by ₹20 and says that is the promised saving."
+    "evidence": "A jacket costs ₹500. A sign says 20% off. The cashier reduces the price by ₹20 and says that is the promised saving.",
+    "challenge": {
+      "prompt": "Which fraction of the original ₹500 price is a 20% discount?",
+      "options": [
+        "1/5",
+        "1/4",
+        "1/10"
+      ],
+      "answer": 0,
+      "explanation": "20% = 20/100 = 1/5. This confirms the stated relationship."
+    }
   },
   {
     "id": 25,
@@ -500,7 +740,17 @@
     "moral": "Name the whole before comparing fractions.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "A quarter of a small cake is compared with a quarter of a large cake. The larger cake is twice the area of the smaller one."
+    "evidence": "A quarter of a small cake is compared with a quarter of a large cake. The larger cake is twice the area of the smaller one.",
+    "challenge": {
+      "prompt": "If the small cake has area 80 cm² and the large cake has twice that area, how large is a quarter of the large cake?",
+      "options": [
+        "40 cm²",
+        "20 cm²",
+        "80 cm²"
+      ],
+      "answer": 0,
+      "explanation": "The large cake has area 160 cm²; one quarter is 40 cm²."
+    }
   },
   {
     "id": 26,
@@ -520,7 +770,17 @@
     "moral": "Preserve ratios when scaling a recipe.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "A recipe for four people needs 200 g of rice. A cook prepares ten servings using 300 g."
+    "evidence": "A recipe for four people needs 200 g of rice. A cook prepares ten servings using 300 g.",
+    "challenge": {
+      "prompt": "At the same rate of 50 g per person, how much rice is needed for 12 people?",
+      "options": [
+        "600 g",
+        "550 g",
+        "650 g"
+      ],
+      "answer": 0,
+      "explanation": "50 × 12 = 600 g. This confirms the stated relationship."
+    }
   },
   {
     "id": 27,
@@ -540,7 +800,17 @@
     "moral": "Separate fixed costs from per-batch costs.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "A batch costs ₹240 in ingredients plus a fixed ₹60 equipment fee per cooking session. Two batches are cooked in one session."
+    "evidence": "A batch costs ₹240 in ingredients plus a fixed ₹60 equipment fee per cooking session. Two batches are cooked in one session.",
+    "challenge": {
+      "prompt": "What would three batches cost if the same ₹60 equipment fee is charged once?",
+      "options": [
+        "₹780",
+        "₹900",
+        "₹720"
+      ],
+      "answer": 0,
+      "explanation": "Three ingredient batches cost ₹720; adding one ₹60 fee gives ₹780."
+    }
   },
   {
     "id": 28,
@@ -560,7 +830,17 @@
     "moral": "Check the base amount each time a percentage is applied.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "A ₹1,000 item receives a 10% discount followed by another 10% off the reduced price. A seller says this equals 20% off the original price."
+    "evidence": "A ₹1,000 item receives a 10% discount followed by another 10% off the reduced price. A seller says this equals 20% off the original price.",
+    "challenge": {
+      "prompt": "How much more expensive is the successive-discount price than the price after one 20% discount?",
+      "options": [
+        "₹10",
+        "₹20",
+        "₹90"
+      ],
+      "answer": 0,
+      "explanation": "Successive discounts leave ₹810; a single 20% discount leaves ₹800."
+    }
   },
   {
     "id": 29,
@@ -580,7 +860,17 @@
     "moral": "Use a unit rate for a fair comparison.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Team A has 12 shirts for 8 players. Team B has 15 shirts for 12 players. A manager says B is better supplied because it has more shirts."
+    "evidence": "Team A has 12 shirts for 8 players. Team B has 15 shirts for 12 players. A manager says B is better supplied because it has more shirts.",
+    "challenge": {
+      "prompt": "How many shirts would a 12-player team need to match Team A's rate of 1.5 shirts per player?",
+      "options": [
+        "18 shirts",
+        "15 shirts",
+        "20 shirts"
+      ],
+      "answer": 0,
+      "explanation": "12 × 1.5 = 18 shirts."
+    }
   },
   {
     "id": 30,
@@ -600,7 +890,17 @@
     "moral": "Check both the ratio and the resource limit.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "A supply of 120 litres is divided in ratio 2:3 between two neighbourhood tanks. A proposal assigns 60 L and 90 L."
+    "evidence": "A supply of 120 litres is divided in ratio 2:3 between two neighbourhood tanks. A proposal assigns 60 L and 90 L.",
+    "challenge": {
+      "prompt": "If 120 litres are split in ratio 2:3, how much should the second tank receive?",
+      "options": [
+        "72 L",
+        "48 L",
+        "60 L"
+      ],
+      "answer": 0,
+      "explanation": "The second tank receives 3/5 × 120 = 72 L."
+    }
   },
   {
     "id": 31,
@@ -620,7 +920,17 @@
     "moral": "Match the measurement to what is being built.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "A 3 m by 8 m plot and a 4 m by 6 m plot both have area 24 m². A builder says they need equal lengths of fence."
+    "evidence": "A 3 m by 8 m plot and a 4 m by 6 m plot both have area 24 m². A builder says they need equal lengths of fence.",
+    "challenge": {
+      "prompt": "If the 3 m by 8 m plot needs 22 m of fencing and the 4 m by 6 m plot needs 20 m, how much more does the first need?",
+      "options": [
+        "2 m",
+        "4 m",
+        "6 m"
+      ],
+      "answer": 0,
+      "explanation": "22 − 20 = 2 m. This confirms the stated relationship."
+    }
   },
   {
     "id": 32,
@@ -640,7 +950,17 @@
     "moral": "Use a shared reference frame for directions.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "A sign faces east. A worker turns it clockwise a quarter-turn, then claims it faces north."
+    "evidence": "A sign faces east. A worker turns it clockwise a quarter-turn, then claims it faces north.",
+    "challenge": {
+      "prompt": "After facing south, a sign is turned clockwise by another quarter-turn. Which way does it face?",
+      "options": [
+        "West",
+        "East",
+        "North"
+      ],
+      "answer": 0,
+      "explanation": "A clockwise quarter-turn from south points west."
+    }
   },
   {
     "id": 33,
@@ -660,7 +980,17 @@
     "moral": "State the conditions required for proportional measurements.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "Pole: 2 m tall, 3 m shadow. Tower shadow: 24 m at the same time."
+    "evidence": "Pole: 2 m tall, 3 m shadow. Tower shadow: 24 m at the same time.",
+    "challenge": {
+      "prompt": "The pole-to-shadow ratio is 2:3. If the tower shadow is 30 m at the same time, how tall is the tower?",
+      "options": [
+        "20 m",
+        "18 m",
+        "22 m"
+      ],
+      "answer": 0,
+      "explanation": "Tower height = 30 × 2/3 = 20 m."
+    }
   },
   {
     "id": 34,
@@ -680,7 +1010,17 @@
     "moral": "Examine the whole object, not only its outline.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "A mosaic outline is symmetrical, but its left half contains three blue tiles while the reflected right half has two."
+    "evidence": "A mosaic outline is symmetrical, but its left half contains three blue tiles while the reflected right half has two.",
+    "challenge": {
+      "prompt": "The outline is symmetrical but one inside tile differs. What would make the whole mosaic symmetrical?",
+      "options": [
+        "Every tile must match its reflected position",
+        "Only the outer border must match",
+        "Both sides only need equal area"
+      ],
+      "answer": 0,
+      "explanation": "Reflection symmetry applies to all corresponding parts."
+    }
   },
   {
     "id": 35,
@@ -700,7 +1040,17 @@
     "moral": "Track every step, not just the first part.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "A wheel mark starts at the top, turns half a turn and then another quarter-turn clockwise. The witness reports only the first turn."
+    "evidence": "A wheel mark starts at the top, turns half a turn and then another quarter-turn clockwise. The witness reports only the first turn.",
+    "challenge": {
+      "prompt": "A wheel mark reaches the left side after its turns. One more clockwise quarter-turn takes it where?",
+      "options": [
+        "Bottom",
+        "Top",
+        "Right"
+      ],
+      "answer": 0,
+      "explanation": "From the left side, a clockwise quarter-turn moves the mark to the bottom."
+    }
   },
   {
     "id": 36,
@@ -720,7 +1070,17 @@
     "moral": "Coordinates are ordered pairs.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "Library: (3, 7); courier went to (7, 3)."
+    "evidence": "Library: (3, 7); courier went to (7, 3).",
+    "challenge": {
+      "prompt": "To move from coordinate (3, 7) to (7, 3), which movement is needed?",
+      "options": [
+        "4 units east and 4 south",
+        "4 units west and 4 north",
+        "3 units east and 7 south"
+      ],
+      "answer": 0,
+      "explanation": "The x-coordinate increases by 4 and the y-coordinate decreases by 4."
+    }
   },
   {
     "id": 37,
@@ -740,7 +1100,17 @@
     "moral": "Label dimensions and units before calculating area.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A 10 m by 6 m parcel is divided into two equal 5 m by 6 m rectangles. A gardener claims each half has area 25 m²."
+    "evidence": "A 10 m by 6 m parcel is divided into two equal 5 m by 6 m rectangles. A gardener claims each half has area 25 m².",
+    "challenge": {
+      "prompt": "The two equal halves are each 30 m². What is the original 10 m by 6 m parcel's area?",
+      "options": [
+        "60 m²",
+        "30 m²",
+        "120 m²"
+      ],
+      "answer": 0,
+      "explanation": "The two 30 m² halves total 60 m², matching 10 × 6."
+    }
   },
   {
     "id": 38,
@@ -760,7 +1130,17 @@
     "moral": "A correct number with the wrong unit can still be wrong.",
     "verdict": "partly",
     "check": "units",
-    "evidence": "A box's internal dimensions are 4 cm by 5 cm by 6 cm. A seller multiplies the dimensions correctly but calls the result square centimetres."
+    "evidence": "A box's internal dimensions are 4 cm by 5 cm by 6 cm. A seller multiplies the dimensions correctly but calls the result square centimetres.",
+    "challenge": {
+      "prompt": "If the box height doubles while its base stays 4 cm by 5 cm, what happens to its volume?",
+      "options": [
+        "It doubles to 240 cm³",
+        "It stays 120 cm³",
+        "It halves to 60 cm³"
+      ],
+      "answer": 0,
+      "explanation": "Doubling height doubles the volume: 4 × 5 × 12 = 240 cm³."
+    }
   },
   {
     "id": 39,
@@ -780,7 +1160,17 @@
     "moral": "Preserve the stated constraint and consider accessibility.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "A ramp rises 1 m over 5 m horizontal run. A new design rises 2 m over the same 5 m run."
+    "evidence": "A ramp rises 1 m over 5 m horizontal run. A new design rises 2 m over the same 5 m run.",
+    "challenge": {
+      "prompt": "If a ramp rises 1.5 m and keeps the original 1:5 rise-to-run ratio, what run is required?",
+      "options": [
+        "7.5 m",
+        "5 m",
+        "10 m"
+      ],
+      "answer": 0,
+      "explanation": "The run is five times the rise: 1.5 × 5 = 7.5 m."
+    }
   },
   {
     "id": 40,
@@ -800,7 +1190,17 @@
     "moral": "Choose the formula for the quantity being measured.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "A circular stage has diameter 14 m. Using π ≈ 22/7, a builder says the distance around it is 14 m."
+    "evidence": "A circular stage has diameter 14 m. Using π ≈ 22/7, a builder says the distance around it is 14 m.",
+    "challenge": {
+      "prompt": "Using π ≈ 22/7, what is the circumference of a circle with diameter 7 m?",
+      "options": [
+        "22 m",
+        "44 m",
+        "14 m"
+      ],
+      "answer": 0,
+      "explanation": "Circumference ≈ πd = (22/7) × 7 = 22 m."
+    }
   },
   {
     "id": 41,
@@ -820,7 +1220,17 @@
     "moral": "Use a timeline for elapsed time.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A meeting begins at 10:45 and finishes at 12:15. A witness reports 70 minutes."
+    "evidence": "A meeting begins at 10:45 and finishes at 12:15. A witness reports 70 minutes.",
+    "challenge": {
+      "prompt": "A meeting starts at 2:35 pm and lasts 90 minutes. When does it finish?",
+      "options": [
+        "4:05 pm",
+        "3:65 pm",
+        "4:15 pm"
+      ],
+      "answer": 0,
+      "explanation": "Add 1 hour and then 30 minutes to get 4:05 pm."
+    }
   },
   {
     "id": 42,
@@ -840,7 +1250,17 @@
     "moral": "Compare the observation with the stated reference time.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "A bus was scheduled for 9:20 and arrived at 9:32. The report says it was 20 minutes late."
+    "evidence": "A bus was scheduled for 9:20 and arrived at 9:32. The report says it was 20 minutes late.",
+    "challenge": {
+      "prompt": "If the bus were scheduled for 9:20 and arrived at 9:40, how late would it be?",
+      "options": [
+        "20 minutes",
+        "12 minutes",
+        "10 minutes"
+      ],
+      "answer": 0,
+      "explanation": "9:40 − 9:20 = 20 minutes."
+    }
   },
   {
     "id": 43,
@@ -860,7 +1280,17 @@
     "moral": "Convert to a common unit before comparing.",
     "verdict": "disproved",
     "check": "units",
-    "evidence": "A path is recorded as 250 cm on one map and 2.5 m on another. A clerk declares the records disagree."
+    "evidence": "A path is recorded as 250 cm on one map and 2.5 m on another. A clerk declares the records disagree.",
+    "challenge": {
+      "prompt": "Convert a length of 3.2 metres to centimetres?",
+      "options": [
+        "320 cm",
+        "32 cm",
+        "302 cm"
+      ],
+      "answer": 0,
+      "explanation": "3.2 × 100 = 320 cm. This confirms the stated relationship."
+    }
   },
   {
     "id": 44,
@@ -880,7 +1310,17 @@
     "moral": "Separate the measured object from its container.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "A basket with fruit weighs 3.2 kg; the empty basket weighs 0.4 kg. The seller charges for 3.2 kg of fruit."
+    "evidence": "A basket with fruit weighs 3.2 kg; the empty basket weighs 0.4 kg. The seller charges for 3.2 kg of fruit.",
+    "challenge": {
+      "prompt": "Five baskets each have 3.2 kg gross mass and 0.4 kg basket mass. What is the total fruit mass?",
+      "options": [
+        "14 kg",
+        "16 kg",
+        "18 kg"
+      ],
+      "answer": 0,
+      "explanation": "Each basket contains 2.8 kg of fruit; 5 × 2.8 = 14 kg."
+    }
   },
   {
     "id": 45,
@@ -900,7 +1340,17 @@
     "moral": "Model changing rates in separate intervals.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "Water flows at 12 L/min for five minutes, then slows to 6 L/min for five more minutes."
+    "evidence": "Water flows at 12 L/min for five minutes, then slows to 6 L/min for five more minutes.",
+    "challenge": {
+      "prompt": "A constant-rate estimate predicts 120 L, but the measured total is 90 L. By how much did the estimate overstate the flow?",
+      "options": [
+        "30 L",
+        "20 L",
+        "12 L"
+      ],
+      "answer": 0,
+      "explanation": "120 − 90 = 30 L. This confirms the stated relationship."
+    }
   },
   {
     "id": 46,
@@ -920,7 +1370,17 @@
     "moral": "Use a unit rate when comparing speeds.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Cyclist A travels 18 km in one hour. Cyclist B travels 24 km in two hours. A witness says B is faster because 24 is greater than 18."
+    "evidence": "Cyclist A travels 18 km in one hour. Cyclist B travels 24 km in two hours. A witness says B is faster because 24 is greater than 18.",
+    "challenge": {
+      "prompt": "If Cyclist A keeps 18 km/h for three hours, how far will A travel?",
+      "options": [
+        "54 km",
+        "36 km",
+        "72 km"
+      ],
+      "answer": 0,
+      "explanation": "Distance = speed × time = 18 × 3 = 54 km."
+    }
   },
   {
     "id": 47,
@@ -940,7 +1400,17 @@
     "moral": "Optimise the total cost, not just distance.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Route A is 60 km at ₹8 per km. Route B is 75 km at ₹6 per km. The planner chooses A because it is shorter."
+    "evidence": "Route A is 60 km at ₹8 per km. Route B is 75 km at ₹6 per km. The planner chooses A because it is shorter.",
+    "challenge": {
+      "prompt": "If Route B costs ₹6 per kilometre, what will 80 km cost?",
+      "options": [
+        "₹480",
+        "₹450",
+        "₹500"
+      ],
+      "answer": 0,
+      "explanation": "80 × ₹6 = ₹480. This confirms the stated relationship."
+    }
   },
   {
     "id": 48,
@@ -960,7 +1430,17 @@
     "moral": "Check the calendar year and counting convention.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "A task begins on 27 February in a leap year and lasts three days, counting the start as day one. The clerk records 1 March."
+    "evidence": "A task begins on 27 February in a leap year and lasts three days, counting the start as day one. The clerk records 1 March.",
+    "challenge": {
+      "prompt": "If 27 February in a leap year is day one, what is day four?",
+      "options": [
+        "1 March",
+        "2 March",
+        "28 February"
+      ],
+      "answer": 0,
+      "explanation": "27, 28, 29 February are the first three days; 1 March is day four."
+    }
   },
   {
     "id": 49,
@@ -980,7 +1460,17 @@
     "moral": "Match confidence to measurement uncertainty.",
     "verdict": "uncertain",
     "check": "assumptions",
-    "evidence": "One thermometer reads 21.4°C and another 21.6°C. Each has stated uncertainty of ±0.5°C."
+    "evidence": "One thermometer reads 21.4°C and another 21.6°C. Each has stated uncertainty of ±0.5°C.",
+    "challenge": {
+      "prompt": "The uncertainty intervals are 20.9–21.9°C and 21.1–22.1°C. Do they overlap?",
+      "options": [
+        "Yes, from 21.1°C to 21.9°C",
+        "No, there is a gap",
+        "Only at exactly 21.4°C"
+      ],
+      "answer": 0,
+      "explanation": "The intervals share values from 21.1°C through 21.9°C."
+    }
   },
   {
     "id": 50,
@@ -1000,7 +1490,17 @@
     "moral": "Reason about repeating cycles, not sums of periods.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "One bell rings every six minutes and another every eight minutes. Both ring at noon. The keeper predicts they next coincide after 14 minutes."
+    "evidence": "One bell rings every six minutes and another every eight minutes. Both ring at noon. The keeper predicts they next coincide after 14 minutes.",
+    "challenge": {
+      "prompt": "If one bell rings every 6 minutes and another every 9 minutes, when do they first ring together again?",
+      "options": [
+        "18 minutes",
+        "24 minutes",
+        "54 minutes"
+      ],
+      "answer": 0,
+      "explanation": "The least common multiple of 6 and 9 is 18."
+    }
   },
   {
     "id": 51,
@@ -1020,7 +1520,17 @@
     "moral": "Report data honestly and avoid blame without evidence.",
     "verdict": "disproved",
     "check": "representation",
-    "evidence": "May 100 visitors; June 110; July 120. Axis begins at 90."
+    "evidence": "May 100 visitors; June 110; July 120. Axis begins at 90.",
+    "challenge": {
+      "prompt": "A change from 100 visitors to 120 visitors is what fraction of the starting count?",
+      "options": [
+        "1/5",
+        "1/2",
+        "2/1"
+      ],
+      "answer": 0,
+      "explanation": "The increase is 20 out of 100, which simplifies to 1/5."
+    }
   },
   {
     "id": 52,
@@ -1040,7 +1550,17 @@
     "moral": "A summary value does not describe every individual.",
     "verdict": "partly",
     "check": "definition",
-    "evidence": "Four teams score 6, 8, 10 and 12 points. The organiser says the mean proves each team scored 9."
+    "evidence": "Four teams score 6, 8, 10 and 12 points. The organiser says the mean proves each team scored 9.",
+    "challenge": {
+      "prompt": "What is the median of the scores 6, 8, 10 and 12?",
+      "options": [
+        "9",
+        "8",
+        "10"
+      ],
+      "answer": 0,
+      "explanation": "For four ordered values, median = (8 + 10)/2 = 9."
+    }
   },
   {
     "id": 53,
@@ -1060,7 +1580,17 @@
     "moral": "Choose the statistic that fits the question.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Waiting times are 2, 3, 3, 4 and 18 minutes. A witness says a typical wait must be six minutes because that is the mean."
+    "evidence": "Waiting times are 2, 3, 3, 4 and 18 minutes. A witness says a typical wait must be six minutes because that is the mean.",
+    "challenge": {
+      "prompt": "What is the mean of the waiting times 2, 3, 3, 4 and 18 minutes?",
+      "options": [
+        "6 minutes",
+        "3 minutes",
+        "18 minutes"
+      ],
+      "answer": 0,
+      "explanation": "The sum is 30 minutes and 30 ÷ 5 = 6 minutes."
+    }
   },
   {
     "id": 54,
@@ -1080,7 +1610,17 @@
     "moral": "Collect representative evidence before generalising.",
     "verdict": "insufficient",
     "check": "sample",
-    "evidence": "A survey asks three friends from one club whether the whole school prefers football. All three say yes, and the organiser generalises to the whole school."
+    "evidence": "A survey asks three friends from one club whether the whole school prefers football. All three say yes, and the organiser generalises to the whole school.",
+    "challenge": {
+      "prompt": "Which change would most improve the school-preference survey?",
+      "options": [
+        "Randomly invite students from across the school",
+        "Ask more friends from the same club",
+        "Ask only the club leader"
+      ],
+      "answer": 0,
+      "explanation": "A broader suitable sample is more likely to represent the school."
+    }
   },
   {
     "id": 55,
@@ -1100,7 +1640,17 @@
     "moral": "Distinguish association from causation.",
     "verdict": "insufficient",
     "check": "causation",
-    "evidence": "Ice-cream sales and swimming accidents both increase on hot days. A report claims ice cream causes the accidents."
+    "evidence": "Ice-cream sales and swimming accidents both increase on hot days. A report claims ice cream causes the accidents.",
+    "challenge": {
+      "prompt": "Which factor could help explain both higher ice-cream sales and more swimming accidents?",
+      "options": [
+        "Hot weather",
+        "The wrapper colour",
+        "The pool's name"
+      ],
+      "answer": 0,
+      "explanation": "Hot weather could influence both; association alone does not establish direct causation."
+    }
   },
   {
     "id": 56,
@@ -1120,7 +1670,17 @@
     "moral": "Use independent constraints to reconstruct missing data.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A table has entries 14, 18 and an unknown value; its row total is 50. A clerk says the missing entry is 20."
+    "evidence": "A table has entries 14, 18 and an unknown value; its row total is 50. A clerk says the missing entry is 20.",
+    "challenge": {
+      "prompt": "If the row total changes from 50 to 52 while the other entries remain 14 and 18, what is the missing entry?",
+      "options": [
+        "20",
+        "22",
+        "18"
+      ],
+      "answer": 0,
+      "explanation": "52 − 14 − 18 = 20. This confirms the stated relationship."
+    }
   },
   {
     "id": 57,
@@ -1140,7 +1700,17 @@
     "moral": "Investigate surprising evidence transparently.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "Five measurements are 4, 5, 5, 6 and 30. A researcher wants to delete 30 because it looks unusual."
+    "evidence": "Five measurements are 4, 5, 5, 6 and 30. A researcher wants to delete 30 because it looks unusual.",
+    "challenge": {
+      "prompt": "What is the mean of measurements 4, 5, 5, 6 and 30, including the unusual value?",
+      "options": [
+        "10",
+        "5",
+        "30"
+      ],
+      "answer": 0,
+      "explanation": "The total is 50 and 50 ÷ 5 = 10. Investigate the outlier before excluding it."
+    }
   },
   {
     "id": 58,
@@ -1160,7 +1730,17 @@
     "moral": "Account for group sizes when combining averages.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Team A has 10 people averaging 8 points each. Team B has 30 people averaging 6 points. The organiser averages 8 and 6 equally."
+    "evidence": "Team A has 10 people averaging 8 points each. Team B has 30 people averaging 6 points. The organiser averages 8 and 6 equally.",
+    "challenge": {
+      "prompt": "If Team A and Team B had equal numbers of people, what would the simple average of means 8 and 6 be?",
+      "options": [
+        "7",
+        "6.5",
+        "14"
+      ],
+      "answer": 0,
+      "explanation": "With equal group sizes, the combined mean is (8 + 6)/2 = 7."
+    }
   },
   {
     "id": 59,
@@ -1180,7 +1760,17 @@
     "moral": "Compare rates when durations differ.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Shop A serves 40 customers in two hours. Shop B serves 54 in three hours. A poster says B is faster because it served more people."
+    "evidence": "Shop A serves 40 customers in two hours. Shop B serves 54 in three hours. A poster says B is faster because it served more people.",
+    "challenge": {
+      "prompt": "If Shop A serves 20 customers per hour for three hours, how many customers does it serve?",
+      "options": [
+        "60",
+        "54",
+        "40"
+      ],
+      "answer": 0,
+      "explanation": "20 customers per hour × 3 hours = 60 customers."
+    }
   },
   {
     "id": 60,
@@ -1200,7 +1790,17 @@
     "moral": "Ask neutral questions and explain how data were collected.",
     "verdict": "partly",
     "check": "sample",
-    "evidence": "One survey asks whether people support a new park. Another asks whether they support an expensive park that raises fees. The results differ."
+    "evidence": "One survey asks whether people support a new park. Another asks whether they support an expensive park that raises fees. The results differ.",
+    "challenge": {
+      "prompt": "Which survey question is the most neutral?",
+      "options": [
+        "Do you support building a park?",
+        "Don't you agree the town deserves a park?",
+        "Do you support an expensive park that raises fees?"
+      ],
+      "answer": 0,
+      "explanation": "The first asks about support without embedding positive or negative framing."
+    }
   },
   {
     "id": 61,
@@ -1220,7 +1820,17 @@
     "moral": "Choose tests that separate possible explanations.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "A machine maps 2 to 5, 3 to 7 and 4 to 9. A visitor claims the rule is add three because it fits the first input."
+    "evidence": "A machine maps 2 to 5, 3 to 7 and 4 to 9. A visitor claims the rule is add three because it fits the first input.",
+    "challenge": {
+      "prompt": "The machine follows n ↦ 2n + 1. What output should it produce for input 10?",
+      "options": [
+        "21",
+        "19",
+        "20"
+      ],
+      "answer": 0,
+      "explanation": "2 × 10 + 1 = 21. This confirms the stated relationship."
+    }
   },
   {
     "id": 62,
@@ -1240,7 +1850,17 @@
     "moral": "Separate fixed and variable quantities.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A venue charges a fixed ₹50 booking fee plus ₹20 per ticket. Three tickets total ₹110. A witness divides the total evenly and says each ticket costs ₹30."
+    "evidence": "A venue charges a fixed ₹50 booking fee plus ₹20 per ticket. Three tickets total ₹110. A witness divides the total evenly and says each ticket costs ₹30.",
+    "challenge": {
+      "prompt": "The venue charges ₹50 fixed plus ₹20 per ticket. What is the cost for five tickets?",
+      "options": [
+        "₹150",
+        "₹100",
+        "₹120"
+      ],
+      "answer": 0,
+      "explanation": "₹50 + 5 × ₹20 = ₹150."
+    }
   },
   {
     "id": 63,
@@ -1260,7 +1880,17 @@
     "moral": "Check every constraint, including fixed costs.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "A club has ₹500. Each kit costs ₹70 and delivery has a one-time ₹80 fee. The organiser says seven kits fit."
+    "evidence": "A club has ₹500. Each kit costs ₹70 and delivery has a one-time ₹80 fee. The organiser says seven kits fit.",
+    "challenge": {
+      "prompt": "The club spends ₹80 delivery plus six kits at ₹70 each from a ₹500 budget. How much budget remains?",
+      "options": [
+        "₹0",
+        "₹70",
+        "₹80"
+      ],
+      "answer": 0,
+      "explanation": "₹80 + 6 × ₹70 = ₹500, so nothing remains."
+    }
   },
   {
     "id": 64,
@@ -1280,7 +1910,17 @@
     "moral": "One matching example does not prove two rules identical.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "Contract A costs 10 + 4n; Contract B costs 2n + 18. They both cost 22 when n = 3. A clerk says they are equivalent."
+    "evidence": "Contract A costs 10 + 4n; Contract B costs 2n + 18. They both cost 22 when n = 3. A clerk says they are equivalent.",
+    "challenge": {
+      "prompt": "At n = 5, Contract A costs 10 + 4n and B costs 2n + 18. How much more does A cost?",
+      "options": [
+        "₹2",
+        "₹0",
+        "₹4"
+      ],
+      "answer": 0,
+      "explanation": "A costs 30 and B costs 28, a difference of 2."
+    }
   },
   {
     "id": 65,
@@ -1300,7 +1940,17 @@
     "moral": "Translate a pattern into a precise general rule.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A sequence is 5, 9, 13, 17. The planner claims the 20th term is 80."
+    "evidence": "A sequence is 5, 9, 13, 17. The planner claims the 20th term is 80.",
+    "challenge": {
+      "prompt": "What is the tenth term of 5, 9, 13, 17, …?",
+      "options": [
+        "41",
+        "40",
+        "45"
+      ],
+      "answer": 0,
+      "explanation": "The tenth term is 5 + 9 × 4 = 41."
+    }
   },
   {
     "id": 66,
@@ -1320,7 +1970,17 @@
     "moral": "Check every clue against the proposed answer.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "A two-digit code has digits summing to 9. Its tens digit is one more than its units digit."
+    "evidence": "A two-digit code has digits summing to 9. Its tens digit is one more than its units digit.",
+    "challenge": {
+      "prompt": "For code 54, what is the product of its two digits?",
+      "options": [
+        "20",
+        "9",
+        "1"
+      ],
+      "answer": 0,
+      "explanation": "5 × 4 = 20; the digit sum is 9."
+    }
   },
   {
     "id": 67,
@@ -1340,7 +2000,17 @@
     "moral": "Do not reverse an implication without evidence.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "A rule says: if a person is captain, they must have completed safety training. A witness says anyone who completed training must be a captain."
+    "evidence": "A rule says: if a person is captain, they must have completed safety training. A witness says anyone who completed training must be a captain.",
+    "challenge": {
+      "prompt": "The rule says a captain must have completed training. Which implication is guaranteed?",
+      "options": [
+        "Captain means trained",
+        "Trained means captain",
+        "No captain completed training"
+      ],
+      "answer": 0,
+      "explanation": "The rule only guarantees that every captain has completed training."
+    }
   },
   {
     "id": 68,
@@ -1360,7 +2030,17 @@
     "moral": "Test claims without attacking a person's character.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "Witness A says the ledger is correct. B says its total is 20 higher than recorded. C says A and B are both correct. The arithmetic confirms the ledger."
+    "evidence": "Witness A says the ledger is correct. B says its total is 20 higher than recorded. C says A and B are both correct. The arithmetic confirms the ledger.",
+    "challenge": {
+      "prompt": "With a correct ledger, A says it is correct, B says its total is 20 higher than recorded, and C says both are true. How many statements are true?",
+      "options": [
+        "One",
+        "Two",
+        "Three"
+      ],
+      "answer": 0,
+      "explanation": "A is true; B and C are false because A and B cannot both be true."
+    }
   },
   {
     "id": 69,
@@ -1380,7 +2060,17 @@
     "moral": "Use every constraint before deciding.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "Keys A, B and C open rooms 1, 2 and 3, one each. A does not open room 1; B opens room 3. A witness says A opens room 3."
+    "evidence": "Keys A, B and C open rooms 1, 2 and 3, one each. A does not open room 1; B opens room 3. A witness says A opens room 3.",
+    "challenge": {
+      "prompt": "B opens room 3 and A cannot open room 1. Does A open room 2?",
+      "options": [
+        "Yes",
+        "No",
+        "The clues do not determine it"
+      ],
+      "answer": 0,
+      "explanation": "With one key per room, A must open room 2 and C room 1."
+    }
   },
   {
     "id": 70,
@@ -1400,7 +2090,17 @@
     "moral": "Use independent equations to distinguish unknowns.",
     "verdict": "supported",
     "check": "calculation",
-    "evidence": "Two notebooks and three pens cost ₹39. One notebook and one pen cost ₹15. Prices are fixed whole-rupee values."
+    "evidence": "Two notebooks and three pens cost ₹39. One notebook and one pen cost ₹15. Prices are fixed whole-rupee values.",
+    "challenge": {
+      "prompt": "If one notebook costs ₹6 and one pen costs ₹9, what do three notebooks and two pens cost?",
+      "options": [
+        "₹36",
+        "₹39",
+        "₹42"
+      ],
+      "answer": 0,
+      "explanation": "3 × ₹6 + 2 × ₹9 = ₹36."
+    }
   },
   {
     "id": 71,
@@ -1420,7 +2120,17 @@
     "moral": "Describe exactly what a voting rule establishes.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Candidates receive 42, 35 and 23 votes. The candidate with 42 wins under the most-votes rule. A speaker says the winner has support from most voters."
+    "evidence": "Candidates receive 42, 35 and 23 votes. The candidate with 42 wins under the most-votes rule. A speaker says the winner has support from most voters.",
+    "challenge": {
+      "prompt": "The two losing candidates received 35 and 23 votes. What share of all 100 votes did they receive together?",
+      "options": [
+        "58%",
+        "42%",
+        "77%"
+      ],
+      "answer": 0,
+      "explanation": "35 + 23 = 58 votes, or 58%."
+    }
   },
   {
     "id": 72,
@@ -1440,7 +2150,17 @@
     "moral": "Publish the allocation rule and check the total.",
     "verdict": "supported",
     "check": "constraints",
-    "evidence": "Two districts have populations 60,000 and 90,000 and share 10 seats proportionally. A clerk proposes 4 and 6 seats."
+    "evidence": "Two districts have populations 60,000 and 90,000 and share 10 seats proportionally. A clerk proposes 4 and 6 seats.",
+    "challenge": {
+      "prompt": "If the same 2:3 population ratio shares 15 seats, how many seats does each district receive?",
+      "options": [
+        "6 and 9",
+        "5 and 10",
+        "4 and 11"
+      ],
+      "answer": 0,
+      "explanation": "There are five parts and each part is three seats, giving 6 and 9."
+    }
   },
   {
     "id": 73,
@@ -1460,7 +2180,17 @@
     "moral": "Publish weights before judging and apply them consistently.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A score is 60% skill and 40% teamwork. Team A scores 90 and 50; Team B scores 70 and 90 respectively."
+    "evidence": "A score is 60% skill and 40% teamwork. Team A scores 90 and 50; Team B scores 70 and 90 respectively.",
+    "challenge": {
+      "prompt": "With weights changed to 40% skill and 60% teamwork, what score does Team B get from skill 70 and teamwork 90?",
+      "options": [
+        "82",
+        "78",
+        "72"
+      ],
+      "answer": 0,
+      "explanation": "0.4 × 70 + 0.6 × 90 = 82."
+    }
   },
   {
     "id": 74,
@@ -1480,7 +2210,17 @@
     "moral": "Fairness may require comparing burdens over time.",
     "verdict": "partly",
     "check": "comparison",
-    "evidence": "Four people each work three shifts. One roster gives all three late shifts to the same person. The coordinator says the totals are equal, so the roster is fair."
+    "evidence": "Four people each work three shifts. One roster gives all three late shifts to the same person. The coordinator says the totals are equal, so the roster is fair.",
+    "challenge": {
+      "prompt": "Two rosters give each person three shifts, but one person gets all the late shifts. What should be compared next?",
+      "options": [
+        "The distribution of late shifts over time",
+        "Only total shift count",
+        "Alphabetic order of names"
+      ],
+      "answer": 0,
+      "explanation": "Equal totals can hide an uneven distribution of difficult shifts."
+    }
   },
   {
     "id": 75,
@@ -1500,7 +2240,17 @@
     "moral": "Count the structure of the task, not just participants.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "Eight teams play a round-robin tournament where every pair meets once. The organiser schedules only eight matches."
+    "evidence": "Eight teams play a round-robin tournament where every pair meets once. The organiser schedules only eight matches.",
+    "challenge": {
+      "prompt": "How many head-to-head matches are in a round-robin tournament with six teams?",
+      "options": [
+        "15",
+        "12",
+        "30"
+      ],
+      "answer": 0,
+      "explanation": "Six teams make 6 × 5 ÷ 2 = 15 unique pairs."
+    }
   },
   {
     "id": 76,
@@ -1520,7 +2270,17 @@
     "moral": "Use the stated objective and explain trade-offs.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "Three shelters need 11, 17 and 22 supply kits. A delivery contains 50 kits. The clerk proposes 15 for each shelter."
+    "evidence": "Three shelters need 11, 17 and 22 supply kits. A delivery contains 50 kits. The clerk proposes 15 for each shelter.",
+    "challenge": {
+      "prompt": "If three shelters each receive 15 kits from a delivery of 50, how many kits remain?",
+      "options": [
+        "5 kits",
+        "2 kits",
+        "0 kits"
+      ],
+      "answer": 0,
+      "explanation": "3 × 15 = 45, leaving 5 kits."
+    }
   },
   {
     "id": 77,
@@ -1540,7 +2300,17 @@
     "moral": "Choose measures that reveal individual outcomes.",
     "verdict": "partly",
     "check": "comparison",
-    "evidence": "Policy A produces waits of 2, 2, 2 and 18 minutes. Policy B produces 6, 6, 6 and 6 minutes."
+    "evidence": "Policy A produces waits of 2, 2, 2 and 18 minutes. Policy B produces 6, 6, 6 and 6 minutes.",
+    "challenge": {
+      "prompt": "Policy A's longest wait is 18 minutes; Policy B's is 6 minutes. By how much does B reduce the worst wait?",
+      "options": [
+        "12 minutes",
+        "6 minutes",
+        "18 minutes"
+      ],
+      "answer": 0,
+      "explanation": "18 − 6 = 12 minutes."
+    }
   },
   {
     "id": 78,
@@ -1560,7 +2330,17 @@
     "moral": "Compare unit prices and consider actual need.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "A small pack has 6 items for ₹90; a large pack has 10 items for ₹130. A poster says the small pack is better because its total price is lower."
+    "evidence": "A small pack has 6 items for ₹90; a large pack has 10 items for ₹130. A poster says the small pack is better because its total price is lower.",
+    "challenge": {
+      "prompt": "For ten items, what is the cost difference buying at ₹15 each and ₹13 each?",
+      "options": [
+        "₹20",
+        "₹15",
+        "₹10"
+      ],
+      "answer": 0,
+      "explanation": "The per-item difference is ₹2, so ten items differ by ₹20."
+    }
   },
   {
     "id": 79,
@@ -1580,7 +2360,17 @@
     "moral": "Understand and apply the rules consistently.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A contest adds a 10-point allowance to one participant. Raw scores are 85 and 90; the first participant receives the allowance."
+    "evidence": "A contest adds a 10-point allowance to one participant. Raw scores are 85 and 90; the first participant receives the allowance.",
+    "challenge": {
+      "prompt": "How many allowance points would a raw score of 85 need to tie a score of 90?",
+      "options": [
+        "5 points",
+        "10 points",
+        "15 points"
+      ],
+      "answer": 0,
+      "explanation": "90 − 85 = 5 points. This confirms the stated relationship."
+    }
   },
   {
     "id": 80,
@@ -1600,7 +2390,17 @@
     "moral": "Consistent rules can still omit relevant circumstances.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "A recreation grant automatically goes to groups with at least 20 members. A group of 19 serves a remote area with few services and receives nothing."
+    "evidence": "A recreation grant automatically goes to groups with at least 20 members. A group of 19 serves a remote area with few services and receives nothing.",
+    "challenge": {
+      "prompt": "If the grant threshold changed from 20 members to 18, would a group of 19 meet it?",
+      "options": [
+        "Yes",
+        "No",
+        "The member count is irrelevant"
+      ],
+      "answer": 0,
+      "explanation": "19 is at least 18, so the group meets the changed threshold."
+    }
   },
   {
     "id": 81,
@@ -1620,7 +2420,17 @@
     "moral": "Define and optimise the real cost.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Route A has segments of 4, 4 and 4 minutes. Route B has segments of 5 and 3 minutes. A planner chooses A because it has fewer turns."
+    "evidence": "Route A has segments of 4, 4 and 4 minutes. Route B has segments of 5 and 3 minutes. A planner chooses A because it has fewer turns.",
+    "challenge": {
+      "prompt": "Route C takes 6 + 4 minutes. Which of Routes A (12), B (8) and C (10) is fastest?",
+      "options": [
+        "Route B",
+        "Route C",
+        "Route A"
+      ],
+      "answer": 0,
+      "explanation": "Route B takes eight minutes, less than ten and twelve."
+    }
   },
   {
     "id": 82,
@@ -1640,7 +2450,17 @@
     "moral": "Check global structure, not just local reachability.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "A network has four land areas; three areas have an odd number of bridges. The planner wants a closed walk crossing every bridge exactly once."
+    "evidence": "A network has four land areas; three areas have an odd number of bridges. The planner wants a closed walk crossing every bridge exactly once.",
+    "challenge": {
+      "prompt": "A connected network has three odd-degree land areas. Can a single walk cross each bridge exactly once without returning to the start?",
+      "options": [
+        "No, an open Euler trail allows at most two odd-degree vertices",
+        "Yes, any connected network works",
+        "Yes, if starting at the busiest area"
+      ],
+      "answer": 0,
+      "explanation": "An Euler trail can have zero or two odd-degree vertices, but not three."
+    }
   },
   {
     "id": 83,
@@ -1660,7 +2480,17 @@
     "moral": "Account for repeating cycles and the answer domain.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A dial cycles from 0 to 11 and returns to 0. It starts at 8 and advances 7 positions. A clerk writes 15 as the displayed value."
+    "evidence": "A dial cycles from 0 to 11 and returns to 0. It starts at 8 and advances 7 positions. A clerk writes 15 as the displayed value.",
+    "challenge": {
+      "prompt": "A 12-position dial starts at 5 and advances 10 positions. What value appears?",
+      "options": [
+        "3",
+        "5",
+        "11"
+      ],
+      "answer": 0,
+      "explanation": "5 + 10 = 15; after wrapping around 12 positions the dial displays 3."
+    }
   },
   {
     "id": 84,
@@ -1680,7 +2510,17 @@
     "moral": "Compare combinations before committing to a greedy choice.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "Hold capacity: 10 units. Crates available: 6, 5 and 4 units."
+    "evidence": "Hold capacity: 10 units. Crates available: 6, 5 and 4 units.",
+    "challenge": {
+      "prompt": "If the 4-unit crate is unavailable, what is the largest load possible with the remaining 6- and 5-unit crates in a capacity-10 hold?",
+      "options": [
+        "6 units",
+        "5 units",
+        "10 units"
+      ],
+      "answer": 0,
+      "explanation": "The 6- and 5-unit crates cannot fit together, so the best single crate is 6 units."
+    }
   },
   {
     "id": 85,
@@ -1700,7 +2540,17 @@
     "moral": "Check feasible combinations before declaring an optimum.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "A team needs at least 20 L. Small containers hold 3 L for ₹12; large containers hold 7 L for ₹25. Both types are available."
+    "evidence": "A team needs at least 20 L. Small containers hold 3 L for ₹12; large containers hold 7 L for ₹25. Both types are available.",
+    "challenge": {
+      "prompt": "To obtain at least 21 litres using 7 L containers for ₹25 and 3 L containers for ₹12, which option is cheapest?",
+      "options": [
+        "Three large containers for ₹75",
+        "Seven small containers for ₹84",
+        "One large and five small for ₹85"
+      ],
+      "answer": 0,
+      "explanation": "Three large containers provide 21 L for ₹75, below the other listed costs."
+    }
   },
   {
     "id": 86,
@@ -1720,7 +2570,17 @@
     "moral": "Know whether a rule adds a fixed amount or applies a rate.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "A fund starts at ₹100. Plan A adds ₹20 each year; Plan B increases the current amount by 10% each year. The first comparison is after one year."
+    "evidence": "A fund starts at ₹100. Plan A adds ₹20 each year; Plan B increases the current amount by 10% each year. The first comparison is after one year.",
+    "challenge": {
+      "prompt": "After two years, Plan A adds ₹20 per year from ₹100; Plan B grows 10% each year. Which balance is higher?",
+      "options": [
+        "Plan A: ₹140",
+        "Plan B: ₹121",
+        "They are equal at ₹120"
+      ],
+      "answer": 0,
+      "explanation": "Plan A reaches ₹140; Plan B goes from ₹100 to ₹110 to ₹121."
+    }
   },
   {
     "id": 87,
@@ -1740,7 +2600,17 @@
     "moral": "Understand how scaling affects dimensions and area.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "A square map tile has side length 3 cm. A revised map doubles the side length to 6 cm. The cartographer says area doubles."
+    "evidence": "A square map tile has side length 3 cm. A revised map doubles the side length to 6 cm. The cartographer says area doubles.",
+    "challenge": {
+      "prompt": "A square's area changes from 9 cm² to 36 cm². How much greater is the new area?",
+      "options": [
+        "27 cm²",
+        "18 cm²",
+        "36 cm²"
+      ],
+      "answer": 0,
+      "explanation": "36 − 9 = 27 cm². This confirms the stated relationship."
+    }
   },
   {
     "id": 88,
@@ -1760,7 +2630,17 @@
     "moral": "Do not express more confidence than data allow.",
     "verdict": "insufficient",
     "check": "sample",
-    "evidence": "A poll shows 51% support and 49% oppose, based on a small sample with large uncertainty. A speaker declares overwhelming support."
+    "evidence": "A poll shows 51% support and 49% oppose, based on a small sample with large uncertainty. A speaker declares overwhelming support.",
+    "challenge": {
+      "prompt": "A poll is 51% versus 49% with a small sample and large uncertainty. What would improve confidence?",
+      "options": [
+        "A larger representative sample and a disclosed uncertainty estimate",
+        "A dramatic graph title",
+        "Removing responses that disagree"
+      ],
+      "answer": 0,
+      "explanation": "Better sampling and explicit uncertainty help judge whether a narrow lead is meaningful."
+    }
   },
   {
     "id": 89,
@@ -1780,7 +2660,17 @@
     "moral": "Distinguish necessary conditions from sufficient conditions.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "A rule says an approved package has passed safety checks. A witness says passing checks proves approval."
+    "evidence": "A rule says an approved package has passed safety checks. A witness says passing checks proves approval.",
+    "challenge": {
+      "prompt": "A package passed safety checks and has budget approval. Is final approval guaranteed by those facts alone?",
+      "options": [
+        "Not necessarily; other requirements may apply",
+        "Yes, those are identical to approval",
+        "No package can ever be approved"
+      ],
+      "answer": 0,
+      "explanation": "Passing necessary checks does not establish every approval condition."
+    }
   },
   {
     "id": 90,
@@ -1800,7 +2690,17 @@
     "moral": "Revise a model when reality changes.",
     "verdict": "partly",
     "check": "assumptions",
-    "evidence": "A walkway model assumes dry ground. Heavy rain changes the surface and makes its old travel-time estimate unreliable."
+    "evidence": "A walkway model assumes dry ground. Heavy rain changes the surface and makes its old travel-time estimate unreliable.",
+    "challenge": {
+      "prompt": "The walkway was modelled for dry ground but must now be assessed after heavy rain. What is the best next step?",
+      "options": [
+        "Collect wet-weather measurements and update the assumptions",
+        "Keep the old estimate because its arithmetic is correct",
+        "Discard all prior evidence"
+      ],
+      "answer": 0,
+      "explanation": "Changed conditions require new observations and a revised model."
+    }
   },
   {
     "id": 91,
@@ -1820,7 +2720,17 @@
     "moral": "Correct the record before assigning responsibility.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "Itemized amounts: ₹1,200 + ₹450 + ₹350. Cancelled order: ₹200, unpaid. Reported total: ₹2,200."
+    "evidence": "Itemized amounts: ₹1,200 + ₹450 + ₹350. Cancelled order: ₹200, unpaid. Reported total: ₹2,200.",
+    "challenge": {
+      "prompt": "The reported budget is ₹2,200 while itemized materials, food and transport add to ₹2,000. What is the discrepancy?",
+      "options": [
+        "₹200",
+        "₹100",
+        "₹400"
+      ],
+      "answer": 0,
+      "explanation": "₹2,200 − ₹2,000 = ₹200, the cancelled unpaid order's value."
+    }
   },
   {
     "id": 92,
@@ -1840,7 +2750,17 @@
     "moral": "Optimise under the real capacity constraint.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "A rescue bus carries 12 people per trip. There are 29 people waiting, and a planner has arranged only two trips."
+    "evidence": "A rescue bus carries 12 people per trip. There are 29 people waiting, and a planner has arranged only two trips.",
+    "challenge": {
+      "prompt": "Three bus trips can carry 36 people total. If 29 people cross, how many seats are unused?",
+      "options": [
+        "7 seats",
+        "5 seats",
+        "12 seats"
+      ],
+      "answer": 0,
+      "explanation": "36 − 29 = 7 unused seats."
+    }
   },
   {
     "id": 93,
@@ -1860,7 +2780,17 @@
     "moral": "Clarify whether fairness means equal shares or needs-based shares.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "Two neighbourhoods have 20 and 40 households and share 90 litres. A proposal gives 45 litres to each neighbourhood."
+    "evidence": "Two neighbourhoods have 20 and 40 households and share 90 litres. A proposal gives 45 litres to each neighbourhood.",
+    "challenge": {
+      "prompt": "Under equal-per-household allocation, 40 households receive 1.5 L each. What total do they receive?",
+      "options": [
+        "60 L",
+        "30 L",
+        "45 L"
+      ],
+      "answer": 0,
+      "explanation": "40 × 1.5 = 60 L. This confirms the stated relationship."
+    }
   },
   {
     "id": 94,
@@ -1880,7 +2810,17 @@
     "moral": "A design must satisfy human needs as well as the drawing.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "A ramp rises 0.6 m over a 6 m horizontal run. A new design keeps the rise but shortens the run to 3 m."
+    "evidence": "A ramp rises 0.6 m over a 6 m horizontal run. A new design keeps the rise but shortens the run to 3 m.",
+    "challenge": {
+      "prompt": "A ramp rises 0.6 m. To keep rise/run at or below 0.1, what minimum horizontal run is needed?",
+      "options": [
+        "6 m",
+        "3 m",
+        "0.6 m"
+      ],
+      "answer": 0,
+      "explanation": "0.6 ÷ run ≤ 0.1 requires a run of at least 6 m."
+    }
   },
   {
     "id": 95,
@@ -1900,7 +2840,17 @@
     "moral": "State assumptions and account for operating conditions.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "Ten panels each produce 200 Wh in test conditions. Three panels are shaded and produce half as much as the others today."
+    "evidence": "Ten panels each produce 200 Wh in test conditions. Three panels are shaded and produce half as much as the others today.",
+    "challenge": {
+      "prompt": "Ten panels produce 2,000 Wh without shade but 1,700 Wh under shading. How much energy is lost?",
+      "options": [
+        "300 Wh",
+        "200 Wh",
+        "400 Wh"
+      ],
+      "answer": 0,
+      "explanation": "2,000 − 1,700 = 300 Wh lost."
+    }
   },
   {
     "id": 96,
@@ -1920,7 +2870,17 @@
     "moral": "A system's parts must fit together in time.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "One bus is scheduled on Route A at 10:00, taking 30 minutes, and Route B at 10:10. The same bus is required for both departures."
+    "evidence": "One bus is scheduled on Route A at 10:00, taking 30 minutes, and Route B at 10:10. The same bus is required for both departures.",
+    "challenge": {
+      "prompt": "Route A ends at 10:30 and the same bus needs ten minutes to turn around. Could it start Route B at 10:40?",
+      "options": [
+        "Yes, exactly after the turnaround",
+        "No, it is still on Route A",
+        "A bus cannot run two routes"
+      ],
+      "answer": 0,
+      "explanation": "The bus is ready at 10:40 after its 10:30 arrival and ten-minute turnaround."
+    }
   },
   {
     "id": 97,
@@ -1940,7 +2900,17 @@
     "moral": "Use precise definitions for repeating events.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A community bell rings every 9 days and a market flag rises every 12 days. Both happen today. A clerk predicts they next coincide after 21 days."
+    "evidence": "A community bell rings every 9 days and a market flag rises every 12 days. Both happen today. A clerk predicts they next coincide after 21 days.",
+    "challenge": {
+      "prompt": "Bell A rings every 9 days and flag B rises every 12 days. In the first 72 days after today, how many future coincidences occur?",
+      "options": [
+        "2",
+        "3",
+        "1"
+      ],
+      "answer": 0,
+      "explanation": "They coincide after 36 and 72 days, so there are two future coincidences."
+    }
   },
   {
     "id": 98,
@@ -1960,7 +2930,17 @@
     "moral": "Make scoring rules transparent before judging.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "A contest score is 70% skill and 30% teamwork. After the event, the proposal changes weights to 40% skill and 60% teamwork, changing the winner."
+    "evidence": "A contest score is 70% skill and 30% teamwork. After the event, the proposal changes weights to 40% skill and 60% teamwork, changing the winner.",
+    "challenge": {
+      "prompt": "When should a contest disclose scoring weights to keep the comparison transparent?",
+      "options": [
+        "Before the contest begins",
+        "After the winner is known",
+        "Only after someone objects"
+      ],
+      "answer": 0,
+      "explanation": "Rules should be known before results are available."
+    }
   },
   {
     "id": 99,
@@ -1980,7 +2960,17 @@
     "moral": "Repair mistakes openly and preserve reliable evidence.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "A copied table shifts one column's values down a row. All numbers remain present but are matched to the wrong neighbourhoods."
+    "evidence": "A copied table shifts one column's values down a row. All numbers remain present but are matched to the wrong neighbourhoods.",
+    "challenge": {
+      "prompt": "All values remain in a copied table, but one column has shifted down a row. What is the first repair step?",
+      "options": [
+        "Compare with the original and restore each value to its row",
+        "Assume the table is sound because no value is missing",
+        "Delete the whole archive"
+      ],
+      "answer": 0,
+      "explanation": "Values must be re-associated with the correct neighbourhoods before decisions are recalculated."
+    }
   },
   {
     "id": 100,
@@ -2000,7 +2990,17 @@
     "moral": "Truth, fairness, humility and accountability must work together.",
     "verdict": "partly",
     "check": "constraints",
-    "evidence": "The charter requires every public decision to follow the same numerical rule. A review finds the rule consistently excludes a remote neighbourhood because it ignores travel distance and access needs."
+    "evidence": "The charter requires every public decision to follow the same numerical rule. A review finds the rule consistently excludes a remote neighbourhood because it ignores travel distance and access needs.",
+    "challenge": {
+      "prompt": "Which is the strongest starting point for replacing the old decision rule?",
+      "options": [
+        "State the goal and constraints, test outcomes, and explain trade-offs",
+        "Use group size alone in every situation",
+        "Keep the old rule because it is consistent"
+      ],
+      "answer": 0,
+      "explanation": "A defensible rule states its goal and constraints, tests consequences, and explains trade-offs."
+    }
   }
 ];
   const chapters = [
@@ -2042,6 +3042,9 @@
       Number.isInteger(item.id)&&item.id>=1&&item.id<=100&&item.title&&item.story&&item.claim&&item.prompt&&
       Array.isArray(item.options)&&item.options.length>=3&&new Set(item.options).size===item.options.length&&
       Number.isInteger(item.answer)&&item.answer>=0&&item.answer<item.options.length&&item.explanation&&item.twist&&item.moral&&
+      item.challenge&&item.challenge.prompt&&Array.isArray(item.challenge.options)&&item.challenge.options.length>=3&&
+      new Set(item.challenge.options).size===item.challenge.options.length&&Number.isInteger(item.challenge.answer)&&
+      item.challenge.answer>=0&&item.challenge.answer<item.challenge.options.length&&item.challenge.explanation&&
       verdicts.some(v=>v.id===item.verdict)&&Boolean(checks[item.check])&&item.evidence);
   }
   root.MathCourtData=Object.freeze({cases,chapters,verdicts,checks,getCase,isValid,phases:["The case is called","Witness examination","Build the evidence","New evidence","Cross-examination","Verdict","The court's reflection"]});

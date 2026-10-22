@@ -20,6 +20,10 @@ for (const item of data.cases) {
   assert.ok(item.prompt.endsWith("?"), "Case " + item.id + " needs a clear question.");
   assert.ok(item.options.every(option => typeof option === "string" && option.length > 0), "Case " + item.id + " has an empty answer option.");
   assert.ok(item.explanation.length >= 20, "Case " + item.id + " needs a mathematical explanation.");
+  assert.ok(item.challenge && item.challenge.prompt.endsWith("?"), "Case " + item.id + " needs a second linked challenge.");
+  assert.ok(item.challenge.options.length >= 3 && new Set(item.challenge.options).size === item.challenge.options.length, "Case " + item.id + " has invalid challenge choices.");
+  assert.ok(Number.isInteger(item.challenge.answer) && item.challenge.answer >= 0 && item.challenge.answer < item.challenge.options.length, "Case " + item.id + " has an invalid challenge answer.");
+  assert.ok(item.challenge.explanation.length >= 20, "Case " + item.id + " needs a challenge explanation.");
   assert.ok(item.twist.length >= 20, "Case " + item.id + " needs a case development.");
   assert.ok(item.moral.length >= 15, "Case " + item.id + " needs a reflection/value.");
   assert.ok(data.checks[item.check], "Case " + item.id + " references an unknown cross-examination skill.");
@@ -39,6 +43,16 @@ for (const [id, expected] of expectedAnswers) {
   const item = data.getCase(id);
   assert.equal(item.options[item.answer], expected, "Case " + id + " has an incorrect keyed answer.");
 }
+const expectedChallengeAnswers = new Map([
+  [1,"52 crates"],[6,"304"],[15,"31"],[21,"3/12"],[23,"240 cm"],[30,"72 L"],
+  [41,"4:05 pm"],[43,"320 cm"],[50,"18 minutes"],[57,"10"],[61,"21"],[70,"₹36"],
+  [75,"15"],[82,"No, an open Euler trail allows at most two odd-degree vertices"],
+  [85,"Three large containers for ₹75"],[91,"₹200"],[100,"State the goal and constraints, test outcomes, and explain trade-offs"]
+]);
+for (const [id, expected] of expectedChallengeAnswers) {
+  const item = data.getCase(id);
+  assert.equal(item.challenge.options[item.challenge.answer], expected, "Case " + id + " has an incorrect linked challenge answer.");
+}
 for (const chapter of data.chapters) {
   const chapterCases = data.cases.filter(item => item.chapter === chapter.id);
   assert.equal(chapterCases.length, 10, chapter.name + " must have ten cases.");
@@ -52,5 +66,7 @@ console.log(JSON.stringify({
   stages:data.phases.length,
   verdicts:[...new Set(data.cases.map(c => c.verdict))].sort(),
   checkSkills:[...new Set(data.cases.map(c => c.check))].sort(),
-  keyedAnswerSpotChecks:expectedAnswers.size
+  keyedAnswerSpotChecks:expectedAnswers.size,
+  linkedChallenges:data.cases.filter(c => c.challenge).length,
+  challengeSpotChecks:expectedChallengeAnswers.size
 }, null, 2));
