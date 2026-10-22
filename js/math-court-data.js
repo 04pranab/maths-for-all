@@ -3042,6 +3042,9 @@
       Number.isInteger(item.id)&&item.id>=1&&item.id<=100&&item.title&&item.story&&item.claim&&item.prompt&&
       Array.isArray(item.options)&&item.options.length>=3&&new Set(item.options).size===item.options.length&&
       Number.isInteger(item.answer)&&item.answer>=0&&item.answer<item.options.length&&item.explanation&&item.twist&&item.moral&&
+      item.challenge&&item.challenge.prompt&&Array.isArray(item.challenge.options)&&item.challenge.options.length>=3&&
+      new Set(item.challenge.options).size===item.challenge.options.length&&Number.isInteger(item.challenge.answer)&&
+      item.challenge.answer>=0&&item.challenge.answer<item.challenge.options.length&&item.challenge.explanation&&
       verdicts.some(v=>v.id===item.verdict)&&Boolean(checks[item.check])&&item.evidence);
   }
   root.MathCourtData=Object.freeze({cases,chapters,verdicts,checks,getCase,isValid,phases:["The case is called","Witness examination","Build the evidence","New evidence","Cross-examination","Verdict","The court's reflection"]});
