@@ -178,7 +178,7 @@
     "explanation": "Whole-number counts 75 through 84 round to 80 under standard nearest-ten rounding.",
     "twist": "The original tally was recycled, so the exact count cannot be recovered from the rounded total alone.",
     "moral": "Be honest about the precision of evidence.",
-    "verdict": "partly",
+    "verdict": "uncertain",
     "check": "assumptions",
     "evidence": "The only surviving record is rounded to the nearest ten."
   },
@@ -400,7 +400,7 @@
     "moral": "Represent signed quantities before calculating.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A thermometer reads −2°C before sunrise. By noon, the temperature rises by 5 degrees. A witness treats the rise as a negative change."
   },
   {
     "id": 21,
@@ -420,7 +420,7 @@
     "moral": "Explain what the denominator counts.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Two identical pies are compared. One slice is 1/4 of a pie and another is 1/6. A witness says the sixth must be larger because six is larger than four."
   },
   {
     "id": 22,
@@ -440,7 +440,7 @@
     "moral": "Compare ratios, not just totals.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "One jug mixes 2 cups concentrate with 3 cups water. Another mixes 3 cups concentrate with 6 cups water. The second contains more liquid overall."
   },
   {
     "id": 23,
@@ -460,7 +460,7 @@
     "moral": "Distinguish value from measurement precision.",
     "verdict": "disproved",
     "check": "units",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Two devices show 2.4 m and 2.40 m. A clerk declares one must be longer because it has more digits."
   },
   {
     "id": 24,
@@ -480,7 +480,7 @@
     "moral": "Identify the whole to which a percentage applies.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A jacket costs ₹500. A sign says 20% off. The cashier reduces the price by ₹20 and says that is the promised saving."
   },
   {
     "id": 25,
@@ -500,7 +500,7 @@
     "moral": "Name the whole before comparing fractions.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A quarter of a small cake is compared with a quarter of a large cake. The larger cake is twice the area of the smaller one."
   },
   {
     "id": 26,
@@ -520,7 +520,7 @@
     "moral": "Preserve ratios when scaling a recipe.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A recipe for four people needs 200 g of rice. A cook prepares ten servings using 300 g."
   },
   {
     "id": 27,
@@ -540,7 +540,7 @@
     "moral": "Separate fixed costs from per-batch costs.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A batch costs ₹240 in ingredients plus a fixed ₹60 equipment fee per cooking session. Two batches are cooked in one session."
   },
   {
     "id": 28,
@@ -560,7 +560,7 @@
     "moral": "Check the base amount each time a percentage is applied.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A ₹1,000 item receives a 10% discount followed by another 10% off the reduced price. A seller says this equals 20% off the original price."
   },
   {
     "id": 29,
@@ -580,7 +580,7 @@
     "moral": "Use a unit rate for a fair comparison.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Team A has 12 shirts for 8 players. Team B has 15 shirts for 12 players. A manager says B is better supplied because it has more shirts."
   },
   {
     "id": 30,
@@ -600,7 +600,7 @@
     "moral": "Check both the ratio and the resource limit.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A supply of 120 litres is divided in ratio 2:3 between two neighbourhood tanks. A proposal assigns 60 L and 90 L."
   },
   {
     "id": 31,
@@ -620,7 +620,7 @@
     "moral": "Match the measurement to what is being built.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A 3 m by 8 m plot and a 4 m by 6 m plot both have area 24 m². A builder says they need equal lengths of fence."
   },
   {
     "id": 32,
@@ -640,7 +640,7 @@
     "moral": "Use a shared reference frame for directions.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A sign faces east. A worker turns it clockwise a quarter-turn, then claims it faces north."
   },
   {
     "id": 33,
@@ -680,7 +680,7 @@
     "moral": "Examine the whole object, not only its outline.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A mosaic outline is symmetrical, but its left half contains three blue tiles while the reflected right half has two."
   },
   {
     "id": 35,
@@ -700,7 +700,7 @@
     "moral": "Track every step, not just the first part.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A wheel mark starts at the top, turns half a turn and then another quarter-turn clockwise. The witness reports only the first turn."
   },
   {
     "id": 36,
@@ -740,7 +740,7 @@
     "moral": "Label dimensions and units before calculating area.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A 10 m by 6 m parcel is divided into two equal 5 m by 6 m rectangles. A gardener claims each half has area 25 m²."
   },
   {
     "id": 38,
@@ -760,7 +760,7 @@
     "moral": "A correct number with the wrong unit can still be wrong.",
     "verdict": "partly",
     "check": "units",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A box's internal dimensions are 4 cm by 5 cm by 6 cm. A seller multiplies the dimensions correctly but calls the result square centimetres."
   },
   {
     "id": 39,
@@ -780,7 +780,7 @@
     "moral": "Preserve the stated constraint and consider accessibility.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A ramp rises 1 m over 5 m horizontal run. A new design rises 2 m over the same 5 m run."
   },
   {
     "id": 40,
@@ -800,7 +800,7 @@
     "moral": "Choose the formula for the quantity being measured.",
     "verdict": "disproved",
     "check": "definition",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A circular stage has diameter 14 m. Using π ≈ 22/7, a builder says the distance around it is 14 m."
   },
   {
     "id": 41,
@@ -820,7 +820,7 @@
     "moral": "Use a timeline for elapsed time.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A meeting begins at 10:45 and finishes at 12:15. A witness reports 70 minutes."
   },
   {
     "id": 42,
@@ -840,7 +840,7 @@
     "moral": "Compare the observation with the stated reference time.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A bus was scheduled for 9:20 and arrived at 9:32. The report says it was 20 minutes late."
   },
   {
     "id": 43,
@@ -860,7 +860,7 @@
     "moral": "Convert to a common unit before comparing.",
     "verdict": "disproved",
     "check": "units",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A path is recorded as 250 cm on one map and 2.5 m on another. A clerk declares the records disagree."
   },
   {
     "id": 44,
@@ -880,7 +880,7 @@
     "moral": "Separate the measured object from its container.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A basket with fruit weighs 3.2 kg; the empty basket weighs 0.4 kg. The seller charges for 3.2 kg of fruit."
   },
   {
     "id": 45,
@@ -900,7 +900,7 @@
     "moral": "Model changing rates in separate intervals.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Water flows at 12 L/min for five minutes, then slows to 6 L/min for five more minutes."
   },
   {
     "id": 46,
@@ -920,7 +920,7 @@
     "moral": "Use a unit rate when comparing speeds.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Cyclist A travels 18 km in one hour. Cyclist B travels 24 km in two hours. A witness says B is faster because 24 is greater than 18."
   },
   {
     "id": 47,
@@ -940,7 +940,7 @@
     "moral": "Optimise the total cost, not just distance.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Route A is 60 km at ₹8 per km. Route B is 75 km at ₹6 per km. The planner chooses A because it is shorter."
   },
   {
     "id": 48,
@@ -960,7 +960,7 @@
     "moral": "Check the calendar year and counting convention.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A task begins on 27 February in a leap year and lasts three days, counting the start as day one. The clerk records 1 March."
   },
   {
     "id": 49,
@@ -980,7 +980,7 @@
     "moral": "Match confidence to measurement uncertainty.",
     "verdict": "uncertain",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "One thermometer reads 21.4°C and another 21.6°C. Each has stated uncertainty of ±0.5°C."
   },
   {
     "id": 50,
@@ -1000,7 +1000,7 @@
     "moral": "Reason about repeating cycles, not sums of periods.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "One bell rings every six minutes and another every eight minutes. Both ring at noon. The keeper predicts they next coincide after 14 minutes."
   },
   {
     "id": 51,
@@ -1040,7 +1040,7 @@
     "moral": "A summary value does not describe every individual.",
     "verdict": "partly",
     "check": "definition",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Four teams score 6, 8, 10 and 12 points. The organiser says the mean proves each team scored 9."
   },
   {
     "id": 53,
@@ -1060,7 +1060,7 @@
     "moral": "Choose the statistic that fits the question.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Waiting times are 2, 3, 3, 4 and 18 minutes. A witness says a typical wait must be six minutes because that is the mean."
   },
   {
     "id": 54,
@@ -1080,7 +1080,7 @@
     "moral": "Collect representative evidence before generalising.",
     "verdict": "insufficient",
     "check": "sample",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A survey asks three friends from one club whether the whole school prefers football. All three say yes, and the organiser generalises to the whole school."
   },
   {
     "id": 55,
@@ -1100,7 +1100,7 @@
     "moral": "Distinguish association from causation.",
     "verdict": "insufficient",
     "check": "causation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Ice-cream sales and swimming accidents both increase on hot days. A report claims ice cream causes the accidents."
   },
   {
     "id": 56,
@@ -1120,7 +1120,7 @@
     "moral": "Use independent constraints to reconstruct missing data.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A table has entries 14, 18 and an unknown value; its row total is 50. A clerk says the missing entry is 20."
   },
   {
     "id": 57,
@@ -1138,9 +1138,9 @@
     "explanation": "An unusual value should be checked for measurement or recording errors, not removed merely because it is inconvenient.",
     "twist": "The value came from a second instrument and needs verification.",
     "moral": "Investigate surprising evidence transparently.",
-    "verdict": "partly",
+    "verdict": "uncertain",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Five measurements are 4, 5, 5, 6 and 30. A researcher wants to delete 30 because it looks unusual."
   },
   {
     "id": 58,
@@ -1160,7 +1160,7 @@
     "moral": "Account for group sizes when combining averages.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Team A has 10 people averaging 8 points each. Team B has 30 people averaging 6 points. The organiser averages 8 and 6 equally."
   },
   {
     "id": 59,
@@ -1180,7 +1180,7 @@
     "moral": "Compare rates when durations differ.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Shop A serves 40 customers in two hours. Shop B serves 54 in three hours. A poster says B is faster because it served more people."
   },
   {
     "id": 60,
@@ -1200,7 +1200,7 @@
     "moral": "Ask neutral questions and explain how data were collected.",
     "verdict": "partly",
     "check": "sample",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "One survey asks whether people support a new park. Another asks whether they support an expensive park that raises fees. The results differ."
   },
   {
     "id": 61,
@@ -1220,7 +1220,7 @@
     "moral": "Choose tests that separate possible explanations.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A machine maps 2 to 5, 3 to 7 and 4 to 9. A visitor claims the rule is add three because it fits the first input."
   },
   {
     "id": 62,
@@ -1240,7 +1240,7 @@
     "moral": "Separate fixed and variable quantities.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A venue charges a fixed ₹50 booking fee plus ₹20 per ticket. Three tickets total ₹110. A witness divides the total evenly and says each ticket costs ₹30."
   },
   {
     "id": 63,
@@ -1260,7 +1260,7 @@
     "moral": "Check every constraint, including fixed costs.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A club has ₹500. Each kit costs ₹70 and delivery has a one-time ₹80 fee. The organiser says seven kits fit."
   },
   {
     "id": 64,
@@ -1280,7 +1280,7 @@
     "moral": "One matching example does not prove two rules identical.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Contract A costs 10 + 4n; Contract B costs 2n + 18. They both cost 22 when n = 3. A clerk says they are equivalent."
   },
   {
     "id": 65,
@@ -1300,7 +1300,7 @@
     "moral": "Translate a pattern into a precise general rule.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A sequence is 5, 9, 13, 17. The planner claims the 20th term is 80."
   },
   {
     "id": 66,
@@ -1320,7 +1320,7 @@
     "moral": "Check every clue against the proposed answer.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A two-digit code has digits summing to 9. Its tens digit is one more than its units digit."
   },
   {
     "id": 67,
@@ -1340,7 +1340,7 @@
     "moral": "Do not reverse an implication without evidence.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A rule says: if a person is captain, they must have completed safety training. A witness says anyone who completed training must be a captain."
   },
   {
     "id": 68,
@@ -1360,7 +1360,7 @@
     "moral": "Test claims without attacking a person's character.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Witness A says the ledger is correct. B says its total is 20 higher than recorded. C says A and B are both correct. The arithmetic confirms the ledger."
   },
   {
     "id": 69,
@@ -1380,7 +1380,7 @@
     "moral": "Use every constraint before deciding.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Keys A, B and C open rooms 1, 2 and 3, one each. A does not open room 1; B opens room 3. A witness says A opens room 3."
   },
   {
     "id": 70,
@@ -1400,7 +1400,7 @@
     "moral": "Use independent equations to distinguish unknowns.",
     "verdict": "supported",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Two notebooks and three pens cost ₹39. One notebook and one pen cost ₹15. Prices are fixed whole-rupee values."
   },
   {
     "id": 71,
@@ -1420,7 +1420,7 @@
     "moral": "Describe exactly what a voting rule establishes.",
     "verdict": "partly",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Candidates receive 42, 35 and 23 votes. The candidate with 42 wins under the most-votes rule. A speaker says the winner has support from most voters."
   },
   {
     "id": 72,
@@ -1440,7 +1440,7 @@
     "moral": "Publish the allocation rule and check the total.",
     "verdict": "supported",
     "check": "constraints",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Two districts have populations 60,000 and 90,000 and share 10 seats proportionally. A clerk proposes 4 and 6 seats."
   },
   {
     "id": 73,
@@ -1460,7 +1460,7 @@
     "moral": "Publish weights before judging and apply them consistently.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A score is 60% skill and 40% teamwork. Team A scores 90 and 50; Team B scores 70 and 90 respectively."
   },
   {
     "id": 74,
@@ -1480,7 +1480,7 @@
     "moral": "Fairness may require comparing burdens over time.",
     "verdict": "partly",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Four people each work three shifts. One roster gives all three late shifts to the same person. The coordinator says the totals are equal, so the roster is fair."
   },
   {
     "id": 75,
@@ -1500,7 +1500,7 @@
     "moral": "Count the structure of the task, not just participants.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Eight teams play a round-robin tournament where every pair meets once. The organiser schedules only eight matches."
   },
   {
     "id": 76,
@@ -1520,7 +1520,7 @@
     "moral": "Use the stated objective and explain trade-offs.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Three shelters need 11, 17 and 22 supply kits. A delivery contains 50 kits. The clerk proposes 15 for each shelter."
   },
   {
     "id": 77,
@@ -1540,7 +1540,7 @@
     "moral": "Choose measures that reveal individual outcomes.",
     "verdict": "partly",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Policy A produces waits of 2, 2, 2 and 18 minutes. Policy B produces 6, 6, 6 and 6 minutes."
   },
   {
     "id": 78,
@@ -1560,7 +1560,7 @@
     "moral": "Compare unit prices and consider actual need.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A small pack has 6 items for ₹90; a large pack has 10 items for ₹130. A poster says the small pack is better because its total price is lower."
   },
   {
     "id": 79,
@@ -1580,7 +1580,7 @@
     "moral": "Understand and apply the rules consistently.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A contest adds a 10-point allowance to one participant. Raw scores are 85 and 90; the first participant receives the allowance."
   },
   {
     "id": 80,
@@ -1600,7 +1600,7 @@
     "moral": "Consistent rules can still omit relevant circumstances.",
     "verdict": "partly",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A recreation grant automatically goes to groups with at least 20 members. A group of 19 serves a remote area with few services and receives nothing."
   },
   {
     "id": 81,
@@ -1620,7 +1620,7 @@
     "moral": "Define and optimise the real cost.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Route A has segments of 4, 4 and 4 minutes. Route B has segments of 5 and 3 minutes. A planner chooses A because it has fewer turns."
   },
   {
     "id": 82,
@@ -1640,7 +1640,7 @@
     "moral": "Check global structure, not just local reachability.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A network has four land areas; three areas have an odd number of bridges. The planner wants a closed walk crossing every bridge exactly once."
   },
   {
     "id": 83,
@@ -1660,7 +1660,7 @@
     "moral": "Account for repeating cycles and the answer domain.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A dial cycles from 0 to 11 and returns to 0. It starts at 8 and advances 7 positions. A clerk writes 15 as the displayed value."
   },
   {
     "id": 84,
@@ -1700,7 +1700,7 @@
     "moral": "Check feasible combinations before declaring an optimum.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A team needs at least 20 L. Small containers hold 3 L for ₹12; large containers hold 7 L for ₹25. Both types are available."
   },
   {
     "id": 86,
@@ -1720,7 +1720,7 @@
     "moral": "Know whether a rule adds a fixed amount or applies a rate.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A fund starts at ₹100. Plan A adds ₹20 each year; Plan B increases the current amount by 10% each year. The first comparison is after one year."
   },
   {
     "id": 87,
@@ -1740,7 +1740,7 @@
     "moral": "Understand how scaling affects dimensions and area.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A square map tile has side length 3 cm. A revised map doubles the side length to 6 cm. The cartographer says area doubles."
   },
   {
     "id": 88,
@@ -1760,7 +1760,7 @@
     "moral": "Do not express more confidence than data allow.",
     "verdict": "insufficient",
     "check": "sample",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A poll shows 51% support and 49% oppose, based on a small sample with large uncertainty. A speaker declares overwhelming support."
   },
   {
     "id": 89,
@@ -1780,7 +1780,7 @@
     "moral": "Distinguish necessary conditions from sufficient conditions.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A rule says an approved package has passed safety checks. A witness says passing checks proves approval."
   },
   {
     "id": 90,
@@ -1800,7 +1800,7 @@
     "moral": "Revise a model when reality changes.",
     "verdict": "partly",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A walkway model assumes dry ground. Heavy rain changes the surface and makes its old travel-time estimate unreliable."
   },
   {
     "id": 91,
@@ -1840,7 +1840,7 @@
     "moral": "Optimise under the real capacity constraint.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A rescue bus carries 12 people per trip. There are 29 people waiting, and a planner has arranged only two trips."
   },
   {
     "id": 93,
@@ -1860,7 +1860,7 @@
     "moral": "Clarify whether fairness means equal shares or needs-based shares.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Two neighbourhoods have 20 and 40 households and share 90 litres. A proposal gives 45 litres to each neighbourhood."
   },
   {
     "id": 94,
@@ -1880,7 +1880,7 @@
     "moral": "A design must satisfy human needs as well as the drawing.",
     "verdict": "disproved",
     "check": "comparison",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A ramp rises 0.6 m over a 6 m horizontal run. A new design keeps the rise but shortens the run to 3 m."
   },
   {
     "id": 95,
@@ -1900,7 +1900,7 @@
     "moral": "State assumptions and account for operating conditions.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Ten panels each produce 200 Wh in test conditions. Three panels are shaded and produce half as much as the others today."
   },
   {
     "id": 96,
@@ -1920,7 +1920,7 @@
     "moral": "A system's parts must fit together in time.",
     "verdict": "disproved",
     "check": "constraints",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "One bus is scheduled on Route A at 10:00, taking 30 minutes, and Route B at 10:10. The same bus is required for both departures."
   },
   {
     "id": 97,
@@ -1940,7 +1940,7 @@
     "moral": "Use precise definitions for repeating events.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A community bell rings every 9 days and a market flag rises every 12 days. Both happen today. A clerk predicts they next coincide after 21 days."
   },
   {
     "id": 98,
@@ -1960,7 +1960,7 @@
     "moral": "Make scoring rules transparent before judging.",
     "verdict": "disproved",
     "check": "assumptions",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A contest score is 70% skill and 30% teamwork. After the event, the proposal changes weights to 40% skill and 60% teamwork, changing the winner."
   },
   {
     "id": 99,
@@ -1980,7 +1980,7 @@
     "moral": "Repair mistakes openly and preserve reliable evidence.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "A copied table shifts one column's values down a row. All numbers remain present but are matched to the wrong neighbourhoods."
   },
   {
     "id": 100,
@@ -2000,7 +2000,7 @@
     "moral": "Truth, fairness, humility and accountability must work together.",
     "verdict": "partly",
     "check": "constraints",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "The charter requires every public decision to follow the same numerical rule. A review finds the rule consistently excludes a remote neighbourhood because it ignores travel distance and access needs."
   }
 ];
   const chapters = [
