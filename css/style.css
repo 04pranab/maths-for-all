@@ -4678,3 +4678,74 @@ body {
   .brand-integral { font-size: 1.12rem; }
   .brand-universal { font-size: .55rem; margin-top: 5px; }
 }
+
+
+/* Final brand mark: a custom vector ligature instead of typeset symbols in a badge. */
+.brand-mark {
+  gap: 7px;
+  padding: 6px 4px;
+}
+.brand-mark .brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 43px;
+  width: 43px;
+  min-width: 43px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  line-height: 0;
+}
+.brand-mark .brand-symbol {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.brand-mark .brand-path-integral,
+.brand-mark .brand-path-universal {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.brand-mark .brand-path-integral {
+  stroke: #70558f;
+}
+.brand-mark .brand-path-universal {
+  stroke: #287b7b;
+}
+.brand-mark .brand-name {
+  font-size: 1.19rem;
+  letter-spacing: -.025em;
+  color: #353046;
+}
+.brand-mark .brand-name strong {
+  color: #70558f;
+  font-weight: 850;
+}
+.brand-mark:focus-visible .brand-icon {
+  outline: 2px solid #8d78ad;
+  outline-offset: 2px;
+  border-radius: 5px;
+}
+@media (max-width: 560px) {
+  .brand-mark {
+    gap: 5px;
+  }
+  .brand-mark .brand-icon {
+    flex-basis: 37px;
+    width: 37px;
+    min-width: 37px;
+    height: 32px;
+  }
+  .brand-mark .brand-name {
+    font-size: 1.05rem;
+  }
+}
