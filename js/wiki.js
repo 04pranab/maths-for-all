@@ -65,7 +65,7 @@
     "math-court": {
       title: "⚖️ Math Court",
       summary: "A story-driven courtroom investigation where mathematical claims must stand up to evidence.",
-      how: "Call the case, inspect the source record, solve two linked mathematical challenges, hear new evidence, cross-examine the reasoning and deliver a verdict.",
+      how: "Explore the visual evidence board, switch between a model, comparison bars and an evidence trail, inspect individual values, solve two linked maths challenges, hear new evidence, cross-examine the reasoning and deliver a verdict.",
       skills: ["Arithmetic, ratios, geometry, data and logic across 100 cases", "Evidence interpretation and testing assumptions", "Explaining uncertainty, fairness and why a conclusion follows"],
       prompt: "What does the evidence prove? What remains uncertain? Which calculation or record supports your verdict?",
       note: "Ten chapters share a seven-stage courtroom structure. Cases are untimed, answers can be retried, and progress is kept on this device. The planned 8–12 minute pacing still needs learner testing."

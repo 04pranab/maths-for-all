@@ -330,16 +330,30 @@ async function main() {
     'assert(MathCourtData.isValid() && MathCourtData.cases.length === 100, "Math Court case catalogue failed validation.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "The docket must render all 100 cases.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-chapter").length === 10, "The docket must group cases into ten chapters.");' +
+    'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const board=document.querySelector("#mc-stage-content .mc-visual-lab");assert(board&&board.querySelector("svg"),"Case "+caseId+" needs a visible SVG maths board.");assert(board.querySelectorAll(".mc-visual-tab").length===3,"Case "+caseId+" needs all three visual learning views.");}' +
     'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");' +
+    'assert(document.querySelector("#mc-stage-content .mc-visual-lab"), "The opening of a case must include a visual evidence board.");' +
+    'assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"model\\"]"), "The model view should be visible first.");' +
+    'MathCourt.setVisualMode("compare"); assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"compare\\"]"), "Compare mode did not change the visual representation.");' +
+    'assert(document.querySelector(".mc-visual-tab[aria-pressed=\\"true\\"]").textContent.includes("Compare"), "Visual mode state was not announced.");' +
+    'MathCourt.focusVisual(1); assert(document.querySelectorAll(".mc-value-chip.is-active").length === 1, "Selecting a value should highlight exactly one evidence chip.");' +
+    'MathCourt.setVisualMode("model");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Witness examination", "Opening did not progress to witness examination.");' +
     'MathCourt.chooseEvidence("claim"); MathCourt.chooseEvidence("evidence"); MathCourt.advance();' +
     'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "Witness stage did not progress after both exhibits were inspected.");' +
+    'assert(document.querySelector("#mc-stage-content .mc-visual-lab"), "The mathematical task must retain its visual workbench.");' +
+    'assert(document.querySelectorAll("#mc-stage-content .mc-answer-tile[draggable=true]").length===3,"The first task should present three draggable answer tiles.");' +
     'MathCourt.answerInvestigation((MathCourtData.getCase(1).answer + 1) % MathCourtData.getCase(1).options.length);' +
     'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "A wrong first answer should allow a retry within the same stage.");' +
+    'const task1Data={};const task1Transfer={setData:(k,v)=>task1Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).answer,"investigation",{dataTransfer:task1Transfer});' +
+    'assert(task1Data["text/plain"]===String(MathCourtData.getCase(1).answer),"Dragging a result tile should carry the selected answer.");' +
+    'MathCourt.dropAnswer("investigation",{preventDefault:()=>{},dataTransfer:{getData:k=>task1Data[k]||""}});' +
     'MathCourt.answerInvestigation(MathCourtData.getCase(1).answer);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Exhibit verified"), "A correct mathematical answer did not receive useful feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "The second linked challenge must be completed before admitting evidence.");' +
     'MathCourt.answerChallenge((MathCourtData.getCase(1).challenge.answer + 1) % MathCourtData.getCase(1).challenge.options.length);' +
+    'const task2Data={};const task2Transfer={setData:(k,v)=>task2Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).challenge.answer,"challenge",{dataTransfer:task2Transfer});' +
+    'MathCourt.dropAnswer("challenge",{preventDefault:()=>{},dataTransfer:{getData:k=>task2Data[k]||""}});' +
     'MathCourt.answerChallenge(MathCourtData.getCase(1).challenge.answer);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Second exhibit verified"), "The linked challenge did not provide mathematical feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
@@ -1096,6 +1110,7 @@ async function main() {
       'assert(Math.max(...symmetricRowWidths) - Math.min(...symmetricRowWidths) < 2, "Home game cards should have matching widths within each row.");' +
       'assert(innerWidth < 1101 || new Set(gameCards.map(card => Math.round(card.getBoundingClientRect().width))).size >= 3, "Wide screens should mix card sizes instead of presenting a rigid dashboard grid.");' +
       'assert(gameCards.every(card => card.getBoundingClientRect().height <= 240), "Home game cards should stay compact at " + innerWidth + "px.");' +
+      'if (innerWidth >= 1101) { const mazeRect=document.querySelector("#screen-menu .card-number-maze").getBoundingClientRect(); const courtRect=document.querySelector("#screen-menu .card-math-court").getBoundingClientRect(); assert(Math.abs(mazeRect.top-courtRect.top)<4 && mazeRect.left<courtRect.left, "Math Court should sit immediately beside Number Maze in the same desktop row."); }' +
       'const themePairs = [["card-quiz","screen-quiz"],["card-race","screen-race"],["card-sudoku","screen-sudoku"],["card-shape","screen-shape"],["card-slab","screen-slab"],["card-architect","screen-architect"],["card-fraction","screen-fraction-bakery"],["card-little-shop","screen-little-shop"],["card-number-maze","screen-number-maze"],["card-math-court","screen-math-court"]];' +
       'assert(themePairs.every(([cardClass, screenId]) => { const card = document.querySelector("#screen-menu ." + cardClass); const screen = document.getElementById(screenId); const cardStyle = card && getComputedStyle(card); const screenStyle = screen && getComputedStyle(screen); return cardStyle && screenStyle && cardStyle.getPropertyValue("--tile-accent").trim() === screenStyle.getPropertyValue("--game-accent").trim() && cardStyle.getPropertyValue("--tile-wash").trim() === screenStyle.getPropertyValue("--game-wash").trim(); }), "Each game screen must use the same accent and wash as its matching menu card.");' +
       'const themedSurfaces = [["screen-quiz","#screen-quiz .game-topbar"],["screen-race","#screen-race .game-topbar"],["screen-sudoku","#screen-sudoku .game-topbar"],["screen-shape","#screen-shape .game-topbar"],["screen-slab","#screen-slab .game-topbar"],["screen-architect","#screen-architect .game-topbar"],["screen-fraction-bakery","#screen-fraction-bakery .fb-head"],["screen-little-shop","#screen-little-shop .ls-primary"],["screen-number-maze","#screen-number-maze .nm-action.primary"],["screen-math-court","#screen-math-court .mc-button-primary"]];' +

@@ -1533,7 +1533,7 @@ body::after {
 #screen-menu .menu-card:nth-child(7) { grid-column: span 3; }
 #screen-menu .menu-card:nth-child(8) { grid-column: span 4; border-radius: 22px 30px 17px 25px; }
 #screen-menu .menu-card:nth-child(9) {
-  grid-column: span 8;
+  grid-column: span 5;
   min-height: 196px;
   grid-template-columns: 62px minmax(0, 1fr);
   border-radius: 18px 32px 21px 31px;
@@ -1603,7 +1603,7 @@ body::after {
 #screen-menu .menu-card:nth-child(9) .card-title { font-size: clamp(1.3rem, 1.7vw, 1.65rem); }
 #screen-menu .menu-card:nth-child(9) .card-desc { max-width: 780px; font-size: 1.06rem; }
 #screen-menu .menu-card:nth-child(10) {
-  grid-column: span 4;
+  grid-column: span 3;
   border-radius: 22px 18px 27px 16px;
 }
 @media (hover: hover) {
@@ -1649,6 +1649,7 @@ body::after {
   #screen-menu .menu-card,
   #screen-menu .menu-card:nth-child(n) { grid-column: span 3; min-height: 170px; padding: 14px; }
   #screen-menu .menu-card:nth-child(9) { grid-column: span 6; min-height: 182px; }
+  #screen-menu .menu-card:nth-child(10) { grid-column: span 6; min-height: 182px; }
 }
 @media (max-width: 700px) {
   #screen-menu .arcade-header {
@@ -1690,7 +1691,8 @@ body::after {
     gap: 8px 9px;
     border-radius: 21px 13px 18px 13px;
   }
-  #screen-menu .menu-card:nth-child(9) { grid-column: span 2; min-height: 168px; }
+  #screen-menu .menu-card:nth-child(9),
+  #screen-menu .menu-card:nth-child(10) { grid-column: span 1; min-height: 176px; }
   #screen-menu .card-badge-icon {
     width: 44px; height: 44px; min-width: 42px; min-height: 42px;
     border-radius: 14px 9px 14px 9px; font-size: 1.42rem;
@@ -1719,7 +1721,8 @@ body::after {
     padding: 12px;
     gap: 7px 10px;
   }
-  #screen-menu .menu-card:nth-child(9) { grid-column: span 1; }
+  #screen-menu .menu-card:nth-child(9),
+  #screen-menu .menu-card:nth-child(10) { grid-column: span 1; }
   #screen-menu .card-badge-icon { width: 42px; height: 42px; min-width: 42px; min-height: 42px; }
   #screen-menu .card-title { font-size: 1.12rem; }
   #screen-menu .card-desc { font-size: .94rem; }
