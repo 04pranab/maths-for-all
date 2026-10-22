@@ -331,7 +331,7 @@ async function main() {
     'assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "The docket must render all 100 cases.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-chapter").length === 10, "The docket must group cases into ten chapters.");' +
     'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const board=document.querySelector("#mc-stage-content .mc-visual-lab");assert(board&&board.querySelector("svg"),"Case "+caseId+" needs a visible SVG maths board.");assert(board.querySelectorAll(".mc-visual-tab").length===3,"Case "+caseId+" needs all three visual learning views.");}' +
-    'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");'
+    'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");' +
     'assert(document.querySelector("#mc-stage-content .mc-visual-lab"), "The opening of a case must include a visual evidence board.");' +
     'assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"model\\"]"), "The model view should be visible first.");' +
     'MathCourt.setVisualMode("compare"); assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"compare\\"]"), "Compare mode did not change the visual representation.");' +
