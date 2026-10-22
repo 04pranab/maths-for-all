@@ -1138,7 +1138,7 @@
     "explanation": "An unusual value should be checked for measurement or recording errors, not removed merely because it is inconvenient.",
     "twist": "The value came from a second instrument and needs verification.",
     "moral": "Investigate surprising evidence transparently.",
-    "verdict": "uncertain",
+    "verdict": "disproved",
     "check": "assumptions",
     "evidence": "Five measurements are 4, 5, 5, 6 and 30. A researcher wants to delete 30 because it looks unusual."
   },
