@@ -31,7 +31,7 @@ const expectedAnswers = new Map([
   [21,"1/4"],[24,"₹400"],[30,"48 L"],[33,"16 m"],[38,"120 cm³"],[39,"10 m"],
   [40,"44 m"],[41,"90 minutes"],[48,"29 February"],[50,"24 minutes"],[51,"20%"],
   [52,"9"],[58,"6.5"],[61,"2n + 1"],[63,"6"],[65,"81"],[70,"₹6"],
-  [73,"Team B: 78"],[75,"28"],[82,"No, any connected network works"],[84,"10 units"],
+  [73,"Team B: 78"],[75,"28"],[82,"No, odd-degree areas prevent such a closed route"],[84,"10 units"],
   [85,"Two large and two small for ₹74"],[86,"Plan A: ₹120"],[91,"₹2,000"],
   [95,"1,700 Wh"],[97,"36 days"]
 ]);
