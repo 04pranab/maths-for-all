@@ -342,7 +342,7 @@ async function main() {
     'assert(document.getElementById("mc-feedback").textContent.includes("Objection sustained"), "The cross-examination skill check did not accept the keyed strategy.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Verdict", "The verdict stage is missing.");' +
     'MathCourt.selectVerdict("disproved"); MathCourt.advance();' +
-    'assert(document.getElementById("mc-stage-name").textContent === ["The court","s reflection"].join(""), "The case did not reach the reflection stage.");' +
+    'assert(document.getElementById("mc-stage-name").textContent === "The court" + String.fromCharCode(39) + "s reflection", "The case did not reach the reflection stage.");' +
     'assert(document.getElementById("mc-stage-content").innerText.includes("Beyond the calculation"), "The moral reflection is missing.");' +
     'MathCourt.advance();' +
     'const saved = JSON.parse(localStorage.getItem("mfa_math_court_v1"));' +
