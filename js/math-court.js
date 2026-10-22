@@ -211,6 +211,7 @@
     $("mc-stage-name").textContent=PHASE_LABELS[state.phase];
     $("mc-stage-count").textContent="Proceeding "+(state.phase+1)+" of 7";
     $("mc-stage-fill").style.width=((state.phase+1)/7*100)+"%";
+    $("mc-stage-fill").parentElement.setAttribute("aria-valuenow",String(state.phase+1));
     $("mc-feedback").textContent=state.feedback;
     $("mc-feedback").className="mc-feedback"+(state.feedback?" is-visible mc-feedback-"+state.feedbackKind:"");
     const actor=cast[(item.id+state.phase)%cast.length];
