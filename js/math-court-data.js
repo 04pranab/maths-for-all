@@ -16,11 +16,11 @@
     ],
     "answer": 0,
     "explanation": "52 − 37 = 15 crates had not yet been recorded. This is a difference in records, not proof that the crates were stolen.",
-    "twist": "The next witness finds that the unloading count was taken before the second cart arrived.",
+    "twist": "The second cart's manifest lists the remaining 15 crates, all logged ten minutes later. The first tally was taken too early.",
     "moral": "Check the whole record before blaming someone.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "calculation",
-    "evidence": "Delivery order: 52 crates. First unloading record: 37 crates."
+    "evidence": "Order: 52 crates. First unloading tally: 37. Second cart manifest: 15 crates logged later."
   },
   {
     "id": 2,
@@ -278,7 +278,7 @@
     "explanation": "The greatest common divisor of 24 and 36 is 12.",
     "twist": "A size of 18 works only for the second group if the first group is ignored.",
     "moral": "A fair rule must satisfy every group in the agreement.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "calculation",
     "evidence": "Both 24 and 36 must be divisible by the team size."
   },
@@ -338,7 +338,7 @@
     "explanation": "5 + 7 + 3 = 15, divisible by three. The other digit sums are 16 and 17.",
     "twist": "A faded stamp made the last digit hard to read, but divisibility helps verify the candidate.",
     "moral": "Use a quick check, then verify the original record.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "definition",
     "evidence": "A number is divisible by 3 when its digit sum is divisible by 3."
   },
@@ -587,7 +587,7 @@
     "chapter": 3,
     "title": "The Reservoir Agreement",
     "story": "A supply of 120 litres is divided in ratio 2:3 between two neighbourhood tanks. A proposal assigns 60 L and 90 L.",
-    "claim": "The proposal claims to meet the 2:3 ratio.",
+    "claim": "The proposal claims to fit within the available 120-litre supply.",
     "prompt": "How much should the first tank receive?",
     "options": [
       "40 L",
@@ -1207,7 +1207,7 @@
     "chapter": 7,
     "title": "The Mystery Machine",
     "story": "A machine maps 2 to 5, 3 to 7 and 4 to 9. A visitor claims the rule is add three because it fits the first input.",
-    "claim": "The visitor claims the rule is add three.",
+    "claim": "The visitor claims the rule is n + 3.",
     "prompt": "Which rule fits all three observations?",
     "options": [
       "2n + 1",
@@ -1218,7 +1218,7 @@
     "explanation": "For n = 2, 3, 4, the rule 2n + 1 gives 5, 7, 9.",
     "twist": "A fourth test input can distinguish this rule from other rules fitting fewer observations.",
     "moral": "Choose tests that separate possible explanations.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "logic",
     "evidence": "The clerk places the original records before the court."
   },
@@ -1318,7 +1318,7 @@
     "explanation": "The digits are 5 and 4, giving 54. They sum to 9 and the tens digit is one greater.",
     "twist": "A third note saying the code is even contradicts the other clues, showing it belongs to another lock.",
     "moral": "Check every clue against the proposed answer.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "logic",
     "evidence": "The clerk places the original records before the court."
   },
@@ -1378,7 +1378,7 @@
     "explanation": "B opens room 3, so A must open room 2 and C room 1.",
     "twist": "A confident witness ignored the one-key-per-room constraint.",
     "moral": "Use every constraint before deciding.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "logic",
     "evidence": "The clerk places the original records before the court."
   },
@@ -1398,7 +1398,7 @@
     "explanation": "n + p = 15 and 2n + 3p = 39. Subtracting 2(n + p) gives p = 9, so n = 6.",
     "twist": "A copy swapped the item labels; solving both equations exposes the error.",
     "moral": "Use independent equations to distinguish unknowns.",
-    "verdict": "disproved",
+    "verdict": "supported",
     "check": "calculation",
     "evidence": "The clerk places the original records before the court."
   },
@@ -1674,13 +1674,13 @@
       "9 units",
       "10 units"
     ],
-    "answer": 1,
-    "explanation": "Crates of 5 and 4 fit together for 9; no combination with 6 gives a higher valid total under capacity 10.",
-    "twist": "The largest individual crate was not part of the best combination.",
+    "answer": 2,
+    "explanation": "The 6-unit and 4-unit crates fit exactly into the 10-unit hold. The best total is 10 units.",
+    "twist": "A careful measurement shows the 4-unit crate fits alongside the 6-unit crate. The first plan stopped too early.",
     "moral": "Compare combinations before committing to a greedy choice.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "constraints",
-    "evidence": "The clerk places the original records before the court."
+    "evidence": "Hold capacity: 10 units. Crates available: 6, 5 and 4 units."
   },
   {
     "id": 85,
@@ -1698,7 +1698,7 @@
     "explanation": "Six small containers provide only 18 L. Two large and two small provide 20 L for ₹74, less than three large containers at ₹75.",
     "twist": "The apparently cheapest total does not meet the required volume.",
     "moral": "Check feasible combinations before declaring an optimum.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "constraints",
     "evidence": "The clerk places the original records before the court."
   },
@@ -1718,7 +1718,7 @@
     "explanation": "Plan A has ₹120; Plan B has ₹110.",
     "twist": "Their long-term paths differ even though the first-year comparison is simple.",
     "moral": "Know whether a rule adds a fixed amount or applies a rate.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "comparison",
     "evidence": "The clerk places the original records before the court."
   },
@@ -1807,20 +1807,20 @@
     "chapter": 10,
     "title": "The Festival Budget on Trial",
     "story": "A budget includes ₹1,200 for materials, ₹450 for food and ₹350 for transport. It also includes a cancelled ₹200 order in a reported spend of ₹2,200.",
-    "claim": "The treasurer claims ₹2,200 was actually spent.",
-    "prompt": "What is the corrected planned spend after removing the cancelled order?",
+    "claim": "The treasurer claims ₹2,200 was actually spent, including a cancelled order.",
+    "prompt": "What is the corrected total after removing the unpaid cancelled order?",
     "options": [
       "₹1,800",
       "₹2,000",
       "₹2,200"
     ],
-    "answer": 0,
-    "explanation": "The listed categories total ₹2,000. Removing the cancelled ₹200 order from a reported ₹2,200 yields ₹2,000? The line-item total conflicts with the report, so the records need reconciliation.",
-    "twist": "The ledger and line-item list conflict, so the court should not declare an exact paid total until the source is checked.",
+    "answer": 1,
+    "explanation": "The itemized amounts total ₹1,200 + ₹450 + ₹350 = ₹2,000. Removing the unpaid ₹200 line from the reported ₹2,200 also leaves ₹2,000.",
+    "twist": "A bank receipt confirms no payment was made for the cancelled ₹200 order, and the itemized paid amounts add to ₹2,000.",
     "moral": "Correct the record before assigning responsibility.",
-    "verdict": "uncertain",
+    "verdict": "disproved",
     "check": "records",
-    "evidence": "Line items total ₹2,000; a cancelled ₹200 order is included in a stated report of ₹2,200."
+    "evidence": "Itemized amounts: ₹1,200 + ₹450 + ₹350. Cancelled order: ₹200, unpaid. Reported total: ₹2,200."
   },
   {
     "id": 92,
