@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="15" fill="#6f55a0"/>
-  <circle cx="47" cy="13" r="3" fill="#f3c879"/>
-  <text x="10" y="43" font-family="Georgia,serif" font-size="31" font-weight="700" fill="#fff8e9">∫</text>
-  <text x="30" y="42" font-family="Georgia,serif" font-size="26" font-weight="700" fill="#fff8e9">∀</text>
+  <rect width="64" height="64" rx="17" fill="#373247"/>
+  <path d="M28 10 C21 8 19.5 15 17 24 L11 42 C9.5 47 7.5 51 3.5 52 M21 10 H28 M3.5 52 H12"
+        fill="none" stroke="#f9f3e9" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M32 19 L43 43 L54 19 M36 22 H50"
+        fill="none" stroke="#79cbc1" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
