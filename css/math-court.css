@@ -322,3 +322,114 @@
   #screen-math-court .mc-svg-card,
   #screen-math-court .mc-svg-bar { transition:none; }
 }
+
+
+/* Answer tiles turn each mathematical choice into a piece the learner can place in court. */
+#screen-math-court .mc-answer-game {
+  margin-top:14px;
+  display:grid;
+  gap:12px;
+}
+#screen-math-court .mc-answer-instruction {
+  margin:0 0 2px;
+  color:#536168;
+  font-size:.9rem;
+}
+#screen-math-court .mc-answer-tiles {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+#screen-math-court .mc-answer-tile {
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  grid-template-areas:"symbol label" "value value";
+  align-content:start;
+  align-items:center;
+  gap:7px 9px;
+  min-width:0;
+  min-height:112px;
+  border:2px solid #ded5e7;
+  border-bottom:4px solid #c9bad8;
+  border-radius:16px 12px 16px 12px;
+  padding:13px;
+  color:#342d3b;
+  background:#fff;
+  text-align:left;
+  cursor:grab;
+  transition:transform .14s ease,border-color .14s ease,background .14s ease;
+}
+#screen-math-court .mc-answer-tile:active { cursor:grabbing; transform:scale(.985); }
+#screen-math-court .mc-answer-tile:hover { border-color:#a58bbb; background:#fbf8ff; }
+#screen-math-court .mc-answer-symbol {
+  grid-area:symbol;
+  display:grid;
+  place-items:center;
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  color:#694c83;
+  background:#f1ebf8;
+  font-size:1.05rem;
+}
+#screen-math-court .mc-answer-letter {
+  grid-area:label;
+  color:#6d6276;
+  font-size:.7rem;
+  letter-spacing:.08em;
+  font-weight:850;
+}
+#screen-math-court .mc-answer-tile strong {
+  grid-area:value;
+  overflow-wrap:anywhere;
+  font-size:1rem;
+  line-height:1.35;
+}
+#screen-math-court .mc-answer-dropzone {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:76px;
+  padding:12px 15px;
+  border:2px dashed #90bba5;
+  border-radius:16px;
+  background:linear-gradient(110deg,#eff8f2,#fbfefa);
+  color:#315b48;
+}
+#screen-math-court .mc-tray-symbol {
+  display:grid;
+  place-items:center;
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  color:#267b70;
+  background:#dcefe4;
+  font-size:1.45rem;
+}
+#screen-math-court .mc-answer-dropzone>span:nth-child(2) {
+  display:grid;
+  gap:3px;
+  min-width:0;
+}
+#screen-math-court .mc-answer-dropzone small {
+  color:#557363;
+  font-size:.84rem;
+}
+#screen-math-court .mc-tray-arrow {
+  margin-left:auto;
+  font-size:1.35rem;
+  font-weight:900;
+}
+#screen-math-court .mc-answer-tile:focus-visible,
+#screen-math-court .mc-answer-dropzone:focus-visible {
+  outline:3px solid #267b70;
+  outline-offset:3px;
+}
+@media (max-width:560px) {
+  #screen-math-court .mc-answer-tiles { grid-template-columns:1fr; }
+  #screen-math-court .mc-answer-tile { min-height:76px; grid-template-areas:"symbol label" "value value"; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #screen-math-court .mc-answer-tile { transition:none; }
+}
