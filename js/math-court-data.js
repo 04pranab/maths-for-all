@@ -287,7 +287,7 @@
     "chapter": 2,
     "title": "The Bell With a Secret Rhythm",
     "story": "A bell keeper records 4, 7, 10, 13. A witness predicts 17 because the values increase.",
-    "claim": "The witness claims the pattern adds three each time.",
+    "claim": "The witness claims the next value is 17.",
     "prompt": "If the rule is to add three, what comes next?",
     "options": [
       "15",
@@ -295,10 +295,10 @@
       "17"
     ],
     "answer": 1,
-    "explanation": "The pattern adds three each time, so 13 + 3 = 16. Merely increasing is not enough to establish the size of the step.",
+    "explanation": "The differences are 3, 3 and 3, so the next value under the stated pattern is 13 + 3 = 16, not 17.",
     "twist": "The witness noticed direction but not the size of each change.",
     "moral": "Identify a rule precisely and test it.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "assumptions",
     "evidence": "The first four terms increase by three each time."
   },
@@ -1415,10 +1415,10 @@
       "58%"
     ],
     "answer": 0,
-    "explanation": "42 out of 100 is 42%, less than half.",
+    "explanation": "The winner received 42 out of 100 votes, or 42%, which is less than half. Most-votes wins is not the same as receiving a majority.",
     "twist": "The winner has more votes than either rival, but 58 voters chose someone else.",
     "moral": "Describe exactly what a voting rule establishes.",
-    "verdict": "partly",
+    "verdict": "disproved",
     "check": "comparison",
     "evidence": "Candidates receive 42, 35 and 23 votes. The candidate with 42 wins under the most-votes rule. A speaker says the winner has support from most voters."
   },
@@ -1567,7 +1567,7 @@
     "chapter": 8,
     "title": "The Contest With Different Starting Lines",
     "story": "A contest adds a 10-point allowance to one participant. Raw scores are 85 and 90; the first participant receives the allowance.",
-    "claim": "The announcer declares the second participant the winner using raw scores.",
+    "claim": "The second participant should win because their raw score is higher.",
     "prompt": "Who has the higher adjusted score?",
     "options": [
       "First participant: 95",
@@ -1575,7 +1575,7 @@
       "They tie"
     ],
     "answer": 0,
-    "explanation": "85 + 10 = 95, greater than 90.",
+    "explanation": "The first participant's adjusted score is 85 + 10 = 95, greater than the second participant's 90. The published allowance must be included.",
     "twist": "The announcer compared raw scores despite the published allowance.",
     "moral": "Understand and apply the rules consistently.",
     "verdict": "disproved",
