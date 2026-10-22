@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="css/number-maze.css?v=20261019-7" />
   <link rel="stylesheet" href="css/interactions.css?v=20261018-1" />
   <link rel="stylesheet" href="css/game-themes.css?v=20261021-balanced-header3" />
+  <link rel="stylesheet" href="css/math-court.css?v=20261022-1" />
 </head>
 <body>
 
@@ -140,7 +141,7 @@
 
     <div class="menu-section-heading">
       <h2>Pick your next adventure</h2>
-      <p>Nine playful ways to count, build, solve, and explore.</p>
+      <p>Ten playful ways to count, build, solve, and explore.</p>
     </div>
 
     <div class="menu-grid">
@@ -203,6 +204,13 @@
         <div class="card-desc">Trace the numbered route and fill every open square. Fresh validated puzzles keep coming.</div>
         <div class="card-tag">Solo · Unlimited puzzles · Untimed</div>
       </button>
+      <button class="menu-card card-math-court" style="--tile-accent:#694c83;--tile-wash:#f3eef8" onclick="MathCourt.open()">
+        <div class="card-badge-icon" aria-hidden="true">⚖️</div>
+        <div class="card-title">Math Court</div>
+        <div class="card-desc">Question witnesses, test mathematical claims, reveal twists and deliver a fair verdict across 100 cases.</div>
+        <div class="card-tag">Solo · 100 cases · Story-driven maths</div>
+      </button>
+
       <button class="menu-card card-probability" onclick="ProbabilityCarnival.open()" hidden aria-hidden="true" tabindex="-1">
         <div class="card-badge-icon">⚙️</div>
         <div class="card-title">Probability Machine</div>
@@ -785,6 +793,8 @@
   <script src="js/fraction-bakery.js?v=20261008-4"></script>
   <script src="js/number-maze-engine.js?v=20261018-2"></script>
   <script src="js/number-maze.js?v=20261019-2"></script>
+  <script src="js/math-court-data.js?v=20261022-1"></script>
+  <script src="js/math-court.js?v=20261022-1"></script>
   <section id="screen-little-shop" class="screen" aria-labelledby="little-shop-title">
     <div class="ls-shell">
       <header class="ls-header">
@@ -993,6 +1003,35 @@
           <h2 id="nm-complete-heading">Route complete!</h2>
           <button type="button" id="nm-next-complete" class="nm-action primary" onclick="NumberMaze.newPuzzle()">Explore another puzzle →</button>
         </section>
+      </main>
+    </div>
+  </section>
+
+  <section id="screen-math-court" class="screen" aria-label="Math Court game">
+    <div class="mc-shell">
+      <header class="mc-header">
+        <button type="button" class="mc-back" onclick="MathCourt.goDocket()">← All cases</button>
+        <div class="mc-header-title">
+          <h1>⚖️ Math Court</h1>
+          <p>Common Ground Court · The Charter of Fair Measures</p>
+        </div>
+        <button type="button" class="mc-back" onclick="Game.goHome()">Games home</button>
+      </header>
+      <div id="mc-docket" aria-label="Math Court case docket"></div>
+      <main id="mc-play" hidden aria-label="Active Math Court case">
+        <div class="mc-case-header">
+          <div>
+            <p id="mc-case-chapter"></p>
+            <h2 id="mc-case-title">Case 001</h2>
+          </div>
+          <span class="mc-step-count" id="mc-stage-count">Proceeding 1 of 7</span>
+        </div>
+        <div class="mc-stage-track" role="progressbar" aria-label="Court proceeding progress" aria-valuemin="0" aria-valuemax="7" aria-valuenow="1">
+          <span id="mc-stage-fill" style="width:14.3%"></span>
+        </div>
+        <p class="mc-eyebrow" id="mc-stage-name">The case is called</p>
+        <div id="mc-stage-content"></div>
+        <div id="mc-feedback" class="mc-feedback" role="status" aria-live="polite"></div>
       </main>
     </div>
   </section>
