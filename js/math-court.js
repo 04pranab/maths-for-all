@@ -97,7 +97,7 @@
           '<button class="mc-button mc-button-quiet" type="button" onclick="MathCourt.resetProgress()">Reset case progress</button>' +
         '</div>' +
       '</div>' +
-      '<div class="mc-charter-note"><span aria-hidden="true">⚖️</span><p><strong>The court's rule:</strong> evidence matters, mistakes can be corrected, and a verdict must never claim more than the mathematics proves.</p></div>' +
+      '<div class="mc-charter-note"><span aria-hidden="true">⚖️</span><p><strong>The court&#39;s rule:</strong> evidence matters, mistakes can be corrected, and a verdict must never claim more than the mathematics proves.</p></div>' +
       '<div class="mc-chapter-list">'+data().chapters.map(ch=>{
         const done=data().cases.filter(item=>item.chapter===ch.id&&state.completed.has(item.id)).length;
         const entries=data().cases.filter(item=>item.chapter===ch.id);
@@ -240,7 +240,7 @@
       action='<button class="mc-button mc-button-primary" '+(state.verdictChosen&&normalVerdict(state.verdictChosen)===normalVerdict(item.verdict)?'':'disabled')+' onclick="MathCourt.advance()">Deliver the ruling →</button>';
     } else {
       const v=VERDICT_CHOICES.find(v=>v.id===normalVerdict(item.verdict))||VERDICT_CHOICES[3];
-      html+=panel("THE COURT'S REFLECTION","Case closed: "+esc(v.label),'<div class="mc-verdict-ribbon"><span aria-hidden="true">⚖️</span><div><strong>'+esc(v.label)+'</strong><p>'+esc(v.note)+'</p></div></div><h4>What the mathematics showed</h4><p>'+esc(item.explanation)+'</p><h4>What the new evidence changed</h4><p>'+esc(item.twist)+'</p><div class="mc-value-note"><span aria-hidden="true">🌱</span><div><strong>Beyond the calculation</strong><p>'+esc(item.moral)+'</p></div></div><p class="mc-soft-note">You may be right to change a first impression. The court values clear evidence, honest uncertainty and respectful reasoning.</p>');
+      html+=panel("THE COURT&#39;S REFLECTION","Case closed: "+esc(v.label),'<div class="mc-verdict-ribbon"><span aria-hidden="true">⚖️</span><div><strong>'+esc(v.label)+'</strong><p>'+esc(v.note)+'</p></div></div><h4>What the mathematics showed</h4><p>'+esc(item.explanation)+'</p><h4>What the new evidence changed</h4><p>'+esc(item.twist)+'</p><div class="mc-value-note"><span aria-hidden="true">🌱</span><div><strong>Beyond the calculation</strong><p>'+esc(item.moral)+'</p></div></div><p class="mc-soft-note">You may be right to change a first impression. The court values clear evidence, honest uncertainty and respectful reasoning.</p>');
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Close case and call Case '+(item.id+1)+' →':'Close the High Court season →')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to all cases</button>';
     }
     host.innerHTML='<div class="mc-phase-card">'+html+'</div><div class="mc-play-actions">'+action+'<button class="mc-button mc-button-quiet" onclick="MathCourt.back()">← Docket</button>'+(state.phase>0?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">Review previous step</button>':'')+'</div>';
