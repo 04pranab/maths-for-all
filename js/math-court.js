@@ -668,16 +668,16 @@
     const playground=renderPlayActivity(item);
     let left=actorBlock,right="",action="";
     if(state.phase===0) {
-      left+=panel("A STORY FROM THE COMMUNITY",item.title,renderStoryNarrative(item)<div class="mc-claim"><span>THE IDEA TO EXPLORE</span><strong>'+esc(item.claim)+'</strong></div><div class="mc-story-facts"><span>Maths focus</span><strong>'+esc(topicFor(item.check,item.chapter))+'</strong><span>Case '+String(item.id).padStart(3,"0")+' of 100</span></div>'+virtue);
+      left+=panel("A STORY FROM THE COMMUNITY",item.title,renderStoryNarrative(item)+'<div class="mc-claim"><span>THE IDEA TO EXPLORE</span><strong>'+esc(item.claim)+'</strong></div><div class="mc-story-facts"><span>Maths focus</span><strong>'+esc(topicFor(item.check,item.chapter))+'</strong><span>Case '+String(item.id).padStart(3,"0")+' of 100</span></div>'+virtue);
       left+='<div class="mc-kindness-note"><span aria-hidden="true">💛</span><p>In this court, people learn together. We test ideas, share clues and celebrate a better understanding.</p></div>';
       right+=playground;
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Let’s investigate together →</button>';
     } else if(state.phase===1) {
-      left+=panel("THE CLUES ARE ON THE TABLE","Let’s look at both pieces together",renderStoryNarrative(item)<p>Every clue is visible now. Read the idea, compare the original record, and decide what you want to test in the maths playground.</p><div class="mc-evidence-pair"><article class="mc-evidence-card mc-evidence-claim"><span>🗣️ THE IDEA</span><strong>'+esc(item.claim)+'</strong></article><article class="mc-evidence-card mc-evidence-record"><span>🔎 THE ORIGINAL RECORD</span><strong>'+esc(item.evidence)+'</strong></article></div>'+virtue);
+      left+=panel("THE CLUES ARE ON THE TABLE","Let’s look at both pieces together",renderStoryNarrative(item)+'<p>Every clue is visible now. Read the idea, compare the original record, and decide what you want to test in the maths playground.</p><div class="mc-evidence-pair"><article class="mc-evidence-card mc-evidence-claim"><span>🗣️ THE IDEA</span><strong>'+esc(item.claim)+'</strong></article><article class="mc-evidence-card mc-evidence-record"><span>🔎 THE ORIGINAL RECORD</span><strong>'+esc(item.evidence)+'</strong></article></div>'+virtue);
       right+=playground;
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Build the maths model →</button>';
     } else if(state.phase===2) {
-      left+=panel("YOUR INVESTIGATION","Let’s work it out",renderStoryNarrative(item)<div class="mc-claim"><span>QUESTION TO SOLVE</span><strong>'+esc(item.prompt)+'</strong></div><p>Use the pictures and manipulatives on the right to try strategies. You may experiment, revise and try again.</p>'+virtue);
+      left+=panel("YOUR INVESTIGATION","Let’s work it out",renderStoryNarrative(item)+'<div class="mc-claim"><span>QUESTION TO SOLVE</span><strong>'+esc(item.prompt)+'</strong></div><p>Use the pictures and manipulatives on the right to try strategies. You may experiment, revise and try again.</p>'+virtue);
       right+=playground;
       if(!state.investigationSolved) {
         right+=panel("TASK 1 OF 2","Find the first result",'<p class="mc-task-prompt">'+esc(item.prompt)+'</p>'+renderAnswerTiles(item.options,"investigation")+'<p class="mc-soft-note">Choose or drag the result into the evidence tray when your model supports it.</p>');
@@ -706,7 +706,7 @@
         {id:"partly",label:"Some parts fit",note:"Part of the idea works; another part needs more thought."},
         {id:"uncertain",label:"Let’s gather one more clue",note:"A little more information would help us decide fairly."}
       ];
-      left+=panel("YOUR CLOSING THOUGHT","Explain what you have learned",renderStoryNarrative(item)<div class="mc-claim"><span>THE IDEA WE INVESTIGATED</span><strong>'+esc(item.claim)+'</strong></div><p>Choose a conclusion that matches the evidence. A careful answer is a better goal than a quick answer.</p>'+virtue);
+      left+=panel("YOUR CLOSING THOUGHT","Explain what you have learned",renderStoryNarrative(item)+'<div class="mc-claim"><span>THE IDEA WE INVESTIGATED</span><strong>'+esc(item.claim)+'</strong></div><p>Choose a conclusion that matches the evidence. A careful answer is a better goal than a quick answer.</p>'+virtue);
       right+=playground;
       right+=panel("DELIVER A THOUGHTFUL VERDICT","Which conclusion fits the evidence?",'<div class="mc-verdict-options">'+verdicts.map(v=>'<button class="mc-verdict-button '+(state.verdictChosen===v.id?"is-selected":"")+'" data-verdict="'+v.id+'" onclick="MathCourt.selectVerdict(this.dataset.verdict)"><strong>'+v.label+'</strong><small>'+v.note+'</small></button>').join("")+'</div>');
       action='<button class="mc-button mc-button-primary" '+(state.verdictChosen&&normalVerdict(state.verdictChosen)===normalVerdict(item.verdict)?'':'disabled')+' onclick="MathCourt.advance()">Hear the court’s reflection →</button>';
