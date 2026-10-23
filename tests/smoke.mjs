@@ -363,11 +363,11 @@ async function main() {
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
     'const correctCrossIndex = (0 - (1 % 3) + 3) % 3; MathCourt.answerCross(correctCrossIndex);' +
-    'assert(document.getElementById("mc-feedback").textContent.includes("Objection sustained"), "The cross-examination skill check did not accept the keyed strategy.");' +
+    'assert(document.getElementById("mc-feedback").textContent.includes("Excellent question"), "The cross-examination skill check did not accept the keyed strategy.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Verdict", "The verdict stage is missing.");' +
     'MathCourt.selectVerdict("disproved"); MathCourt.advance();' +
     'assert(document.getElementById("mc-stage-name").textContent === "The court" + String.fromCharCode(39) + "s reflection", "The case did not reach the reflection stage.");' +
-    'assert(document.getElementById("mc-stage-content").innerText.includes("Beyond the calculation"), "The moral reflection is missing.");' +
+    'assert(document.getElementById("mc-stage-content").innerText.includes("VIRTUE TO CARRY FORWARD"), "The virtue reflection is missing.");' +
     'MathCourt.advance();' +
     'const saved = JSON.parse(localStorage.getItem("mfa_math_court_v1"));' +
     'assert(saved.completed.includes(1), "Closing a case did not save its completion.");' +
@@ -1063,6 +1063,7 @@ async function main() {
         'const active = document.querySelector(".screen.active");' +
         'assert(active, name + " did not activate a screen at " + innerWidth + "px.");' +
         'assert(!active.hidden, name + " activated a hidden screen at " + innerWidth + "px.");' +
+        'if(name==="Math Court"){const story=active.querySelector(".mc-story-pane"),play=active.querySelector(".mc-game-pane");assert(story&&play,"Math Court should expose its story and playground halves.");assert(parseFloat(getComputedStyle(story.querySelector(".mc-story-text")).fontSize)>=18,"Math Court story text should be at least 18px.");if(innerWidth>=681){const sr=story.getBoundingClientRect(),pr=play.getBoundingClientRect();assert(Math.abs(sr.top-pr.top)<5&&sr.left<pr.left,"Math Court story and playground should sit side by side on wider screens.");}}' +
         'assert(document.documentElement.scrollWidth <= innerWidth + 2, name + " causes document horizontal overflow at " + innerWidth + "px (" + document.documentElement.scrollWidth + "px).");' +
         'assert(document.body.scrollWidth <= innerWidth + 2, name + " causes body horizontal overflow at " + innerWidth + "px (" + document.body.scrollWidth + "px).");' +
         'const activeStyle = getComputedStyle(active);' +
