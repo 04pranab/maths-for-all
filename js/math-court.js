@@ -843,7 +843,6 @@
   function renderCase() {
     const item=data().getCase(state.caseId),host=$("mc-stage-content");
     if(!item||!host)return;
-    const feedbackNode=$("mc-feedback");
     $("mc-docket").hidden=true;$("mc-play").hidden=false;
     $("mc-case-title").textContent="Case "+String(item.id).padStart(3,"0")+" · "+item.title;
     $("mc-case-chapter").textContent=data().chapters.find(ch=>ch.id===item.chapter).name;
@@ -901,8 +900,6 @@
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Open Case '+(item.id+1)+' →':'Celebrate the 100-case journey 🎉')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to the case map</button>';
     }
     host.innerHTML=tabs+'<section class="mc-active-stage mc-stage-phase-'+state.phase+'">'+content+'<div class="mc-stage-actions">'+action+(state.phase>0&&state.phase<6?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">← Review previous stage</button>':'')+'</div></section>';
-    const actions=host.querySelector(".mc-stage-actions");
-    if(feedbackNode&&actions)actions.parentNode.insertBefore(feedbackNode,actions);
     const feedback=$("mc-feedback");
     if(feedback){feedback.textContent=state.feedback;feedback.className="mc-feedback"+(state.feedback?" is-visible mc-feedback-"+state.feedbackKind:"");}
   }
