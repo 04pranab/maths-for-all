@@ -599,8 +599,7 @@
   }
 
   function renderStoryNarrative(item) {
-    const story=(item.narrative||item.story||"").split(/\n{2,}/).filter(Boolean);
-    const beats=story.length>=3?story.slice(0,2):story;
+    const beats=[item.opening||"The community has gathered to explore a question together.",item.story||""].filter(Boolean);
     return beats.map((part,index)=>'<p class="mc-story-text '+(index===0?"mc-story-hook":"mc-story-close")+'">'+esc(part)+'</p>').join("");
   }
   function renderCase() {
