@@ -18,7 +18,7 @@
     "explanation": "52 − 37 = 15 crates were recorded on the second cart. The two tallies add to the full order of 52 crates.",
     "twist": "Pip finds the second cart's neat manifest, recorded ten minutes later. Adding 37 and 15 completes the 52-crate order: each note captured a different moment.",
     "moral": "Patience and careful checking help a community see the whole picture.",
-    "verdict": "disproved",
+    "verdict": "supported",
     "check": "calculation",
     "evidence": "Delivery order: 52 crates. First cart tally: 37 crates. Second cart record: 15 crates.",
     "challenge": {
@@ -2422,7 +2422,7 @@
     "chapter": 7,
     "title": "The Partnership Equation",
     "story": "Two notebooks and three pens cost ₹39. One notebook and one pen cost ₹15. Prices are fixed whole-rupee values.",
-    "claim": "A receipt copy labels the pen price as the notebook price.",
+    "claim": "The clerk claims one notebook costs ₹9.",
     "prompt": "What is the price of one notebook?",
     "options": [
       "₹6",
@@ -2433,7 +2433,7 @@
     "explanation": "Let n be the notebook price and p the pen price. n + p = 15 and 2n + 3p = 39. Doubling the first gives 2n + 2p = 30, so p = 9 and n = 6.",
     "twist": "The team lines up each original item label beside its price. Solving the two equations reveals the price of each notebook and pen.",
     "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
-    "verdict": "supported",
+    "verdict": "disproved",
     "check": "calculation",
     "evidence": "Two notebooks and three pens cost ₹39. One notebook and one pen cost ₹15. Prices are fixed whole-rupee values.",
     "challenge": {
@@ -2772,7 +2772,7 @@
     "chapter": 8,
     "title": "The Neighbourhood Grant Review",
     "story": "A recreation grant is designed for groups with at least 20 members. A group of 19 also serves a remote area with few nearby services, so the community panel studies which details matter for a fair review.",
-    "claim": "The panel asks whether member count alone describes a group's value to its neighbourhood.",
+    "claim": "The panel claims member count alone is enough to measure a group's value to its neighbourhood.",
     "prompt": "What does the threshold establish by itself?",
     "options": [
       "The group cannot be valuable",
@@ -3168,7 +3168,7 @@
     "explanation": "The itemized amounts total ₹1,200 + ₹450 + ₹350 = ₹2,000. Removing the unpaid ₹200 line from the reported ₹2,200 also leaves ₹2,000.",
     "twist": "A bank receipt confirms the cancelled order was never paid. The itemized paid amounts add neatly to ₹2,000.",
     "moral": "Accurate records and openness help a team make good decisions together.",
-    "verdict": "disproved",
+    "verdict": "supported",
     "check": "records",
     "evidence": "Paid amounts: ₹1,200 + ₹450 + ₹350. Cancelled order: ₹200, unpaid. First reported total: ₹2,200.",
     "challenge": {
