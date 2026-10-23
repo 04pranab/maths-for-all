@@ -1483,3 +1483,36 @@
 @media (prefers-reduced-motion: reduce) {
   #screen-math-court .mc-progress-track span { transition: none; }
 }
+
+
+/* Wide, unboxed Math Court layout: use the available screen, not a centered card. */
+#screen-math-court .mc-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+#screen-math-court .mc-stage-layout--story,
+#screen-math-court .mc-stage-layout--evidence,
+#screen-math-court .mc-stage-layout--question,
+#screen-math-court .mc-stage-layout--verdict,
+#screen-math-court .mc-stage-layout--reflection {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+#screen-math-court .mc-active-stage {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+#screen-math-court .mc-stage-layout--story {
+  grid-template-columns: minmax(0, 1fr);
+}
+#screen-math-court .mc-active-stage .mc-story-text {
+  font-size: 1.2rem !important;
+  line-height: 1.62 !important;
+}
