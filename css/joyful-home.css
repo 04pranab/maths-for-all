@@ -109,7 +109,7 @@ button, input, select, textarea { font: inherit; }
   #screen-menu .home-welcome-panel .arcade-copy { padding-right: 84px; }
   #screen-menu .home-welcome-panel .arcade-illustration { width: 72px; max-width: 72px; max-height: 40px; right: 8px; top: 8px; }
   #screen-menu .home-welcome-panel .arcade-header {
-    grid-template-columns: minmax(0, 1.2fr) minmax(115px, .65fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
     padding: 10px;
   }
