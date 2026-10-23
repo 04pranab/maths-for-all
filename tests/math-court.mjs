@@ -14,6 +14,7 @@ assert.deepEqual(data.phases, [
   "The case is called", "Witness examination", "Build the evidence",
   "New evidence", "Cross-examination", "Verdict", "The court's reflection"
 ]);
+const unhelpfulLanguage = /\\b(thief|thieves|stolen|steal|stealing|theft|robbery|robbed|murder|criminal|crime|liar|cheat|fraud|punish|guilty|blame|accuse|accused|accusation|dishonest|lie|lied|lies|wrongdoer|villain)\\b/i;
 for (const item of data.cases) {
   assert.ok(item.story.length >= 30, "Case " + item.id + " needs a real story.");
   assert.ok(item.claim.length >= 8, "Case " + item.id + " needs a claim to test.");
@@ -26,6 +27,9 @@ for (const item of data.cases) {
   assert.ok(item.challenge.explanation.length >= 20, "Case " + item.id + " needs a challenge explanation.");
   assert.ok(item.twist.length >= 20, "Case " + item.id + " needs a case development.");
   assert.ok(item.moral.length >= 15, "Case " + item.id + " needs a reflection/value.");
+  assert.ok(item.virtue && item.virtue.length >= 3, "Case " + item.id + " needs a named virtue.");
+  const storyBundle = [item.title,item.story,item.claim,item.prompt,item.twist,item.moral,item.evidence,item.explanation,item.challenge.prompt,item.challenge.explanation].join(" ");
+  assert.ok(!unhelpfulLanguage.test(storyBundle), "Case " + item.id + " contains discouraged criminal/blaming language.");
   assert.ok(data.checks[item.check], "Case " + item.id + " references an unknown cross-examination skill.");
   assert.ok(["supported","disproved","partly","uncertain","insufficient"].includes(item.verdict), "Case " + item.id + " has an unsupported verdict.");
   assert.equal(typeof data.getCase(item.id), "object");
