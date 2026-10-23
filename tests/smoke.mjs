@@ -373,7 +373,7 @@ async function main() {
     'MathCourt.answerChallenge((MathCourtData.getCase(1).challenge.answer + 1) % MathCourtData.getCase(1).challenge.options.length);' +
     'const task2Data={};const task2Transfer={setData:(k,v)=>task2Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).challenge.answer,"challenge",{dataTransfer:task2Transfer});' +
     'MathCourt.dropAnswer("challenge",{preventDefault:()=>{},dataTransfer:{getData:k=>task2Data[k]||""}});' +
-    'assert(document.getElementById("mc-feedback").textContent.includes("Second exhibit verified"), "The linked challenge did not provide mathematical feedback.");' +
+    'assert(document.getElementById("mc-feedback").textContent.includes("Second workshop goal complete"), "The linked challenge did not provide positive mathematical feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
     'const correctCrossIndex = (0 - (1 % 3) + 3) % 3; MathCourt.answerCross(correctCrossIndex);' +
