@@ -162,16 +162,16 @@
     return {choices:sorted,correct:(correct-shift+choices.length)%choices.length};
   }
   function expectedNumericChoice(choice) {
-    const text=String(choice==null?"":choice).replace(/,/g,"");
-    if(/\d\s*(?:to|through|[-–—])\s*\d/i.test(text)||/\b(?:between|range|not enough|unknown|cannot be determined)\b/i.test(text))return null;
-    const match=text.match(/-?\d+(?:\.\d+)?/);
-    return match?Number(match[0]):null;
+    const text=String(choice==null?"":choice).replace(/,/g,"").trim();
+    if(/[=+×÷*\/]/.test(text)||/\d\s*(?:to|through|[-–—])\s*\d/i.test(text)||/\b(?:between|range|not enough|unknown|cannot be determined)\b/i.test(text))return null;
+    const numbers=[...text.matchAll(/-?\d+(?:\.\d+)?/g)];
+    return numbers.length===1?Number(numbers[0][0]):null;
   }
   function answerInvestigation(index) {
     const item=data().getCase(state.caseId);
     const expected=expectedNumericChoice(item.options[item.answer]);
     if(item.chapter===1&&expected!==null&&(state.lab.calculationResult===null||Math.abs(state.lab.calculationResult-expected)>0.0001)){
-      setFeedback("Before placing your result, build a calculation in the Number Forge that reaches the case answer. Choose the number tiles, set the operation and try your model.","hint");
+      setFeedback("Before placing your result, build a calculation in the Number Forge that reaches the case answer. Choose the number tiles, set the operation and make the result appear.","hint");
       return;
     }
     if(!state.lab||state.lab.playCount===0){
@@ -193,8 +193,17 @@
       setFeedback("Now make one more move in the maths playground. Try a new value, rule, shape, share or route, then use what you discovered in this second puzzle.","hint");
       return;
     }
-    if(index===challenge.answer){state.challengeSolved=true;setFeedback("✨ Second exhibit verified. "+challenge.explanation,"success");}
-    else{setFeedback("You are exploring possibilities. Recheck the quantities and test another choice.","hint");}
+    const expected=expectedNumericChoice(challenge.options[challenge.answer]);
+    if(item.chapter===1&&expected!==null&&(state.lab.calculationResult===null||Math.abs(state.lab.calculationResult-expected)>0.0001)){
+      setFeedback("Build a fresh calculation for this second clue. Change the number tiles or operation so your result matches the new question.","hint");
+      return;
+    }
+    if(index===challenge.answer){
+      state.challengeSolved=true;
+      setFeedback("✨ Second exhibit verified. "+challenge.explanation,"success");
+    }else{
+      setFeedback("You are exploring possibilities. Recheck the quantities and test another choice.","hint");
+    }
     syncSession();renderCase();
   }
   function answerCross(index) {
