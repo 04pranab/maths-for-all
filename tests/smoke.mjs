@@ -366,7 +366,7 @@ async function main() {
     'assert(document.getElementById("mc-feedback").textContent.includes("Exhibit verified"), "A correct mathematical answer did not receive useful feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "The second linked challenge must be completed before admitting evidence.");' +
     'MathCourt.answerChallenge(MathCourtData.getCase(1).challenge.answer); assert(document.getElementById("mc-feedback").textContent.includes("one more move"), "The second challenge should require another hands-on exploration.");' +
-    'MathCourt.toggleThirdOperand();' +
+    'MathCourt.chooseLabSlot("a"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabSlot("b"); MathCourt.chooseLabNumber(2); MathCourt.chooseLabOperator("+"); MathCourt.calculateLab(); assert(document.querySelector(".mc-equation-result strong").textContent==="52", "The second exhibit should be built from the 37- and 15-crate records.");' +
     'MathCourt.answerChallenge((MathCourtData.getCase(1).challenge.answer + 1) % MathCourtData.getCase(1).challenge.options.length);' +
     'const task2Data={};const task2Transfer={setData:(k,v)=>task2Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).challenge.answer,"challenge",{dataTransfer:task2Transfer});' +
     'MathCourt.dropAnswer("challenge",{preventDefault:()=>{},dataTransfer:{getData:k=>task2Data[k]||""}});' +
