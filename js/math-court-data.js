@@ -98,7 +98,7 @@
   {
     "id": 4,
     "chapter": 1,
-    "title": "The Festival Seating Plan",
+    "title": "A Seat for Everyone",
     "story": "Six rows of seats hold eight people each. A photograph shows every seat occupied, but a marshal counted people also standing near the entrance.",
     "claim": "The marshal estimates 56 people were seated.",
     "prompt": "How many people fit in six full rows of eight?",
@@ -160,7 +160,7 @@
   {
     "id": 6,
     "chapter": 1,
-    "title": "Two Coin Records",
+    "title": "The Coin Count",
     "story": "Two ledgers report 304 coins and 34 coins. The clerk says one must be wrong and asks the court to quantify the discrepancy.",
     "claim": "The clerk claims the difference is 280 coins.",
     "prompt": "What is 304 − 34?",
@@ -1028,7 +1028,7 @@
   {
     "id": 34,
     "chapter": 4,
-    "title": "The Mosaic Pattern",
+    "title": "The Mosaic Symmetry Puzzle",
     "story": "A mosaic outline is symmetrical, but its left half contains three blue tiles while the reflected right half has two.",
     "claim": "The artist claims the full design has reflection symmetry.",
     "prompt": "What must be true for reflection symmetry?",
@@ -1245,7 +1245,7 @@
   {
     "id": 41,
     "chapter": 5,
-    "title": "The Time-Line Puzzle",
+    "title": "The Timeline Puzzle",
     "story": "A meeting begins at 10:45 and finishes at 12:15. A witness reports 70 minutes.",
     "claim": "The witness claims the meeting lasted 70 minutes.",
     "prompt": "How long did it last?",
@@ -1369,7 +1369,7 @@
   {
     "id": 45,
     "chapter": 5,
-    "title": "The Canal Flow Model",
+    "title": "The Canal Flow Study",
     "story": "Water flows at 12 L/min for five minutes, then slows to 6 L/min for five more minutes.",
     "claim": "The keeper estimates 120 L entered during ten minutes.",
     "prompt": "How much water entered?",
@@ -1462,7 +1462,7 @@
   {
     "id": 48,
     "chapter": 5,
-    "title": "The Calendar's Extra Day",
+    "title": "The Leap-Year Calendar",
     "story": "A task begins on 27 February in a leap year and lasts three days, counting the start as day one. The clerk records 1 March.",
     "claim": "The clerk claims day three is 1 March.",
     "prompt": "What is day three?",
@@ -2466,7 +2466,7 @@
     "answer": 1,
     "explanation": "The group has 19 members and misses the stated threshold. The rule alone does not measure need or impact.",
     "twist": "A map adds travel distance and access needs to the discussion. The panel can now consider group size alongside the needs of the people served.",
-    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
+    "moral": "Fairness grows when we listen to each community and consider relevant evidence.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "A recreation grant automatically goes to groups with at least 20 members. A group of 19 serves a remote area with few services and receives nothing.",
@@ -2480,7 +2480,7 @@
       "answer": 0,
       "explanation": "19 is at least 18, so the group meets the changed threshold."
     },
-    "virtue": "Curiosity"
+    "virtue": "Fairness"
   },
   {
     "id": 81,
