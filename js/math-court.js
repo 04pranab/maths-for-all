@@ -80,29 +80,52 @@
     const completed=state.completed.size;
     const next=data().cases.find(item=>!state.completed.has(item.id));
     const resume=state.session && data().getCase(state.session.caseId);
+    const focusCase=resume||next;
+    const activeChapterId=focusCase?focusCase.chapter:data().chapters[data().chapters.length-1].id;
+    const progressLabel=completed===100?"All 100 cases explored":completed+" of 100 cases completed";
     docket.innerHTML =
-      '<div class="mc-docket-hero">' +
-        '<div class="mc-eyebrow">COMMON GROUND COURT · THE CHARTER OF FAIR MEASURES</div>' +
-        '<h2>100 maths cases</h2>' +
-        '<p>Check the evidence. Work the maths. Give your verdict.</p>' +
-        '<div class="mc-progress-track" role="progressbar" aria-label="Cases completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+completed+'"><span style="width:'+completed+'%"></span></div>' +
-        '<div class="mc-progress-caption"><strong>'+completed+'/100 completed</strong><span>No countdown</span></div>' +
-        '<div class="mc-hero-actions">' +
-          (resume?'<button class="mc-button mc-button-primary" type="button" id="mc-resume" onclick="MathCourt.resume()">Resume Case '+resume.caseId+' →</button>':'<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase('+(next?next.id:1)+')">'+(next?'Begin Case '+next.id+' →':'Replay the first case →')+'</button>') +
-          '<button class="mc-button mc-button-quiet" type="button" onclick="MathCourt.resetProgress()">Reset case progress</button>' +
+      '<section class="mc-docket-hero" aria-labelledby="mc-docket-title">' +
+        '<div class="mc-docket-intro">' +
+          '<div class="mc-eyebrow">COMMON GROUND COURT</div>' +
+          '<h2 id="mc-docket-title">Choose your next case</h2>' +
+          '<p>Each case starts with a clue. Follow the story, test the maths, and see where the evidence leads.</p>' +
+          '<div class="mc-hero-actions">' +
+            (resume?'<button class="mc-button mc-button-primary" type="button" id="mc-resume" onclick="MathCourt.resume()">Continue Case '+String(resume.id).padStart(3,"0")+' →</button>':next?'<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase('+next.id+')">Start Case '+String(next.id).padStart(3,"0")+' →</button>':'<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase(1)">Play a case again ↻</button>') +
+            '<button class="mc-button mc-button-quiet" type="button" onclick="MathCourt.resetProgress()">Reset progress</button>' +
+          '</div>' +
         '</div>' +
-      '</div>' +
+        '<div class="mc-docket-progress">' +
+          '<div class="mc-docket-progress-top"><strong>'+completed+'<span> / 100</span></strong><span>CASE PROGRESS</span></div>' +
+          '<div class="mc-progress-track" role="progressbar" aria-label="Cases completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+completed+'"><span style="width:'+completed+'%"></span></div>' +
+          '<div class="mc-progress-caption"><strong>'+progressLabel+'</strong><span>Seven stages per case</span></div>' +
+        '</div>' +
+      '</section>' +
+      '<div class="mc-case-map-heading"><div><h3>Case map</h3><p>Choose a chapter, then pick any case inside it.</p></div><span class="mc-case-map-total">10 chapters · 100 cases</span></div>' +
       '<div class="mc-chapter-list">'+data().chapters.map(ch=>{
-        const done=data().cases.filter(item=>item.chapter===ch.id&&state.completed.has(item.id)).length;
         const entries=data().cases.filter(item=>item.chapter===ch.id);
-        return '<details class="mc-chapter" '+(ch.id===1?'open':'')+'><summary><span class="mc-chapter-number">'+String(ch.id).padStart(2,"0")+'</span><span class="mc-chapter-copy"><strong>'+esc(ch.name)+'</strong></span><span class="mc-chapter-progress">'+done+'/10</span></summary><div class="mc-case-grid">'+entries.map(item=>{
-          const isDone=state.completed.has(item.id);
-          const isResume=resume&&resume.caseId===item.id;
-          return '<button type="button" class="mc-case-card '+(isDone?'is-complete':'')+(isResume?' is-resume':'')+'" onclick="MathCourt.openCase('+item.id+')"><span class="mc-case-number">'+String(item.id).padStart(3,"0")+'</span><strong>'+esc(item.title)+'</strong><small>'+(isDone?'✓ Verdict delivered':isResume?'↻ Resume investigation':'Open docket →')+'</small></button>';
-        }).join("")+'</div></details>';
+        const done=entries.filter(item=>state.completed.has(item.id)).length;
+        const isCurrent=ch.id===activeChapterId;
+        const chapterStatus=done===entries.length?"Complete":isCurrent?(resume?"In progress":"Up next"):"Explore";
+        return '<details class="mc-chapter '+(isCurrent?"is-current":"")+'" data-chapter-id="'+ch.id+'" '+(isCurrent?"open":"")+'>' +
+          '<summary>' +
+            '<span class="mc-chapter-number">'+String(ch.id).padStart(2,"0")+'</span>' +
+            '<span class="mc-chapter-copy"><strong>'+esc(ch.name)+'</strong><small>'+esc(ch.theme)+'</small></span>' +
+            '<span class="mc-chapter-meta"><strong>'+done+'/10</strong><span class="mc-chapter-mini-track"><i style="width:'+(done*10)+'%"></i></span></span>' +
+            '<span class="mc-chapter-state '+(done===entries.length?"is-complete":isCurrent?"is-current":"")+'">'+chapterStatus+'</span>' +
+          '</summary>' +
+          '<div class="mc-case-grid">'+entries.map(item=>{
+            const isDone=state.completed.has(item.id);
+            const isResume=Boolean(resume&&resume.id===item.id);
+            const isNext=Boolean(!resume&&next&&next.id===item.id);
+            const status=isDone?"Completed ✓":isResume?"Continue case →":isNext?"Start here →":"Choose case →";
+            const cardClass="mc-case-card"+(isDone?" is-complete":"")+(isResume?" is-resume":"")+(isNext?" is-next":"");
+            return '<button type="button" class="'+cardClass+'" data-case-id="'+item.id+'" aria-label="Case '+String(item.id).padStart(3,"0")+': '+esc(item.title)+'. '+status+'" onclick="MathCourt.openCase('+item.id+')">' +
+              '<span class="mc-case-top"><span class="mc-case-number">CASE '+String(item.id).padStart(3,"0")+'</span><span class="mc-case-mark" aria-hidden="true">'+(isDone?"✓":isResume?"↻":isNext?"◆":"·")+'</span></span>' +
+              '<strong>'+esc(item.title)+'</strong>' +
+              '<small>'+(isDone?"Completed":isResume?"Continue case →":isNext?"Start here →":"Choose case →")+'</small>' +
+            '</button>';
+          }).join("")+'</div></details>';
       }).join("")+'</div>';
-    const resumeButton=$("mc-resume");
-    if(resumeButton&&resume)resumeButton.hidden=false;
   }
   function openCase(id) {
     const item=data().getCase(id);
