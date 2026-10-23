@@ -1,7 +1,6 @@
 /* A more inviting, low-scroll home layout. Game mechanics remain unchanged. */
-:root { --font-scale: 1.08; }
-html { font-size: calc(19px * var(--font-scale)); }
-#screen-menu { padding: clamp(12px, 2vw, 26px); }
+/* Keep the global/rem scale controlled by the accessibility setting. Enlarge only the home screen. */
+#screen-menu { font-size: calc(19px * var(--font-scale)); padding: clamp(12px, 2vw, 26px); }
 .home-two-panel {
   display: grid;
   grid-template-columns: minmax(300px, 0.88fr) minmax(0, 1.12fr);
