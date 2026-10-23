@@ -330,8 +330,12 @@ async function main() {
     'assert(MathCourtData.isValid() && MathCourtData.cases.length === 100, "Math Court case catalogue failed validation.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "The docket must render all 100 cases.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-chapter").length === 10, "The docket must group cases into ten chapters.");' +
-    'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const board=document.querySelector("#mc-stage-content .mc-visual-lab");assert(board&&board.querySelector("svg"),"Case "+caseId+" needs a visible SVG maths board.");assert(board.querySelectorAll(".mc-visual-tab").length===3,"Case "+caseId+" needs all three visual learning views.");}' +
+    'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const board=document.querySelector("#mc-stage-content .mc-visual-lab");assert(board&&board.querySelector("svg"),"Case "+caseId+" needs a visible SVG maths board.");assert(board.querySelectorAll(".mc-visual-tab").length===3,"Case "+caseId+" needs all three visual learning views.");assert(document.querySelector("#mc-stage-content .mc-math-play"),"Case "+caseId+" needs an interactive chapter activity.");assert(document.querySelector("#mc-stage-content .mc-case-split .mc-story-pane")&&document.querySelector("#mc-stage-content .mc-case-split .mc-game-pane"),"Case "+caseId+" needs separate story and play panes.");}' +
     'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");' +
+    'assert(document.querySelectorAll("#mc-stage-content .mc-case-split > .mc-story-pane").length===1 && document.querySelectorAll("#mc-stage-content .mc-case-split > .mc-game-pane").length===1, "The case should split into a story half and play half.");' +
+    'assert(parseFloat(getComputedStyle(document.querySelector("#mc-stage-content .mc-story-text")).fontSize)>=18, "Story text must be comfortably readable at 18px or larger.");' +
+    'MathCourt.chooseLabSlot("a"); MathCourt.chooseLabNumber(0); MathCourt.chooseLabSlot("b"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabOperator("-"); MathCourt.calculateLab();' +
+    'assert(document.querySelector(".mc-equation-result strong").textContent==="15", "The number forge should compute 52 − 37 from manipulable number tiles.");' +
     'assert(document.querySelector("#mc-stage-content .mc-visual-lab"), "The opening of a case must include a visual evidence board.");' +
     'assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"model\\"]"), "The model view should be visible first.");' +
     'MathCourt.setVisualMode("compare"); assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"compare\\"]"), "Compare mode did not change the visual representation.");' +
@@ -1049,7 +1053,7 @@ async function main() {
         '["Shape Architect", () => Game.startShapeArchitect()], ' +
         '["Fraction Bakery", () => FractionBakery.open()], ' +
         '["Little Shop", () => Game.startLittleShop()], ' +
-        '["Number Maze", () => Game.startNumberMaze()], ["Math Court", () => MathCourt.open()], ' +
+        '["Number Maze", () => Game.startNumberMaze()], ["Math Court", () => { MathCourt.open(); MathCourt.openCase(1); }], ' +
       '["Probability Machine", () => ProbabilityCarnival.open()]' +
       '];' +
       'let checkedScreens = 0;' +
