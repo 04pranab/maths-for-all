@@ -14,18 +14,41 @@
     {id:"partly",label:"Partly supported",note:"Part of the claim is right, but it goes too far."},
     {id:"uncertain",label:"Not enough evidence",note:"The records do not justify a firm conclusion."}
   ];
+  const HUNCH_OPTIONS = Object.freeze({
+    claim: { label:"The claim might hold", feedback:"You gave the claim a fair chance. Now see whether the record backs it up." },
+    detail: { label:"A detail may change it", feedback:"Good eye for details. Keep that possibility in mind as the case unfolds." },
+    evidence: { label:"Let me see the records", feedback:"A careful investigator checks the record before settling on a conclusion." }
+  });
   const state = {
     caseId:1, phase:0, seenClaim:false, seenEvidence:false,
-    investigationSolved:false, challengeSolved:false, crossSolved:false, verdictChosen:null,
+    investigationSolved:false, challengeSolved:false, crossSolved:false, verdictChosen:null, hunch:null,
     visualMode:"model", visualFocus:0, lab:null, completed:new Set(), session:null, feedback:"", feedbackKind:""
   };
   function normalVerdict(value) { return value === "insufficient" ? "uncertain" : value; }
   function load() {
+    state.completed = new Set();
+    state.session = null;
     try {
       const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
       if (Array.isArray(saved.completed)) state.completed = new Set(saved.completed.filter(id => Number.isInteger(id) && id >= 1 && id <= 100));
-      if (saved.session && data().getCase(saved.session.caseId) && !state.completed.has(saved.session.caseId)) {
-        state.session = saved.session;
+      const candidate = saved.session;
+      const caseId = Number(candidate && candidate.caseId);
+      const phase = Number(candidate && candidate.phase);
+      if (candidate && Number.isInteger(caseId) && data().getCase(caseId) && !state.completed.has(caseId)) {
+        state.session = {
+          ...candidate,
+          caseId,
+          phase:Number.isInteger(phase) && phase >= 0 && phase < PHASE_LABELS.length ? phase : 0,
+          seenClaim:Boolean(candidate.seenClaim),
+          seenEvidence:Boolean(candidate.seenEvidence),
+          investigationSolved:Boolean(candidate.investigationSolved),
+          challengeSolved:Boolean(candidate.challengeSolved),
+          crossSolved:Boolean(candidate.crossSolved),
+          verdictChosen:["supported","disproved","partly","uncertain","insufficient"].includes(candidate.verdictChosen) ? candidate.verdictChosen : null,
+          hunch:Object.prototype.hasOwnProperty.call(HUNCH_OPTIONS, candidate.hunch) ? candidate.hunch : null,
+          visualMode:["model","compare","trace"].includes(candidate.visualMode) ? candidate.visualMode : "model",
+          visualFocus:Number.isInteger(Number(candidate.visualFocus)) ? Math.max(0,Math.min(4,Number(candidate.visualFocus))) : 0
+        };
       }
     } catch { /* Ignore damaged local progress and start safely. */ }
   }
@@ -42,7 +65,7 @@
       caseId:state.caseId, phase:state.phase, seenClaim:state.seenClaim,
       seenEvidence:state.seenEvidence, investigationSolved:state.investigationSolved,
       challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, verdictChosen:state.verdictChosen,
-      visualMode:state.visualMode, visualFocus:state.visualFocus, lab:state.lab
+      hunch:state.hunch, visualMode:state.visualMode, visualFocus:state.visualFocus, lab:state.lab
     };
     persist();
   }
@@ -109,12 +132,13 @@
     if(!item)return;
     const saved=state.session&&state.session.caseId===item.id&&!state.completed.has(item.id)?state.session:null;
     state.caseId=item.id;
-    state.phase=saved?saved.phase:0;
-    state.seenClaim=saved?saved.seenClaim:false;
-    state.seenEvidence=saved?saved.seenEvidence:false;
-    state.investigationSolved=saved?saved.investigationSolved:false;
+    state.phase=saved&&Number.isInteger(saved.phase)&&saved.phase>=0&&saved.phase<PHASE_LABELS.length?saved.phase:0;
+    state.hunch=saved&&Object.prototype.hasOwnProperty.call(HUNCH_OPTIONS,saved.hunch)?saved.hunch:null;
+    state.seenClaim=saved?Boolean(saved.seenClaim):false;
+    state.seenEvidence=saved?Boolean(saved.seenEvidence):false;
+    state.investigationSolved=saved?Boolean(saved.investigationSolved):false;
     state.challengeSolved=saved?Boolean(saved.challengeSolved):false;
-    state.crossSolved=saved?saved.crossSolved:false;
+    state.crossSolved=saved?Boolean(saved.crossSolved):false;
     state.visualMode=saved&&["model","compare","trace"].includes(saved.visualMode)?saved.visualMode:"model";
     state.visualFocus=saved&&Number.isInteger(saved.visualFocus)?Math.max(0,Math.min(4,saved.visualFocus)):0;
     state.verdictChosen=saved?saved.verdictChosen:null;
@@ -148,6 +172,17 @@
     if(which==="claim")state.seenClaim=true;
     if(which==="evidence")state.seenEvidence=true;
     syncSession();renderCase();
+  }
+  function selectHunch(id) {
+    if(!Object.prototype.hasOwnProperty.call(HUNCH_OPTIONS,id))return;
+    state.hunch=id;
+    syncSession();
+    document.querySelectorAll("#mc-first-hunch [data-hunch]").forEach(button=>{
+      const selected=button.dataset.hunch===id;
+      button.classList.toggle("is-selected",selected);
+      button.setAttribute("aria-pressed",String(selected));
+    });
+    setFeedback(HUNCH_OPTIONS[id].feedback,"info");
   }
   function rotatedChoices(choices,correct,id) {
     const shift=id%choices.length;
@@ -837,8 +872,30 @@
   }
 
     function renderStoryNarrative(item) {
-    const story = item.story || item.opening || "Use the records to test the claim.";
-    return '<p class="mc-story-text mc-story-hook">'+esc(story)+'</p>';
+    const opening=item.opening||"A new case has arrived. Read the record before deciding what it means.";
+    const story=item.story||"Use the records to test the claim.";
+    return '<div class="mc-case-narrative"><p class="mc-case-opening"><span>THE SCENE</span>'+esc(opening)+'</p><p class="mc-story-text mc-story-hook">'+esc(story)+'</p></div>';
+  }
+  function renderWitnessNote(item) {
+    const speaker=item.speaker||"Case guide";
+    const voice=item.voice||"Let’s look closely at the record and see what the numbers tell us.";
+    return '<aside class="mc-witness-note" aria-label="A note from '+esc(speaker)+'"><span class="mc-witness-mark" aria-hidden="true">💬</span><div><small>FROM THE CASE FILE</small><strong>'+esc(speaker)+'</strong><p>'+esc(voice)+'</p></div></aside>';
+  }
+  function renderHunchPicker() {
+    return '<section id="mc-first-hunch" class="mc-first-hunch" aria-labelledby="mc-first-hunch-title"><div class="mc-first-hunch-copy"><span class="mc-kicker">YOUR FIRST HUNCH</span><h3 id="mc-first-hunch-title">What do you suspect?</h3><p>No right or wrong guess here. You can change your mind when the evidence arrives.</p></div><div class="mc-hunch-options">'+Object.entries(HUNCH_OPTIONS).map(([id,option])=>'<button type="button" class="mc-hunch-choice '+(state.hunch===id?'is-selected':'')+'" data-hunch="'+id+'" aria-pressed="'+(state.hunch===id)+'" onclick="MathCourt.selectHunch(\''+id+'\')">'+esc(option.label)+'</button>').join("")+'</div></section>';
+  }
+  function renderHunchReflection(item) {
+    const hunch=HUNCH_OPTIONS[state.hunch];
+    if(!hunch)return '<aside class="mc-hunch-reflection"><small>LOOK BACK</small><p>You left your first hunch open and let the evidence lead. The evidence gets the final say in a careful investigation.</p></aside>';
+    const verdict=normalVerdict(item.verdict);
+    const outcome={
+      supported:"The record supported the claim this time.",
+      disproved:"The record gave you a reason to revise the claim.",
+      partly:"Part of the claim held up, but another part needed a closer look.",
+      uncertain:"The evidence leaves room for uncertainty, so the question stays open."
+    }[verdict]||"You checked your hunch against the evidence.";
+    const nextStep=state.hunch==="claim"?"You gave the claim a fair chance, then tested it.":state.hunch==="detail"?"You kept an eye out for the detail that could change the story.":"You chose to check the record before settling on a conclusion.";
+    return '<aside class="mc-hunch-reflection"><span class="mc-hunch-reflection-mark" aria-hidden="true">↻</span><div><small>YOUR FIRST HUNCH</small><strong>'+esc(hunch.label)+'</strong><p>'+esc(nextStep)+' '+esc(outcome)+'</p></div></aside>';
   }
   function renderCase() {
     const item=data().getCase(state.caseId),host=$("mc-stage-content");
@@ -859,7 +916,7 @@
     const evidencePair='<div class="mc-evidence-pair"><article class="mc-evidence-card mc-evidence-claim"><span>CLAIM</span><strong>'+esc(item.claim)+'</strong></article><article class="mc-evidence-card mc-evidence-record"><span>RECORD</span><strong>'+esc(item.evidence)+'</strong></article></div>';
     let content="",action="";
     if(state.phase===0) {
-      content='<div class="mc-stage-layout mc-stage-layout--story">'+panel("CASE STORY",item.title,renderStoryNarrative(item)+claim,"mc-stage-story-card")+'<p class="mc-stage-nudge">Start with the story. Then compare its claim with the record.</p></div>';
+      content='<div class="mc-stage-layout mc-stage-layout--story">'+panel("CASE STORY",item.title,renderStoryNarrative(item)+claim,"mc-stage-story-card")+renderWitnessNote(item)+renderHunchPicker()+'</div>';
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Compare the evidence →</button>';
     } else if(state.phase===1) {
       content='<div class="mc-stage-layout mc-stage-layout--evidence">'+panel("TWO THINGS TO COMPARE","What does the record actually show?",evidencePair+'<p class="mc-stage-nudge">Keep the claim and the record separate. The numbers will help you decide whether they agree.</p>')+'</div>';
@@ -896,7 +953,7 @@
     } else {
       const verdictLabels={supported:"The evidence fits",disproved:"Let’s revise the idea",partly:"Some parts fit",uncertain:"Let’s gather one more clue"};
       const v=normalVerdict(item.verdict);
-      content='<div class="mc-stage-layout mc-stage-layout--reflection">'+panel("MATHS RESULT",verdictLabels[v]||"Final result",'<div class="mc-solution"><strong>'+esc(item.claim)+'</strong><p>'+esc(item.explanation)+'</p></div><p class="mc-story-text">'+esc(item.moral||item.twist)+'</p>','mc-result-card')+'</div>';
+      content='<div class="mc-stage-layout mc-stage-layout--reflection">'+panel("MATHS RESULT",verdictLabels[v]||"Final result",'<div class="mc-solution"><strong>'+esc(item.claim)+'</strong><p>'+esc(item.explanation)+'</p></div><p class="mc-story-text">'+esc(item.moral||item.twist)+'</p>'+renderHunchReflection(item),'mc-result-card')+'</div>';
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Open Case '+(item.id+1)+' →':'Celebrate the 100-case journey 🎉')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to the case map</button>';
     }
     host.innerHTML=tabs+'<section class="mc-active-stage mc-stage-phase-'+state.phase+'">'+content+'<div class="mc-stage-actions">'+action+(state.phase>0&&state.phase<6?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">← Review previous stage</button>':'')+'</div></section>';
@@ -916,5 +973,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,selectHunch,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
 })(window);
