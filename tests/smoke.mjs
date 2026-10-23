@@ -1078,7 +1078,7 @@ async function main() {
         'const active = document.querySelector(".screen.active");' +
         'assert(active, name + " did not activate a screen at " + innerWidth + "px.");' +
         'assert(!active.hidden, name + " activated a hidden screen at " + innerWidth + "px.");' +
-        'if(name==="Math Court"){const story=active.querySelector(".mc-story-pane"),play=active.querySelector(".mc-game-pane");assert(story&&play,"Math Court should expose its story and playground halves.");assert(parseFloat(getComputedStyle(story.querySelector(".mc-story-text")).fontSize)>=18,"Math Court story text should be at least 18px.");if(innerWidth>=681){const sr=story.getBoundingClientRect(),pr=play.getBoundingClientRect();assert(Math.abs(sr.top-pr.top)<5&&sr.left<pr.left,"Math Court story and playground should sit side by side on wider screens.");}}' +
+        'if(name==="Math Court"){const story=active.querySelector(".mc-story-pane"),play=active.querySelector(".mc-game-pane");assert(story&&play,"Math Court should expose its story and playground halves.");assert(parseFloat(getComputedStyle(story.querySelector(".mc-story-text")).fontSize)>=18,"Math Court story text should be at least 18px.");assert(!["auto","scroll"].includes(getComputedStyle(story).overflowY)&&!["auto","scroll"].includes(getComputedStyle(play).overflowY),"Math Court panes must not create nested vertical scrollers.");if(innerWidth>=681){const sr=story.getBoundingClientRect(),pr=play.getBoundingClientRect();assert(Math.abs(sr.top-pr.top)<5&&sr.left<pr.left,"Math Court story and playground should sit side by side on wider screens.");}}' +
         'assert(document.documentElement.scrollWidth <= innerWidth + 2, name + " causes document horizontal overflow at " + innerWidth + "px (" + document.documentElement.scrollWidth + "px).");' +
         'assert(document.body.scrollWidth <= innerWidth + 2, name + " causes body horizontal overflow at " + innerWidth + "px (" + document.body.scrollWidth + "px).");' +
         'const activeStyle = getComputedStyle(active);' +
@@ -1106,6 +1106,9 @@ async function main() {
       '}' +
       'Game.goHome();' +
       'document.documentElement.style.setProperty("--font-scale", "1");' +
+      'assert(!document.querySelector(".virtue-story"), "The home screen should not contain the extra garden/story panel.");' +
+      'assert(document.querySelector("#screen-menu .arcade-copy .learning-promise"), "The original learning promises should remain with the homepage intro.");' +
+      'assert(getComputedStyle(document.documentElement).scrollBehavior === "auto", "Root page scrolling should not smooth-animate scripted navigation.");' +
       'assert(document.documentElement.scrollWidth <= innerWidth + 2, "The home screen overflows horizontally at " + innerWidth + "px.");' +
       'assert(!document.querySelector(".seva-dedication"), "The dedication block must not appear on the main game page.");' +
       'assert(!(document.getElementById("screen-menu").innerText || "").includes("At the Lotus Feet of Bhagawan Sri Sathya Sai Baba"), "The main game page must keep the dedication on the Wiki only.");' +
