@@ -339,8 +339,8 @@ async function main() {
     'MathCourt.openCase(61); MathCourt.setRuleInput(5); assert(document.querySelectorAll(".mc-machine-box strong")[2].textContent==="11", "Rule Machine should calculate a live output.");' +
     'MathCourt.openCase(71); MathCourt.adjustShare(0,1); assert(document.querySelector(".mc-shares-summary").textContent.includes("10"), "Fair-Share Market should update the number of counters.");' +
     'MathCourt.openCase(81); MathCourt.extendRoute(1); assert(document.querySelector(".mc-shares-summary").textContent.includes("4"), "Route Garden should compute the selected road length.");' +
-    'MathCourt.openCase(91); MathCourt.adjustAllocation(0,1); assert(document.querySelector(".mc-budget-label").textContent.includes("9 of 12"), "Town Planner should update the resource budget.");
-    'MathCourt.openCase(5); MathCourt.toggleThirdOperand(); MathCourt.chooseLabSlot("a"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabSlot("b"); MathCourt.chooseLabNumber(0); MathCourt.chooseLabOperator("×"); MathCourt.chooseLabSlot("c"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabOperator2("+"); MathCourt.calculateLab(); assert(document.querySelector(".mc-equation-result strong").textContent==="78", "Number Forge should build the three-number chain (6 × 12) + 6.");' +' +
+    'MathCourt.openCase(91); MathCourt.adjustAllocation(0,1); assert(document.querySelector(".mc-budget-label").textContent.includes("9 of 12"), "Town Planner should update the resource budget.");' +
+    'MathCourt.openCase(5); MathCourt.toggleThirdOperand(); MathCourt.chooseLabSlot("a"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabSlot("b"); MathCourt.chooseLabNumber(0); MathCourt.chooseLabOperator("×"); MathCourt.chooseLabSlot("c"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabOperator2("+"); MathCourt.calculateLab(); assert(document.querySelector(".mc-equation-result strong").textContent==="78", "Number Forge should build the three-number chain (6 × 12) + 6.");' +
     'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");' +
     'assert(document.querySelectorAll("#mc-stage-content .mc-case-split > .mc-story-pane").length===1 && document.querySelectorAll("#mc-stage-content .mc-case-split > .mc-game-pane").length===1, "The case should split into a story half and play half.");' +
     'assert(parseFloat(getComputedStyle(document.querySelector("#mc-stage-content .mc-story-text")).fontSize)>=18, "Story text must be comfortably readable at 18px or larger.");' +
@@ -375,8 +375,8 @@ async function main() {
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Verdict", "The verdict stage is missing.");' +
     'MathCourt.selectVerdict("disproved"); MathCourt.advance();' +
     'assert(document.getElementById("mc-stage-name").textContent === "The court" + String.fromCharCode(39) + "s reflection", "The case did not reach the reflection stage.");' +
-    'assert(document.getElementById("mc-stage-content").innerText.includes("VIRTUE TO CARRY FORWARD"), "The virtue reflection is missing.");
-    assert(!/\\b(?:thieves|stolen|stealing|blame)\\b/i.test(document.getElementById("mc-stage-content").innerText), "The case play screen should avoid criminal/blaming language.");' +
+    'assert(document.getElementById("mc-stage-content").innerText.includes("VIRTUE TO CARRY FORWARD"), "The virtue reflection is missing.");' +
+    'assert(!/\\b(?:thieves|stolen|stealing|blame)\\b/i.test(document.getElementById("mc-stage-content").innerText), "The case play screen should avoid criminal/blaming language.");' +
     'MathCourt.advance();' +
     'const saved = JSON.parse(localStorage.getItem("mfa_math_court_v1"));' +
     'assert(saved.completed.includes(1), "Closing a case did not save its completion.");' +
