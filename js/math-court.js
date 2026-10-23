@@ -794,11 +794,11 @@
   }
   function renderTownPlanner(item,task) {
     const allocations=state.lab.allocations,total=allocations.reduce((s,n)=>s+n,0),goal=townGoal(item,task);
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🏡 TOWN PLANNER</span><h3>Make a plan that fits everyone's needs</h3><p>Allocate resource tokens, satisfy each stated minimum and keep within the shared budget.</p></div>'+
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🏡 TOWN PLANNER</span><h3>Make a plan that fits everyone&#39;s needs</h3><p>Allocate resource tokens, satisfy each stated minimum and keep within the shared budget.</p></div>'+
       '<div class="mc-workshop-target"><small>PLANNING CONSTRAINTS</small><strong>Use exactly '+goal.total+' tokens</strong><span>Minimum needs for A, B and C: '+goal.minimums.join(" · ")+'</span></div>'+
       '<div class="mc-resource-bar"><span style="width:'+(total/goal.total*100)+'%"></span></div><p class="mc-budget-label">'+total+' of '+goal.total+' tokens planned · '+(goal.total-total)+' still available</p>'+
       '<div class="mc-town-bins">'+allocations.map((n,i)=>'<div class="mc-town-bin"><strong>Town '+String.fromCharCode(65+i)+'</strong><div class="mc-town-tokens">'+Array.from({length:n},()=>'<i></i>').join("")+'</div><div class="mc-share-adjust"><button class="mc-stepper" onclick="MathCourt.adjustAllocation('+i+',-1)" aria-label="Remove a token from town '+String.fromCharCode(65+i)+'">−</button><strong>'+n+'</strong><button class="mc-stepper" '+(total>=goal.total?'disabled':'')+' onclick="MathCourt.adjustAllocation('+i+',1)" aria-label="Add a token to town '+String.fromCharCode(65+i)+'">+</button></div></div>').join("")+'</div>'+
-      '<p class="mc-play-feedback">'+(total===goal.total&&allocations.every((n,i)=>n>=goal.minimums[i])?"The plan fits the budget and every town's stated minimum.":total===goal.total?"The budget is fully allocated; check the minimums for each town.":"You have "+(goal.total-total)+" tokens to place. Meet the minimums and use the whole budget.")+'</p></section>';
+      '<p class="mc-play-feedback">'+(total===goal.total&&allocations.every((n,i)=>n>=goal.minimums[i])?"The plan fits the budget and every town&#39;s stated minimum.":total===goal.total?"The budget is fully allocated; check the minimums for each town.":"You have "+(goal.total-total)+" tokens to place. Meet the minimums and use the whole budget.")+'</p></section>';
   }
   function renderPlayActivity(item) {
     const task=state.investigationSolved?2:1;
