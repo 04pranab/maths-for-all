@@ -634,7 +634,6 @@
     } else if(state.phase===1) {
       left+=panel("THE CLUES ARE ON THE TABLE","Let’s look at both pieces together",'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><p>Every clue is visible now. Read the idea, compare the original record, and decide what you want to test in the maths playground.</p><div class="mc-evidence-pair"><article class="mc-evidence-card mc-evidence-claim"><span>🗣️ THE IDEA</span><strong>'+esc(item.claim)+'</strong></article><article class="mc-evidence-card mc-evidence-record"><span>🔎 THE ORIGINAL RECORD</span><strong>'+esc(item.evidence)+'</strong></article></div>'+virtue);
       right+=playground;
-      right+=panel("YOUR PLAY TABLE","Try it out before you calculate",'<p>Move the counters, change the rule, build the shape or trace a route. Your model stays here while the story and clues remain on the left.</p>');
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Build the maths model →</button>';
     } else if(state.phase===2) {
       left+=panel("YOUR INVESTIGATION","Let’s work it out",'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><div class="mc-claim"><span>QUESTION TO SOLVE</span><strong>'+esc(item.prompt)+'</strong></div><p>Use the pictures and manipulatives on the right to try strategies. You may experiment, revise and try again.</p>'+virtue);
