@@ -14,7 +14,8 @@ assert.deepEqual(data.phases, [
   "The case is called", "Witness examination", "Build the evidence",
   "New evidence", "Cross-examination", "Verdict", "The court's reflection"
 ]);
-const unhelpfulLanguage = /\b(thief|thieves|stolen|steal|stealing|theft|robbery|robber|robbed|murder|criminal|crime|liar|cheat|fraud|punish|guilty|blame|accuse|accused|accusation|dishonest|lie|lied|lies|wrongdoer|villain|suspect|suspicious)\b/i;\nconst discouragingLanguage = /\b(wrong|error|mistake|failure|fault|missing)\b/i;
+const unhelpfulLanguage = /\b(thief|thieves|stolen|steal|stealing|theft|robbery|robber|robbed|murder|criminal|crime|liar|cheat|fraud|punish|guilty|blame|accuse|accused|accusation|dishonest|lie|lied|lies|wrongdoer|villain|suspect|suspicious)\b/i;
+const discouragingLanguage = /\b(wrong|error|mistake|failure|fault|missing)\b/i;
 for (const item of data.cases) {
   assert.ok(item.story.length >= 30, "Case " + item.id + " needs a real story.");
   assert.ok(item.opening && item.opening.length >= 50, "Case " + item.id + " needs its own scene-setting story opening.");
