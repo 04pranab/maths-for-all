@@ -499,15 +499,21 @@
   function renderNumberForge(item) {
     const vals=visualNumbers(item).slice(0,5),lab=state.lab;
     const shown=lab.calculationResult===null?"?":String(lab.calculationResult);
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧱 NUMBER FORGE</span><h3>Build a calculation</h3><p>Choose a slot, place two number tiles and pick the operation that connects them.</p></div>'+
-      '<div class="mc-equation-board"><button class="mc-equation-slot '+(lab.slot==="a"?"is-selected":"")+'" data-slot="a" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT A</small><strong>'+esc(String(lab.a))+'</strong></button>'+
-      '<div class="mc-equation-operation">'+esc(lab.op)+'</div><button class="mc-equation-slot '+(lab.slot==="b"?"is-selected":"")+'" data-slot="b" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT B</small><strong>'+esc(String(lab.b))+'</strong></button>'+
+    const slot=(name,value)=>'<button type="button" class="mc-equation-slot '+(lab.slot===name?"is-selected":"")+'" data-slot="'+name+'" aria-pressed="'+(lab.slot===name)+'" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT '+name.toUpperCase()+'</small><strong>'+esc(String(value))+'</strong></button>';
+    const op=(value,second)=>'<span class="mc-equation-operation" aria-label="operation">'+esc(value)+'</span>';
+    const opPicker=(current,second)=>'<div class="mc-operation-picker mc-operation-picker-'+(second?"second":"first")+'">'+["+","-","×","÷"].map(value=>'<button type="button" class="mc-op-tile '+(current===value?"is-selected":"")+'" data-op="'+value+'" onclick="MathCourt.'+(second?"chooseLabOperator2":"chooseLabOperator")+'(this.dataset.op)">'+esc(value)+'</button>').join("")+'</div>';
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧱 NUMBER FORGE</span><h3>Build the calculation</h3><p>Place number tiles into slots, choose the operation, and watch your result appear. Some cases need one step; others need a chain.</p></div>'+
+      '<div class="mc-equation-board mc-equation-chain">'+slot("a",lab.a)+op(lab.op,false)+slot("b",lab.b)+
+      (lab.useThird?op(lab.op2,true)+slot("c",lab.c):'')+
       '<div class="mc-equation-equals">=</div><div class="mc-equation-result"><small>YOUR RESULT</small><strong>'+shown+'</strong></div></div>'+
-      '<div class="mc-number-pool">'+vals.map((n,i)=>'<button type="button" class="mc-number-tile" onclick="MathCourt.chooseLabNumber('+i+')">'+esc(String(n))+'</button>').join("")+'</div>'+
-      '<div class="mc-operation-picker">'+["+","-","×","÷"].map(op=>'<button type="button" class="mc-op-tile '+(lab.op===op?"is-selected":"")+'" data-op="'+op+'" onclick="MathCourt.chooseLabOperator(this.dataset.op)">'+esc(op)+'</button>').join("")+
-      '<button type="button" class="mc-button mc-button-primary mc-build-button" onclick="MathCourt.calculateLab()">Calculate it ✨</button></div>'+
-      '<p class="mc-play-feedback" aria-live="polite">'+esc(lab.note||"Try different combinations and notice how the result changes.")+'</p></section>';
+      '<div class="mc-number-pool" role="group" aria-label="Number tiles">'+vals.map((n,i)=>'<button type="button" class="mc-number-tile" data-number-index="'+i+'" onclick="MathCourt.chooseLabNumber('+i+')">'+esc(String(n))+'</button>').join("")+'</div>'+
+      '<div class="mc-forge-controls"><div><span class="mc-forge-label">STEP 1 · combine A and B</span>'+opPicker(lab.op,false)+'</div>'+
+      (lab.useThird?'<div><span class="mc-forge-label">STEP 2 · combine the result and C</span>'+opPicker(lab.op2,true)+'</div>':'')+
+      '<button type="button" class="mc-button mc-button-secondary mc-forge-chain-toggle" aria-pressed="'+lab.useThird+'" onclick="MathCourt.toggleThirdOperand()">'+(lab.useThird?'− Use two numbers':'＋ Add another step')+'</button>'+
+      '<button type="button" class="mc-button mc-button-primary mc-build-button" onclick="MathCourt.calculateLab()">Make the calculation ✨</button></div>'+
+      '<p class="mc-play-feedback" aria-live="polite">'+esc(lab.note||"Try different combinations. Notice how each operation changes the result.")+'</p></section>';
   }
+
   function renderPatternGarden(item) {
     const vals=visualNumbers(item).slice(0,4),lab=state.lab,last=vals[vals.length-1]||5;
     const step=lab.patternRule==="add1"?1:lab.patternRule==="add2"?2:lab.patternRule==="add3"?3:null;
@@ -679,5 +685,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,calculateLab,setPatternRule,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){state.lab.cells=[];refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){state.lab.cells=[];refreshCaseKeepingScroll();}};
 })(window);
