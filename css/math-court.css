@@ -1179,3 +1179,154 @@
 @media (prefers-reduced-motion:reduce) {
   #screen-math-court .mc-feedback-success { animation:none; }
 }
+
+
+/* Case-linked workshop goals: make the learner complete a visible task before giving a verdict. */
+#screen-math-court .mc-workshop-target {
+  display:grid;
+  gap:5px;
+  margin:13px 0;
+  padding:13px 15px;
+  border:1px solid #c6e2d1;
+  border-left:5px solid #267b70;
+  border-radius:13px;
+  background:#eff8f2;
+}
+#screen-math-court .mc-workshop-target small {
+  color:#2c7055;
+  font-size:.78rem;
+  letter-spacing:.08em;
+  font-weight:900;
+}
+#screen-math-court .mc-workshop-target strong {
+  color:#294c3c;
+  font-size:1.15rem;
+  line-height:1.35;
+}
+#screen-math-court .mc-workshop-target span {
+  color:#516b5e;
+  font-size:.96rem;
+  line-height:1.45;
+}
+#screen-math-court .mc-workshop-check {
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  margin-top:14px;
+  padding:14px;
+  border:1px solid #d9cce4;
+  border-radius:16px;
+  background:#f7f2fb;
+}
+#screen-math-court .mc-workshop-check.is-solved {
+  border-color:#a8d3b7;
+  background:#eff8f2;
+}
+#screen-math-court .mc-workshop-check-icon {
+  display:grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  border-radius:13px;
+  background:#e7ddf1;
+  color:#694c83;
+  font-size:1.35rem;
+  font-weight:900;
+}
+#screen-math-court .mc-workshop-check.is-solved .mc-workshop-check-icon {
+  background:#d6eddf;
+  color:#256c4b;
+}
+#screen-math-court .mc-workshop-check-copy { min-width:0; display:grid; gap:4px; }
+#screen-math-court .mc-workshop-check-copy small {
+  font-size:.76rem;
+  font-weight:900;
+  letter-spacing:.07em;
+  color:#6e5485;
+}
+#screen-math-court .mc-workshop-check-copy strong {
+  font-size:1.08rem;
+  line-height:1.3;
+  color:#3e3448;
+}
+#screen-math-court .mc-workshop-check-copy p {
+  margin:0;
+  color:#536168;
+  font-size:1rem;
+  line-height:1.48;
+}
+#screen-math-court .mc-workshop-complete {
+  grid-column:2/-1;
+  color:#286747;
+  font-size:.95rem;
+  font-weight:850;
+}
+#screen-math-court .mc-prediction-row {
+  display:flex;
+  gap:9px;
+  align-items:stretch;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+#screen-math-court .mc-play-number-input {
+  flex:1 1 120px;
+  min-width:0;
+  border:2px solid #cfc1dc;
+  border-radius:12px;
+  background:#fff;
+  color:#352b3f;
+  padding:10px 12px;
+  min-height:48px;
+  font:inherit;
+  font-size:1.1rem;
+}
+#screen-math-court .mc-play-number-input:focus-visible {
+  outline:3px solid #267b70;
+  outline-offset:2px;
+}
+#screen-math-court button.mc-data-bar-wrap {
+  appearance:none;
+  border:2px solid transparent;
+  border-radius:13px;
+  background:#f7f8f4;
+  color:inherit;
+  padding:8px 7px;
+  cursor:pointer;
+  font:inherit;
+}
+#screen-math-court button.mc-data-bar-wrap:hover { background:#edf7f0; border-color:#b7d9c5; }
+#screen-math-court button.mc-data-bar-wrap.is-selected {
+  border-color:#694c83;
+  background:#f2ebf8;
+  box-shadow:inset 0 0 0 1px #694c83;
+}
+#screen-math-court button.mc-data-bar-wrap:focus-visible {
+  outline:3px solid #267b70;
+  outline-offset:2px;
+}
+#screen-math-court .mc-data-bar-wrap .mc-data-bar-track {
+  width:100%;
+  min-width:30px;
+}
+#screen-math-court .mc-data-bar-wrap .mc-data-bar-track span {
+  transition:height .15s ease;
+}
+@media (max-width:760px) {
+  #screen-math-court .mc-workshop-check {
+    grid-template-columns:auto minmax(0,1fr);
+  }
+  #screen-math-court .mc-workshop-check>.mc-button {
+    grid-column:1/-1;
+    width:100%;
+  }
+  #screen-math-court .mc-workshop-complete { grid-column:1/-1; }
+}
+@media (max-width:420px) {
+  #screen-math-court .mc-workshop-target { padding:11px; }
+  #screen-math-court .mc-workshop-check { gap:9px; padding:11px; }
+  #screen-math-court .mc-play-number-input { flex-basis:100%; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #screen-math-court .mc-data-bar-wrap .mc-data-bar-track span { transition:none; }
+}

@@ -40,6 +40,13 @@ for (const item of data.cases) {
   assert.ok(["supported","disproved","partly","uncertain","insufficient"].includes(item.verdict), "Case " + item.id + " has an unsupported verdict.");
   assert.equal(typeof data.getCase(item.id), "object");
 }
+for (const [skill, check] of Object.entries(data.checks)) {
+  const visibleChoices = [check.prompt, ...check.choices].join(" ");
+  assert.ok(!unhelpfulLanguage.test(visibleChoices), "Cross-examination " + skill + " contains criminal/blaming language.");
+  assert.ok(!discouragingLanguage.test(visibleChoices), "Cross-examination " + skill + " contains discouraging language.");
+  assert.ok(check.choices.length >= 3 && Number.isInteger(check.correct) && check.correct >= 0 && check.correct < check.choices.length,
+    "Cross-examination " + skill + " needs a valid set of choices and answer key.");
+}
 const expectedAnswers = new Map([
   [1,"15"],[2,"63"],[5,"78"],[8,"36"],[10,"42"],[14,"12"],[16,"64"],[19,"8"],
   [21,"1/4"],[24,"₹400"],[30,"48 L"],[33,"16 m"],[38,"120 cm³"],[39,"10 m"],
