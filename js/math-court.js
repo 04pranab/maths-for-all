@@ -367,7 +367,7 @@
   function freshLab(item) {
     const nums=visualNumbers(item);
     return {
-      slot:"a",a:nums[0]===undefined?3:nums[0],b:nums[1]===undefined?2:nums[1],c:nums[2]===undefined?(nums[0]===undefined?3:nums[0]):nums[2],op:"-",op2:"+",useThird:false,
+      slot:"a",a:null,b:null,c:null,op:"+",op2:"+",useThird:false,
       calculationResult:null,patternRule:"add3",fractionNumerator:3,fractionDenominator:8,
       cells:[0,1,2,8,9,10],timelineMinutes:30,dataZoom:false,ruleInput:4,ruleType:"doublePlusOne",
       shares:[3,2,4],route:[0],allocations:[3,3,2],playCount:0,challengeBaseline:0,note:""
@@ -380,6 +380,7 @@
     lab.op=["+","-","×","÷"].includes(lab.op)?lab.op:"-";
     lab.op2=["+","-","×","÷"].includes(lab.op2)?lab.op2:"+";
     lab.useThird=Boolean(lab.useThird);
+    if(!Number.isInteger(saved.playCount)){lab.a=null;lab.b=null;lab.c=null;lab.op="+";lab.useThird=false;lab.calculationResult=null;}
     lab.playCount=Math.max(0,Math.floor(Number(lab.playCount)||0));
     lab.challengeBaseline=Math.max(0,Math.floor(Number(lab.challengeBaseline)||0));
     lab.patternRule=["add1","add2","add3","double"].includes(lab.patternRule)?lab.patternRule:"add3";
@@ -527,7 +528,7 @@
   function renderNumberForge(item) {
     const vals=visualNumbers(item).slice(0,5),lab=state.lab;
     const shown=lab.calculationResult===null?"?":String(lab.calculationResult);
-    const slot=(name,value)=>'<button type="button" class="mc-equation-slot '+(lab.slot===name?"is-selected":"")+'" data-slot="'+name+'" aria-pressed="'+(lab.slot===name)+'" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT '+name.toUpperCase()+'</small><strong>'+esc(String(value))+'</strong></button>';
+    const slot=(name,value)=>'<button type="button" class="mc-equation-slot '+(lab.slot===name?"is-selected":"")+'" data-slot="'+name+'" aria-pressed="'+(lab.slot===name)+'" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT '+name.toUpperCase()+'</small><strong>'+esc(value===null?"Place a tile":String(value))+'</strong></button>';
     const op=(value,second)=>'<span class="mc-equation-operation" aria-label="operation">'+esc(value)+'</span>';
     const opPicker=(current,second)=>'<div class="mc-operation-picker mc-operation-picker-'+(second?"second":"first")+'">'+["+","-","×","÷"].map(value=>'<button type="button" class="mc-op-tile '+(current===value?"is-selected":"")+'" data-op="'+value+'" onclick="MathCourt.'+(second?"chooseLabOperator2":"chooseLabOperator")+'(this.dataset.op)">'+esc(value)+'</button>').join("")+'</div>';
     return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧱 NUMBER FORGE</span><h3>Build the calculation</h3><p>Place number tiles into slots, choose the operation, and watch your result appear. Some cases need one step; others need a chain.</p></div>'+
