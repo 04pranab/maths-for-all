@@ -17,6 +17,7 @@ assert.deepEqual(data.phases, [
 const unhelpfulLanguage = /\b(thief|thieves|stolen|steal|stealing|theft|robbery|robber|robbed|murder|criminal|crime|liar|cheat|fraud|punish|guilty|blame|accuse|accused|accusation|dishonest|lie|lied|lies|wrongdoer|villain|suspect|suspicious)\b/i;\nconst discouragingLanguage = /\b(wrong|error|mistake|failure|fault|missing)\b/i;
 for (const item of data.cases) {
   assert.ok(item.story.length >= 30, "Case " + item.id + " needs a real story.");
+  assert.ok(item.opening && item.opening.length >= 50, "Case " + item.id + " needs its own scene-setting story opening.");
   assert.ok(item.claim.length >= 8, "Case " + item.id + " needs a claim to test.");
   assert.ok(item.prompt.endsWith("?"), "Case " + item.id + " needs a clear question.");
   assert.ok(item.options.every(option => typeof option === "string" && option.length > 0), "Case " + item.id + " has an empty answer option.");
@@ -29,8 +30,8 @@ for (const item of data.cases) {
   assert.ok(item.moral.length >= 15, "Case " + item.id + " needs a reflection/value.");
   assert.ok(item.virtue && item.virtue.length >= 3, "Case " + item.id + " needs a named virtue.");
   assert.ok(item.speaker && item.voice && item.voice.length >= 30, "Case " + item.id + " needs a character voice with warmth and purpose.");
-  assert.ok(!discouragingLanguage.test([item.title,item.story,item.narrative,item.claim,item.prompt,item.twist,item.moral,item.evidence,item.explanation,item.challenge.prompt,item.challenge.explanation,item.voice].join(" ")), "Case " + item.id + " contains discouraging wording where a constructive description is possible.");
-  const storyBundle = [item.title,item.story,item.narrative,item.claim,item.prompt,item.twist,item.moral,item.evidence,item.explanation,item.challenge.prompt,item.challenge.explanation,item.voice].join(" ");
+  assert.ok(!discouragingLanguage.test([item.title,item.opening,item.story,item.narrative,item.claim,item.prompt,item.twist,item.moral,item.evidence,item.explanation,item.challenge.prompt,item.challenge.explanation,item.voice,item.options.join(" "),item.challenge.options.join(" ")].join(" ")), "Case " + item.id + " contains discouraging wording where a constructive description is possible.");
+  const storyBundle = [item.title,item.opening,item.story,item.narrative,item.claim,item.prompt,item.twist,item.moral,item.evidence,item.explanation,item.challenge.prompt,item.challenge.explanation,item.voice,item.options.join(" "),item.challenge.options.join(" ")].join(" ");
   assert.ok(!unhelpfulLanguage.test(storyBundle), "Case " + item.id + " contains discouraged criminal/blaming language.");
   assert.ok(data.checks[item.check], "Case " + item.id + " references an unknown cross-examination skill.");
   assert.ok(["supported","disproved","partly","uncertain","insufficient"].includes(item.verdict), "Case " + item.id + " has an unsupported verdict.");
