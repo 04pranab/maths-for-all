@@ -419,6 +419,7 @@
   function chooseLabNumber(index) {
     const item=data().getCase(state.caseId),nums=visualNumbers(item);
     if(!Number.isInteger(index)||index<0||index>=nums.length)return;
+    if(state.lab[state.lab.slot]===nums[index]){state.lab.note="Choose a different number tile to change this slot.";refreshCaseKeepingScroll();return;}
     state.lab[state.lab.slot]=nums[index];
     markLabPlay();
     state.lab.calculationResult=null;
@@ -427,10 +428,12 @@
   }
   function chooseLabOperator(op) {
     if(!["+","-","×","÷"].includes(op))return;
+    if(state.lab.op===op){state.lab.note="Try a different operation to explore a new result.";refreshCaseKeepingScroll();return;}
     state.lab.op=op;markLabPlay();state.lab.calculationResult=null;refreshCaseKeepingScroll();
   }
   function chooseLabOperator2(op) {
     if(!["+","-","×","÷"].includes(op))return;
+    if(state.lab.op2===op){state.lab.note="Try another operation for the second step.";refreshCaseKeepingScroll();return;}
     state.lab.op2=op;markLabPlay();state.lab.calculationResult=null;refreshCaseKeepingScroll();
   }
   function toggleThirdOperand() {
@@ -453,11 +456,12 @@
   }
   function setPatternRule(rule) {
     if(!["add1","add2","add3","double"].includes(rule))return;
+    if(state.lab.patternRule===rule)return;
     state.lab.patternRule=rule;markLabPlay();refreshCaseKeepingScroll();
   }
   function setFraction(which,delta) {
     if(!["numerator","denominator"].includes(which))return;
-    markLabPlay();
+    const oldNumerator=state.lab.fractionNumerator,oldDenominator=state.lab.fractionDenominator;
     if(which==="numerator")state.lab.fractionNumerator=Math.max(0,Math.min(state.lab.fractionDenominator,state.lab.fractionNumerator+delta));
     if(which==="denominator"){
       const choices=[2,3,4,6,8,10,12],i=choices.indexOf(state.lab.fractionDenominator);
@@ -465,6 +469,7 @@
       state.lab.fractionDenominator=choices[next];
       state.lab.fractionNumerator=Math.min(state.lab.fractionNumerator,state.lab.fractionDenominator);
     }
+    if(oldNumerator!==state.lab.fractionNumerator||oldDenominator!==state.lab.fractionDenominator)markLabPlay();
     refreshCaseKeepingScroll();
   }
   function toggleShapeCell(index) {
@@ -486,21 +491,27 @@
     return {area:cells.size,perimeter};
   }
   function setLabTimeline(value) {
-    state.lab.timelineMinutes=Math.max(0,Math.min(180,Number(value)||0));markLabPlay();refreshCaseKeepingScroll();
+    const next=Math.max(0,Math.min(180,Number(value)||0));
+    if(next===state.lab.timelineMinutes)return;
+    state.lab.timelineMinutes=next;markLabPlay();refreshCaseKeepingScroll();
   }
   function toggleDataZoom() {
     state.lab.dataZoom=!state.lab.dataZoom;markLabPlay();refreshCaseKeepingScroll();
   }
   function setRuleInput(value) {
-    state.lab.ruleInput=Math.max(1,Math.min(12,Number(value)||1));markLabPlay();refreshCaseKeepingScroll();
+    const next=Math.max(1,Math.min(12,Number(value)||1));
+    if(next===state.lab.ruleInput)return;
+    state.lab.ruleInput=next;markLabPlay();refreshCaseKeepingScroll();
   }
   function setRuleType(rule) {
     if(!["doublePlusOne","add3","triple","square"].includes(rule))return;
+    if(state.lab.ruleType===rule)return;
     state.lab.ruleType=rule;markLabPlay();refreshCaseKeepingScroll();
   }
   function adjustShare(group,delta) {
     if(!Number.isInteger(group)||group<0||group>2)return;
-    state.lab.shares[group]=Math.max(0,Math.min(15,state.lab.shares[group]+delta));markLabPlay();
+    const next=Math.max(0,Math.min(15,state.lab.shares[group]+delta));if(next===state.lab.shares[group])return;
+    state.lab.shares[group]=next;markLabPlay();
     refreshCaseKeepingScroll();
   }
   const routeEdges=[[0,1,4],[1,2,5],[0,3,2],[3,4,3],[4,2,2],[1,4,4]];
@@ -513,7 +524,7 @@
     if(!routeEdge(route[route.length-1],node)){state.lab.note="Choose a connected stop. The roads show where you can travel next.";setFeedback(state.lab.note,"hint");refreshCaseKeepingScroll();return;}
     route.push(node);markLabPlay();state.lab.note="Route extended. Add up the road lengths to compare journeys.";refreshCaseKeepingScroll();
   }
-  function resetRoute() {state.lab.route=[0];markLabPlay();state.lab.note="Begin at A and build a connected route.";refreshCaseKeepingScroll();}
+  function resetRoute() {if(state.lab.route.length===1&&state.lab.route[0]===0)return;state.lab.route=[0];markLabPlay();state.lab.note="Begin at A and build a connected route.";refreshCaseKeepingScroll();}
   function adjustAllocation(group,delta) {
     if(!Number.isInteger(group)||group<0||group>2)return;
     const next=state.lab.allocations[group]+delta;
@@ -717,5 +728,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
 })(window);
