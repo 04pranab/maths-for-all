@@ -511,8 +511,9 @@
     const op=(value,second)=>'<span class="mc-equation-operation" aria-label="operation">'+esc(value)+'</span>';
     const opPicker=(current,second)=>'<div class="mc-operation-picker mc-operation-picker-'+(second?"second":"first")+'">'+["+","-","×","÷"].map(value=>'<button type="button" class="mc-op-tile '+(current===value?"is-selected":"")+'" data-op="'+value+'" onclick="MathCourt.'+(second?"chooseLabOperator2":"chooseLabOperator")+'(this.dataset.op)">'+esc(value)+'</button>').join("")+'</div>';
     return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧱 NUMBER FORGE</span><h3>Build the calculation</h3><p>Place number tiles into slots, choose the operation, and watch your result appear. Some cases need one step; others need a chain.</p></div>'+
-      '<div class="mc-equation-board mc-equation-chain">'+slot("a",lab.a)+op(lab.op,false)+slot("b",lab.b)+
-      (lab.useThird?op(lab.op2,true)+slot("c",lab.c):'')+
+      '<div class="mc-equation-board mc-equation-chain">'+
+      (lab.useThird?op("(",false):'')+slot("a",lab.a)+op(lab.op,false)+slot("b",lab.b)+
+      (lab.useThird?op(")",false)+op(lab.op2,true)+slot("c",lab.c):'')+
       '<div class="mc-equation-equals">=</div><div class="mc-equation-result"><small>YOUR RESULT</small><strong>'+shown+'</strong></div></div>'+
       '<div class="mc-number-pool" role="group" aria-label="Number tiles">'+vals.map((n,i)=>'<button type="button" class="mc-number-tile" data-number-index="'+i+'" onclick="MathCourt.chooseLabNumber('+i+')">'+esc(String(n))+'</button>').join("")+'</div>'+
       '<div class="mc-forge-controls"><div><span class="mc-forge-label">STEP 1 · combine A and B</span>'+opPicker(lab.op,false)+'</div>'+
