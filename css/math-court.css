@@ -925,3 +925,22 @@
 @media (prefers-reduced-motion:reduce) {
   #screen-math-court .mc-resource-bar span { transition:none; }
 }
+
+
+/* Accessibility finish: comfortable reading size and larger primary actions. */
+#screen-math-court .mc-panel p { font-size:1.125rem; }
+#screen-math-court .mc-story-text { font-size:1.18rem!important; line-height:1.68!important; }
+#screen-math-court .mc-button { font-size:1.08rem; }
+#screen-math-court .mc-option { font-size:1.08rem; }
+#screen-math-court .mc-answer-tile strong { font-size:1.1rem; }
+#screen-math-court .mc-story-guide p { font-size:1.03rem; }
+#screen-math-court .mc-visual-lab .mc-visual-header h3 { font-size:1.14rem; }
+#screen-math-court .mc-visual-lab .mc-visual-header p { font-size:.9rem; }
+#screen-math-court .mc-visual-lab .mc-value-chip { font-size:.86rem; }
+#screen-math-court .mc-play-heading p { font-size:1.02rem; }
+#screen-math-court .mc-kindness-note p { font-size:1.03rem; }
+@media (min-width:681px) {
+  #screen-math-court .mc-case-split { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  #screen-math-court .mc-story-pane,
+  #screen-math-court .mc-game-pane { overflow-x:hidden; }
+}
