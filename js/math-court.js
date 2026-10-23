@@ -485,11 +485,11 @@
     const vals=visualNumbers(item).slice(0,5),lab=state.lab;
     const shown=lab.calculationResult===null?"?":String(lab.calculationResult);
     return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧱 NUMBER FORGE</span><h3>Build a calculation</h3><p>Choose a slot, place two number tiles and pick the operation that connects them.</p></div>'+
-      '<div class="mc-equation-board"><button class="mc-equation-slot '+(lab.slot==="a"?"is-selected":"")+'" onclick="MathCourt.chooseLabSlot(\\'a\\')"><small>SLOT A</small><strong>'+esc(String(lab.a))+'</strong></button>'+
-      '<div class="mc-equation-operation">'+esc(lab.op)+'</div><button class="mc-equation-slot '+(lab.slot==="b"?"is-selected":"")+'" onclick="MathCourt.chooseLabSlot(\\'b\\')"><small>SLOT B</small><strong>'+esc(String(lab.b))+'</strong></button>'+
+      '<div class="mc-equation-board"><button class="mc-equation-slot '+(lab.slot==="a"?"is-selected":"")+'" data-slot="a" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT A</small><strong>'+esc(String(lab.a))+'</strong></button>'+
+      '<div class="mc-equation-operation">'+esc(lab.op)+'</div><button class="mc-equation-slot '+(lab.slot==="b"?"is-selected":"")+'" data-slot="b" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT B</small><strong>'+esc(String(lab.b))+'</strong></button>'+
       '<div class="mc-equation-equals">=</div><div class="mc-equation-result"><small>YOUR RESULT</small><strong>'+shown+'</strong></div></div>'+
       '<div class="mc-number-pool">'+vals.map((n,i)=>'<button type="button" class="mc-number-tile" onclick="MathCourt.chooseLabNumber('+i+')">'+esc(String(n))+'</button>').join("")+'</div>'+
-      '<div class="mc-operation-picker">'+["+","-","×","÷"].map(op=>'<button type="button" class="mc-op-tile '+(lab.op===op?"is-selected":"")+'" onclick="MathCourt.chooseLabOperator(\\''+op+'\\')">'+esc(op)+'</button>').join("")+
+      '<div class="mc-operation-picker">'+["+","-","×","÷"].map(op=>'<button type="button" class="mc-op-tile '+(lab.op===op?"is-selected":"")+'" data-op="'+op+'" onclick="MathCourt.chooseLabOperator(this.dataset.op)">'+esc(op)+'</button>').join("")+
       '<button type="button" class="mc-button mc-button-primary mc-build-button" onclick="MathCourt.calculateLab()">Calculate it ✨</button></div>'+
       '<p class="mc-play-feedback" aria-live="polite">'+esc(lab.note||"Try different combinations and notice how the result changes.")+'</p></section>';
   }
@@ -499,16 +499,16 @@
     const next=step===null?last*2:last+step;
     return '<section class="mc-math-play"><div class="mc-play-heading"><span>🌱 PATTERN GARDEN</span><h3>Grow the next number</h3><p>Change the rule and watch how the number path grows.</p></div>'+
       '<div class="mc-pattern-path">'+vals.map((n,i)=>'<div class="mc-pattern-stone"><small>'+String(i+1).padStart(2,"0")+'</small><strong>'+esc(String(n))+'</strong></div>').join("")+'<div class="mc-pattern-stone mc-pattern-next"><small>NEXT</small><strong>'+esc(String(next))+'</strong></div></div>'+
-      '<div class="mc-rule-tiles">'+[{id:"add1",label:"+ 1"},{id:"add2",label:"+ 2"},{id:"add3",label:"+ 3"},{id:"double",label:"× 2"}].map(r=>'<button class="mc-op-tile '+(lab.patternRule===r.id?"is-selected":"")+'" onclick="MathCourt.setPatternRule(\\''+r.id+'\\')">'+r.label+'</button>').join("")+'</div>'+
+      '<div class="mc-rule-tiles">'+[{id:"add1",label:"+ 1"},{id:"add2",label:"+ 2"},{id:"add3",label:"+ 3"},{id:"double",label:"× 2"}].map(r=>'<button class="mc-op-tile '+(lab.patternRule===r.id?"is-selected":"")+'" data-rule="'+r.id+'" onclick="MathCourt.setPatternRule(this.dataset.rule)">'+r.label+'</button>').join("")+'</div>'+
       '<p class="mc-play-feedback">Rule selected: '+(step===null?"double the last value":"add "+step)+" · next value = "+next+'</p></section>';
   }
   function renderFractionStudio() {
     const lab=state.lab,den=lab.fractionDenominator,num=lab.fractionNumerator;
     return '<section class="mc-math-play"><div class="mc-play-heading"><span>🍰 FRACTION STUDIO</span><h3>Share the whole</h3><p>Change the number of equal parts and shade how many belong in your share.</p></div>'+
-      '<div class="mc-fraction-strip" role="img" aria-label="'+num+' of '+den+' equal parts selected">'+Array.from({length:den},(_,i)=>'<button type="button" class="mc-fraction-part '+(i<num?"is-filled":"")+'" aria-label="Part '+(i+1)+'" onclick="MathCourt.setFraction(\\'numerator\\','+(i<num?-1:1)+')"></button>').join("")+'</div>'+
+      '<div class="mc-fraction-strip" role="img" aria-label="'+num+' of '+den+' equal parts selected">'+Array.from({length:den},(_,i)=>'<button type="button" class="mc-fraction-part '+(i<num?"is-filled":"")+'" aria-label="Part '+(i+1)+'" data-which="numerator" data-delta="'+(i<num?-1:1)+'" onclick="MathCourt.setFraction(this.dataset.which,Number(this.dataset.delta))"></button>').join("")+'</div>'+
       '<div class="mc-fraction-equation"><strong>'+num+'/'+den+'</strong><span>of one whole</span><strong>'+Math.round(num/den*100)+'%</strong></div>'+
-      '<div class="mc-play-control-row"><span>Shade parts</span><button class="mc-stepper" onclick="MathCourt.setFraction(\\'numerator\\',-1)" aria-label="One fewer shaded part">−</button><button class="mc-stepper" onclick="MathCourt.setFraction(\\'numerator\\',1)" aria-label="One more shaded part">+</button></div>'+
-      '<div class="mc-play-control-row"><span>Equal slices</span><button class="mc-stepper" onclick="MathCourt.setFraction(\\'denominator\\',-1)" aria-label="Fewer equal parts">−</button><strong>'+den+'</strong><button class="mc-stepper" onclick="MathCourt.setFraction(\\'denominator\\',1)" aria-label="More equal parts">+</button></div></section>';
+      '<div class="mc-play-control-row"><span>Shade parts</span><button class="mc-stepper" data-which="numerator" data-delta="-1" onclick="MathCourt.setFraction(this.dataset.which,-1)" aria-label="One fewer shaded part">−</button><button class="mc-stepper" data-which="numerator" data-delta="1" onclick="MathCourt.setFraction(this.dataset.which,1)" aria-label="One more shaded part">+</button></div>'+
+      '<div class="mc-play-control-row"><span>Equal slices</span><button class="mc-stepper" data-which="denominator" data-delta="-1" onclick="MathCourt.setFraction(this.dataset.which,-1)" aria-label="Fewer equal parts">−</button><strong>'+den+'</strong><button class="mc-stepper" data-which="denominator" data-delta="1" onclick="MathCourt.setFraction(this.dataset.which,1)" aria-label="More equal parts">+</button></div></section>';
   }
   function renderShapeWorkshop() {
     const stats=shapeStats();
@@ -537,7 +537,7 @@
     return '<section class="mc-math-play"><div class="mc-play-heading"><span>⚙️ RULE MACHINE</span><h3>Feed a number into the machine</h3><p>Choose a rule, then move the input to watch the output update.</p></div>'+
       '<div class="mc-machine-flow"><div class="mc-machine-box"><small>INPUT</small><strong>'+x+'</strong></div><div class="mc-machine-arrow">→</div><div class="mc-machine-box mc-machine-core"><small>RULE</small><strong>'+(lab.ruleType==="doublePlusOne"?"2x + 1":lab.ruleType==="add3"?"x + 3":lab.ruleType==="triple"?"3x":"x²")+'</strong></div><div class="mc-machine-arrow">→</div><div class="mc-machine-box"><small>OUTPUT</small><strong>'+y+'</strong></div></div>'+
       '<label class="mc-range-label" for="mc-rule-input">Change input</label><input id="mc-rule-input" class="mc-range" type="range" min="1" max="12" value="'+x+'" oninput="MathCourt.setRuleInput(this.value)"/>'+
-      '<div class="mc-rule-tiles">'+[{id:"doublePlusOne",label:"2x + 1"},{id:"add3",label:"x + 3"},{id:"triple",label:"3x"},{id:"square",label:"x²"}].map(r=>'<button class="mc-op-tile '+(lab.ruleType===r.id?"is-selected":"")+'" onclick="MathCourt.setRuleType(\\''+r.id+'\\')">'+r.label+'</button>').join("")+'</div>'+
+      '<div class="mc-rule-tiles">'+[{id:"doublePlusOne",label:"2x + 1"},{id:"add3",label:"x + 3"},{id:"triple",label:"3x"},{id:"square",label:"x²"}].map(r=>'<button class="mc-op-tile '+(lab.ruleType===r.id?"is-selected":"")+'" data-rule="'+r.id+'" onclick="MathCourt.setRuleType(this.dataset.rule)">'+r.label+'</button>').join("")+'</div>'+
       '<p class="mc-play-feedback">'+y+' comes from applying '+(lab.ruleType==="doublePlusOne"?"2 × "+x+" + 1":lab.ruleType==="add3"?x+" + 3":lab.ruleType==="triple"?"3 × "+x:x+" × "+x)+'.</p></section>';
   }
   function renderShareMarket() {
