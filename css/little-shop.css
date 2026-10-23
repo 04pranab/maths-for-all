@@ -246,3 +246,9 @@
   #screen-little-shop .ls-item-copy p { font-size: .9rem; }
   #screen-little-shop .ls-add { min-height: 42px; font-size: 1rem; }
 }
+
+
+/* Keep the latest wide-counter rule responsive on narrow screens. */
+@media (max-width: 760px) {
+  #screen-little-shop .ls-game { grid-template-columns: minmax(0, 1fr); }
+}
