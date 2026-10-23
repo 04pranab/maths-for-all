@@ -15,8 +15,8 @@
       "89"
     ],
     "answer": 0,
-    "explanation": "52 − 37 = 15 crates were recorded on the second cart. Both records fit together to account for the complete delivery.",
-    "twist": "Pip finds the second cart's beautifully neat manifest, recorded ten minutes later. Adding 37 and 15 gives the full 52-crate order. The two notes were snapshots of different moments.",
+    "explanation": "52 − 37 = 15 crates were recorded on the second cart. The two tallies add to the full order of 52 crates.",
+    "twist": "Pip finds the second cart's neat manifest, recorded ten minutes later. Adding 37 and 15 completes the 52-crate order: each note captured a different moment.",
     "moral": "Patience and careful checking help a community see the whole picture.",
     "verdict": "disproved",
     "check": "calculation",
@@ -32,7 +32,9 @@
       "explanation": "37 + 15 = 52. The later manifest reconciles the shipment."
     },
     "virtue": "Perseverance",
-    "narrative": "A team of patient planners is preparing a shared celebration and wants the numbers to support a smooth day.\n\nThe festival's craft team received 52 crates in two carts. They carefully recorded 37 crates from the first cart and are using the second cart's tally to complete the picture.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "A team of patient planners is preparing a shared celebration and wants the numbers to support a smooth day.\n\nThe festival's craft team received 52 crates in two carts. They carefully recorded 37 crates from the first cart and are using the second cart's tally to complete the picture.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Judge Mira",
+    "voice": "Before the festival begins, let’s count each cart carefully so every craft table gets what it needs."
   },
   {
     "id": 2,
@@ -64,13 +66,15 @@
       "explanation": "407 + 63 = 470, returning to the larger recorded quantity."
     },
     "virtue": "Perseverance",
-    "narrative": "Festival lanterns are warming the square, and Pip is helping neighbours get ready for a joyful gathering.\n\nA banner maker received two handwritten totals. One says 407; the other says 470.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "Festival lanterns are warming the square, and Pip is helping neighbours get ready for a joyful gathering.\n\nA banner maker received two handwritten totals. One says 407; the other says 470.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Pip",
+    "voice": "That last digit changes the banner’s story. Let’s compare the totals and see how far apart they are."
   },
   {
     "id": 3,
     "chapter": 1,
     "title": "The Receipt Puzzle",
-    "story": "A receipt lists items costing ₹18, ₹12 and ₹12. The customer says the final ₹12 line was copied twice for the same item.",
+    "story": "A receipt lists items costing ₹18, ₹12 and ₹12. The customer and maker compare item notes to check whether the final ₹12 line refers to a separate purchase.",
     "claim": "The customer claims the corrected bill is ₹42.",
     "prompt": "What is the bill after removing the duplicated ₹12 line?",
     "options": [
@@ -80,11 +84,11 @@
     ],
     "answer": 0,
     "explanation": "₹18 + ₹12 = ₹30. Removing the duplicate line avoids charging twice for the same item.",
-    "twist": "The second ₹12 entry turns out to be a copying error, not an extra purchase.",
-    "moral": "Honesty and care make shared records dependable. A small correction can help everyone move forward with confidence.",
+    "twist": "The item notes match the two ₹12 lines to the same purchase. The customer and maker update the receipt together and confirm the total from the items actually supplied.",
+    "moral": "Honesty and care make shared records dependable. Clear details help everyone move forward with confidence.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "The second ₹12 entry refers to the same item as the first.",
+    "evidence": "The item notes show that both ₹12 lines refer to the same purchase.",
     "challenge": {
       "prompt": "The corrected bill is ₹30 and the customer pays ₹50. How much change should be returned?",
       "options": [
@@ -96,7 +100,9 @@
       "explanation": "₹50 − ₹30 = ₹20 change."
     },
     "virtue": "Honesty",
-    "narrative": "The community hall is bright with ribbons; the helpers are checking little details so every guest feels welcome.\n\nA receipt lists items costing ₹18, ₹12 and ₹12. The customer says the final ₹12 line was copied twice for the same item.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The community hall is bright with ribbons; the helpers are checking little details so every guest feels welcome.\n\nA receipt lists items costing ₹18, ₹12 and ₹12. The customer and maker compare item notes to check whether the final ₹12 line refers to a separate purchase.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Asha",
+    "voice": "A clear receipt helps the customer and maker trust the same list. Let’s check each item together."
   },
   {
     "id": 4,
@@ -128,7 +134,9 @@
       "explanation": "Eight rows × eight seats = 64 seats."
     },
     "virtue": "Curiosity",
-    "narrative": "A team of patient planners is preparing a shared celebration and wants the numbers to support a smooth day.\n\nSix rows of seats hold eight people each. A photograph shows every seat occupied, but a marshal counted people also standing near the entrance.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "A team of patient planners is preparing a shared celebration and wants the numbers to support a smooth day.\n\nSix rows of seats hold eight people each. A photograph shows every seat occupied, but a marshal counted people also standing near the entrance.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Dot",
+    "voice": "Every seat matters. Let’s count the rows and make room for everyone who has a place."
   },
   {
     "id": 5,
@@ -160,13 +168,15 @@
       "explanation": "Six full carts × 12 jars = 72 jars."
     },
     "virtue": "Perseverance",
-    "narrative": "Festival lanterns are warming the square, and Pip is helping neighbours get ready for a joyful gathering.\n\nSix carts carry 12 full jars each. A seventh cart arrives with only six jars because it was loaded halfway.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "Festival lanterns are warming the square, and Pip is helping neighbours get ready for a joyful gathering.\n\nSix carts carry 12 full jars each. A seventh cart arrives with only six jars because it was loaded halfway.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Judge Mira",
+    "voice": "Let’s honour the half-full cart as it is, then add all the jars to plan the water station."
   },
   {
     "id": 6,
     "chapter": 1,
     "title": "The Coin Count",
-    "story": "Two ledgers report 304 coins and 34 coins. The clerk says one must be wrong and asks the court to quantify the discrepancy.",
+    "story": "Two ledger pages show 304 coins and 34 coins. The clerk invites the team to work out the difference, then compare when each total was recorded.",
     "claim": "The clerk claims the difference is 280 coins.",
     "prompt": "What is 304 − 34?",
     "options": [
@@ -175,12 +185,12 @@
       "370"
     ],
     "answer": 0,
-    "explanation": "304 − 34 = 270 coins. The difference can be checked by adding 270 back to 34 to get 304.",
-    "twist": "The smaller total was written before the day's final deposit, so the records refer to different times.",
+    "explanation": "304 − 34 = 270 coins. The difference is 270, and the timestamps show why the pages do not describe the same moment.",
+    "twist": "The smaller total was recorded before the day's final deposit, so the pages describe different moments. The timeline helps the team understand both totals.",
     "moral": "Clear, accurate records help everyone trust the picture and make decisions together.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "The two ledgers were written at different times.",
+    "evidence": "Ledger page A: 304 coins. Ledger page B: 34 coins. The pages were written at different times.",
     "challenge": {
       "prompt": "Check the subtraction using addition. What is 34 + 270?",
       "options": [
@@ -192,7 +202,9 @@
       "explanation": "34 + 270 = 304, confirming the subtraction."
     },
     "virtue": "Honesty",
-    "narrative": "The community hall is bright with ribbons; the helpers are checking little details so every guest feels welcome.\n\nTwo ledgers report 304 coins and 34 coins. The clerk says one must be wrong and asks the court to quantify the discrepancy.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The community hall is bright with ribbons; the helpers are checking little details so every guest feels welcome.\n\nTwo ledger pages show 304 coins and 34 coins. The clerk invites the team to work out the difference, then compare when each total was recorded.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Pip",
+    "voice": "These ledger pages may describe different moments. Let’s compare the numbers and the times."
   },
   {
     "id": 7,
@@ -224,13 +236,15 @@
       "explanation": "28 + 17 − 3 = 42 distinct visitors."
     },
     "virtue": "Honesty",
-    "narrative": "A team of patient planners is preparing a shared celebration and wants the numbers to support a smooth day.\n\nThere are 28 visitors at the north gate and 17 at the south. Five people appear on both lists because they passed through both gates.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "A team of patient planners is preparing a shared celebration and wants the numbers to support a smooth day.\n\nThere are 28 visitors at the north gate and 17 at the south. Five people appear on both lists because they passed through both gates.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Asha",
+    "voice": "Several guests used both gates. Let’s count each person once so the welcome team can plan well."
   },
   {
     "id": 8,
     "chapter": 1,
     "title": "The Helper's Number Check",
-    "story": "A helper subtracts 47 from 83 and writes 46. A second helper suspects a regrouping error.",
+    "story": "A helper subtracts 47 from 83 and writes 46. A second helper invites the group to check the result with addition.",
     "claim": "The first helper says 83 − 47 = 46.",
     "prompt": "What is the correct difference?",
     "options": [
@@ -239,12 +253,12 @@
       "56"
     ],
     "answer": 0,
-    "explanation": "83 − 47 = 36. Check by addition: 36 + 47 = 83.",
-    "twist": "The inverse-operation check exposes the slip.",
+    "explanation": "83 − 47 = 36. Check it by adding back: 36 + 47 = 83.",
+    "twist": "Adding 47 to 46 gives 93, so the inverse-operation check guides the team to 36. The helper uses the discovery to strengthen their next calculation.",
     "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "The result should add back to 83 when 47 is added.",
+    "evidence": "The answer should combine with 47 to return to 83.",
     "challenge": {
       "prompt": "Which sum checks the corrected answer to 83 − 47?",
       "options": [
@@ -256,7 +270,9 @@
       "explanation": "Adding the subtracted quantity back must recover the starting number."
     },
     "virtue": "Perseverance",
-    "narrative": "Festival lanterns are warming the square, and Pip is helping neighbours get ready for a joyful gathering.\n\nA helper subtracts 47 from 83 and writes 46. A second helper suspects a regrouping error.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "Festival lanterns are warming the square, and Pip is helping neighbours get ready for a joyful gathering.\n\nA helper subtracts 47 from 83 and writes 46. A second helper invites the group to check the result with addition.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Dot",
+    "voice": "Everyone learns by trying. Let’s use addition to check the helper’s subtraction together."
   },
   {
     "id": 9,
@@ -288,7 +304,9 @@
       "explanation": "74 rounds to 70; 77 and 82 round to 80."
     },
     "virtue": "Curiosity",
-    "narrative": "The community hall is bright with ribbons; the helpers are checking little details so every guest feels welcome.\n\nA report rounds a visitor count to the nearest ten and records 80. The mayor treats 80 as an exact count.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The community hall is bright with ribbons; the helpers are checking little details so every guest feels welcome.\n\nA report rounds a visitor count to the nearest ten and records 80. The mayor treats 80 as an exact count.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Judge Mira",
+    "voice": "A rounded total tells a range, not every detail. Let’s discover which counts fit."
   },
   {
     "id": 10,
@@ -320,7 +338,9 @@
       "explanation": "120 opening candles + 65 delivered candles = 185 available."
     },
     "virtue": "Perseverance",
-    "narrative": "A team of patient planners is preparing a shared celebration and wants the numbers to support a smooth day.\n\nThe tower began with 120 candles, received 65 more and used 143 during the ceremony.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "A team of patient planners is preparing a shared celebration and wants the numbers to support a smooth day.\n\nThe tower began with 120 candles, received 65 more and used 143 during the ceremony.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Pip",
+    "voice": "The tower lanterns made the evening glow. Let’s find what remains for tomorrow’s gathering."
   },
   {
     "id": 11,
@@ -352,7 +372,9 @@
       "explanation": "4 + 2 + 5 = 11, which is not divisible by three."
     },
     "virtue": "Clarity",
-    "narrative": "The archive's practice locks and number seals turn arithmetic into a friendly puzzle for the young apprentices.\n\nThe archive practice lock accepts a three-digit code divisible by three. The clerk suggests 425 because every digit is odd.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The archive's practice locks and number seals turn arithmetic into a friendly puzzle for the young apprentices.\n\nThe archive practice lock accepts a three-digit code divisible by three. The clerk suggests 425 because every digit is odd.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Asha",
+    "voice": "Let’s test the lock’s number rule, not just how the digits look."
   },
   {
     "id": 12,
@@ -384,7 +406,9 @@
       "explanation": "21 = 3 × 7, so it has factors besides 1 and itself."
     },
     "virtue": "Clarity",
-    "narrative": "The bell-tower crew loves discovering rules and checking how a pattern grows.\n\nA gardener labels 21 a prime number because it is odd. The court checks whether it has factors besides 1 and itself.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The bell-tower crew loves discovering rules and checking how a pattern grows.\n\nA gardener labels 21 a prime number because it is odd. The court checks whether it has factors besides 1 and itself.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Dot",
+    "voice": "Prime numbers follow a special rule. Let’s look for a divisor we can test together."
   },
   {
     "id": 13,
@@ -416,7 +440,9 @@
       "explanation": "4 × 7 = 28, leaving two lanterns."
     },
     "virtue": "Perseverance",
-    "narrative": "In the Number Garden, every clue is a stepping stone; the learners compare patterns with curiosity.\n\nTwenty-nine lanterns must be split among four equal teams. The organiser says no lantern will remain.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "In the Number Garden, every clue is a stepping stone; the learners compare patterns with curiosity.\n\nTwenty-nine lanterns must be split among four equal teams. The organiser says no lantern will remain.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Judge Mira",
+    "voice": "Every team deserves a fair share. Let’s see what happens to the final lantern."
   },
   {
     "id": 14,
@@ -448,7 +474,9 @@
       "explanation": "24 ÷ 12 = 2 teams and 36 ÷ 12 = 3 teams."
     },
     "virtue": "Perseverance",
-    "narrative": "The archive's practice locks and number seals turn arithmetic into a friendly puzzle for the young apprentices.\n\nGroups of 24 and 36 volunteers must be divided into same-sized teams with no one left out.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The archive's practice locks and number seals turn arithmetic into a friendly puzzle for the young apprentices.\n\nGroups of 24 and 36 volunteers must be divided into same-sized teams with no one left out.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Pip",
+    "voice": "We need a team size that works for both groups. Common factors can help everyone belong."
   },
   {
     "id": 15,
@@ -480,7 +508,9 @@
       "explanation": "The tenth term is 4 + 9 × 3 = 31."
     },
     "virtue": "Curiosity",
-    "narrative": "The bell-tower crew loves discovering rules and checking how a pattern grows.\n\nA bell keeper records 4, 7, 10, 13. A witness predicts 17 because the values increase.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The bell-tower crew loves discovering rules and checking how a pattern grows.\n\nA bell keeper records 4, 7, 10, 13. A witness predicts 17 because the values increase.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Asha",
+    "voice": "The bell keeps a steady rhythm. Listen to the gap between each number and grow the pattern."
   },
   {
     "id": 16,
@@ -512,7 +542,9 @@
       "explanation": "64 − 16 = 48 additional stones."
     },
     "virtue": "Fairness",
-    "narrative": "In the Number Garden, every clue is a stepping stone; the learners compare patterns with curiosity.\n\nA path has a 4 by 4 grid of stones. A builder doubles both side lengths and claims the number of stones merely doubles.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "In the Number Garden, every clue is a stepping stone; the learners compare patterns with curiosity.\n\nA path has a 4 by 4 grid of stones. A builder doubles both side lengths and claims the number of stones merely doubles.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Dot",
+    "voice": "A path that doubles in both directions grows in two dimensions. Let’s build and count it."
   },
   {
     "id": 17,
@@ -544,7 +576,9 @@
       "explanation": "5 + 7 + 4 = 16, not divisible by three."
     },
     "virtue": "Clarity",
-    "narrative": "The archive's practice locks and number seals turn arithmetic into a friendly puzzle for the young apprentices.\n\nAn archive code must be divisible by three. Three candidates differ by only one digit.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The archive's practice locks and number seals turn arithmetic into a friendly puzzle for the young apprentices.\n\nAn archive code must be divisible by three. Three candidates differ by only one digit.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Judge Mira",
+    "voice": "The digit sum is a small clue hidden inside a whole number. Let’s uncover it."
   },
   {
     "id": 18,
@@ -576,7 +610,9 @@
       "explanation": "334 rounds to 330; 338 and 344 round to 340."
     },
     "virtue": "Curiosity",
-    "narrative": "The bell-tower crew loves discovering rules and checking how a pattern grows.\n\nA parade report records 340 visitors rounded to the nearest ten. A speaker announces that exactly 340 people attended.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The bell-tower crew loves discovering rules and checking how a pattern grows.\n\nA parade report records 340 visitors rounded to the nearest ten. A speaker announces that exactly 340 people attended.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Pip",
+    "voice": "The parade was full of colour. A rounded report still leaves several exact counts possible."
   },
   {
     "id": 19,
@@ -608,7 +644,9 @@
       "explanation": "Eight boats hold 16 people, leaving one seat empty."
     },
     "virtue": "Curiosity",
-    "narrative": "In the Number Garden, every clue is a stepping stone; the learners compare patterns with curiosity.\n\nFifteen people need boats holding two people each. The organiser claims every boat can be full and everyone can travel.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "In the Number Garden, every clue is a stepping stone; the learners compare patterns with curiosity.\n\nFifteen people need boats holding two people each. The organiser claims every boat can be full and everyone can travel.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Asha",
+    "voice": "Let’s plan enough boats for every friend and make each seat count."
   },
   {
     "id": 20,
@@ -640,7 +678,9 @@
       "explanation": "3 − 4 = −1°C. This confirms the stated relationship."
     },
     "virtue": "Perseverance",
-    "narrative": "The archive's practice locks and number seals turn arithmetic into a friendly puzzle for the young apprentices.\n\nA thermometer reads −2°C before sunrise. By noon, the temperature rises by 5 degrees. A witness treats the rise as a negative change.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The archive's practice locks and number seals turn arithmetic into a friendly puzzle for the young apprentices.\n\nA thermometer reads −2°C before sunrise. By noon, the temperature rises by 5 degrees. A witness treats the rise as a negative change.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Dot",
+    "voice": "The morning began below zero. Watch the thermometer climb as the sunlight warms the fountain."
   },
   {
     "id": 21,
@@ -672,7 +712,9 @@
       "explanation": "Multiplying numerator and denominator of 1/4 by 3 gives 3/12."
     },
     "virtue": "Clarity",
-    "narrative": "At the community kitchen, careful portions help every guest enjoy the shared feast.\n\nTwo identical pies are compared. One slice is 1/4 of a pie and another is 1/6. A witness says the sixth must be larger because six is larger than four.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "At the community kitchen, careful portions help every guest enjoy the shared feast.\n\nTwo identical pies are compared. One slice is 1/4 of a pie and another is 1/6. A witness says the sixth must be larger because six is larger than four.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Judge Mira",
+    "voice": "Let’s cut each pie into equal parts before comparing the slices."
   },
   {
     "id": 22,
@@ -704,7 +746,9 @@
       "explanation": "Doubling the water from 3 to 6 cups doubles concentrate from 2 to 4 cups."
     },
     "virtue": "Fairness",
-    "narrative": "The market team is comparing measures and prices so families can make confident choices.\n\nOne jug mixes 2 cups concentrate with 3 cups water. Another mixes 3 cups concentrate with 6 cups water. The second contains more liquid overall.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The market team is comparing measures and prices so families can make confident choices.\n\nOne jug mixes 2 cups concentrate with 3 cups water. Another mixes 3 cups concentrate with 6 cups water. The second contains more liquid overall.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Pip",
+    "voice": "More liquid does not always mean a stronger recipe. Let’s compare the ratios."
   },
   {
     "id": 23,
@@ -736,7 +780,9 @@
       "explanation": "2.4 × 100 = 240 cm. This confirms the stated relationship."
     },
     "virtue": "Carefulness",
-    "narrative": "The recipe club is scaling its favourite dishes and learning how ratios keep flavours balanced.\n\nTwo measuring devices show 2.4 m and 2.40 m. The measurement team wants to understand why the displays look different and what each one communicates.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The recipe club is scaling its favourite dishes and learning how ratios keep flavours balanced.\n\nTwo measuring devices show 2.4 m and 2.40 m. The measurement team wants to understand why the displays look different and what each one communicates.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Asha",
+    "voice": "Both measurements describe the same path. Their displays tell us different things about precision."
   },
   {
     "id": 24,
@@ -768,7 +814,9 @@
       "explanation": "20% = 20/100 = 1/5. This confirms the stated relationship."
     },
     "virtue": "Perseverance",
-    "narrative": "At the community kitchen, careful portions help every guest enjoy the shared feast.\n\nA jacket costs ₹500. A sign says 20% off. The cashier reduces the price by ₹20 and says that is the promised saving.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "At the community kitchen, careful portions help every guest enjoy the shared feast.\n\nA jacket costs ₹500. A sign says 20% off. The cashier reduces the price by ₹20 and says that is the promised saving.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Dot",
+    "voice": "A percentage is a part of the starting price. Let’s find the promised saving."
   },
   {
     "id": 25,
@@ -800,7 +848,9 @@
       "explanation": "The large cake has area 160 cm²; one quarter is 40 cm²."
     },
     "virtue": "Fairness",
-    "narrative": "The market team is comparing measures and prices so families can make confident choices.\n\nA quarter of a small cake is compared with a quarter of a large cake. The larger cake is twice the area of the smaller one.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The market team is comparing measures and prices so families can make confident choices.\n\nA quarter of a small cake is compared with a quarter of a large cake. The larger cake is twice the area of the smaller one.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Judge Mira",
+    "voice": "A bigger whole can make an equally named fraction larger. Let’s compare the cakes fairly."
   },
   {
     "id": 26,
@@ -832,7 +882,9 @@
       "explanation": "50 × 12 = 600 g. This confirms the stated relationship."
     },
     "virtue": "Fairness",
-    "narrative": "The recipe club is scaling its favourite dishes and learning how ratios keep flavours balanced.\n\nA recipe for four people needs 200 g of rice. A cook prepares ten servings using 300 g.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The recipe club is scaling its favourite dishes and learning how ratios keep flavours balanced.\n\nA recipe for four people needs 200 g of rice. A cook prepares ten servings using 300 g.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Pip",
+    "voice": "A recipe can welcome more guests when every ingredient grows at the same rate."
   },
   {
     "id": 27,
@@ -864,7 +916,9 @@
       "explanation": "Three ingredient batches cost ₹720; adding one ₹60 fee gives ₹780."
     },
     "virtue": "Curiosity",
-    "narrative": "At the community kitchen, careful portions help every guest enjoy the shared feast.\n\nA batch costs ₹240 in ingredients plus a fixed ₹60 equipment fee per cooking session. Two batches are cooked in one session.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "At the community kitchen, careful portions help every guest enjoy the shared feast.\n\nA batch costs ₹240 in ingredients plus a fixed ₹60 equipment fee per cooking session. Two batches are cooked in one session.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Asha",
+    "voice": "Let’s separate the one-time equipment fee from the cost of each batch."
   },
   {
     "id": 28,
@@ -896,7 +950,9 @@
       "explanation": "Successive discounts leave ₹810; a single 20% discount leaves ₹800."
     },
     "virtue": "Curiosity",
-    "narrative": "The market team is comparing measures and prices so families can make confident choices.\n\nA ₹1,000 item receives a 10% discount followed by another 10% off the reduced price. A seller says this equals 20% off the original price.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The market team is comparing measures and prices so families can make confident choices.\n\nA ₹1,000 item receives a 10% discount followed by another 10% off the reduced price. A seller says this equals 20% off the original price.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Dot",
+    "voice": "The second discount uses a changed price. Let’s follow both steps in order."
   },
   {
     "id": 29,
@@ -928,7 +984,9 @@
       "explanation": "12 × 1.5 = 18 shirts."
     },
     "virtue": "Fairness",
-    "narrative": "The recipe club is scaling its favourite dishes and learning how ratios keep flavours balanced.\n\nTeam A has 12 shirts for 8 players. Team B has 15 shirts for 12 players. A manager says B is better supplied because it has more shirts.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The recipe club is scaling its favourite dishes and learning how ratios keep flavours balanced.\n\nTeam A has 12 shirts for 8 players. Team B has 15 shirts for 12 players. A manager says B is better supplied because it has more shirts.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Judge Mira",
+    "voice": "A team is well supplied when we consider each player, not only the pile of shirts."
   },
   {
     "id": 30,
@@ -960,7 +1018,9 @@
       "explanation": "The second tank receives 3/5 × 120 = 72 L."
     },
     "virtue": "Creativity",
-    "narrative": "At the community kitchen, careful portions help every guest enjoy the shared feast.\n\nA supply of 120 litres is divided in ratio 2:3 between two neighbourhood tanks. A proposal assigns 60 L and 90 L.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "At the community kitchen, careful portions help every guest enjoy the shared feast.\n\nA supply of 120 litres is divided in ratio 2:3 between two neighbourhood tanks. A proposal assigns 60 L and 90 L.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Pip",
+    "voice": "Both neighbourhood tanks matter. Let’s share the full supply using the agreed ratio."
   },
   {
     "id": 31,
@@ -992,7 +1052,9 @@
       "explanation": "22 − 20 = 2 m. This confirms the stated relationship."
     },
     "virtue": "Clarity",
-    "narrative": "The builders spread their plan across a bright table, ready to test each measurement.\n\nA 3 m by 8 m plot and a 4 m by 6 m plot both have area 24 m². A builder says they need equal lengths of fence.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The builders spread their plan across a bright table, ready to test each measurement.\n\nA 3 m by 8 m plot and a 4 m by 6 m plot both have area 24 m². A builder says they need equal lengths of fence.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Asha",
+    "voice": "Equal garden areas can still have different boundaries. Let’s walk around the edges."
   },
   {
     "id": 32,
@@ -1024,7 +1086,9 @@
       "explanation": "A clockwise quarter-turn from south points west."
     },
     "virtue": "Curiosity",
-    "narrative": "The town makers are sketching places where people can gather, travel and explore.\n\nA sign faces east. A worker turns it clockwise a quarter-turn, then claims it faces north.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The town makers are sketching places where people can gather, travel and explore.\n\nA sign faces east. A worker turns it clockwise a quarter-turn, then claims it faces north.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Dot",
+    "voice": "The compass turns one quarter at a time. Let’s follow the arrow together."
   },
   {
     "id": 33,
@@ -1056,7 +1120,9 @@
       "explanation": "Tower height = 30 × 2/3 = 20 m."
     },
     "virtue": "Curiosity",
-    "narrative": "A group of young designers is using shapes and measurements to make the town easier to navigate.\n\nA 2 m pole casts a 3 m shadow. At the same moment, a tower casts a 24 m shadow on level ground.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "A group of young designers is using shapes and measurements to make the town easier to navigate.\n\nA 2 m pole casts a 3 m shadow. At the same moment, a tower casts a 24 m shadow on level ground.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Judge Mira",
+    "voice": "The pole and tower share the same sunlight. Similar triangles can reveal the tower’s height."
   },
   {
     "id": 34,
@@ -1088,7 +1154,9 @@
       "explanation": "Reflection symmetry applies to all corresponding parts."
     },
     "virtue": "Clarity",
-    "narrative": "The builders spread their plan across a bright table, ready to test each measurement.\n\nA mosaic outline is symmetrical, but its left half contains three blue tiles while the reflected right half has two.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The builders spread their plan across a bright table, ready to test each measurement.\n\nA mosaic outline is symmetrical, but its left half contains three blue tiles while the reflected right half has two.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Pip",
+    "voice": "A mirror line reflects every tile, not only the outline. Let’s check each matching place."
   },
   {
     "id": 35,
@@ -1120,7 +1188,9 @@
       "explanation": "From the left side, a clockwise quarter-turn moves the mark to the bottom."
     },
     "virtue": "Curiosity",
-    "narrative": "The town makers are sketching places where people can gather, travel and explore.\n\nA wheel mark starts at the top, turns half a turn and then another quarter-turn clockwise. The witness reports only the first turn.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The town makers are sketching places where people can gather, travel and explore.\n\nA wheel mark starts at the top, turns half a turn and then another quarter-turn clockwise. The witness reports only the first turn.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Asha",
+    "voice": "Let’s follow the wheel mark through both turns, not stop halfway."
   },
   {
     "id": 36,
@@ -1152,7 +1222,9 @@
       "explanation": "The x-coordinate increases by 4 and the y-coordinate decreases by 4."
     },
     "virtue": "Clarity",
-    "narrative": "A group of young designers is using shapes and measurements to make the town easier to navigate.\n\nThe library is at coordinate (3, 7). A courier swaps the coordinates and goes to (7, 3).\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "A group of young designers is using shapes and measurements to make the town easier to navigate.\n\nThe library is at coordinate (3, 7). A courier swaps the coordinates and goes to (7, 3).\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Dot",
+    "voice": "Coordinates are an ordered pair. Swapping the places can send a courier to another part of town."
   },
   {
     "id": 37,
@@ -1184,7 +1256,9 @@
       "explanation": "The two 30 m² halves total 60 m², matching 10 × 6."
     },
     "virtue": "Perseverance",
-    "narrative": "The builders spread their plan across a bright table, ready to test each measurement.\n\nA 10 m by 6 m parcel is divided into two equal 5 m by 6 m rectangles. A gardener claims each half has area 25 m².\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The builders spread their plan across a bright table, ready to test each measurement.\n\nA 10 m by 6 m parcel is divided into two equal 5 m by 6 m rectangles. A gardener claims each half has area 25 m².\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Judge Mira",
+    "voice": "Each garden half comes from the full parcel. Let’s measure the area instead of guessing."
   },
   {
     "id": 38,
@@ -1216,7 +1290,9 @@
       "explanation": "Doubling height doubles the volume: 4 × 5 × 12 = 240 cm³."
     },
     "virtue": "Carefulness",
-    "narrative": "The town makers are sketching places where people can gather, travel and explore.\n\nA box's internal dimensions are 4 cm by 5 cm by 6 cm. A seller multiplies the dimensions correctly but calls the result square centimetres.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The town makers are sketching places where people can gather, travel and explore.\n\nA box's internal dimensions are 4 cm by 5 cm by 6 cm. A seller multiplies the dimensions correctly but calls the result square centimetres.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Pip",
+    "voice": "A box has length, width and height. The unit tells us what kind of measure we have."
   },
   {
     "id": 39,
@@ -1248,7 +1324,9 @@
       "explanation": "The run is five times the rise: 1.5 × 5 = 7.5 m."
     },
     "virtue": "Fairness",
-    "narrative": "A group of young designers is using shapes and measurements to make the town easier to navigate.\n\nA ramp rises 1 m over 5 m horizontal run. A new design rises 2 m over the same 5 m run.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "A group of young designers is using shapes and measurements to make the town easier to navigate.\n\nA ramp rises 1 m over 5 m horizontal run. A new design rises 2 m over the same 5 m run.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Asha",
+    "voice": "An accessible ramp needs a thoughtful slope and enough room for everyone to travel."
   },
   {
     "id": 40,
@@ -1280,7 +1358,9 @@
       "explanation": "Circumference ≈ πd = (22/7) × 7 = 22 m."
     },
     "virtue": "Clarity",
-    "narrative": "The builders spread their plan across a bright table, ready to test each measurement.\n\nA circular stage has diameter 14 m. Using π ≈ 22/7, a builder says the distance around it is 14 m.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The builders spread their plan across a bright table, ready to test each measurement.\n\nA circular stage has diameter 14 m. Using π ≈ 22/7, a builder says the distance around it is 14 m.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Dot",
+    "voice": "Let’s measure all the way around the circle using its diameter."
   },
   {
     "id": 41,
@@ -1312,7 +1392,9 @@
       "explanation": "Add 1 hour and then 30 minutes to get 4:05 pm."
     },
     "virtue": "Perseverance",
-    "narrative": "The transport crew studies distances and times to keep a busy community day flowing smoothly.\n\nA meeting begins at 10:45 and finishes at 12:15. A witness reports 70 minutes.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The transport crew studies distances and times to keep a busy community day flowing smoothly.\n\nA meeting begins at 10:45 and finishes at 12:15. A witness reports 70 minutes.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Judge Mira",
+    "voice": "The meeting spans two clock hours. Let’s trace each minute to the finish."
   },
   {
     "id": 42,
@@ -1344,7 +1426,9 @@
       "explanation": "9:40 − 9:20 = 20 minutes."
     },
     "virtue": "Honesty",
-    "narrative": "A bell, a bus and a calendar all keep their own rhythm; the team wants to see how they fit together.\n\nA bus was scheduled for 9:20 and arrived at 9:32. The report says it was 20 minutes late.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "A bell, a bus and a calendar all keep their own rhythm; the team wants to see how they fit together.\n\nA bus was scheduled for 9:20 and arrived at 9:32. The report says it was 20 minutes late.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Pip",
+    "voice": "A fair timetable uses the actual difference between the scheduled and arrival times."
   },
   {
     "id": 43,
@@ -1376,7 +1460,9 @@
       "explanation": "3.2 × 100 = 320 cm. This confirms the stated relationship."
     },
     "virtue": "Carefulness",
-    "narrative": "The day's journeys are being planned so teams can arrive on time and help one another.\n\nA path is recorded as 250 cm on one map and 2.5 m on another. A clerk declares the records disagree.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The day's journeys are being planned so teams can arrive on time and help one another.\n\nA path is recorded as 250 cm on one map and 2.5 m on another. A clerk declares the records disagree.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Asha",
+    "voice": "Centimetres and metres are two ways to describe the same path. Let’s connect the units."
   },
   {
     "id": 44,
@@ -1408,7 +1494,9 @@
       "explanation": "Each basket contains 2.8 kg of fruit; 5 × 2.8 = 14 kg."
     },
     "virtue": "Curiosity",
-    "narrative": "The transport crew studies distances and times to keep a busy community day flowing smoothly.\n\nA basket with fruit weighs 3.2 kg; the empty basket weighs 0.4 kg. The seller charges for 3.2 kg of fruit.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The transport crew studies distances and times to keep a busy community day flowing smoothly.\n\nA basket with fruit weighs 3.2 kg; the empty basket weighs 0.4 kg. The seller charges for 3.2 kg of fruit.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Dot",
+    "voice": "The basket travels with the fruit, but only the fruit is being weighed for sale."
   },
   {
     "id": 45,
@@ -1440,7 +1528,9 @@
       "explanation": "120 − 90 = 30 L. This confirms the stated relationship."
     },
     "virtue": "Curiosity",
-    "narrative": "A bell, a bus and a calendar all keep their own rhythm; the team wants to see how they fit together.\n\nWater flows at 12 L/min for five minutes, then slows to 6 L/min for five more minutes.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "A bell, a bus and a calendar all keep their own rhythm; the team wants to see how they fit together.\n\nWater flows at 12 L/min for five minutes, then slows to 6 L/min for five more minutes.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Judge Mira",
+    "voice": "The canal’s flow changes midway. Let’s add the two parts of the journey."
   },
   {
     "id": 46,
@@ -1472,7 +1562,9 @@
       "explanation": "Distance = speed × time = 18 × 3 = 54 km."
     },
     "virtue": "Fairness",
-    "narrative": "The day's journeys are being planned so teams can arrive on time and help one another.\n\nCyclist A travels 18 km in one hour. Cyclist B travels 24 km in two hours. A witness says B is faster because 24 is greater than 18.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The day's journeys are being planned so teams can arrive on time and help one another.\n\nCyclist A travels 18 km in one hour. Cyclist B travels 24 km in two hours. A witness says B is faster because 24 is greater than 18.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Pip",
+    "voice": "A longer journey is not always a faster one. Let’s compare distance per hour."
   },
   {
     "id": 47,
@@ -1504,7 +1596,9 @@
       "explanation": "80 × ₹6 = ₹480. This confirms the stated relationship."
     },
     "virtue": "Fairness",
-    "narrative": "The transport crew studies distances and times to keep a busy community day flowing smoothly.\n\nRoute A is 60 km at ₹8 per km. Route B is 75 km at ₹6 per km. The planner chooses A because it is shorter.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The transport crew studies distances and times to keep a busy community day flowing smoothly.\n\nRoute A is 60 km at ₹8 per km. Route B is 75 km at ₹6 per km. The planner chooses A because it is shorter.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Asha",
+    "voice": "A thoughtful route balances distance and cost, not distance alone."
   },
   {
     "id": 48,
@@ -1536,7 +1630,9 @@
       "explanation": "27, 28, 29 February are the first three days; 1 March is day four."
     },
     "virtue": "Curiosity",
-    "narrative": "A bell, a bus and a calendar all keep their own rhythm; the team wants to see how they fit together.\n\nA task begins on 27 February in a leap year and lasts three days, counting the start as day one. The clerk records 1 March.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "A bell, a bus and a calendar all keep their own rhythm; the team wants to see how they fit together.\n\nA task begins on 27 February in a leap year and lasts three days, counting the start as day one. The clerk records 1 March.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Dot",
+    "voice": "The leap-year calendar has one extra day. Let’s count every date in order."
   },
   {
     "id": 49,
@@ -1568,7 +1664,9 @@
       "explanation": "The intervals share values from 21.1°C through 21.9°C."
     },
     "virtue": "Curiosity",
-    "narrative": "The day's journeys are being planned so teams can arrive on time and help one another.\n\nOne thermometer reads 21.4°C and another 21.6°C. Each has stated uncertainty of ±0.5°C.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The day's journeys are being planned so teams can arrive on time and help one another.\n\nOne thermometer reads 21.4°C and another 21.6°C. Each has stated uncertainty of ±0.5°C.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Judge Mira",
+    "voice": "Both thermometers have uncertainty. Their ranges help us compare the readings fairly."
   },
   {
     "id": 50,
@@ -1600,7 +1698,9 @@
       "explanation": "The least common multiple of 6 and 9 is 18."
     },
     "virtue": "Perseverance",
-    "narrative": "The transport crew studies distances and times to keep a busy community day flowing smoothly.\n\nOne bell rings every six minutes and another every eight minutes. Both ring at noon. The keeper predicts they next coincide after 14 minutes.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The transport crew studies distances and times to keep a busy community day flowing smoothly.\n\nOne bell rings every six minutes and another every eight minutes. Both ring at noon. The keeper predicts they next coincide after 14 minutes.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Pip",
+    "voice": "The bells share a rhythm. Let’s find the first moment both cycles meet again."
   },
   {
     "id": 51,
@@ -1617,7 +1717,7 @@
     "answer": 0,
     "explanation": "The increase is 20 visitors; relative to 100, this is 20%.",
     "twist": "The data are real, but the truncated axis exaggerates the visible difference.",
-    "moral": "A clear, fair picture lets others understand the evidence without exaggeration.",
+    "moral": "Describe data clearly and give readers the scale, context and calculation they need to interpret it.",
     "verdict": "disproved",
     "check": "representation",
     "evidence": "May 100 visitors; June 110; July 120. Axis begins at 90.",
@@ -1632,7 +1732,9 @@
       "explanation": "The increase is 20 out of 100, which simplifies to 1/5."
     },
     "virtue": "Honest communication",
-    "narrative": "The community data garden gathers observations from many voices; the chart should help everyone see the pattern.\n\nA garden chart records 100 visitors in May, 110 in June and 120 in July. Its vertical axis starts at 90 and makes the final bar look three times as tall.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The community data garden gathers observations from many voices; the chart should help everyone see the pattern.\n\nA garden chart records 100 visitors in May, 110 in June and 120 in July. Its vertical axis starts at 90 and makes the final bar look three times as tall.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Asha",
+    "voice": "The chart tells a dramatic story. Let’s check its scale and calculate the actual change."
   },
   {
     "id": 52,
@@ -1664,7 +1766,9 @@
       "explanation": "For four ordered values, median = (8 + 10)/2 = 9."
     },
     "virtue": "Clarity",
-    "narrative": "The festival visitors are curious about what the numbers say, and the presenters want a fair, clear picture.\n\nFour teams score 6, 8, 10 and 12 points. The organiser says the mean proves each team scored 9.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The festival visitors are curious about what the numbers say, and the presenters want a fair, clear picture.\n\nFour teams score 6, 8, 10 and 12 points. The organiser says the mean proves each team scored 9.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Dot",
+    "voice": "The mean gives one summary. Let’s see what it can and cannot tell us about every team."
   },
   {
     "id": 53,
@@ -1696,7 +1800,9 @@
       "explanation": "The sum is 30 minutes and 30 ÷ 5 = 6 minutes."
     },
     "virtue": "Fairness",
-    "narrative": "The data team gathers measurements carefully before explaining what they mean.\n\nWaiting times are 2, 3, 3, 4 and 18 minutes. A witness says a typical wait must be six minutes because that is the mean.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The data team gathers measurements carefully before explaining what they mean.\n\nWaiting times are 2, 3, 3, 4 and 18 minutes. A witness says a typical wait must be six minutes because that is the mean.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Judge Mira",
+    "voice": "A typical wait can be described in different ways. Let’s compare mean and median."
   },
   {
     "id": 54,
@@ -1728,7 +1834,9 @@
       "explanation": "A broader suitable sample is more likely to represent the school."
     },
     "virtue": "Inclusion",
-    "narrative": "The community data garden gathers observations from many voices; the chart should help everyone see the pattern.\n\nA survey asks three friends from one club whether the whole school prefers football. All three say yes, and the organiser generalises to the whole school.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The community data garden gathers observations from many voices; the chart should help everyone see the pattern.\n\nA survey asks three friends from one club whether the whole school prefers football. All three say yes, and the organiser generalises to the whole school.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Pip",
+    "voice": "To understand the whole school, let’s invite voices from across the school."
   },
   {
     "id": 55,
@@ -1760,27 +1868,29 @@
       "explanation": "Hot weather could influence both; association alone does not establish direct causation."
     },
     "virtue": "Open-mindedness",
-    "narrative": "The festival visitors are curious about what the numbers say, and the presenters want a fair, clear picture.\n\nIce-cream sales and swimming accidents both increase on hot days. A report claims ice cream causes the accidents.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The festival visitors are curious about what the numbers say, and the presenters want a fair, clear picture.\n\nIce-cream sales and swimming accidents both increase on hot days. A report claims ice cream causes the accidents.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Asha",
+    "voice": "Hot weather can influence both events. Let’s keep a shared pattern separate from a cause."
   },
   {
     "id": 56,
     "chapter": 6,
     "title": "The Complete Data Table",
-    "story": "A table has entries 14, 18 and an unknown value; its row total is 50. A clerk says the missing entry is 20.",
-    "claim": "The clerk claims the missing entry is 20.",
-    "prompt": "What is the missing value?",
+    "story": "A table has entries 14, 18 and one unknown value; its row total is 50. The clerk suggests that the unknown value is 20.",
+    "claim": "The clerk claims the unknown value is 20.",
+    "prompt": "What is the unknown value?",
     "options": [
       "18",
       "20",
       "22"
     ],
     "answer": 0,
-    "explanation": "50 − 14 − 18 = 18; using 20 would make the total 52.",
-    "twist": "An independent copy of the table confirms the row total.",
+    "explanation": "50 − 14 − 18 = 18. The unknown value is 18, so the clerk's first suggestion can be refined using the total.",
+    "twist": "The team subtracts the known entries from the total. The remaining amount completes the row and shows how a total can guide us to an unknown.",
     "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "A table has entries 14, 18 and an unknown value; its row total is 50. A clerk says the missing entry is 20.",
+    "evidence": "A table has entries 14, 18 and one unknown value; its row total is 50.",
     "challenge": {
       "prompt": "If the row total changes from 50 to 52 while the other entries remain 14 and 18, what is the missing entry?",
       "options": [
@@ -1792,7 +1902,9 @@
       "explanation": "52 − 14 − 18 = 20. This confirms the stated relationship."
     },
     "virtue": "Perseverance",
-    "narrative": "The data team gathers measurements carefully before explaining what they mean.\n\nA table has entries 14, 18 and an unknown value; its row total is 50. A clerk says the missing entry is 20.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The data team gathers measurements carefully before explaining what they mean.\n\nA table has entries 14, 18 and one unknown value; its row total is 50. The clerk suggests that the unknown value is 20.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Dot",
+    "voice": "One value is waiting to be found. The row total gives us a useful clue."
   },
   {
     "id": 57,
@@ -1824,7 +1936,9 @@
       "explanation": "The total is 50 and 50 ÷ 5 = 10. Investigate the outlier before excluding it."
     },
     "virtue": "Curiosity",
-    "narrative": "The community data garden gathers observations from many voices; the chart should help everyone see the pattern.\n\nFive measurements are 4, 5, 5, 6 and 30. A researcher wants to delete 30 because it looks unusual.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The community data garden gathers observations from many voices; the chart should help everyone see the pattern.\n\nFive measurements are 4, 5, 5, 6 and 30. A researcher wants to delete 30 because it looks unusual.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Judge Mira",
+    "voice": "An unusual reading invites investigation. Let’s understand it before deciding how to use it."
   },
   {
     "id": 58,
@@ -1856,7 +1970,9 @@
       "explanation": "With equal group sizes, the combined mean is (8 + 6)/2 = 7."
     },
     "virtue": "Fairness",
-    "narrative": "The festival visitors are curious about what the numbers say, and the presenters want a fair, clear picture.\n\nTeam A has 10 people averaging 8 points each. Team B has 30 people averaging 6 points. The organiser averages 8 and 6 equally.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The festival visitors are curious about what the numbers say, and the presenters want a fair, clear picture.\n\nTeam A has 10 people averaging 8 points each. Team B has 30 people averaging 6 points. The organiser averages 8 and 6 equally.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Pip",
+    "voice": "People count too: a group of thirty should contribute thirty scores to the combined mean."
   },
   {
     "id": 59,
@@ -1888,7 +2004,9 @@
       "explanation": "20 customers per hour × 3 hours = 60 customers."
     },
     "virtue": "Fairness",
-    "narrative": "The data team gathers measurements carefully before explaining what they mean.\n\nShop A serves 40 customers in two hours. Shop B serves 54 in three hours. A poster says B is faster because it served more people.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The data team gathers measurements carefully before explaining what they mean.\n\nShop A serves 40 customers in two hours. Shop B serves 54 in three hours. A poster says B is faster because it served more people.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Asha",
+    "voice": "Let’s compare how many customers each shop serves in one hour."
   },
   {
     "id": 60,
@@ -1920,7 +2038,9 @@
       "explanation": "The first asks about support without embedding positive or negative framing."
     },
     "virtue": "Inclusion",
-    "narrative": "The community data garden gathers observations from many voices; the chart should help everyone see the pattern.\n\nOne survey asks whether people support a new park. Another asks whether they support an expensive park that raises fees. The results differ.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The community data garden gathers observations from many voices; the chart should help everyone see the pattern.\n\nOne survey asks whether people support a new park. Another asks whether they support an expensive park that raises fees. The results differ.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Dot",
+    "voice": "The wording of a question can shape an answer. Let’s compare the prompts fairly."
   },
   {
     "id": 61,
@@ -1952,7 +2072,9 @@
       "explanation": "2 × 10 + 1 = 21. This confirms the stated relationship."
     },
     "virtue": "Thoughtful reasoning",
-    "narrative": "The council's formula notebook holds patterns waiting to be tested with clear reasoning.\n\nA machine maps 2 to 5, 3 to 7 and 4 to 9. A visitor claims the rule is add three because it fits the first input.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The council's formula notebook holds patterns waiting to be tested with clear reasoning.\n\nA machine maps 2 to 5, 3 to 7 and 4 to 9. A visitor claims the rule is add three because it fits the first input.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Judge Mira",
+    "voice": "Three examples are clues to a rule. Let’s test one rule on all of them."
   },
   {
     "id": 62,
@@ -1984,7 +2106,9 @@
       "explanation": "₹50 + 5 × ₹20 = ₹150."
     },
     "virtue": "Perseverance",
-    "narrative": "Inside the Inventors' Club, every rule machine is an invitation to experiment.\n\nA venue charges a fixed ₹50 booking fee plus ₹20 per ticket. Three tickets total ₹110. A witness divides the total evenly and says each ticket costs ₹30.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "Inside the Inventors' Club, every rule machine is an invitation to experiment.\n\nA venue charges a fixed ₹50 booking fee plus ₹20 per ticket. Three tickets total ₹110. A witness divides the total evenly and says each ticket costs ₹30.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Pip",
+    "voice": "A fixed booking fee belongs to the total, while each ticket adds the same amount."
   },
   {
     "id": 63,
@@ -2016,7 +2140,9 @@
       "explanation": "₹80 + 6 × ₹70 = ₹500, so nothing remains."
     },
     "virtue": "Creativity",
-    "narrative": "The apprentice mathematicians love trying a rule, checking the result and sharing what they discover.\n\nA club has ₹500. Each kit costs ₹70 and delivery has a one-time ₹80 fee. The organiser says seven kits fit.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The apprentice mathematicians love trying a rule, checking the result and sharing what they discover.\n\nA club has ₹500. Each kit costs ₹70 and delivery has a one-time ₹80 fee. The organiser says seven kits fit.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Asha",
+    "voice": "Every kit helps the club. Let’s see how many fit after delivery is paid."
   },
   {
     "id": 64,
@@ -2048,7 +2174,9 @@
       "explanation": "A costs 30 and B costs 28, a difference of 2."
     },
     "virtue": "Thoughtful reasoning",
-    "narrative": "The council's formula notebook holds patterns waiting to be tested with clear reasoning.\n\nContract A costs 10 + 4n; Contract B costs 2n + 18. They both cost 26 when n = 4. A clerk says they are equivalent.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The council's formula notebook holds patterns waiting to be tested with clear reasoning.\n\nContract A costs 10 + 4n; Contract B costs 2n + 18. They both cost 26 when n = 4. A clerk says they are equivalent.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Dot",
+    "voice": "One shared total is a clue, not the whole story. Let’s test both contracts at another value."
   },
   {
     "id": 65,
@@ -2080,7 +2208,9 @@
       "explanation": "The tenth term is 5 + 9 × 4 = 41."
     },
     "virtue": "Perseverance",
-    "narrative": "Inside the Inventors' Club, every rule machine is an invitation to experiment.\n\nA sequence is 5, 9, 13, 17. The planner claims the 20th term is 80.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "Inside the Inventors' Club, every rule machine is an invitation to experiment.\n\nA sequence is 5, 9, 13, 17. The planner claims the 20th term is 80.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Judge Mira",
+    "voice": "Each stair adds the same amount. Let’s use the step number to reach the twentieth."
   },
   {
     "id": 66,
@@ -2112,7 +2242,9 @@
       "explanation": "5 × 4 = 20; the digit sum is 9."
     },
     "virtue": "Thoughtful reasoning",
-    "narrative": "The apprentice mathematicians love trying a rule, checking the result and sharing what they discover.\n\nA two-digit code has digits summing to 9. Its tens digit is one more than its units digit.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The apprentice mathematicians love trying a rule, checking the result and sharing what they discover.\n\nA two-digit code has digits summing to 9. Its tens digit is one more than its units digit.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Pip",
+    "voice": "Two digit clues work together. Let’s find a code that satisfies both."
   },
   {
     "id": 67,
@@ -2120,14 +2252,14 @@
     "title": "The Captain's Training Rule",
     "story": "A community team uses this rule: every captain has completed training. The learners explore whether completing training also proves that someone is a captain.",
     "claim": "A learner suggests that anyone who completed training must be a captain.",
-    "prompt": "What is the logical error?",
+    "prompt": "Which conclusion goes beyond the training rule?",
     "options": [
       "Confusing a statement with its converse",
       "Subtracting in the wrong order",
       "Rounding too early"
     ],
     "answer": 0,
-    "explanation": "Captain implies training; training does not imply captain.",
+    "explanation": "The rule says that every captain has completed training. It does not say that every trained person is a captain.",
     "twist": "The team checks other trained helpers. They can be well prepared and still have different roles, so the reverse statement needs its own evidence.",
     "moral": "Thoughtful reasoning checks each step and makes sure a conclusion follows from its clues.",
     "verdict": "disproved",
@@ -2144,7 +2276,9 @@
       "explanation": "The rule only guarantees that every captain has completed training."
     },
     "virtue": "Thoughtful reasoning",
-    "narrative": "The council's formula notebook holds patterns waiting to be tested with clear reasoning.\n\nA community team uses this rule: every captain has completed training. The learners explore whether completing training also proves that someone is a captain.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The council's formula notebook holds patterns waiting to be tested with clear reasoning.\n\nA community team uses this rule: every captain has completed training. The learners explore whether completing training also proves that someone is a captain.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Asha",
+    "voice": "A rule points one way: captain means trained. Let’s be careful before turning it around."
   },
   {
     "id": 68,
@@ -2176,7 +2310,9 @@
       "explanation": "A is true; B and C are false because A and B cannot both be true."
     },
     "virtue": "Thoughtful reasoning",
-    "narrative": "Inside the Inventors' Club, every rule machine is an invitation to experiment.\n\nWitness A says the ledger is correct. B says its total is 20 higher than recorded. C says A and B are both correct. The arithmetic confirms the ledger.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "Inside the Inventors' Club, every rule machine is an invitation to experiment.\n\nWitness A says the ledger is correct. B says its total is 20 higher than recorded. C says A and B are both correct. The arithmetic confirms the ledger.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Dot",
+    "voice": "Three statements share one ledger. Let’s see which ones can fit the arithmetic together."
   },
   {
     "id": 69,
@@ -2208,7 +2344,9 @@
       "explanation": "With one key per room, A must open room 2 and C room 1."
     },
     "virtue": "Thoughtful reasoning",
-    "narrative": "The apprentice mathematicians love trying a rule, checking the result and sharing what they discover.\n\nKeys A, B and C open rooms 1, 2 and 3, one each. A does not open room 1; B opens room 3. A witness says A opens room 3.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The apprentice mathematicians love trying a rule, checking the result and sharing what they discover.\n\nKeys A, B and C open rooms 1, 2 and 3, one each. A does not open room 1; B opens room 3. A witness says A opens room 3.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Judge Mira",
+    "voice": "Each key opens one room. We can let the clues narrow the possibilities."
   },
   {
     "id": 70,
@@ -2223,8 +2361,8 @@
       "₹12"
     ],
     "answer": 0,
-    "explanation": "n + p = 15 and 2n + 3p = 39. Subtracting 2(n + p) gives p = 9, so n = 6.",
-    "twist": "A copy swapped the item labels; solving both equations exposes the error.",
+    "explanation": "Let n be the notebook price and p the pen price. n + p = 15 and 2n + 3p = 39. Doubling the first gives 2n + 2p = 30, so p = 9 and n = 6.",
+    "twist": "The team lines up each original item label beside its price. Solving the two equations reveals the price of each notebook and pen.",
     "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "supported",
     "check": "calculation",
@@ -2240,7 +2378,9 @@
       "explanation": "3 × ₹6 + 2 × ₹9 = ₹36."
     },
     "virtue": "Perseverance",
-    "narrative": "The council's formula notebook holds patterns waiting to be tested with clear reasoning.\n\nTwo notebooks and three pens cost ₹39. One notebook and one pen cost ₹15. Prices are fixed whole-rupee values.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The council's formula notebook holds patterns waiting to be tested with clear reasoning.\n\nTwo notebooks and three pens cost ₹39. One notebook and one pen cost ₹15. Prices are fixed whole-rupee values.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Pip",
+    "voice": "The partnership has two prices hidden in the totals. Let’s build equations to reveal them."
   },
   {
     "id": 71,
@@ -2272,7 +2412,9 @@
       "explanation": "35 + 23 = 58 votes, or 58%."
     },
     "virtue": "Fairness",
-    "narrative": "At the festival, the helpers are dividing time, seats and supplies so the whole team can thrive.\n\nCandidates receive 42, 35 and 23 votes. The candidate with 42 wins under the most-votes rule. A speaker says the winner has support from most voters.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "At the festival, the helpers are dividing time, seats and supplies so the whole team can thrive.\n\nCandidates receive 42, 35 and 23 votes. The candidate with 42 wins under the most-votes rule. A speaker says the winner has support from most voters.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Asha",
+    "voice": "Winning by having the most votes differs from winning a majority. Let’s calculate the share."
   },
   {
     "id": 72,
@@ -2304,7 +2446,9 @@
       "explanation": "There are five parts and each part is three seats, giving 6 and 9."
     },
     "virtue": "Creativity",
-    "narrative": "The neighbourhood council compares outcomes with open minds and a shared sense of fairness.\n\nTwo districts have populations 60,000 and 90,000 and share 10 seats proportionally. A clerk proposes 4 and 6 seats.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The neighbourhood council compares outcomes with open minds and a shared sense of fairness.\n\nTwo districts have populations 60,000 and 90,000 and share 10 seats proportionally. A clerk proposes 4 and 6 seats.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Dot",
+    "voice": "A fair seat plan follows the agreed population ratio. Let’s place all ten seats."
   },
   {
     "id": 73,
@@ -2336,7 +2480,9 @@
       "explanation": "0.4 × 70 + 0.6 × 90 = 82."
     },
     "virtue": "Perseverance",
-    "narrative": "The community panel wants its plans to serve people fairly, with every need considered.\n\nA score is 60% skill and 40% teamwork. Team A scores 90 and 50; Team B scores 70 and 90 respectively.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The community panel wants its plans to serve people fairly, with every need considered.\n\nA score is 60% skill and 40% teamwork. Team A scores 90 and 50; Team B scores 70 and 90 respectively.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Judge Mira",
+    "voice": "Skill and teamwork both count. Let’s apply each weight before comparing the teams."
   },
   {
     "id": 74,
@@ -2368,7 +2514,9 @@
       "explanation": "Equal totals can hide an uneven distribution of difficult shifts."
     },
     "virtue": "Fairness",
-    "narrative": "At the festival, the helpers are dividing time, seats and supplies so the whole team can thrive.\n\nFour people each work three shifts. One roster gives all three late shifts to the same person. The coordinator says the totals are equal, so the roster is fair.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "At the festival, the helpers are dividing time, seats and supplies so the whole team can thrive.\n\nFour people each work three shifts. One roster gives all three late shifts to the same person. The coordinator says the totals are equal, so the roster is fair.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Pip",
+    "voice": "Equal shift totals can hide uneven late duties. Let’s look at the complete schedule."
   },
   {
     "id": 75,
@@ -2400,7 +2548,9 @@
       "explanation": "Six teams make 6 × 5 ÷ 2 = 15 unique pairs."
     },
     "virtue": "Perseverance",
-    "narrative": "The neighbourhood council compares outcomes with open minds and a shared sense of fairness.\n\nEight teams play a round-robin tournament where every pair meets once. The organiser schedules only eight matches.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The neighbourhood council compares outcomes with open minds and a shared sense of fairness.\n\nEight teams play a round-robin tournament where every pair meets once. The organiser schedules only eight matches.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Asha",
+    "voice": "In a round-robin, every pair meets once. Let’s count each pairing only once."
   },
   {
     "id": 76,
@@ -2432,7 +2582,9 @@
       "explanation": "3 × 15 = 45, leaving 5 kits."
     },
     "virtue": "Creativity",
-    "narrative": "The community panel wants its plans to serve people fairly, with every need considered.\n\nThree shelters need 11, 17 and 22 supply kits. A delivery contains 50 kits. The clerk proposes 15 for each shelter.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The community panel wants its plans to serve people fairly, with every need considered.\n\nThree shelters need 11, 17 and 22 supply kits. A delivery contains 50 kits. The clerk proposes 15 for each shelter.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Dot",
+    "voice": "Let’s first provide the stated kits, then see what remains for later needs."
   },
   {
     "id": 77,
@@ -2464,7 +2616,9 @@
       "explanation": "18 − 6 = 12 minutes."
     },
     "virtue": "Fairness",
-    "narrative": "At the festival, the helpers are dividing time, seats and supplies so the whole team can thrive.\n\nPolicy A produces waits of 2, 2, 2 and 18 minutes. Policy B produces 6, 6, 6 and 6 minutes.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "At the festival, the helpers are dividing time, seats and supplies so the whole team can thrive.\n\nPolicy A produces waits of 2, 2, 2 and 18 minutes. Policy B produces 6, 6, 6 and 6 minutes.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Judge Mira",
+    "voice": "A good queue plan cares about the longest wait any person may face."
   },
   {
     "id": 78,
@@ -2496,7 +2650,9 @@
       "explanation": "The per-item difference is ₹2, so ten items differ by ₹20."
     },
     "virtue": "Fairness",
-    "narrative": "The neighbourhood council compares outcomes with open minds and a shared sense of fairness.\n\nA small pack has 6 items for ₹90; a large pack has 10 items for ₹130. A poster says the small pack is better because its total price is lower.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The neighbourhood council compares outcomes with open minds and a shared sense of fairness.\n\nA small pack has 6 items for ₹90; a large pack has 10 items for ₹130. A poster says the small pack is better because its total price is lower.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Pip",
+    "voice": "A lower pack price can hide a higher cost per item. Let’s compare unit prices."
   },
   {
     "id": 79,
@@ -2528,7 +2684,9 @@
       "explanation": "90 − 85 = 5 points. This confirms the stated relationship."
     },
     "virtue": "Perseverance",
-    "narrative": "The community panel wants its plans to serve people fairly, with every need considered.\n\nA contest adds a 10-point allowance to one participant. Raw scores are 85 and 90; the first participant receives the allowance.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The community panel wants its plans to serve people fairly, with every need considered.\n\nA contest adds a 10-point allowance to one participant. Raw scores are 85 and 90; the first participant receives the allowance.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Asha",
+    "voice": "Let’s apply the published allowance before comparing the final scores."
   },
   {
     "id": 80,
@@ -2560,7 +2718,9 @@
       "explanation": "19 is at least 18, so the group meets the changed threshold."
     },
     "virtue": "Fairness",
-    "narrative": "At the festival, the helpers are dividing time, seats and supplies so the whole team can thrive.\n\nA recreation grant is designed for groups with at least 20 members. A group of 19 also serves a remote area with few nearby services, so the community panel studies which details matter for a fair review.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "At the festival, the helpers are dividing time, seats and supplies so the whole team can thrive.\n\nA recreation grant is designed for groups with at least 20 members. A group of 19 also serves a remote area with few nearby services, so the community panel studies which details matter for a fair review.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Dot",
+    "voice": "A threshold gives one part of the picture. Let’s ask what the rule establishes and what needs context."
   },
   {
     "id": 81,
@@ -2592,7 +2752,9 @@
       "explanation": "Route B takes eight minutes, less than ten and twelve."
     },
     "virtue": "Fairness",
-    "narrative": "The explorers are drawing a map of the town, searching for routes that save time and resources.\n\nRoute A has segments of 4, 4 and 4 minutes. Route B has segments of 5 and 3 minutes. A planner chooses A because it has fewer turns.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The explorers are drawing a map of the town, searching for routes that save time and resources.\n\nRoute A has segments of 4, 4 and 4 minutes. Route B has segments of 5 and 3 minutes. A planner chooses A because it has fewer turns.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Judge Mira",
+    "voice": "Count the minutes on every road, then find the journey with the smaller total."
   },
   {
     "id": 82,
@@ -2624,7 +2786,9 @@
       "explanation": "An Euler trail can have zero or two odd-degree vertices, but not three."
     },
     "virtue": "Thoughtful reasoning",
-    "narrative": "A group of curious planners builds journeys and compares combinations to find a good fit.\n\nA network has four land areas; three areas have an odd number of bridges. The planner wants a closed walk crossing every bridge exactly once.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "A group of curious planners builds journeys and compares combinations to find a good fit.\n\nA network has four land areas; three areas have an odd number of bridges. The planner wants a closed walk crossing every bridge exactly once.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Pip",
+    "voice": "This bridge puzzle has a beautiful graph rule. Let’s count the odd-degree places."
   },
   {
     "id": 83,
@@ -2656,7 +2820,9 @@
       "explanation": "5 + 10 = 15; after wrapping around 12 positions the dial displays 3."
     },
     "virtue": "Perseverance",
-    "narrative": "The engineering team tests models before choosing a design people can use.\n\nA dial cycles from 0 to 11 and returns to 0. It starts at 8 and advances 7 positions. A clerk writes 15 as the displayed value.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The engineering team tests models before choosing a design people can use.\n\nA dial cycles from 0 to 11 and returns to 0. It starts at 8 and advances 7 positions. A clerk writes 15 as the displayed value.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Asha",
+    "voice": "The dial wraps around at twelve positions. Let’s trace each step around the cycle."
   },
   {
     "id": 84,
@@ -2688,7 +2854,9 @@
       "explanation": "The 6- and 5-unit crates cannot fit together, so the best single crate is 6 units."
     },
     "virtue": "Creativity",
-    "narrative": "The explorers are drawing a map of the town, searching for routes that save time and resources.\n\nA cargo hold has capacity 10 units. Crates of size 6, 5 and 4 are available, one of each. The loader takes the 6-unit crate and says no better load is possible.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The explorers are drawing a map of the town, searching for routes that save time and resources.\n\nA cargo hold has capacity 10 units. Crates of size 6, 5 and 4 are available, one of each. The loader takes the 6-unit crate and says no better load is possible.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Dot",
+    "voice": "The hold has a limit. Let’s fit the best combination without going over."
   },
   {
     "id": 85,
@@ -2720,7 +2888,9 @@
       "explanation": "Three large containers provide 21 L for ₹75, below the other listed costs."
     },
     "virtue": "Creativity",
-    "narrative": "A group of curious planners builds journeys and compares combinations to find a good fit.\n\nA team needs at least 20 L. Small containers hold 3 L for ₹12; large containers hold 7 L for ₹25. Both types are available.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "A group of curious planners builds journeys and compares combinations to find a good fit.\n\nA team needs at least 20 L. Small containers hold 3 L for ₹12; large containers hold 7 L for ₹25. Both types are available.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Judge Mira",
+    "voice": "The least expensive plan still needs enough water. Let’s compare possible mixes."
   },
   {
     "id": 86,
@@ -2752,7 +2922,9 @@
       "explanation": "Plan A reaches ₹140; Plan B goes from ₹100 to ₹110 to ₹121."
     },
     "virtue": "Fairness",
-    "narrative": "The engineering team tests models before choosing a design people can use.\n\nA fund starts at ₹100. Plan A adds ₹20 each year; Plan B increases the current amount by 10% each year. The first comparison is after one year.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The engineering team tests models before choosing a design people can use.\n\nA fund starts at ₹100. Plan A adds ₹20 each year; Plan B increases the current amount by 10% each year. The first comparison is after one year.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Pip",
+    "voice": "One fund grows by equal additions, the other by percentages. Let’s watch the paths diverge."
   },
   {
     "id": 87,
@@ -2784,7 +2956,9 @@
       "explanation": "36 − 9 = 27 cm². This confirms the stated relationship."
     },
     "virtue": "Fairness",
-    "narrative": "The explorers are drawing a map of the town, searching for routes that save time and resources.\n\nA square map tile has side length 3 cm. A revised map doubles the side length to 6 cm. The cartographer says area doubles.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The explorers are drawing a map of the town, searching for routes that save time and resources.\n\nA square map tile has side length 3 cm. A revised map doubles the side length to 6 cm. The cartographer says area doubles.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Asha",
+    "voice": "When a square’s sides double, its area changes by another factor. Let’s model it."
   },
   {
     "id": 88,
@@ -2816,7 +2990,9 @@
       "explanation": "Better sampling and explicit uncertainty help judge whether a narrow lead is meaningful."
     },
     "virtue": "Inclusion",
-    "narrative": "A group of curious planners builds journeys and compares combinations to find a good fit.\n\nA poll shows 51% support and 49% oppose, based on a small sample with large uncertainty. A speaker declares overwhelming support.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "A group of curious planners builds journeys and compares combinations to find a good fit.\n\nA poll shows 51% support and 49% oppose, based on a small sample with large uncertainty. A speaker declares overwhelming support.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Dot",
+    "voice": "A narrow poll lead deserves careful interpretation and an open view of uncertainty."
   },
   {
     "id": 89,
@@ -2848,7 +3024,9 @@
       "explanation": "Passing necessary checks does not establish every approval condition."
     },
     "virtue": "Thoughtful reasoning",
-    "narrative": "The engineering team tests models before choosing a design people can use.\n\nA community charter says that every approved package has passed its safety checks. The review team wants to know whether passing those checks alone is enough to establish approval.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The engineering team tests models before choosing a design people can use.\n\nA community charter says that every approved package has passed its safety checks. The review team wants to know whether passing those checks alone is enough to establish approval.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Judge Mira",
+    "voice": "A safety check is important, and the full approval rule may ask for more."
   },
   {
     "id": 90,
@@ -2880,7 +3058,9 @@
       "explanation": "Changed conditions require new observations and a revised model."
     },
     "virtue": "Curiosity",
-    "narrative": "The explorers are drawing a map of the town, searching for routes that save time and resources.\n\nA walkway model was built using measurements from dry ground. After rain changes the surface, the community checks whether the same travel-time estimate still describes the route.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The explorers are drawing a map of the town, searching for routes that save time and resources.\n\nA walkway model was built using measurements from dry ground. After rain changes the surface, the community checks whether the same travel-time estimate still describes the route.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Pip",
+    "voice": "Rain changes the walking surface. Let’s gather fresh measures and update our model."
   },
   {
     "id": 91,
@@ -2912,7 +3092,9 @@
       "explanation": "₹2,200 − ₹2,000 = ₹200, the cancelled unpaid order's value."
     },
     "virtue": "Honesty",
-    "narrative": "The big planning table is covered in notes, maps and ideas, and every voice can help improve the result.\n\nThe festival account lists ₹1,200 for materials, ₹450 for food and ₹350 for transport. A cancelled ₹200 order also appears in the reported total, so the treasurer checks which amounts were actually paid.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The big planning table is covered in notes, maps and ideas, and every voice can help improve the result.\n\nThe festival account lists ₹1,200 for materials, ₹450 for food and ₹350 for transport. A cancelled ₹200 order also appears in the reported total, so the treasurer checks which amounts were actually paid.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Asha",
+    "voice": "Clear accounts help every festival helper understand how the budget was used."
   },
   {
     "id": 92,
@@ -2944,7 +3126,9 @@
       "explanation": "36 − 29 = 7 unused seats."
     },
     "virtue": "Creativity",
-    "narrative": "The final council gathers every lesson from the season to make a thoughtful plan for the whole community.\n\nA rescue bus carries 12 people per trip. There are 29 people waiting, and a planner has arranged only two trips.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The final council gathers every lesson from the season to make a thoughtful plan for the whole community.\n\nA rescue bus carries 12 people per trip. There are 29 people waiting, and a planner has arranged only two trips.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Dot",
+    "voice": "Let’s plan enough trips so every person has a safe seat."
   },
   {
     "id": 93,
@@ -2976,7 +3160,9 @@
       "explanation": "40 × 1.5 = 60 L. This confirms the stated relationship."
     },
     "virtue": "Fairness",
-    "narrative": "Pip brings the clues together as the town prepares its next chapter with care and optimism.\n\nTwo neighbourhoods have 20 and 40 households and share 90 litres. A proposal gives 45 litres to each neighbourhood.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "Pip brings the clues together as the town prepares its next chapter with care and optimism.\n\nTwo neighbourhoods have 20 and 40 households and share 90 litres. A proposal gives 45 litres to each neighbourhood.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Judge Mira",
+    "voice": "An equal-per-household rule gives more water where there are more households."
   },
   {
     "id": 94,
@@ -3008,7 +3194,9 @@
       "explanation": "0.6 ÷ run ≤ 0.1 requires a run of at least 6 m."
     },
     "virtue": "Fairness",
-    "narrative": "The big planning table is covered in notes, maps and ideas, and every voice can help improve the result.\n\nA ramp rises 0.6 m over a 6 m horizontal run. A new design keeps the rise but shortens the run to 3 m.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The big planning table is covered in notes, maps and ideas, and every voice can help improve the result.\n\nA ramp rises 0.6 m over a 6 m horizontal run. A new design keeps the rise but shortens the run to 3 m.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Pip",
+    "voice": "The ramp’s rise-to-run ratio affects steepness. Let’s compare both designs."
   },
   {
     "id": 95,
@@ -3040,7 +3228,9 @@
       "explanation": "2,000 − 1,700 = 300 Wh lost."
     },
     "virtue": "Curiosity",
-    "narrative": "The final council gathers every lesson from the season to make a thoughtful plan for the whole community.\n\nTen panels each produce 200 Wh in test conditions. Three panels are shaded and produce half as much as the others today.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "The final council gathers every lesson from the season to make a thoughtful plan for the whole community.\n\nTen panels each produce 200 Wh in test conditions. Three panels are shaded and produce half as much as the others today.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Asha",
+    "voice": "Shade changes the panels’ output. Let’s add the energy from each group."
   },
   {
     "id": 96,
@@ -3072,7 +3262,9 @@
       "explanation": "The bus is ready at 10:40 after its 10:30 arrival and ten-minute turnaround."
     },
     "virtue": "Creativity",
-    "narrative": "Pip brings the clues together as the town prepares its next chapter with care and optimism.\n\nOne bus is scheduled on Route A at 10:00, taking 30 minutes, and Route B at 10:10. The same bus is required for both departures.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "Pip brings the clues together as the town prepares its next chapter with care and optimism.\n\nOne bus is scheduled on Route A at 10:00, taking 30 minutes, and Route B at 10:10. The same bus is required for both departures.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Dot",
+    "voice": "A bus needs time to finish one route before starting the next. Let’s draw the timetable."
   },
   {
     "id": 97,
@@ -3104,7 +3296,9 @@
       "explanation": "They coincide after 36 and 72 days, so there are two future coincidences."
     },
     "virtue": "Perseverance",
-    "narrative": "The big planning table is covered in notes, maps and ideas, and every voice can help improve the result.\n\nA community bell rings every 9 days and a market flag rises every 12 days. Both happen today. A clerk predicts they next coincide after 21 days.\n\nThe result will help the community make its next decision with confidence and care."
+    "narrative": "The big planning table is covered in notes, maps and ideas, and every voice can help improve the result.\n\nA community bell rings every 9 days and a market flag rises every 12 days. Both happen today. A clerk predicts they next coincide after 21 days.\n\nThe result will help the community make its next decision with confidence and care.",
+    "speaker": "Judge Mira",
+    "voice": "The bell and market flag repeat on different cycles. Let’s find their common day."
   },
   {
     "id": 98,
@@ -3136,14 +3330,16 @@
       "explanation": "Rules should be known before results are available."
     },
     "virtue": "Curiosity",
-    "narrative": "The final council gathers every lesson from the season to make a thoughtful plan for the whole community.\n\nA contest score is 70% skill and 30% teamwork. After the event, the proposal changes weights to 40% skill and 60% teamwork, changing the winner.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful."
+    "narrative": "The final council gathers every lesson from the season to make a thoughtful plan for the whole community.\n\nA contest score is 70% skill and 30% teamwork. After the event, the proposal changes weights to 40% skill and 60% teamwork, changing the winner.\n\nThe goal is to understand the idea, strengthen the plan and help everyone learn something useful.",
+    "speaker": "Pip",
+    "voice": "Contest weights should be shared before the event so every team knows the rules."
   },
   {
     "id": 99,
     "chapter": 10,
     "title": "The Table That Connected the Town",
-    "story": "A copied table shifts one column's values down a row. All numbers remain present but are matched to the wrong neighbourhoods.",
-    "claim": "A clerk claims the copied table is reliable because no values are missing.",
+    "story": "A copied table shifts one column's values down a row. Every number remains present, but some values sit beside a different neighbourhood than the source shows.",
+    "claim": "A clerk says the copied table is ready to use because every value is present.",
     "prompt": "What should happen first?",
     "options": [
       "Blame the person who copied it",
@@ -3152,11 +3348,11 @@
     ],
     "answer": 1,
     "explanation": "The source must be used to restore each value to its correct row before recalculating decisions.",
-    "twist": "The original notes were accurate; copying changed the associations.",
-    "moral": "Repair mistakes openly and preserve reliable evidence.",
+    "twist": "The team compares the copy with the source and reconnects each value to its neighbourhood. The numbers were all present; the labels make their meaning clear.",
+    "moral": "Careful labelling and honest checking help every neighbourhood be represented faithfully.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "A copied table shifts one column's values down a row. All numbers remain present but are matched to the wrong neighbourhoods.",
+    "evidence": "The copied table places some values beside different neighbourhoods from those shown in the original.",
     "challenge": {
       "prompt": "All values remain in a copied table, but one column has shifted down a row. What is the first repair step?",
       "options": [
@@ -3168,7 +3364,9 @@
       "explanation": "Values must be re-associated with the correct neighbourhoods before decisions are recalculated."
     },
     "virtue": "Honesty",
-    "narrative": "Pip brings the clues together as the town prepares its next chapter with care and optimism.\n\nA copied table shifts one column's values down a row. All numbers remain present but are matched to the wrong neighbourhoods.\n\nEvery clue gives the team another chance to think clearly and help one another."
+    "narrative": "Pip brings the clues together as the town prepares its next chapter with care and optimism.\n\nA copied table shifts one column's values down a row. Every number remains present, but some values sit beside a different neighbourhood than the source shows.\n\nEvery clue gives the team another chance to think clearly and help one another.",
+    "speaker": "Asha",
+    "voice": "A well-labelled table keeps each number connected to its neighbourhood."
   },
   {
     "id": 100,
@@ -3200,7 +3398,9 @@
       "explanation": "A defensible rule states its goal and constraints, tests consequences, and explains trade-offs."
     },
     "virtue": "Creativity",
-    "narrative": "The big planning table is covered in notes, maps and ideas, and every voice can help improve the result.\n\nThe town uses a common numerical rule to guide public decisions. A community review shows that the rule should also consider travel distance and access needs in a remote neighbourhood.\n\nCareful questions and kind collaboration bring the clearest answers."
+    "narrative": "The big planning table is covered in notes, maps and ideas, and every voice can help improve the result.\n\nThe town uses a common numerical rule to guide public decisions. A community review shows that the rule should also consider travel distance and access needs in a remote neighbourhood.\n\nCareful questions and kind collaboration bring the clearest answers.",
+    "speaker": "Dot",
+    "voice": "A shared rule can still be reviewed. Let’s include access, distance and community needs."
   }
 ];
   const chapters = [
