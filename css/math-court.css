@@ -944,3 +944,238 @@
   #screen-math-court .mc-story-pane,
   #screen-math-court .mc-game-pane { overflow-x:hidden; }
 }
+
+
+
+/* Keep the case screen calm, readable and game-led. */
+#screen-math-court .mc-case-split {
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(10px,1.2vw,16px);
+  height:calc(100dvh - 212px);
+  min-height:440px;
+  max-height:960px;
+}
+#screen-math-court .mc-story-pane,
+#screen-math-court .mc-game-pane {
+  padding:clamp(16px,1.6vw,24px);
+}
+#screen-math-court .mc-story-guide {
+  border-left:5px solid #8abca0;
+  background:linear-gradient(110deg,#fff,#f6fbf7);
+  box-shadow:0 4px 0 rgba(105,76,131,.055);
+}
+#screen-math-court .mc-story-guide strong {
+  font-size:1.18rem;
+  color:#473453;
+}
+#screen-math-court .mc-story-guide p {
+  font-size:1.16rem;
+  line-height:1.48;
+  color:#35474b;
+}
+#screen-math-court .mc-story-text {
+  font-size:1.22rem!important;
+  line-height:1.62!important;
+}
+#screen-math-court .mc-story-hook {
+  font-weight:650;
+  color:#3d4950;
+}
+#screen-math-court .mc-story-pane .mc-panel p,
+#screen-math-court .mc-game-pane .mc-panel p {
+  font-size:1.15rem;
+  line-height:1.55;
+}
+#screen-math-court .mc-kicker,
+#screen-math-court .mc-game-pane-heading {
+  font-size:.92rem;
+}
+#screen-math-court .mc-virtue-chip small,
+#screen-math-court .mc-story-pane small,
+#screen-math-court .mc-game-pane small {
+  font-size:.9rem;
+  line-height:1.35;
+}
+#screen-math-court .mc-play-heading span {
+  font-size:.9rem;
+  letter-spacing:.07em;
+}
+#screen-math-court .mc-play-heading h3 {
+  font-size:clamp(1.4rem,1.8vw,1.72rem);
+  line-height:1.18;
+}
+#screen-math-court .mc-play-heading p,
+#screen-math-court .mc-play-feedback {
+  font-size:1.06rem;
+  line-height:1.5;
+}
+#screen-math-court .mc-play-station {
+  border:1px solid #d4e2d9;
+  border-radius:19px;
+  padding:clamp(12px,1.25vw,18px);
+  background:
+    radial-gradient(circle at 100% 0%,rgba(225,242,231,.88),transparent 27%),
+    linear-gradient(145deg,#fffefb,#f3f9f5 85%);
+  box-shadow:0 4px 0 rgba(53,112,79,.07);
+}
+#screen-math-court .mc-evidence-pair {
+  display:grid;
+  gap:12px;
+  margin:16px 0 4px;
+}
+#screen-math-court .mc-evidence-card {
+  display:grid;
+  gap:8px;
+  padding:16px 17px;
+  border:1px solid #ded6e7;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 3px 0 rgba(64,47,78,.045);
+}
+#screen-math-court .mc-evidence-card span {
+  font-size:.9rem;
+  line-height:1.3;
+  font-weight:900;
+  letter-spacing:.055em;
+  color:#694c83;
+}
+#screen-math-court .mc-evidence-card strong {
+  color:#35434a;
+  font-size:1.13rem;
+  font-weight:650;
+  line-height:1.5;
+}
+#screen-math-court .mc-evidence-record {
+  border-left:5px solid #66a989;
+  background:#f8fcf9;
+}
+#screen-math-court .mc-evidence-claim {
+  border-left:5px solid #a68bc0;
+}
+#screen-math-court .mc-kindness-note {
+  margin-top:14px;
+  border-radius:16px;
+  background:#fff8e6;
+  border:1px solid #f0dfae;
+}
+#screen-math-court .mc-feedback-success {
+  animation:mc-aha-pop .36s ease-out both;
+  font-size:1.05rem;
+}
+@keyframes mc-aha-pop {
+  0% { transform:scale(.985); box-shadow:0 0 0 rgba(68,139,99,0); }
+  55% { transform:scale(1.01); box-shadow:0 0 0 5px rgba(100,174,128,.14); }
+  100% { transform:scale(1); box-shadow:0 0 0 rgba(68,139,99,0); }
+}
+#screen-math-court .mc-button {
+  min-height:48px;
+  font-size:1.1rem;
+  padding:12px 17px;
+}
+#screen-math-court .mc-answer-tile strong {
+  font-size:1.13rem;
+}
+#screen-math-court .mc-answer-instruction,
+#screen-math-court .mc-soft-note {
+  font-size:1rem!important;
+  line-height:1.45;
+}
+#screen-math-court .mc-equation-board.mc-equation-chain {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:9px 0;
+}
+#screen-math-court .mc-equation-board.mc-equation-chain .mc-equation-slot {
+  flex:1 1 74px;
+  min-width:68px;
+  max-width:140px;
+  min-height:82px;
+  padding:9px 6px;
+}
+#screen-math-court .mc-equation-board.mc-equation-chain .mc-equation-operation {
+  flex:0 0 auto;
+  min-width:18px;
+  font-size:1.5rem;
+}
+#screen-math-court .mc-equation-board.mc-equation-chain .mc-equation-equals {
+  flex:0 0 18px;
+}
+#screen-math-court .mc-equation-board.mc-equation-chain .mc-equation-result {
+  flex:1 1 84px;
+  min-width:78px;
+  max-width:150px;
+}
+#screen-math-court .mc-forge-controls {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:10px;
+}
+#screen-math-court .mc-forge-controls>div {
+  min-width:0;
+  padding:10px;
+  border:1px solid #e2dbe9;
+  border-radius:13px;
+  background:rgba(255,255,255,.86);
+}
+#screen-math-court .mc-forge-label {
+  display:block;
+  margin-bottom:5px;
+  color:#51455d;
+  font-size:.9rem;
+  line-height:1.35;
+  font-weight:850;
+}
+#screen-math-court .mc-forge-controls .mc-operation-picker {
+  margin-top:0;
+  gap:5px;
+}
+#screen-math-court .mc-forge-controls .mc-op-tile {
+  min-width:38px;
+  min-height:40px;
+  font-size:1.12rem;
+}
+#screen-math-court .mc-forge-chain-toggle,
+#screen-math-court .mc-build-button {
+  width:100%;
+  min-height:48px;
+}
+#screen-math-court .mc-forge-chain-toggle {
+  background:#fff;
+  border-color:#c8b5d9;
+  color:#5b4670;
+}
+#screen-math-court .mc-play-actions {
+  margin:10px 0 0;
+  max-width:none;
+}
+#screen-math-court .mc-play-actions .mc-button {
+  flex:1 1 auto;
+}
+@media (max-width:980px) {
+  #screen-math-court .mc-case-split {
+    height:calc(100dvh - 194px);
+    min-height:390px;
+  }
+  #screen-math-court .mc-forge-controls {
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+@media (max-width:680px) {
+  #screen-math-court .mc-case-split {
+    height:auto;
+    max-height:none;
+  }
+  #screen-math-court .mc-story-text { font-size:1.17rem!important; }
+  #screen-math-court .mc-forge-controls {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  #screen-math-court .mc-story-pane small,
+  #screen-math-court .mc-game-pane small { font-size:.88rem; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #screen-math-court .mc-feedback-success { animation:none; }
+}
