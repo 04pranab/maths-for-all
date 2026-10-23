@@ -1330,3 +1330,30 @@
 @media (prefers-reduced-motion:reduce) {
   #screen-math-court .mc-data-bar-wrap .mc-data-bar-track span { transition:none; }
 }
+
+
+/* Root scroll fix: keep one document scroller, not two nested pane scrollers. */
+#screen-math-court .mc-case-split {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  align-items: stretch;
+}
+#screen-math-court .mc-story-pane,
+#screen-math-court .mc-game-pane {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+  overscroll-behavior: auto;
+  scrollbar-gutter: auto;
+}
+#screen-math-court .mc-game-pane-heading {
+  position: static;
+}
+#screen-math-court .mc-play-actions {
+  position: static;
+  margin: 10px 0 0;
+  padding: 0;
+  background: none;
+}
