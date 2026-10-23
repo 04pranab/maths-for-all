@@ -1,0 +1,85 @@
+/* A more inviting, low-scroll home layout. Game mechanics remain unchanged. */
+:root { --font-scale: 1.08; }
+html { font-size: calc(19px * var(--font-scale)); }
+#screen-menu { padding: clamp(12px, 2vw, 26px); }
+.home-two-panel {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.88fr) minmax(0, 1.12fr);
+  align-items: start;
+  gap: clamp(18px, 2.2vw, 32px);
+  max-width: 1560px;
+  margin: 0 auto;
+}
+.home-welcome-panel { min-width: 0; }
+.home-welcome-panel .arcade-header {
+  min-height: auto;
+  margin-bottom: 16px;
+  padding: clamp(18px, 2vw, 28px);
+}
+.home-welcome-panel .arcade-illustration { max-width: 100%; }
+.home-games-panel { min-width: 0; }
+.home-games-panel .menu-section-heading { margin: 0 0 12px; }
+.home-games-panel .menu-section-heading h2 { font-size: clamp(1.5rem, 2vw, 2rem); line-height: 1.2; }
+.home-games-panel .menu-section-heading p { font-size: 1rem; }
+.home-games-panel .menu-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 0;
+}
+.home-games-panel .menu-card {
+  min-width: 0;
+  min-height: 150px;
+  padding: 16px;
+  text-align: left;
+}
+.home-games-panel .card-title { font-size: 1.12rem; line-height: 1.25; }
+.home-games-panel .card-desc { font-size: 0.96rem; line-height: 1.4; }
+.home-games-panel .card-tag { font-size: 0.82rem; }
+.virtue-story {
+  border: 2px solid #e3d8ef;
+  border-radius: 24px;
+  background: linear-gradient(150deg, #fffaf0 0%, #fff 55%, #f5f0ff 100%);
+  box-shadow: 0 8px 0 rgba(95, 72, 120, .08);
+  padding: clamp(18px, 2vw, 28px);
+  overflow: hidden;
+}
+.virtue-story-top {
+  display: flex; align-items: center; gap: 8px;
+  color: #654c83; font-size: .78rem; font-weight: 800; letter-spacing: .09em;
+}
+.virtue-story-spark { font-size: 1.5rem; color: #d79b31; }
+.virtue-story h2 { margin: 8px 0; color: #453456; font-size: clamp(1.45rem, 2vw, 2rem); line-height: 1.18; }
+.virtue-story-intro { font-size: 1rem; line-height: 1.55; }
+.virtue-story-scene {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin: 18px 0; padding: 16px 10px; border-radius: 18px; background: #f7f0ff;
+}
+.story-flower, .story-tables { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.story-flower { flex-direction: column; font-size: 2.5rem; }
+.story-flower span, .story-tables small { font-size: .86rem; font-weight: 700; color: #57486a; }
+.story-arrow { color: #8b6ca7; font-size: 1.8rem; font-weight: 800; }
+.story-tables { max-width: 150px; font-size: 1.7rem; }
+.story-tables small { width: 100%; text-align: center; }
+.virtue-story-question { padding: 16px; border-radius: 16px; background: #fff; border: 1px solid #e8dfef; }
+.virtue-story-question strong { display: block; font-size: 1.04rem; }
+.virtue-story-question p { margin: 6px 0 10px; font-size: 1.08rem; font-weight: 800; color: #654c83; }
+.virtue-story-answer { padding: 11px 13px; border-radius: 12px; background: #eaf5e5; color: #2e633b; font-size: 1.05rem; font-weight: 800; }
+.virtue-story-value { margin-top: 14px; font-size: .98rem; line-height: 1.5; color: #4f4657; }
+.menu-footer { max-width: 1560px; margin: 24px auto 0; font-size: .92rem; }
+button, input, select, textarea { font: inherit; }
+@media (max-width: 1000px) {
+  .home-two-panel { grid-template-columns: minmax(0, 1fr); }
+  .home-welcome-panel .arcade-header { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(180px, .8fr); }
+  .home-games-panel .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  #screen-menu { padding: 10px; }
+  .home-welcome-panel .arcade-header { display: block; padding: 18px; }
+  .home-welcome-panel .arcade-illustration { display: block; margin: 12px auto 0; }
+  .home-games-panel .menu-grid { grid-template-columns: minmax(0, 1fr); }
+  .home-games-panel .menu-card { min-height: 0; }
+  .virtue-story-scene { gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-two-panel * { scroll-behavior: auto; }
+}
