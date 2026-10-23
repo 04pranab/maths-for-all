@@ -527,7 +527,7 @@
   function renderDataGarden(item) {
     const vals=visualNumbers(item).slice(0,4).map(n=>Math.abs(n));
     const min=Math.min(...vals),max=Math.max(...vals),base=state.lab.dataZoom?Math.max(0,min-10):0,range=Math.max(1,max-base);
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>📊 DATA GARDEN</span><h3>See how a graph tells its story</h3><p>Change the graph's starting point. The data stay the same, but the visual impression changes.</p></div>'+
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>📊 DATA GARDEN</span><h3>See how a graph tells its story</h3><p>Change where the graph scale begins. The data stay the same, but the visual impression changes.</p></div>'+
       '<div class="mc-data-chart" role="img" aria-label="Bar chart with '+(state.lab.dataZoom?"zoomed":"zero")+' baseline">'+vals.map((n,i)=>'<div class="mc-data-bar-wrap"><strong>'+n+'</strong><div class="mc-data-bar-track"><span style="height:'+Math.max(4,(n-base)/range*100)+'%"></span></div><small>Record '+(i+1)+'</small></div>').join("")+'</div>'+
       '<div class="mc-chart-scale-label">Scale starts at <strong>'+base+'</strong></div><div class="mc-rule-tiles"><button class="mc-op-tile '+(!state.lab.dataZoom?"is-selected":"")+'" onclick="MathCourt.setDataZoom(false)">Start at zero</button><button class="mc-op-tile '+(state.lab.dataZoom?"is-selected":"")+'" onclick="MathCourt.setDataZoom(true)">Zoom in</button></div>'+
       '<p class="mc-play-feedback">'+(state.lab.dataZoom?"Zooming in highlights small gaps; disclose the scale so readers can judge fairly.":"A zero baseline makes the full bar lengths easier to compare.")+'</p></section>';
