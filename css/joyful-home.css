@@ -18,13 +18,13 @@
   width: 100%;
   min-height: 0;
   margin: 0 0 12px;
-  padding: 14px;
+  padding: 8px 12px;
   border-radius: 20px;
   text-align: left;
 }
 #screen-menu .home-welcome-panel .arcade-copy { max-width: none; text-align: left; }
 #screen-menu .home-welcome-panel .arcade-badge { margin: 0 0 4px; font-size: .72rem; line-height: 1.2; }
-#screen-menu .home-welcome-panel .arena-title { font-size: clamp(2rem, 3.2vw, 2.7rem); line-height: 1; }
+#screen-menu .home-welcome-panel .arena-title { font-size: clamp(1.7rem, 2.35vw, 2.2rem); line-height: 1; }
 #screen-menu .home-welcome-panel .title-arena { margin-left: 4px; }
 #screen-menu .home-welcome-panel .arena-subtitle-hi { margin-top: 5px; font-size: .9rem; }
 #screen-menu .home-welcome-panel .arcade-intro { margin-top: 5px; font-size: .98rem; line-height: 1.3; }
