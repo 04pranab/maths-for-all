@@ -349,7 +349,7 @@
   function freshLab(item) {
     const nums=visualNumbers(item);
     return {
-      slot:"a",a:nums[0]===undefined?3:nums[0],b:nums[1]===undefined?2:nums[1],op:"-",
+      slot:"a",a:nums[0]===undefined?3:nums[0],b:nums[1]===undefined?2:nums[1],c:nums[2]===undefined?(nums[0]===undefined?3:nums[0]):nums[2],op:"-",op2:"+",useThird:false,
       calculationResult:null,patternRule:"add3",fractionNumerator:3,fractionDenominator:8,
       cells:[0,1,2,8,9,10],timelineMinutes:30,dataZoom:false,ruleInput:4,ruleType:"doublePlusOne",
       shares:[3,2,4],route:[0],allocations:[3,3,2],note:""
@@ -358,8 +358,10 @@
   function normaliseLab(saved,item) {
     const base=freshLab(item);
     const lab={...base,...saved};
-    lab.slot=lab.slot==="b"?"b":"a";
+    lab.slot=["a","b","c"].includes(lab.slot)?lab.slot:"a";
     lab.op=["+","-","×","÷"].includes(lab.op)?lab.op:"-";
+    lab.op2=["+","-","×","÷"].includes(lab.op2)?lab.op2:"+";
+    lab.useThird=Boolean(lab.useThird);
     lab.patternRule=["add1","add2","add3","double"].includes(lab.patternRule)?lab.patternRule:"add3";
     lab.fractionDenominator=[2,3,4,6,8,10,12].includes(lab.fractionDenominator)?lab.fractionDenominator:8;
     lab.fractionNumerator=Math.max(0,Math.min(lab.fractionDenominator,Number(lab.fractionNumerator)||0));
@@ -387,7 +389,7 @@
     if(newRight)newRight.scrollTop=rightTop;
   }
   function chooseLabSlot(slot) {
-    if(!["a","b"].includes(slot))return;
+    if(!["a","b","c"].includes(slot))return;
     state.lab.slot=slot;refreshCaseKeepingScroll();
   }
   function chooseLabNumber(index) {
@@ -395,19 +397,32 @@
     if(!Number.isInteger(index)||index<0||index>=nums.length)return;
     state.lab[state.lab.slot]=nums[index];
     state.lab.calculationResult=null;
-    state.lab.note="Number tile placed in Slot "+state.lab.slot.toUpperCase()+".";
+    state.lab.note="Number tile placed in Slot "+state.lab.slot.toUpperCase()+". Try a second step when your problem needs one.";
     refreshCaseKeepingScroll();
   }
   function chooseLabOperator(op) {
     if(!["+","-","×","÷"].includes(op))return;
     state.lab.op=op;state.lab.calculationResult=null;refreshCaseKeepingScroll();
   }
+  function chooseLabOperator2(op) {
+    if(!["+","-","×","÷"].includes(op))return;
+    state.lab.op2=op;state.lab.calculationResult=null;refreshCaseKeepingScroll();
+  }
+  function toggleThirdOperand() {
+    state.lab.useThird=!state.lab.useThird;state.lab.calculationResult=null;
+    if(state.lab.useThird)state.lab.slot="c";else if(state.lab.slot==="c")state.lab.slot="a";
+    state.lab.note=state.lab.useThird?"A second step is ready. Choose a third number tile.":"Back to a two-number calculation.";
+    refreshCaseKeepingScroll();
+  }
   function calculateLab() {
-    const {a,b,op}=state.lab;
-    if(a===null||b===null||b===0&&op==="÷"){state.lab.note="Choose two values that make a defined calculation.";state.lab.calculationResult=null;refreshCaseKeepingScroll();return;}
-    const result=op==="+"?a+b:op==="-"?a-b:op==="×"?a*b:a/b;
+    const {a,b,c,op,op2,useThird}=state.lab;
+    if(a===null||b===null||(op==="÷"&&b===0)||(useThird&&(c===null||(op2==="÷"&&c===0)))){
+      state.lab.note="Choose number tiles that make a defined calculation.";state.lab.calculationResult=null;refreshCaseKeepingScroll();return;
+    }
+    const first=op==="+"?a+b:op==="-"?a-b:op==="×"?a*b:a/b;
+    const result=useThird?(op2==="+"?first+c:op2==="-"?first-c:op2==="×"?first*c:first/c):first;
     state.lab.calculationResult=Number.isFinite(result)?Number(result.toFixed(4)):null;
-    state.lab.note=state.lab.calculationResult===null?"Choose a defined calculation.":"Your model gives "+state.lab.calculationResult+". Explain how the quantities connect.";
+    state.lab.note=state.lab.calculationResult===null?"Choose a defined calculation.":"Aha! "+(useThird?"("+a+" "+op+" "+b+") "+op2+" "+c:a+" "+op+" "+b)+" = "+state.lab.calculationResult+". Try matching this model to the case.";
     refreshCaseKeepingScroll();
   }
   function setPatternRule(rule) {
