@@ -1892,14 +1892,14 @@
     "check": "calculation",
     "evidence": "A table has entries 14, 18 and one unknown value; its row total is 50.",
     "challenge": {
-      "prompt": "If the row total changes from 50 to 52 while the other entries remain 14 and 18, what is the missing entry?",
+      "prompt": "If the row total changes from 50 to 52 while the other entries remain 14 and 18, what is the unknown value?",
       "options": [
         "20",
         "22",
         "18"
       ],
       "answer": 0,
-      "explanation": "52 − 14 − 18 = 20. This confirms the stated relationship."
+      "explanation": "52 − 14 − 18 = 20. The row total helps us work out the unknown."
     },
     "virtue": "Perseverance",
     "narrative": "The data team gathers measurements carefully before explaining what they mean.\n\nA table has entries 14, 18 and one unknown value; its row total is 50. The clerk suggests that the unknown value is 20.\n\nCareful questions and kind collaboration bring the clearest answers.",
@@ -2255,7 +2255,7 @@
     "prompt": "Which conclusion goes beyond the training rule?",
     "options": [
       "Confusing a statement with its converse",
-      "Subtracting in the wrong order",
+      "Reversing the given implication",
       "Rounding too early"
     ],
     "answer": 0,
@@ -2290,7 +2290,7 @@
     "options": [
       "A is consistent; B and C are not",
       "All three are consistent",
-      "The ledger must be wrong"
+      "The ledger total differs from the recorded sum"
     ],
     "answer": 0,
     "explanation": "If the ledger is correct, B's claim is false, so C cannot have both A and B true.",
@@ -3342,7 +3342,7 @@
     "claim": "A clerk says the copied table is ready to use because every value is present.",
     "prompt": "What should happen first?",
     "options": [
-      "Blame the person who copied it",
+      "Focus on the person rather than checking the source",
       "Compare the copy with the original and correct the mapping",
       "Delete all archived data"
     ],
@@ -3357,7 +3357,7 @@
       "prompt": "All values remain in a copied table, but one column has shifted down a row. What is the first repair step?",
       "options": [
         "Compare with the original and restore each value to its row",
-        "Assume the table is sound because no value is missing",
+        "Assume the table is sound because every value appears",
         "Delete the whole archive"
       ],
       "answer": 0,
