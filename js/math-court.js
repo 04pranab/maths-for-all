@@ -23,7 +23,7 @@
   const state = {
     caseId:1, phase:0, seenClaim:false, seenEvidence:false,
     investigationSolved:false, challengeSolved:false, crossSolved:false, verdictChosen:null,
-    visualMode:"model", visualFocus:0, completed:new Set(), session:null, feedback:"", feedbackKind:""
+    visualMode:"model", visualFocus:0, lab:null, completed:new Set(), session:null, feedback:"", feedbackKind:""
   };
   function normalVerdict(value) { return value === "insufficient" ? "uncertain" : value; }
   function load() {
@@ -48,7 +48,7 @@
       caseId:state.caseId, phase:state.phase, seenClaim:state.seenClaim,
       seenEvidence:state.seenEvidence, investigationSolved:state.investigationSolved,
       challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, verdictChosen:state.verdictChosen,
-      visualMode:state.visualMode, visualFocus:state.visualFocus
+      visualMode:state.visualMode, visualFocus:state.visualFocus, lab:state.lab
     };
     persist();
   }
@@ -125,6 +125,7 @@
     state.visualMode=saved&&["model","compare","trace"].includes(saved.visualMode)?saved.visualMode:"model";
     state.visualFocus=saved&&Number.isInteger(saved.visualFocus)?Math.max(0,Math.min(4,saved.visualFocus)):0;
     state.verdictChosen=saved?saved.verdictChosen:null;
+    state.lab=saved&&saved.lab?normaliseLab(saved.lab,item):freshLab(item);
     state.feedback="";state.feedbackKind="";
     syncSession();
     const docket=$("mc-docket"),play=$("mc-play");
@@ -181,7 +182,7 @@
   function answerCross(index) {
     const item=data().getCase(state.caseId),check=data().checks[item.check];
     const rotated=rotatedChoices(check.choices,check.correct,item.id);
-    if(index===rotated.correct){state.crossSolved=true;setFeedback("Objection sustained. You tested the reasoning instead of judging the speaker.","success");}
+    if(index===rotated.correct){state.crossSolved=true;setFeedback("Excellent question. You tested the reasoning with curiosity and respect.","success");}
     else{setFeedback("That approach leaves an important gap. Look for a check that tests the claim, not the person.","hint");}
     syncSession();renderCase();
   }
@@ -344,56 +345,308 @@
     else if(task==="challenge")answerChallenge(index);
   }
 
+
+  function freshLab(item) {
+    const nums=visualNumbers(item);
+    return {
+      slot:"a",a:nums[0]===undefined?3:nums[0],b:nums[1]===undefined?2:nums[1],op:"-",
+      calculationResult:null,patternRule:"add3",fractionNumerator:3,fractionDenominator:8,
+      cells:[0,1,2,8,9,10],timelineMinutes:30,dataZoom:false,ruleInput:4,ruleType:"doublePlusOne",
+      shares:[3,2,4],route:[0],allocations:[3,3,2],note:""
+    };
+  }
+  function normaliseLab(saved,item) {
+    const base=freshLab(item);
+    const lab={...base,...saved};
+    lab.slot=lab.slot==="b"?"b":"a";
+    lab.op=["+","-","×","÷"].includes(lab.op)?lab.op:"-";
+    lab.patternRule=["add1","add2","add3","double"].includes(lab.patternRule)?lab.patternRule:"add3";
+    lab.fractionDenominator=[2,3,4,6,8,10,12].includes(lab.fractionDenominator)?lab.fractionDenominator:8;
+    lab.fractionNumerator=Math.max(0,Math.min(lab.fractionDenominator,Number(lab.fractionNumerator)||0));
+    lab.cells=Array.isArray(lab.cells)?[...new Set(lab.cells.filter(n=>Number.isInteger(n)&&n>=0&&n<48))]:base.cells;
+    lab.timelineMinutes=Math.max(0,Math.min(180,Number(lab.timelineMinutes)||0));
+    lab.dataZoom=Boolean(lab.dataZoom);
+    lab.ruleInput=Math.max(1,Math.min(12,Number(lab.ruleInput)||1));
+    lab.ruleType=["doublePlusOne","add3","triple","square"].includes(lab.ruleType)?lab.ruleType:"doublePlusOne";
+    lab.shares=Array.isArray(lab.shares)?[0,1,2].map(i=>Math.max(0,Math.min(15,Number(lab.shares[i])||0))):base.shares;
+    const validRoute=Array.isArray(lab.route)&&lab.route.length?lab.route.filter(n=>Number.isInteger(n)&&n>=0&&n<5):[0];
+    lab.route=validRoute.length?validRoute:[0];
+    lab.allocations=Array.isArray(lab.allocations)?[0,1,2].map(i=>Math.max(0,Math.min(12,Number(lab.allocations[i])||0))):base.allocations;
+    return lab;
+  }
+  function refreshCaseKeepingScroll() {
+    const host=$("mc-stage-content");
+    const left=host&&host.querySelector(".mc-story-pane");
+    const right=host&&host.querySelector(".mc-game-pane");
+    const leftTop=left?left.scrollTop:0,rightTop=right?right.scrollTop:0;
+    syncSession();
+    renderCase();
+    const newLeft=host&&host.querySelector(".mc-story-pane");
+    const newRight=host&&host.querySelector(".mc-game-pane");
+    if(newLeft)newLeft.scrollTop=leftTop;
+    if(newRight)newRight.scrollTop=rightTop;
+  }
+  function chooseLabSlot(slot) {
+    if(!["a","b"].includes(slot))return;
+    state.lab.slot=slot;refreshCaseKeepingScroll();
+  }
+  function chooseLabNumber(index) {
+    const item=data().getCase(state.caseId),nums=visualNumbers(item);
+    if(!Number.isInteger(index)||index<0||index>=nums.length)return;
+    state.lab[state.lab.slot]=nums[index];
+    state.lab.calculationResult=null;
+    state.lab.note="Number tile placed in Slot "+state.lab.slot.toUpperCase()+".";
+    refreshCaseKeepingScroll();
+  }
+  function chooseLabOperator(op) {
+    if(!["+","-","×","÷"].includes(op))return;
+    state.lab.op=op;state.lab.calculationResult=null;refreshCaseKeepingScroll();
+  }
+  function calculateLab() {
+    const {a,b,op}=state.lab;
+    if(a===null||b===null||b===0&&op==="÷"){state.lab.note="Choose two values that make a defined calculation.";state.lab.calculationResult=null;refreshCaseKeepingScroll();return;}
+    const result=op==="+"?a+b:op==="-"?a-b:op==="×"?a*b:a/b;
+    state.lab.calculationResult=Number.isFinite(result)?Number(result.toFixed(4)):null;
+    state.lab.note=state.lab.calculationResult===null?"Choose a defined calculation.":"Your model gives "+state.lab.calculationResult+". Explain how the quantities connect.";
+    refreshCaseKeepingScroll();
+  }
+  function setPatternRule(rule) {
+    if(!["add1","add2","add3","double"].includes(rule))return;
+    state.lab.patternRule=rule;refreshCaseKeepingScroll();
+  }
+  function setFraction(which,delta) {
+    if(which==="numerator")state.lab.fractionNumerator=Math.max(0,Math.min(state.lab.fractionDenominator,state.lab.fractionNumerator+delta));
+    if(which==="denominator"){
+      const choices=[2,3,4,6,8,10,12],i=choices.indexOf(state.lab.fractionDenominator);
+      const next=Math.max(0,Math.min(choices.length-1,i+delta));
+      state.lab.fractionDenominator=choices[next];
+      state.lab.fractionNumerator=Math.min(state.lab.fractionNumerator,state.lab.fractionDenominator);
+    }
+    refreshCaseKeepingScroll();
+  }
+  function toggleShapeCell(index) {
+    if(!Number.isInteger(index)||index<0||index>=48)return;
+    const cells=new Set(state.lab.cells);
+    if(cells.has(index))cells.delete(index);else cells.add(index);
+    state.lab.cells=[...cells];refreshCaseKeepingScroll();
+  }
+  function shapeStats() {
+    const cells=new Set(state.lab.cells);let perimeter=0;
+    for(const n of cells){
+      const r=Math.floor(n/8),c=n%8;
+      if(r===0||!cells.has(n-8))perimeter++;
+      if(r===5||!cells.has(n+8))perimeter++;
+      if(c===0||!cells.has(n-1))perimeter++;
+      if(c===7||!cells.has(n+1))perimeter++;
+    }
+    return {area:cells.size,perimeter};
+  }
+  function setLabTimeline(value) {
+    state.lab.timelineMinutes=Math.max(0,Math.min(180,Number(value)||0));refreshCaseKeepingScroll();
+  }
+  function toggleDataZoom() {
+    state.lab.dataZoom=!state.lab.dataZoom;refreshCaseKeepingScroll();
+  }
+  function setRuleInput(value) {
+    state.lab.ruleInput=Math.max(1,Math.min(12,Number(value)||1));refreshCaseKeepingScroll();
+  }
+  function setRuleType(rule) {
+    if(!["doublePlusOne","add3","triple","square"].includes(rule))return;
+    state.lab.ruleType=rule;refreshCaseKeepingScroll();
+  }
+  function adjustShare(group,delta) {
+    if(!Number.isInteger(group)||group<0||group>2)return;
+    state.lab.shares[group]=Math.max(0,Math.min(15,state.lab.shares[group]+delta));
+    refreshCaseKeepingScroll();
+  }
+  const routeEdges=[[0,1,4],[1,2,5],[0,3,2],[3,4,3],[4,2,2],[1,4,4]];
+  function routeEdge(a,b) {return routeEdges.find(e=>(e[0]===a&&e[1]===b)||(e[0]===b&&e[1]===a));}
+  function extendRoute(node) {
+    const route=state.lab.route;
+    if(node===route[route.length-2]){route.pop();refreshCaseKeepingScroll();return;}
+    if(node===route[route.length-1])return;
+    if(route.includes(node)){state.lab.note="Try a fresh route without revisiting a stop.";setFeedback(state.lab.note,"hint");refreshCaseKeepingScroll();return;}
+    if(!routeEdge(route[route.length-1],node)){state.lab.note="Choose a connected stop. The roads show where you can travel next.";setFeedback(state.lab.note,"hint");refreshCaseKeepingScroll();return;}
+    route.push(node);state.lab.note="Route extended. Add up the road lengths to compare journeys.";refreshCaseKeepingScroll();
+  }
+  function resetRoute() {state.lab.route=[0];state.lab.note="Begin at A and build a connected route.";refreshCaseKeepingScroll();}
+  function adjustAllocation(group,delta) {
+    if(!Number.isInteger(group)||group<0||group>2)return;
+    const next=state.lab.allocations[group]+delta;
+    const total=state.lab.allocations.reduce((sum,n)=>sum+n,0);
+    if(next<0||next>12||delta>0&&total>=12)return;
+    state.lab.allocations[group]=next;refreshCaseKeepingScroll();
+  }
+  function formatClock(minutes) {
+    const value=((minutes%1440)+1440)%1440,hour=Math.floor(value/60),minute=value%60;
+    return ((hour%12)||12)+":"+String(minute).padStart(2,"0")+" "+(hour<12?"AM":"PM");
+  }
+  function renderNumberForge(item) {
+    const vals=visualNumbers(item).slice(0,5),lab=state.lab;
+    const shown=lab.calculationResult===null?"?":String(lab.calculationResult);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧱 NUMBER FORGE</span><h3>Build a calculation</h3><p>Choose a slot, place two number tiles and pick the operation that connects them.</p></div>'+
+      '<div class="mc-equation-board"><button class="mc-equation-slot '+(lab.slot==="a"?"is-selected":"")+'" data-slot="a" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT A</small><strong>'+esc(String(lab.a))+'</strong></button>'+
+      '<div class="mc-equation-operation">'+esc(lab.op)+'</div><button class="mc-equation-slot '+(lab.slot==="b"?"is-selected":"")+'" data-slot="b" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT B</small><strong>'+esc(String(lab.b))+'</strong></button>'+
+      '<div class="mc-equation-equals">=</div><div class="mc-equation-result"><small>YOUR RESULT</small><strong>'+shown+'</strong></div></div>'+
+      '<div class="mc-number-pool">'+vals.map((n,i)=>'<button type="button" class="mc-number-tile" onclick="MathCourt.chooseLabNumber('+i+')">'+esc(String(n))+'</button>').join("")+'</div>'+
+      '<div class="mc-operation-picker">'+["+","-","×","÷"].map(op=>'<button type="button" class="mc-op-tile '+(lab.op===op?"is-selected":"")+'" data-op="'+op+'" onclick="MathCourt.chooseLabOperator(this.dataset.op)">'+esc(op)+'</button>').join("")+
+      '<button type="button" class="mc-button mc-button-primary mc-build-button" onclick="MathCourt.calculateLab()">Calculate it ✨</button></div>'+
+      '<p class="mc-play-feedback" aria-live="polite">'+esc(lab.note||"Try different combinations and notice how the result changes.")+'</p></section>';
+  }
+  function renderPatternGarden(item) {
+    const vals=visualNumbers(item).slice(0,4),lab=state.lab,last=vals[vals.length-1]||5;
+    const step=lab.patternRule==="add1"?1:lab.patternRule==="add2"?2:lab.patternRule==="add3"?3:null;
+    const next=step===null?last*2:last+step;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🌱 PATTERN GARDEN</span><h3>Grow the next number</h3><p>Change the rule and watch how the number path grows.</p></div>'+
+      '<div class="mc-pattern-path">'+vals.map((n,i)=>'<div class="mc-pattern-stone"><small>'+String(i+1).padStart(2,"0")+'</small><strong>'+esc(String(n))+'</strong></div>').join("")+'<div class="mc-pattern-stone mc-pattern-next"><small>NEXT</small><strong>'+esc(String(next))+'</strong></div></div>'+
+      '<div class="mc-rule-tiles">'+[{id:"add1",label:"+ 1"},{id:"add2",label:"+ 2"},{id:"add3",label:"+ 3"},{id:"double",label:"× 2"}].map(r=>'<button class="mc-op-tile '+(lab.patternRule===r.id?"is-selected":"")+'" data-rule="'+r.id+'" onclick="MathCourt.setPatternRule(this.dataset.rule)">'+r.label+'</button>').join("")+'</div>'+
+      '<p class="mc-play-feedback">Rule selected: '+(step===null?"double the last value":"add "+step)+" · next value = "+next+'</p></section>';
+  }
+  function renderFractionStudio() {
+    const lab=state.lab,den=lab.fractionDenominator,num=lab.fractionNumerator;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🍰 FRACTION STUDIO</span><h3>Share the whole</h3><p>Change the number of equal parts and shade how many belong in your share.</p></div>'+
+      '<div class="mc-fraction-strip" role="img" aria-label="'+num+' of '+den+' equal parts selected">'+Array.from({length:den},(_,i)=>'<button type="button" class="mc-fraction-part '+(i<num?"is-filled":"")+'" aria-label="Part '+(i+1)+'" data-which="numerator" data-delta="'+(i<num?-1:1)+'" onclick="MathCourt.setFraction(this.dataset.which,Number(this.dataset.delta))"></button>').join("")+'</div>'+
+      '<div class="mc-fraction-equation"><strong>'+num+'/'+den+'</strong><span>of one whole</span><strong>'+Math.round(num/den*100)+'%</strong></div>'+
+      '<div class="mc-play-control-row"><span>Shade parts</span><button class="mc-stepper" data-which="numerator" data-delta="-1" onclick="MathCourt.setFraction(this.dataset.which,-1)" aria-label="One fewer shaded part">−</button><button class="mc-stepper" data-which="numerator" data-delta="1" onclick="MathCourt.setFraction(this.dataset.which,1)" aria-label="One more shaded part">+</button></div>'+
+      '<div class="mc-play-control-row"><span>Equal slices</span><button class="mc-stepper" data-which="denominator" data-delta="-1" onclick="MathCourt.setFraction(this.dataset.which,-1)" aria-label="Fewer equal parts">−</button><strong>'+den+'</strong><button class="mc-stepper" data-which="denominator" data-delta="1" onclick="MathCourt.setFraction(this.dataset.which,1)" aria-label="More equal parts">+</button></div></section>';
+  }
+  function renderShapeWorkshop() {
+    const stats=shapeStats();
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧩 SHAPE WORKSHOP</span><h3>Build a shape, discover its measures</h3><p>Tap squares to add or remove them. Compare the inside space with the outside edge.</p></div>'+
+      '<div class="mc-shape-builder" role="group" aria-label="48-square shape builder">'+Array.from({length:48},(_,i)=>'<button type="button" class="mc-shape-cell '+(state.lab.cells.includes(i)?"is-filled":"")+'" aria-label="Grid square '+(i+1)+'" aria-pressed="'+state.lab.cells.includes(i)+'" onclick="MathCourt.toggleShapeCell('+i+')"></button>').join("")+'</div>'+
+      '<div class="mc-shape-stats"><div><small>AREA</small><strong>'+stats.area+'</strong><span>square units</span></div><div><small>PERIMETER</small><strong>'+stats.perimeter+'</strong><span>edge units</span></div></div>'+
+      '<button class="mc-button mc-button-quiet" onclick="MathCourt.resetShape()">Start a fresh shape ↻</button></section>';
+  }
+  function renderTimeline() {
+    const mins=state.lab.timelineMinutes,start=14*60+35,end=start+mins;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>⏱️ TIMELINE STUDIO</span><h3>Move through time</h3><p>Slide the marker and see how minutes change the arrival time.</p></div>'+
+      '<div class="mc-timeline-track"><span class="mc-time-start">'+formatClock(start)+'</span><div class="mc-time-rail"><span style="width:'+Math.min(100,mins/180*100)+'%"></span><i style="left:'+Math.min(100,mins/180*100)+'%"></i></div><span class="mc-time-end">'+formatClock(end)+'</span></div>'+
+      '<div class="mc-time-result"><small>TRAVEL TIME</small><strong>'+mins+' minutes</strong><span>'+Math.floor(mins/60)+' hour'+(Math.floor(mins/60)===1?"":"s")+' and '+(mins%60)+' minutes</span></div>'+
+      '<label class="mc-range-label" for="mc-timeline-range">Move the journey marker</label><input id="mc-timeline-range" class="mc-range" type="range" min="0" max="180" step="5" value="'+mins+'" oninput="MathCourt.setLabTimeline(this.value)"/></section>';
+  }
+  function renderDataGarden(item) {
+    const vals=visualNumbers(item).slice(0,4).map(n=>Math.abs(n));
+    const min=Math.min(...vals),max=Math.max(...vals),base=state.lab.dataZoom?Math.max(0,min-10):0,range=Math.max(1,max-base);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>📊 DATA GARDEN</span><h3>See how a graph tells its story</h3><p>Change where the graph scale begins. The data stay the same, but the visual impression changes.</p></div>'+
+      '<div class="mc-data-chart" role="img" aria-label="Bar chart with '+(state.lab.dataZoom?"zoomed":"zero")+' baseline">'+vals.map((n,i)=>'<div class="mc-data-bar-wrap"><strong>'+n+'</strong><div class="mc-data-bar-track"><span style="height:'+Math.max(4,(n-base)/range*100)+'%"></span></div><small>Record '+(i+1)+'</small></div>').join("")+'</div>'+
+      '<div class="mc-chart-scale-label">Scale starts at <strong>'+base+'</strong></div><div class="mc-rule-tiles"><button class="mc-op-tile '+(!state.lab.dataZoom?"is-selected":"")+'" onclick="MathCourt.setDataZoom(false)">Start at zero</button><button class="mc-op-tile '+(state.lab.dataZoom?"is-selected":"")+'" onclick="MathCourt.setDataZoom(true)">Zoom in</button></div>'+
+      '<p class="mc-play-feedback">'+(state.lab.dataZoom?"Zooming in highlights small gaps; disclose the scale so readers can judge fairly.":"A zero baseline makes the full bar lengths easier to compare.")+'</p></section>';
+  }
+  function renderRuleMachine() {
+    const lab=state.lab,x=lab.ruleInput,y=lab.ruleType==="doublePlusOne"?2*x+1:lab.ruleType==="add3"?x+3:lab.ruleType==="triple"?3*x:x*x;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>⚙️ RULE MACHINE</span><h3>Feed a number into the machine</h3><p>Choose a rule, then move the input to watch the output update.</p></div>'+
+      '<div class="mc-machine-flow"><div class="mc-machine-box"><small>INPUT</small><strong>'+x+'</strong></div><div class="mc-machine-arrow">→</div><div class="mc-machine-box mc-machine-core"><small>RULE</small><strong>'+(lab.ruleType==="doublePlusOne"?"2x + 1":lab.ruleType==="add3"?"x + 3":lab.ruleType==="triple"?"3x":"x²")+'</strong></div><div class="mc-machine-arrow">→</div><div class="mc-machine-box"><small>OUTPUT</small><strong>'+y+'</strong></div></div>'+
+      '<label class="mc-range-label" for="mc-rule-input">Change input</label><input id="mc-rule-input" class="mc-range" type="range" min="1" max="12" value="'+x+'" oninput="MathCourt.setRuleInput(this.value)"/>'+
+      '<div class="mc-rule-tiles">'+[{id:"doublePlusOne",label:"2x + 1"},{id:"add3",label:"x + 3"},{id:"triple",label:"3x"},{id:"square",label:"x²"}].map(r=>'<button class="mc-op-tile '+(lab.ruleType===r.id?"is-selected":"")+'" data-rule="'+r.id+'" onclick="MathCourt.setRuleType(this.dataset.rule)">'+r.label+'</button>').join("")+'</div>'+
+      '<p class="mc-play-feedback">'+y+' comes from applying '+(lab.ruleType==="doublePlusOne"?"2 × "+x+" + 1":lab.ruleType==="add3"?x+" + 3":lab.ruleType==="triple"?"3 × "+x:x+" × "+x)+'.</p></section>';
+  }
+  function renderShareMarket() {
+    const shares=state.lab.shares,total=shares.reduce((s,n)=>s+n,0),gap=Math.max(...shares)-Math.min(...shares);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🫶 FAIR-SHARE MARKET</span><h3>Share the counters</h3><p>Move the number up or down for each group. Watch the total and compare the shares.</p></div>'+
+      '<div class="mc-share-groups">'+shares.map((n,i)=>'<div class="mc-share-group"><strong>Group '+String.fromCharCode(65+i)+'</strong><div class="mc-share-dots">'+Array.from({length:n},()=>'<i aria-hidden="true"></i>').join("")+'</div><div class="mc-share-adjust"><button class="mc-stepper" onclick="MathCourt.adjustShare('+i+',-1)" aria-label="Give one fewer counter to group '+String.fromCharCode(65+i)+'">−</button><strong>'+n+'</strong><button class="mc-stepper" onclick="MathCourt.adjustShare('+i+',1)" aria-label="Give one more counter to group '+String.fromCharCode(65+i)+'">+</button></div></div>').join("")+'</div>'+
+      '<div class="mc-shares-summary"><span>Total counters <strong>'+total+'</strong></span><span>Largest gap <strong>'+gap+'</strong></span></div>'+
+      '<p class="mc-play-feedback">'+(gap===0?"Every group has an equal share. Now consider whether the situation asks for equal shares or needs-based shares.":"The groups have different amounts. Decide whether equal shares or another stated rule best fits the situation.")+'</p></section>';
+  }
+  function renderRouteGarden() {
+    const route=state.lab.route,total=route.slice(1).reduce((sum,n,i)=>sum+(routeEdge(route[i],n)||[0,0,0])[2],0);
+    const nodes=[[55,70],[182,40],[306,74],[94,170],[242,166]],labels=["A","B","C","D","E"];
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🗺️ ROUTE GARDEN</span><h3>Build a journey across town</h3><p>Start at A and choose a connected stop. Every road adds to your journey length.</p></div>'+
+      '<svg viewBox="0 0 360 220" class="mc-route-map" role="img" aria-label="Five-stop route network">'+routeEdges.map(e=>'<line x1="'+nodes[e[0]][0]+'" y1="'+nodes[e[0]][1]+'" x2="'+nodes[e[1]][0]+'" y2="'+nodes[e[1]][1]+'" class="'+(route.some((n,i)=>i<route.length-1&&routeEdge(n,route[i+1])===e)?"mc-route-selected":"")+'"/><text x="'+((nodes[e[0]][0]+nodes[e[1]][0])/2)+'" y="'+((nodes[e[0]][1]+nodes[e[1]][1])/2-7)+'">'+e[2]+'</text>').join("")+nodes.map((n,i)=>'<g class="mc-route-node '+(route.includes(i)?"is-visited":"")+'"><circle cx="'+n[0]+'" cy="'+n[1]+'" r="20"/><text x="'+n[0]+'" y="'+(n[1]+5)+'" class="mc-route-label">'+labels[i]+'</text></g>').join("")+'</svg>'+
+      '<div class="mc-route-buttons">'+labels.map((label,i)=>'<button class="mc-route-choice '+(route[route.length-1]===i?"is-current":"")+'" onclick="MathCourt.extendRoute('+i+')">'+label+'</button>').join("")+'</div>'+
+      '<div class="mc-shares-summary"><span>Stops <strong>'+route.map(n=>labels[n]).join(" → ")+'</strong></span><span>Journey length <strong>'+total+'</strong></span></div>'+
+      '<button class="mc-button mc-button-quiet" onclick="MathCourt.resetRoute()">New journey ↻</button></section>';
+  }
+  function renderTownPlanner() {
+    const allocations=state.lab.allocations,total=allocations.reduce((s,n)=>s+n,0),budget=12;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🏡 TOWN PLANNER</span><h3>Plan with a shared budget</h3><p>Allocate twelve resource tokens to three neighbourhoods and keep the total within the limit.</p></div>'+
+      '<div class="mc-resource-bar"><span style="width:'+(total/budget*100)+'%"></span></div><p class="mc-budget-label">'+total+' of '+budget+' tokens planned · '+(budget-total)+' still available</p>'+
+      '<div class="mc-town-bins">'+allocations.map((n,i)=>'<div class="mc-town-bin"><strong>Town '+String.fromCharCode(65+i)+'</strong><div class="mc-town-tokens">'+Array.from({length:n},()=>'<i></i>').join("")+'</div><div class="mc-share-adjust"><button class="mc-stepper" onclick="MathCourt.adjustAllocation('+i+',-1)" aria-label="Remove a token from town '+String.fromCharCode(65+i)+'">−</button><strong>'+n+'</strong><button class="mc-stepper" '+(total>=budget?'disabled':'')+' onclick="MathCourt.adjustAllocation('+i+',1)" aria-label="Add a token to town '+String.fromCharCode(65+i)+'">+</button></div></div>').join("")+'</div>'+
+      '<p class="mc-play-feedback">'+(total===budget?"All tokens are allocated. Explain why your plan is fair and how it meets the stated needs.":"You have "+(budget-total)+" tokens left. Choose where they would help most, and explain your reasoning.")+'</p></section>';
+  }
+  function renderPlayActivity(item) {
+    const activity=item.chapter===1?renderNumberForge(item):item.chapter===2?renderPatternGarden(item):item.chapter===3?renderFractionStudio():item.chapter===4?renderShapeWorkshop():item.chapter===5?renderTimeline():item.chapter===6?renderDataGarden(item):item.chapter===7?renderRuleMachine():item.chapter===8?renderShareMarket():item.chapter===9?renderRouteGarden():renderTownPlanner();
+    return '<div class="mc-play-station"><div class="mc-station-top"><span>✨ PLAY & DISCOVER</span><span>CHAPTER '+String(item.chapter).padStart(2,"0")+'</span></div>'+activity+'</div>';
+  }
+
+  function renderStoryNarrative(item) {
+    const story=(item.narrative||item.story||"").split(/\n{2,}/).filter(Boolean);
+    return story.map((part,index)=>'<p class="mc-story-text '+(index===0?"mc-story-hook":index===story.length-1?"mc-story-close":"")+'">'+esc(part)+'</p>').join("");
+  }
   function renderCase() {
     const item=data().getCase(state.caseId),host=$("mc-stage-content");
+    const storyText=item&&(item.narrative||item.story);
     if(!item||!host)return;
     $("mc-docket").hidden=true;$("mc-play").hidden=false;
     $("mc-case-title").textContent="Case "+String(item.id).padStart(3,"0")+" · "+item.title;
     $("mc-case-chapter").textContent=data().chapters.find(ch=>ch.id===item.chapter).name;
     $("mc-stage-name").textContent=PHASE_LABELS[state.phase];
-    $("mc-stage-count").textContent="Proceeding "+(state.phase+1)+" of 7";
+    $("mc-stage-count").textContent="Stage "+(state.phase+1)+" of 7";
     $("mc-stage-fill").style.width=((state.phase+1)/7*100)+"%";
     $("mc-stage-fill").parentElement.setAttribute("aria-valuenow",String(state.phase+1));
     $("mc-feedback").textContent=state.feedback;
     $("mc-feedback").className="mc-feedback"+(state.feedback?" is-visible mc-feedback-"+state.feedbackKind:"");
     const actor=cast[(item.id+state.phase)%cast.length];
-    const actorBlock='<div class="mc-speaker"><span class="mc-avatar" aria-hidden="true">'+["⚖️","📁","🧭","🐦"][(item.id+state.phase)%4]+'</span><div><strong>'+actor.name+'</strong><small>'+actor.role+'</small></div></div>';
-    const panel=(label,title,body)=>'<section class="mc-panel"><span class="mc-kicker">'+label+'</span><h3>'+title+'</h3>'+body+'</section>';
-    let html=actorBlock;
-    let action="";
-    if(state.phase===0){
-      html+=panel("THE CASE IS CALLED", "What has the court been asked to decide?",'<p>'+esc(item.story)+'</p><div class="mc-claim"><span>CLAIM BEFORE THE COURT</span><strong>'+esc(item.claim)+'</strong></div><div class="mc-two-facts"><div><small>Mathematical focus</small><strong>'+esc(topicFor(item.check,item.chapter))+'</strong></div><div><small>Case file</small><strong>'+String(item.id).padStart(3,"0")+' / 100</strong></div></div>');
-      html+=renderVisualBoard(item);
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Call the witnesses →</button>';
+    const actorBlock='<div class="mc-story-guide"><span class="mc-avatar" aria-hidden="true">'+["⚖️","🦉","🧭","🐦"][(item.id+state.phase)%4]+'</span><div><strong>'+actor.name+'</strong><p>'+esc(actor.line||"Every clue can help us learn together.")+'</p></div></div>';
+    const panel=(label,title,body)=>'<section class="mc-panel"><span class="mc-kicker">'+label+'</span><h3>'+esc(title)+'</h3>'+body+'</section>';
+    const virtue='<div class="mc-virtue-chip"><span aria-hidden="true">🌱</span><div><small>VIRTUE TO PRACTISE</small><strong>'+esc(item.virtue||"Curiosity")+'</strong></div></div>';
+    const board=renderVisualBoard(item);
+    const playground=renderPlayActivity(item);
+    let left=actorBlock,right="",action="";
+    if(state.phase===0) {
+      left+=panel("A STORY FROM THE COMMUNITY",item.title,'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><div class="mc-claim"><span>THE IDEA TO EXPLORE</span><strong>'+esc(item.claim)+'</strong></div><div class="mc-story-facts"><span>Maths focus</span><strong>'+esc(topicFor(item.check,item.chapter))+'</strong><span>Case '+String(item.id).padStart(3,"0")+' of 100</span></div>'+virtue);
+      left+='<div class="mc-kindness-note"><span aria-hidden="true">💛</span><p>In this court, people learn together. We test ideas, share clues and celebrate a better understanding.</p></div>';
+      right+=board+playground;
+      right+=panel("YOUR MISSION","Can you make the maths visible?",'<p>'+esc(item.prompt)+'</p><p class="mc-soft-note">Play with the model on this side. Change values, build a shape or explore a route before you begin the formal evidence round.</p>');
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Let’s investigate together →</button>';
     } else if(state.phase===1) {
-      html+=panel("WITNESS EXAMINATION","Ask for the record before deciding",'<p>The witness is confident, but confidence is not a substitute for evidence. Open both cards to hear the claim precisely and inspect the source exhibit.</p><div class="mc-evidence-actions"><button class="mc-evidence-button '+(state.seenClaim?'is-open':'')+'" onclick="MathCourt.chooseEvidence(\'claim\')"><span>01</span><strong>Clarify the claim</strong><small>'+(state.seenClaim?'✓ Examined':'Ask what is being asserted')+'</small></button><button class="mc-evidence-button '+(state.seenEvidence?'is-open':'')+'" onclick="MathCourt.chooseEvidence(\'evidence\')"><span>02</span><strong>Inspect Exhibit A</strong><small>'+(state.seenEvidence?'✓ Examined':'Open the original record')+'</small></button></div>'+(state.seenClaim?'<blockquote class="mc-testimony"><b>Claim clarified:</b> '+esc(item.claim)+'</blockquote>':'')+(state.seenEvidence?'<blockquote class="mc-testimony"><b>Exhibit A:</b> '+esc(item.evidence)+'</blockquote>':''));
-      action='<button class="mc-button mc-button-primary" '+(state.seenClaim&&state.seenEvidence?'':'disabled')+' onclick="MathCourt.advance()">Build the mathematical exhibit →</button>';
+      left+=panel("LISTEN AND LOOK","Gather the first clues",'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><p>Every person may notice a different detail. Open both cards and build a shared picture of the situation.</p><div class="mc-evidence-actions"><button class="mc-evidence-button '+(state.seenClaim?'is-open':'')+'" data-kind="claim" onclick="MathCourt.chooseEvidence(this.dataset.kind)"><span>🗣️ CLUE 1</span><strong>Hear the idea</strong><small>'+(state.seenClaim?'✓ Heard':'Open the story card')+'</small></button><button class="mc-evidence-button '+(state.seenEvidence?'is-open':'')+'" data-kind="evidence" onclick="MathCourt.chooseEvidence(this.dataset.kind)"><span>🔎 CLUE 2</span><strong>Read the record</strong><small>'+(state.seenEvidence?'✓ Read':'Open the source record')+'</small></button></div>'+(state.seenClaim?'<blockquote class="mc-testimony"><b>The idea:</b> '+esc(item.claim)+'</blockquote>':'')+(state.seenEvidence?'<blockquote class="mc-testimony"><b>Source record:</b> '+esc(item.evidence)+'</blockquote>':'')+virtue);
+      right+=board+playground;
+      right+=panel("CLUE BOARD","Connect the story to the maths",'<p>Use the play table to inspect the quantities and relationships. Once you have heard the idea and read the record, the next task is to build a mathematical explanation.</p>');
+      action='<button class="mc-button mc-button-primary" '+(state.seenClaim&&state.seenEvidence?'':'disabled')+' onclick="MathCourt.advance()">Build the maths model →</button>';
     } else if(state.phase===2) {
-      html+=renderVisualBoard(item);
+      left+=panel("YOUR INVESTIGATION","Let’s work it out",'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><div class="mc-claim"><span>QUESTION TO SOLVE</span><strong>'+esc(item.prompt)+'</strong></div><p>Use the pictures and manipulatives on the right to try strategies. You may experiment, revise and try again.</p>'+virtue);
+      right+=board+playground;
       if(!state.investigationSolved) {
-        html+=panel("BUILD THE EVIDENCE · TASK 1 OF 2","Solve the first mathematical exhibit",'<p>'+esc(item.prompt)+'</p>'+renderAnswerTiles(item.options,"investigation")+'<p class="mc-soft-note">Work it out, then choose an answer. You can retry without losing progress.</p>');
+        right+=panel("TASK 1 OF 2","Find the first result",'<p class="mc-task-prompt">'+esc(item.prompt)+'</p>'+renderAnswerTiles(item.options,"investigation")+'<p class="mc-soft-note">Choose or drag the result into the evidence tray when your model supports it.</p>');
       } else if(!state.challengeSolved) {
-        html+=panel("BUILD THE EVIDENCE · TASK 2 OF 2","Test the finding with a second case-linked challenge",'<div class="mc-solution"><strong>First exhibit admitted</strong><p>'+esc(item.explanation)+'</p></div><p>'+esc(item.challenge.prompt)+'</p>'+renderAnswerTiles(item.challenge.options,"challenge")+'<p class="mc-soft-note">Use the first result as evidence, then check what follows from it.</p>');
+        right+=panel("TASK 2 OF 2","Use the idea in a new way",'<div class="mc-solution"><strong>First finding</strong><p>'+esc(item.explanation)+'</p></div><p class="mc-task-prompt">'+esc(item.challenge.prompt)+'</p>'+renderAnswerTiles(item.challenge.options,"challenge")+'<p class="mc-soft-note">Now transfer what you learned to a second, related puzzle.</p>');
       } else {
-        html+=panel("BOTH EXHIBITS ADMITTED","The mathematical evidence is ready",'<div class="mc-solution"><strong>Exhibit A · Main finding</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>Exhibit B · Follow-up check</strong><p>'+esc(item.challenge.explanation)+'</p></div><p class="mc-soft-note">Two linked checks give the court a stronger foundation than a single answer.</p>');
+        right+=panel("BOTH CLUES FIT TOGETHER","Your maths evidence is ready",'<div class="mc-solution"><strong>Finding A</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>Finding B</strong><p>'+esc(item.challenge.explanation)+'</p></div><p>Two checks help us explain the result clearly.</p>');
       }
-      action='<button class="mc-button mc-button-primary" '+(state.investigationSolved&&state.challengeSolved?'':'disabled')+' onclick="MathCourt.advance()">Admit both exhibits and hear new evidence →</button><button class="mc-button mc-button-quiet" onclick="MathCourt.showHint()">Give me a hint</button>';
+      action='<button class="mc-button mc-button-primary" '+(state.investigationSolved&&state.challengeSolved?'':'disabled')+' onclick="MathCourt.advance()">Bring your findings to the court →</button><button class="mc-button mc-button-quiet" onclick="MathCourt.showHint()">Show me a helpful hint</button>';
     } else if(state.phase===3) {
-      html+=panel("NEW EVIDENCE · THE TWIST","The case changes",'<div class="mc-twist-mark" aria-hidden="true">!</div><p>'+esc(item.twist)+'</p><div class="mc-claim mc-claim-soft"><span>THE MATHEMATICAL FINDING SO FAR</span><strong>'+esc(item.explanation)+'</strong></div><p class="mc-soft-note">A responsible advocate can change their mind when evidence changes. The court records what the new evidence adds, not what it wishes had happened.</p>');
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Cross-examine the reasoning →</button>';
+      left+=panel("A NEW CLUE ARRIVES","The story has another layer",'<p class="mc-story-text">'+esc(item.twist)+'</p><p>Good investigators welcome new information. It can help us improve a first idea and see the situation more clearly.</p>'+virtue);
+      left+='<div class="mc-kindness-note"><span aria-hidden="true">✨</span><p>Changing your mind after learning something new is a strength. That is how understanding grows.</p></div>';
+      right+=board+playground;
+      right+=panel("REVISIT YOUR MODEL","Does the new clue change your thinking?",'<p>'+esc(item.explanation)+'</p><p>Explore the model again, then decide which question would help the court understand the reasoning.</p>');
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Ask a thoughtful question →</button>';
     } else if(state.phase===4) {
       const check=data().checks[item.check],rotated=rotatedChoices(check.choices,check.correct,item.id);
-      html+=panel("CROSS-EXAMINATION","Which question tests the reasoning?",'<p>'+esc(check.prompt)+'</p><div class="mc-answer-options">'+rotated.choices.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerCross('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Challenge the claim or the method. Do not attack the person who made it.</p>');
-      action='<button class="mc-button mc-button-primary" '+(state.crossSolved?'':'disabled')+' onclick="MathCourt.advance()">Present your closing argument →</button>';
+      left+=panel("CURIOSITY ROUND","Which question helps everyone understand?",'<p class="mc-story-text">'+esc(item.twist)+'</p><p>A good question looks at the method, tests an assumption or asks for a missing detail. Choose the question that helps the group learn more.</p>'+virtue);
+      right+=board+playground;
+      right+=panel("ASK THE COURT","Choose a useful question",'<p class="mc-task-prompt">'+esc(check.prompt)+'</p><div class="mc-answer-options">'+rotated.choices.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerCross('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Be curious about the idea. Treat every person with respect.</p>');
+      action='<button class="mc-button mc-button-primary" '+(state.crossSolved?'':'disabled')+' onclick="MathCourt.advance()">Prepare the final explanation →</button>';
     } else if(state.phase===5) {
-      html+=panel("CLOSING ARGUMENT","Deliver a reasoned verdict",'<p>Compare the original claim with the mathematical result and the new evidence. Choose the conclusion that says exactly what the case establishes.</p><div class="mc-verdict-options">'+VERDICT_CHOICES.map(v=>'<button class="mc-verdict-button" onclick="MathCourt.selectVerdict(\''+v.id+'\')"><strong>'+esc(v.label)+'</strong><small>'+esc(v.note)+'</small></button>').join("")+'</div>');
-      action='<button class="mc-button mc-button-primary" '+(state.verdictChosen&&normalVerdict(state.verdictChosen)===normalVerdict(item.verdict)?'':'disabled')+' onclick="MathCourt.advance()">Deliver the ruling →</button>';
+      const verdicts=[
+        {id:"supported",label:"The evidence fits",note:"The records support the idea as stated."},
+        {id:"disproved",label:"Let’s revise the idea",note:"The evidence gives us a better explanation."},
+        {id:"partly",label:"Some parts fit",note:"Part of the idea works; another part needs more thought."},
+        {id:"uncertain",label:"Let’s gather one more clue",note:"A little more information would help us decide fairly."}
+      ];
+      left+=panel("YOUR CLOSING THOUGHT","Explain what you have learned",'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><div class="mc-claim"><span>THE IDEA WE INVESTIGATED</span><strong>'+esc(item.claim)+'</strong></div><p>Choose a conclusion that matches the evidence. A careful answer is a better goal than a quick answer.</p>'+virtue);
+      right+=board+playground;
+      right+=panel("DELIVER A THOUGHTFUL VERDICT","Which conclusion fits the evidence?",'<div class="mc-verdict-options">'+verdicts.map(v=>'<button class="mc-verdict-button '+(state.verdictChosen===v.id?"is-selected":"")+'" data-verdict="'+v.id+'" onclick="MathCourt.selectVerdict(this.dataset.verdict)"><strong>'+v.label+'</strong><small>'+v.note+'</small></button>').join("")+'</div>');
+      action='<button class="mc-button mc-button-primary" '+(state.verdictChosen&&normalVerdict(state.verdictChosen)===normalVerdict(item.verdict)?'':'disabled')+' onclick="MathCourt.advance()">Hear the court’s reflection →</button>';
     } else {
-      const v=VERDICT_CHOICES.find(v=>v.id===normalVerdict(item.verdict))||VERDICT_CHOICES[3];
-      html+=panel("THE COURT&#39;S REFLECTION","Case closed: "+esc(v.label),'<div class="mc-verdict-ribbon"><span aria-hidden="true">⚖️</span><div><strong>'+esc(v.label)+'</strong><p>'+esc(v.note)+'</p></div></div><h4>What the mathematics showed</h4><p>'+esc(item.explanation)+'</p><h4>What the new evidence changed</h4><p>'+esc(item.twist)+'</p><div class="mc-value-note"><span aria-hidden="true">🌱</span><div><strong>Beyond the calculation</strong><p>'+esc(item.moral)+'</p></div></div><p class="mc-soft-note">You may be right to change a first impression. The court values clear evidence, honest uncertainty and respectful reasoning.</p>');
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Close case and call Case '+(item.id+1)+' →':'Close the High Court season →')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to all cases</button>';
+      const verdictLabels={supported:"The evidence fits",disproved:"Let’s revise the idea",partly:"Some parts fit",uncertain:"Let’s gather one more clue"};
+      const v=normalVerdict(item.verdict);
+      left+=panel("A COMMUNITY LESSON","A case closed, a mind opened",'<p class="mc-story-text">'+esc(item.twist)+'</p><div class="mc-virtue-reflection"><span aria-hidden="true">🌟</span><div><small>VIRTUE TO CARRY FORWARD</small><h3>'+esc(item.virtue||"Curiosity")+'</h3><p>'+esc(item.moral)+'</p></div></div><p>You helped the community understand its question more clearly. Every puzzle makes your next question stronger.</p>');
+      right+=board+playground;
+      right+=panel("THE COURT'S FINDING",verdictLabels[v]||"A thoughtful conclusion",'<div class="mc-solution"><strong>What the maths showed</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>How the new clue helped</strong><p>'+esc(item.twist)+'</p></div><p>Ready for another story and another chance to discover?</p>');
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Open Case '+(item.id+1)+' →':'Celebrate the 100-case journey 🎉')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to the case map</button>';
     }
-    host.innerHTML='<div class="mc-phase-card">'+html+'</div><div class="mc-play-actions">'+action+'<button class="mc-button mc-button-quiet" onclick="MathCourt.back()">← Docket</button>'+(state.phase>0?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">Review previous step</button>':'')+'</div>';
+    const paneActions='<div class="mc-play-actions">'+action+'<button class="mc-button mc-button-quiet" onclick="MathCourt.back()">← Case map</button>'+(state.phase>0?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">Review previous stage</button>':'')+'</div>';
+    host.innerHTML='<div class="mc-case-split"><section class="mc-story-pane" aria-label="Story and community case">'+left+'</section><section class="mc-game-pane" aria-label="Interactive mathematics playground"><div class="mc-game-pane-heading"><span>🎨 THE MATHS PLAYGROUND</span><strong>'+String(item.chapter).padStart(2,"0")+' / 10</strong></div>'+right+paneActions+'</section></div>';
     if(state.feedback){$("mc-feedback").textContent=state.feedback;$("mc-feedback").className="mc-feedback is-visible mc-feedback-"+state.feedbackKind;}
   }
   function topicFor(check,chapter) {
@@ -411,5 +664,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,calculateLab,setPatternRule,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){state.lab.cells=[];refreshCaseKeepingScroll();}};
 })(window);

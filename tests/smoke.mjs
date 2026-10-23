@@ -330,8 +330,21 @@ async function main() {
     'assert(MathCourtData.isValid() && MathCourtData.cases.length === 100, "Math Court case catalogue failed validation.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "The docket must render all 100 cases.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-chapter").length === 10, "The docket must group cases into ten chapters.");' +
-    'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const board=document.querySelector("#mc-stage-content .mc-visual-lab");assert(board&&board.querySelector("svg"),"Case "+caseId+" needs a visible SVG maths board.");assert(board.querySelectorAll(".mc-visual-tab").length===3,"Case "+caseId+" needs all three visual learning views.");}' +
+    'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const board=document.querySelector("#mc-stage-content .mc-visual-lab");assert(board&&board.querySelector("svg"),"Case "+caseId+" needs a visible SVG maths board.");assert(board.querySelectorAll(".mc-visual-tab").length===3,"Case "+caseId+" needs all three visual learning views.");assert(document.querySelector("#mc-stage-content .mc-math-play"),"Case "+caseId+" needs an interactive chapter activity.");assert(document.querySelector("#mc-stage-content .mc-case-split .mc-story-pane")&&document.querySelector("#mc-stage-content .mc-case-split .mc-game-pane"),"Case "+caseId+" needs separate story and play panes.");}' +
+    'MathCourt.openCase(11); MathCourt.setPatternRule("double"); assert(document.querySelector(".mc-pattern-next strong"), "Pattern Garden needs a live next-value tile.");' +
+    'MathCourt.openCase(21); MathCourt.setFraction("numerator",1); assert(document.querySelector(".mc-fraction-equation strong"), "Fraction Studio should update the share display.");' +
+    'MathCourt.openCase(31); const areaBefore=MathCourt.shapeStats().area; MathCourt.toggleShapeCell(47); assert(MathCourt.shapeStats().area===areaBefore+1, "Shape Workshop must count a square added by the player.");' +
+    'MathCourt.openCase(41); MathCourt.setLabTimeline(90); assert(document.querySelector(".mc-time-result strong").textContent.includes("90 minutes"), "Timeline Studio should update its journey duration.");' +
+    'MathCourt.openCase(51); MathCourt.toggleDataZoom(); assert(document.querySelector(".mc-rule-tiles .mc-op-tile.is-selected"), "Data Garden should let learners change the graph scale.");' +
+    'MathCourt.openCase(61); MathCourt.setRuleInput(5); assert(document.querySelectorAll(".mc-machine-box strong")[2].textContent==="11", "Rule Machine should calculate a live output.");' +
+    'MathCourt.openCase(71); MathCourt.adjustShare(0,1); assert(document.querySelector(".mc-shares-summary").textContent.includes("10"), "Fair-Share Market should update the number of counters.");' +
+    'MathCourt.openCase(81); MathCourt.extendRoute(1); assert(document.querySelector(".mc-shares-summary").textContent.includes("4"), "Route Garden should compute the selected road length.");' +
+    'MathCourt.openCase(91); MathCourt.adjustAllocation(0,1); assert(document.querySelector(".mc-budget-label").textContent.includes("9 of 12"), "Town Planner should update the resource budget.");' +
     'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");' +
+    'assert(document.querySelectorAll("#mc-stage-content .mc-case-split > .mc-story-pane").length===1 && document.querySelectorAll("#mc-stage-content .mc-case-split > .mc-game-pane").length===1, "The case should split into a story half and play half.");' +
+    'assert(parseFloat(getComputedStyle(document.querySelector("#mc-stage-content .mc-story-text")).fontSize)>=18, "Story text must be comfortably readable at 18px or larger.");' +
+    'MathCourt.chooseLabSlot("a"); MathCourt.chooseLabNumber(0); MathCourt.chooseLabSlot("b"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabOperator("-"); MathCourt.calculateLab();' +
+    'assert(document.querySelector(".mc-equation-result strong").textContent==="15", "The number forge should compute 52 − 37 from manipulable number tiles.");' +
     'assert(document.querySelector("#mc-stage-content .mc-visual-lab"), "The opening of a case must include a visual evidence board.");' +
     'assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"model\\"]"), "The model view should be visible first.");' +
     'MathCourt.setVisualMode("compare"); assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"compare\\"]"), "Compare mode did not change the visual representation.");' +
@@ -359,11 +372,11 @@ async function main() {
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
     'const correctCrossIndex = (0 - (1 % 3) + 3) % 3; MathCourt.answerCross(correctCrossIndex);' +
-    'assert(document.getElementById("mc-feedback").textContent.includes("Objection sustained"), "The cross-examination skill check did not accept the keyed strategy.");' +
+    'assert(document.getElementById("mc-feedback").textContent.includes("Excellent question"), "The cross-examination skill check did not accept the keyed strategy.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Verdict", "The verdict stage is missing.");' +
     'MathCourt.selectVerdict("disproved"); MathCourt.advance();' +
     'assert(document.getElementById("mc-stage-name").textContent === "The court" + String.fromCharCode(39) + "s reflection", "The case did not reach the reflection stage.");' +
-    'assert(document.getElementById("mc-stage-content").innerText.includes("Beyond the calculation"), "The moral reflection is missing.");' +
+    'assert(document.getElementById("mc-stage-content").innerText.includes("VIRTUE TO CARRY FORWARD"), "The virtue reflection is missing.");' +
     'MathCourt.advance();' +
     'const saved = JSON.parse(localStorage.getItem("mfa_math_court_v1"));' +
     'assert(saved.completed.includes(1), "Closing a case did not save its completion.");' +
@@ -1049,7 +1062,7 @@ async function main() {
         '["Shape Architect", () => Game.startShapeArchitect()], ' +
         '["Fraction Bakery", () => FractionBakery.open()], ' +
         '["Little Shop", () => Game.startLittleShop()], ' +
-        '["Number Maze", () => Game.startNumberMaze()], ["Math Court", () => MathCourt.open()], ' +
+        '["Number Maze", () => Game.startNumberMaze()], ["Math Court", () => { MathCourt.open(); MathCourt.openCase(1); }], ' +
       '["Probability Machine", () => ProbabilityCarnival.open()]' +
       '];' +
       'let checkedScreens = 0;' +
@@ -1059,6 +1072,7 @@ async function main() {
         'const active = document.querySelector(".screen.active");' +
         'assert(active, name + " did not activate a screen at " + innerWidth + "px.");' +
         'assert(!active.hidden, name + " activated a hidden screen at " + innerWidth + "px.");' +
+        'if(name==="Math Court"){const story=active.querySelector(".mc-story-pane"),play=active.querySelector(".mc-game-pane");assert(story&&play,"Math Court should expose its story and playground halves.");assert(parseFloat(getComputedStyle(story.querySelector(".mc-story-text")).fontSize)>=18,"Math Court story text should be at least 18px.");if(innerWidth>=681){const sr=story.getBoundingClientRect(),pr=play.getBoundingClientRect();assert(Math.abs(sr.top-pr.top)<5&&sr.left<pr.left,"Math Court story and playground should sit side by side on wider screens.");}}' +
         'assert(document.documentElement.scrollWidth <= innerWidth + 2, name + " causes document horizontal overflow at " + innerWidth + "px (" + document.documentElement.scrollWidth + "px).");' +
         'assert(document.body.scrollWidth <= innerWidth + 2, name + " causes body horizontal overflow at " + innerWidth + "px (" + document.body.scrollWidth + "px).");' +
         'const activeStyle = getComputedStyle(active);' +
