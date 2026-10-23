@@ -373,12 +373,139 @@
   }
 
 
+
+  const patternRuleIds=["add1","add2","add3","double"];
+  const fractionGoals=[[1,2],[1,3],[2,3],[1,4],[3,4],[2,5],[3,5],[4,5]];
+  const machineRuleIds=["doublePlusOne","add3","triple","square"];
+  function patternGoal(item,task) {
+    const rule=patternRuleIds[(item.id+task-1)%patternRuleIds.length];
+    const seed=2+((item.id+task*2)%7);
+    const step=rule==="add1"?1:rule==="add2"?2:rule==="add3"?3:null;
+    const sequence=step===null?[seed,seed*2,seed*4]:[seed,seed+step,seed+2*step];
+    const next=step===null?seed*8:seed+3*step;
+    return {rule,sequence,next};
+  }
+  function fractionGoal(item,task) {
+    const pair=fractionGoals[(item.id*3+task-1)%fractionGoals.length];
+    return {numerator:pair[0],denominator:pair[1]};
+  }
+  function shapeGoal(item,task) {
+    const choices=[[6,10],[7,12],[8,12]];
+    const pair=choices[(item.id+task-1)%choices.length];
+    return {area:pair[0],perimeter:pair[1]};
+  }
+  function timelineGoal(item,task) {
+    return 20+(((item.id*3+task*4)%17)*5);
+  }
+  function dataGoal(item,task) {
+    const values=visualNumbers(item).slice(0,4).map(value=>Math.abs(value));
+    const target=task===1?Math.max(...values):Math.min(...values);
+    return {values,targetIndex:values.indexOf(target),which:task===1?"largest":"smallest"};
+  }
+  function ruleGoal(item,task) {
+    const rule=machineRuleIds[(item.id+task-1)%machineRuleIds.length];
+    const input=4+(item.id%3);
+    const output=rule==="doublePlusOne"?2*input+1:rule==="add3"?input+3:rule==="triple"?3*input:input*input;
+    return {rule,input,output};
+  }
+  function shareGoal(item,task) {
+    return {total:12,minimums:[
+      1+(item.id%3),
+      1+((item.id+task)%3),
+      1+((item.id+2*task)%3)
+    ]};
+  }
+  function routeGoal() { return {start:0,end:2,maxLength:7}; }
+  function townGoal(item,task) {
+    return {total:12,minimums:[
+      2+(item.id%2),
+      1+((item.id+task)%3),
+      1+((item.id+task*2)%2)
+    ]};
+  }
+  function playGoal(item,task) {
+    if(item.chapter===1) {
+      const option=task===1?item.options[item.answer]:item.challenge.options[item.challenge.answer];
+      return {title:task===1?"Forge the first result":"Forge the linked result",instruction:"Build a calculation that equals "+option+". Use the number tiles and operation buttons, then calculate it.",hint:"Try different number tiles and operations until the displayed result matches "+option+"."};
+    }
+    if(item.chapter===2) {
+      const goal=patternGoal(item,task);
+      return {title:"Grow the number path",instruction:"The sequence is "+goal.sequence.join(", ")+", … Choose the rule that fits and enter the next number.",hint:"Compare the gap between each neighbouring pair. The same rule must fit both gaps."};
+    }
+    if(item.chapter===3) {
+      const goal=fractionGoal(item,task);
+      return {title:"Build the target share",instruction:"Use the fraction strips to make "+goal.numerator+"/"+goal.denominator+" of one whole. Change the number of equal parts and the shaded parts.",hint:"The denominator counts all equal parts; the numerator counts the shaded parts."};
+    }
+    if(item.chapter===4) {
+      const goal=shapeGoal(item,task);
+      return {title:"Build a measured shape",instruction:"Make one connected shape using exactly "+goal.area+" squares and "+goal.perimeter+" outside edge units.",hint:"Area counts squares. Perimeter counts the exposed outside edges. Shared edges are not part of the outside."};
+    }
+    if(item.chapter===5) {
+      const minutes=timelineGoal(item,task);
+      return {title:"Set the journey time",instruction:"The journey leaves at 2:35 PM and should arrive at "+formatClock(14*60+35+minutes)+". Move the timeline to find the duration.",hint:"Count the time in hours and minutes. The arrival time should match the goal exactly."};
+    }
+    if(item.chapter===6) {
+      const goal=dataGoal(item,task);
+      return {title:"Read the chart carefully",instruction:"Select the "+goal.which+" record from the plotted evidence. Read the values as well as the bar lengths.",hint:"Compare the numerical labels on every bar. Do not rely on a cropped or zoomed baseline."};
+    }
+    if(item.chapter===7) {
+      const goal=ruleGoal(item,task);
+      return {title:"Tune the mystery machine",instruction:"For input "+goal.input+", make the machine display "+goal.output+". Choose the rule and set the input.",hint:"Test each candidate rule with the exact input. Keep the rule whose output matches the target."};
+    }
+    if(item.chapter===8) {
+      const goal=shareGoal(item,task);
+      return {title:"Share the counters with care",instruction:"Distribute all "+goal.total+" counters. Groups A, B and C need at least "+goal.minimums.join(", ")+ " counters respectively.",hint:"Meet every group's minimum first, then make sure the total is exactly 12."};
+    }
+    if(item.chapter===9) {
+      return {title:"Find the shortest connected journey",instruction:"Travel from A to C using connected roads with a total journey length of 7 or less. Each road label adds to the total.",hint:"Compare A → B → C with routes through D and E. Add every road you travel."};
+    }
+    const goal=townGoal(item,task);
+    return {title:"Plan within the shared budget",instruction:"Allocate exactly "+goal.total+" tokens. Towns A, B and C need at least "+goal.minimums.join(", ")+ " tokens respectively.",hint:"Satisfy each town's minimum, then use the total counter to stay within the 12-token budget."};
+  }
+  function shapeIsConnected(cells) {
+    const set=new Set(cells);
+    if(set.size===0)return false;
+    const visited=new Set(),queue=[set.values().next().value];
+    while(queue.length){
+      const cell=queue.pop();
+      if(visited.has(cell))continue;
+      visited.add(cell);
+      const row=Math.floor(cell/8),col=cell%8;
+      for(const next of [col>0?cell-1:-1,col<7?cell+1:-1,row>0?cell-8:-1,row<5?cell+8:-1]){
+        if(next>=0&&set.has(next)&&!visited.has(next))queue.push(next);
+      }
+    }
+    return visited.size===set.size;
+  }
+  function playGoalMet(item,task) {
+    const lab=state.lab;
+    if(!lab)return false;
+    if(item.chapter===1){
+      const option=task===1?item.options[item.answer]:item.challenge.options[item.challenge.answer];
+      const expected=expectedNumericChoice(option);
+      return expected!==null&&lab.calculationResult!==null&&Math.abs(lab.calculationResult-expected)<=0.0001;
+    }
+    if(item.chapter===2){const goal=patternGoal(item,task);return lab.patternRule===goal.rule&&lab.patternPrediction===goal.next;}
+    if(item.chapter===3){const goal=fractionGoal(item,task);return lab.fractionNumerator*goal.denominator===goal.numerator*lab.fractionDenominator;}
+    if(item.chapter===4){const goal=shapeGoal(item,task),stats=shapeStats();return stats.area===goal.area&&stats.perimeter===goal.perimeter&&shapeIsConnected(lab.cells);}
+    if(item.chapter===5)return lab.timelineMinutes===timelineGoal(item,task);
+    if(item.chapter===6)return lab.dataSelection===dataGoal(item,task).targetIndex;
+    if(item.chapter===7){const goal=ruleGoal(item,task);return lab.ruleType===goal.rule&&lab.ruleInput===goal.input;}
+    if(item.chapter===8){const goal=shareGoal(item,task);return lab.shares.reduce((sum,n)=>sum+n,0)===goal.total&&lab.shares.every((n,i)=>n>=goal.minimums[i]);}
+    if(item.chapter===9){
+      const route=lab.route,total=route.slice(1).reduce((sum,n,i)=>sum+(routeEdge(route[i],n)||[0,0,0])[2],0);
+      return route[0]===0&&route[route.length-1]===routeGoal().end&&total<=routeGoal().maxLength;
+    }
+    const goal=townGoal(item,task),total=lab.allocations.reduce((sum,n)=>sum+n,0);
+    return total===goal.total&&lab.allocations.every((n,i)=>n>=goal.minimums[i]);
+  }
+
   function freshLab(item) {
     const nums=visualNumbers(item);
     return {
       slot:"a",a:null,b:null,c:null,op:"+",op2:"+",useThird:false,
       calculationResult:null,patternRule:"add3",fractionNumerator:3,fractionDenominator:8,
-      cells:[0,1,2,8,9,10],timelineMinutes:30,dataZoom:false,ruleInput:4,ruleType:"doublePlusOne",
+      cells:[],timelineMinutes:30,dataZoom:false,dataSelection:null,ruleInput:4,ruleType:"doublePlusOne",patternPrediction:null,goalSolved:false,
       shares:[3,2,4],route:[0],allocations:[3,3,2],playCount:0,challengeBaseline:0,note:""
     };
   }
@@ -393,6 +520,9 @@
     lab.playCount=Math.max(0,Math.floor(Number(lab.playCount)||0));
     lab.challengeBaseline=Math.max(0,Math.floor(Number(lab.challengeBaseline)||0));
     lab.patternRule=["add1","add2","add3","double"].includes(lab.patternRule)?lab.patternRule:"add3";
+    lab.patternPrediction=lab.patternPrediction===null||lab.patternPrediction===undefined||lab.patternPrediction===""?null:Number.isFinite(Number(lab.patternPrediction))?Number(lab.patternPrediction):null;
+    lab.dataSelection=Number.isInteger(lab.dataSelection)&&lab.dataSelection>=0&&lab.dataSelection<4?lab.dataSelection:null;
+    lab.goalSolved=Boolean(lab.goalSolved);
     lab.fractionDenominator=[2,3,4,6,8,10,12].includes(lab.fractionDenominator)?lab.fractionDenominator:8;
     lab.fractionNumerator=Math.max(0,Math.min(lab.fractionDenominator,Number(lab.fractionNumerator)||0));
     lab.cells=Array.isArray(lab.cells)?[...new Set(lab.cells.filter(n=>Number.isInteger(n)&&n>=0&&n<48))]:base.cells;
@@ -407,7 +537,7 @@
     return lab;
   }
   function markLabPlay() {
-    if(state.lab)state.lab.playCount=Math.max(0,Number(state.lab.playCount)||0)+1;
+    if(state.lab){state.lab.playCount=Math.max(0,Number(state.lab.playCount)||0)+1;state.lab.goalSolved=false;}
   }
   function refreshCaseKeepingScroll() {
     const host=$("mc-stage-content");
