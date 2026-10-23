@@ -359,13 +359,11 @@ async function main() {
     'MathCourt.chooseLabSlot("a"); MathCourt.chooseLabNumber(0); MathCourt.chooseLabSlot("b"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabOperator("-"); MathCourt.calculateLab();' +
     'assert(document.querySelector(".mc-equation-result strong").textContent==="15", "The number forge should compute 52 − 37 from manipulable number tiles.");' +
     'MathCourt.checkPlayGoal(); assert(document.getElementById("mc-feedback").textContent.includes("Workshop goal complete"), "The Number Forge should verify the target calculation before admitting the answer.");' +
-    'MathCourt.checkPlayGoal(); assert(document.getElementById("mc-feedback").textContent.includes("Workshop goal complete"), "The Number Forge must verify the target calculation before admitting the result.");' +
     'MathCourt.answerInvestigation((MathCourtData.getCase(1).answer + 1) % MathCourtData.getCase(1).options.length);' +
     'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "A wrong first answer should allow a retry within the same stage.");' +
     'const task1Data={};const task1Transfer={setData:(k,v)=>task1Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).answer,"investigation",{dataTransfer:task1Transfer});' +
     'assert(task1Data["text/plain"]===String(MathCourtData.getCase(1).answer),"Dragging a result tile should carry the selected answer.");' +
     'MathCourt.dropAnswer("investigation",{preventDefault:()=>{},dataTransfer:{getData:k=>task1Data[k]||""}});' +
-    'MathCourt.answerInvestigation(MathCourtData.getCase(1).answer);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Exhibit verified"), "A correct mathematical answer did not receive useful feedback: " + document.getElementById("mc-feedback").textContent);' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "The second linked challenge must be completed before admitting evidence.");' +
     'MathCourt.answerChallenge(MathCourtData.getCase(1).challenge.answer); assert(document.getElementById("mc-feedback").textContent.includes("fresh hands-on challenge"), "The second challenge should require a fresh goal, not merely another click.");' +
@@ -375,7 +373,6 @@ async function main() {
     'MathCourt.answerChallenge((MathCourtData.getCase(1).challenge.answer + 1) % MathCourtData.getCase(1).challenge.options.length);' +
     'const task2Data={};const task2Transfer={setData:(k,v)=>task2Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).challenge.answer,"challenge",{dataTransfer:task2Transfer});' +
     'MathCourt.dropAnswer("challenge",{preventDefault:()=>{},dataTransfer:{getData:k=>task2Data[k]||""}});' +
-    'MathCourt.answerChallenge(MathCourtData.getCase(1).challenge.answer);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Second exhibit verified"), "The linked challenge did not provide mathematical feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
