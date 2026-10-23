@@ -1901,7 +1901,7 @@
 
 
 /* Case browser v2: compact chapter navigation, focused case grid, one obvious next step. */
-#screen-math-court .mc-shell { max-width:1320px; }
+#screen-math-court .mc-shell { max-width:none; width:100%; margin:0 auto; }
 #screen-math-court .mc-docket-heading {
   display:grid;
   grid-template-columns:minmax(0,1fr) auto;
