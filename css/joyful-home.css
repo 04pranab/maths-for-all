@@ -3,7 +3,7 @@
 #screen-menu { font-size: calc(19px * var(--font-scale)); padding: clamp(12px, 2vw, 26px); }
 .home-two-panel {
   display: grid;
-  grid-template-columns: minmax(300px, 0.88fr) minmax(0, 1.12fr);
+  grid-template-columns: minmax(300px, 0.75fr) minmax(0, 1.25fr);
   align-items: start;
   gap: clamp(18px, 2.2vw, 32px);
   max-width: 1560px;
@@ -24,7 +24,7 @@
 }
 #screen-menu .home-welcome-panel .arcade-copy { max-width: none; text-align: left; }
 #screen-menu .home-welcome-panel .arcade-badge { margin: 0 0 4px; font-size: .72rem; line-height: 1.2; }
-#screen-menu .home-welcome-panel .arena-title { font-size: clamp(1.7rem, 2.35vw, 2.2rem); line-height: 1; }
+#screen-menu .home-welcome-panel .arena-title { font-size: clamp(1.6rem, 2.1vw, 2rem); line-height: 1; }
 #screen-menu .home-welcome-panel .title-arena { margin-left: 4px; }
 #screen-menu .home-welcome-panel .arena-subtitle-hi { margin-top: 5px; font-size: .9rem; }
 #screen-menu .home-welcome-panel .arcade-intro { margin-top: 5px; font-size: .98rem; line-height: 1.3; }
@@ -37,10 +37,11 @@
 .home-games-panel .menu-section-heading { margin: 0 0 12px; }
 .home-games-panel .menu-section-heading h2 { font-size: clamp(1.5rem, 2vw, 2rem); line-height: 1.2; }
 .home-games-panel .menu-section-heading p { font-size: 1rem; }
-.home-games-panel .menu-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+#screen-menu .home-games-panel .menu-grid {
+  width: 100%;
   gap: 12px;
-  margin-top: 0;
+  margin: 0;
+  padding-top: 12px;
 }
 .home-games-panel .menu-card {
   min-width: 0;
