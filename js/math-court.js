@@ -575,49 +575,73 @@
     $("mc-case-title").textContent="Case "+String(item.id).padStart(3,"0")+" · "+item.title;
     $("mc-case-chapter").textContent=data().chapters.find(ch=>ch.id===item.chapter).name;
     $("mc-stage-name").textContent=PHASE_LABELS[state.phase];
-    $("mc-stage-count").textContent="Proceeding "+(state.phase+1)+" of 7";
+    $("mc-stage-count").textContent="Stage "+(state.phase+1)+" of 7";
     $("mc-stage-fill").style.width=((state.phase+1)/7*100)+"%";
     $("mc-stage-fill").parentElement.setAttribute("aria-valuenow",String(state.phase+1));
     $("mc-feedback").textContent=state.feedback;
     $("mc-feedback").className="mc-feedback"+(state.feedback?" is-visible mc-feedback-"+state.feedbackKind:"");
     const actor=cast[(item.id+state.phase)%cast.length];
-    const actorBlock='<div class="mc-speaker"><span class="mc-avatar" aria-hidden="true">'+["⚖️","📁","🧭","🐦"][(item.id+state.phase)%4]+'</span><div><strong>'+actor.name+'</strong><small>'+actor.role+'</small></div></div>';
-    const panel=(label,title,body)=>'<section class="mc-panel"><span class="mc-kicker">'+label+'</span><h3>'+title+'</h3>'+body+'</section>';
-    let html=actorBlock;
-    let action="";
-    if(state.phase===0){
-      html+=panel("THE CASE IS CALLED", "What has the court been asked to decide?",'<p>'+esc(item.story)+'</p><div class="mc-claim"><span>CLAIM BEFORE THE COURT</span><strong>'+esc(item.claim)+'</strong></div><div class="mc-two-facts"><div><small>Mathematical focus</small><strong>'+esc(topicFor(item.check,item.chapter))+'</strong></div><div><small>Case file</small><strong>'+String(item.id).padStart(3,"0")+' / 100</strong></div></div>');
-      html+=renderVisualBoard(item);
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Call the witnesses →</button>';
+    const actorBlock='<div class="mc-story-guide"><span class="mc-avatar" aria-hidden="true">'+["⚖️","🦉","🧭","🐦"][(item.id+state.phase)%4]+'</span><div><strong>'+actor.name+'</strong><p>'+esc(actor.line||"Every clue can help us learn together.")+'</p></div></div>';
+    const panel=(label,title,body)=>'<section class="mc-panel"><span class="mc-kicker">'+label+'</span><h3>'+esc(title)+'</h3>'+body+'</section>';
+    const virtue='<div class="mc-virtue-chip"><span aria-hidden="true">🌱</span><div><small>VIRTUE TO PRACTISE</small><strong>'+esc(item.virtue||"Curiosity")+'</strong></div></div>';
+    const board=renderVisualBoard(item);
+    const playground=renderPlayActivity(item);
+    let left=actorBlock,right="",action="";
+    if(state.phase===0) {
+      left+=panel("A STORY FROM THE COMMUNITY",item.title,'<p class="mc-story-text">'+esc(item.story)+'</p><div class="mc-claim"><span>THE IDEA TO EXPLORE</span><strong>'+esc(item.claim)+'</strong></div><div class="mc-story-facts"><span>Maths focus</span><strong>'+esc(topicFor(item.check,item.chapter))+'</strong><span>Case '+String(item.id).padStart(3,"0")+' of 100</span></div>'+virtue);
+      left+='<div class="mc-kindness-note"><span aria-hidden="true">💛</span><p>In this court, people learn together. We test ideas, share clues and celebrate a better understanding.</p></div>';
+      right+=board+playground;
+      right+=panel("YOUR MISSION","Can you make the maths visible?",'<p>'+esc(item.prompt)+'</p><p class="mc-soft-note">Play with the model on this side. Change values, build a shape or explore a route before you begin the formal evidence round.</p>');
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Let’s investigate together →</button>';
     } else if(state.phase===1) {
-      html+=panel("WITNESS EXAMINATION","Ask for the record before deciding",'<p>The witness is confident, but confidence is not a substitute for evidence. Open both cards to hear the claim precisely and inspect the source exhibit.</p><div class="mc-evidence-actions"><button class="mc-evidence-button '+(state.seenClaim?'is-open':'')+'" onclick="MathCourt.chooseEvidence(\'claim\')"><span>01</span><strong>Clarify the claim</strong><small>'+(state.seenClaim?'✓ Examined':'Ask what is being asserted')+'</small></button><button class="mc-evidence-button '+(state.seenEvidence?'is-open':'')+'" onclick="MathCourt.chooseEvidence(\'evidence\')"><span>02</span><strong>Inspect Exhibit A</strong><small>'+(state.seenEvidence?'✓ Examined':'Open the original record')+'</small></button></div>'+(state.seenClaim?'<blockquote class="mc-testimony"><b>Claim clarified:</b> '+esc(item.claim)+'</blockquote>':'')+(state.seenEvidence?'<blockquote class="mc-testimony"><b>Exhibit A:</b> '+esc(item.evidence)+'</blockquote>':''));
-      action='<button class="mc-button mc-button-primary" '+(state.seenClaim&&state.seenEvidence?'':'disabled')+' onclick="MathCourt.advance()">Build the mathematical exhibit →</button>';
+      left+=panel("LISTEN AND LOOK","Gather the first clues",'<p class="mc-story-text">'+esc(item.story)+'</p><p>Every person may notice a different detail. Open both cards and build a shared picture of the situation.</p><div class="mc-evidence-actions"><button class="mc-evidence-button '+(state.seenClaim?'is-open':'')+'" data-kind="claim" onclick="MathCourt.chooseEvidence(this.dataset.kind)"><span>🗣️ CLUE 1</span><strong>Hear the idea</strong><small>'+(state.seenClaim?'✓ Heard':'Open the story card')+'</small></button><button class="mc-evidence-button '+(state.seenEvidence?'is-open':'')+'" data-kind="evidence" onclick="MathCourt.chooseEvidence(this.dataset.kind)"><span>🔎 CLUE 2</span><strong>Read the record</strong><small>'+(state.seenEvidence?'✓ Read':'Open the source record')+'</small></button></div>'+(state.seenClaim?'<blockquote class="mc-testimony"><b>The idea:</b> '+esc(item.claim)+'</blockquote>':'')+(state.seenEvidence?'<blockquote class="mc-testimony"><b>Source record:</b> '+esc(item.evidence)+'</blockquote>':'')+virtue);
+      right+=board+playground;
+      right+=panel("CLUE BOARD","Connect the story to the maths",'<p>Use the play table to inspect the quantities and relationships. Once you have heard the idea and read the record, the next task is to build a mathematical explanation.</p>');
+      action='<button class="mc-button mc-button-primary" '+(state.seenClaim&&state.seenEvidence?'':'disabled')+' onclick="MathCourt.advance()">Build the maths model →</button>';
     } else if(state.phase===2) {
-      html+=renderVisualBoard(item);
+      left+=panel("YOUR INVESTIGATION","Let’s work it out",'<p class="mc-story-text">'+esc(item.story)+'</p><div class="mc-claim"><span>QUESTION TO SOLVE</span><strong>'+esc(item.prompt)+'</strong></div><p>Use the pictures and manipulatives on the right to try strategies. You may experiment, revise and try again.</p>'+virtue);
+      right+=board+playground;
       if(!state.investigationSolved) {
-        html+=panel("BUILD THE EVIDENCE · TASK 1 OF 2","Solve the first mathematical exhibit",'<p>'+esc(item.prompt)+'</p>'+renderAnswerTiles(item.options,"investigation")+'<p class="mc-soft-note">Work it out, then choose an answer. You can retry without losing progress.</p>');
+        right+=panel("TASK 1 OF 2","Find the first result",'<p class="mc-task-prompt">'+esc(item.prompt)+'</p>'+renderAnswerTiles(item.options,"investigation")+'<p class="mc-soft-note">Choose or drag the result into the evidence tray when your model supports it.</p>');
       } else if(!state.challengeSolved) {
-        html+=panel("BUILD THE EVIDENCE · TASK 2 OF 2","Test the finding with a second case-linked challenge",'<div class="mc-solution"><strong>First exhibit admitted</strong><p>'+esc(item.explanation)+'</p></div><p>'+esc(item.challenge.prompt)+'</p>'+renderAnswerTiles(item.challenge.options,"challenge")+'<p class="mc-soft-note">Use the first result as evidence, then check what follows from it.</p>');
+        right+=panel("TASK 2 OF 2","Use the idea in a new way",'<div class="mc-solution"><strong>First finding</strong><p>'+esc(item.explanation)+'</p></div><p class="mc-task-prompt">'+esc(item.challenge.prompt)+'</p>'+renderAnswerTiles(item.challenge.options,"challenge")+'<p class="mc-soft-note">Now transfer what you learned to a second, related puzzle.</p>');
       } else {
-        html+=panel("BOTH EXHIBITS ADMITTED","The mathematical evidence is ready",'<div class="mc-solution"><strong>Exhibit A · Main finding</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>Exhibit B · Follow-up check</strong><p>'+esc(item.challenge.explanation)+'</p></div><p class="mc-soft-note">Two linked checks give the court a stronger foundation than a single answer.</p>');
+        right+=panel("BOTH CLUES FIT TOGETHER","Your maths evidence is ready",'<div class="mc-solution"><strong>Finding A</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>Finding B</strong><p>'+esc(item.challenge.explanation)+'</p></div><p>Two checks help us explain the result clearly.</p>');
       }
-      action='<button class="mc-button mc-button-primary" '+(state.investigationSolved&&state.challengeSolved?'':'disabled')+' onclick="MathCourt.advance()">Admit both exhibits and hear new evidence →</button><button class="mc-button mc-button-quiet" onclick="MathCourt.showHint()">Give me a hint</button>';
+      action='<button class="mc-button mc-button-primary" '+(state.investigationSolved&&state.challengeSolved?'':'disabled')+' onclick="MathCourt.advance()">Bring your findings to the court →</button><button class="mc-button mc-button-quiet" onclick="MathCourt.showHint()">Show me a helpful hint</button>';
     } else if(state.phase===3) {
-      html+=panel("NEW EVIDENCE · THE TWIST","The case changes",'<div class="mc-twist-mark" aria-hidden="true">!</div><p>'+esc(item.twist)+'</p><div class="mc-claim mc-claim-soft"><span>THE MATHEMATICAL FINDING SO FAR</span><strong>'+esc(item.explanation)+'</strong></div><p class="mc-soft-note">A responsible advocate can change their mind when evidence changes. The court records what the new evidence adds, not what it wishes had happened.</p>');
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Cross-examine the reasoning →</button>';
+      left+=panel("A NEW CLUE ARRIVES","The story has another layer",'<p class="mc-story-text">'+esc(item.twist)+'</p><p>Good investigators welcome new information. It can help us improve a first idea and see the situation more clearly.</p>'+virtue);
+      left+='<div class="mc-kindness-note"><span aria-hidden="true">✨</span><p>Changing your mind after learning something new is a strength. That is how understanding grows.</p></div>';
+      right+=board+playground;
+      right+=panel("REVISIT YOUR MODEL","Does the new clue change your thinking?",'<p>'+esc(item.explanation)+'</p><p>Explore the model again, then decide which question would help the court understand the reasoning.</p>');
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Ask a thoughtful question →</button>';
     } else if(state.phase===4) {
       const check=data().checks[item.check],rotated=rotatedChoices(check.choices,check.correct,item.id);
-      html+=panel("CROSS-EXAMINATION","Which question tests the reasoning?",'<p>'+esc(check.prompt)+'</p><div class="mc-answer-options">'+rotated.choices.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerCross('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Challenge the claim or the method. Do not attack the person who made it.</p>');
-      action='<button class="mc-button mc-button-primary" '+(state.crossSolved?'':'disabled')+' onclick="MathCourt.advance()">Present your closing argument →</button>';
+      left+=panel("CURIOSITY ROUND","Which question helps everyone understand?",'<p class="mc-story-text">'+esc(item.twist)+'</p><p>A good question looks at the method, tests an assumption or asks for a missing detail. Choose the question that helps the group learn more.</p>'+virtue);
+      right+=board+playground;
+      right+=panel("ASK THE COURT","Choose a useful question",'<p class="mc-task-prompt">'+esc(check.prompt)+'</p><div class="mc-answer-options">'+rotated.choices.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerCross('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Be curious about the idea. Treat every person with respect.</p>');
+      action='<button class="mc-button mc-button-primary" '+(state.crossSolved?'':'disabled')+' onclick="MathCourt.advance()">Prepare the final explanation →</button>';
     } else if(state.phase===5) {
-      html+=panel("CLOSING ARGUMENT","Deliver a reasoned verdict",'<p>Compare the original claim with the mathematical result and the new evidence. Choose the conclusion that says exactly what the case establishes.</p><div class="mc-verdict-options">'+VERDICT_CHOICES.map(v=>'<button class="mc-verdict-button" onclick="MathCourt.selectVerdict(\''+v.id+'\')"><strong>'+esc(v.label)+'</strong><small>'+esc(v.note)+'</small></button>').join("")+'</div>');
-      action='<button class="mc-button mc-button-primary" '+(state.verdictChosen&&normalVerdict(state.verdictChosen)===normalVerdict(item.verdict)?'':'disabled')+' onclick="MathCourt.advance()">Deliver the ruling →</button>';
+      const verdicts=[
+        {id:"supported",label:"The evidence fits",note:"The records support the idea as stated."},
+        {id:"disproved",label:"Let’s revise the idea",note:"The evidence gives us a better explanation."},
+        {id:"partly",label:"Some parts fit",note:"Part of the idea works; another part needs more thought."},
+        {id:"uncertain",label:"Let’s gather one more clue",note:"A little more information would help us decide fairly."}
+      ];
+      left+=panel("YOUR CLOSING THOUGHT","Explain what you have learned",'<p class="mc-story-text">'+esc(item.story)+'</p><div class="mc-claim"><span>THE IDEA WE INVESTIGATED</span><strong>'+esc(item.claim)+'</strong></div><p>Choose a conclusion that matches the evidence. A careful answer is a better goal than a quick answer.</p>'+virtue);
+      right+=board+playground;
+      right+=panel("DELIVER A THOUGHTFUL VERDICT","Which conclusion fits the evidence?",'<div class="mc-verdict-options">'+verdicts.map(v=>'<button class="mc-verdict-button '+(state.verdictChosen===v.id?"is-selected":"")+'" data-verdict="'+v.id+'" onclick="MathCourt.selectVerdict(this.dataset.verdict)"><strong>'+v.label+'</strong><small>'+v.note+'</small></button>').join("")+'</div>');
+      action='<button class="mc-button mc-button-primary" '+(state.verdictChosen&&normalVerdict(state.verdictChosen)===normalVerdict(item.verdict)?'':'disabled')+' onclick="MathCourt.advance()">Hear the court’s reflection →</button>';
     } else {
-      const v=VERDICT_CHOICES.find(v=>v.id===normalVerdict(item.verdict))||VERDICT_CHOICES[3];
-      html+=panel("THE COURT&#39;S REFLECTION","Case closed: "+esc(v.label),'<div class="mc-verdict-ribbon"><span aria-hidden="true">⚖️</span><div><strong>'+esc(v.label)+'</strong><p>'+esc(v.note)+'</p></div></div><h4>What the mathematics showed</h4><p>'+esc(item.explanation)+'</p><h4>What the new evidence changed</h4><p>'+esc(item.twist)+'</p><div class="mc-value-note"><span aria-hidden="true">🌱</span><div><strong>Beyond the calculation</strong><p>'+esc(item.moral)+'</p></div></div><p class="mc-soft-note">You may be right to change a first impression. The court values clear evidence, honest uncertainty and respectful reasoning.</p>');
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Close case and call Case '+(item.id+1)+' →':'Close the High Court season →')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to all cases</button>';
+      const verdictLabels={supported:"The evidence fits",disproved:"Let’s revise the idea",partly:"Some parts fit",uncertain:"Let’s gather one more clue"};
+      const v=normalVerdict(item.verdict);
+      left+=panel("A COMMUNITY LESSON","A case closed, a mind opened",'<p class="mc-story-text">'+esc(item.twist)+'</p><div class="mc-virtue-reflection"><span aria-hidden="true">🌟</span><div><small>VIRTUE TO CARRY FORWARD</small><h3>'+esc(item.virtue||"Curiosity")+'</h3><p>'+esc(item.moral)+'</p></div></div><p>You helped the community understand its question more clearly. Every puzzle makes your next question stronger.</p>');
+      right+=board+playground;
+      right+=panel("THE COURT'S FINDING",verdictLabels[v]||"A thoughtful conclusion",'<div class="mc-solution"><strong>What the maths showed</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>How the new clue helped</strong><p>'+esc(item.twist)+'</p></div><p>Ready for another story and another chance to discover?</p>');
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Open Case '+(item.id+1)+' →':'Celebrate the 100-case journey 🎉')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to the case map</button>';
     }
-    host.innerHTML='<div class="mc-phase-card">'+html+'</div><div class="mc-play-actions">'+action+'<button class="mc-button mc-button-quiet" onclick="MathCourt.back()">← Docket</button>'+(state.phase>0?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">Review previous step</button>':'')+'</div>';
+    const paneActions='<div class="mc-play-actions">'+action+'<button class="mc-button mc-button-quiet" onclick="MathCourt.back()">← Case map</button>'+(state.phase>0?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">Review previous stage</button>':'')+'</div>';
+    host.innerHTML='<div class="mc-case-split"><section class="mc-story-pane" aria-label="Story and community case">'+left+'</section><section class="mc-game-pane" aria-label="Interactive mathematics playground"><div class="mc-game-pane-heading"><span>🎨 THE MATHS PLAYGROUND</span><strong>'+String(item.chapter).padStart(2,"0")+' / 10</strong></div>'+right+paneActions+'</section></div>';
     if(state.feedback){$("mc-feedback").textContent=state.feedback;$("mc-feedback").className="mc-feedback is-visible mc-feedback-"+state.feedbackKind;}
   }
   function topicFor(check,chapter) {
