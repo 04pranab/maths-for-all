@@ -330,7 +330,7 @@ async function main() {
     'assert(MathCourtData.isValid() && MathCourtData.cases.length === 100, "Math Court case catalogue failed validation.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "The docket must render all 100 cases.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-chapter").length === 10, "The docket must group cases into ten chapters.");' +
-    'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const board=document.querySelector("#mc-stage-content .mc-visual-lab");assert(board&&board.querySelector("svg"),"Case "+caseId+" needs a visible SVG maths board.");assert(board.querySelectorAll(".mc-visual-tab").length===3,"Case "+caseId+" needs all three visual learning views.");assert(document.querySelector("#mc-stage-content .mc-math-play"),"Case "+caseId+" needs an interactive chapter activity.");assert(document.querySelector("#mc-stage-content .mc-case-split .mc-story-pane")&&document.querySelector("#mc-stage-content .mc-case-split .mc-game-pane"),"Case "+caseId+" needs separate story and play panes.");}' +
+    'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const play=document.querySelector("#mc-stage-content .mc-math-play");assert(play&&play.querySelector("button,input"),"Case "+caseId+" needs a playable maths workshop, not a decorative picture.");assert(!document.querySelector("#mc-stage-content .mc-visual-lab"),"Case "+caseId+" should avoid duplicating the activity with a generic visual panel.");assert(document.querySelector("#mc-stage-content .mc-case-split .mc-story-pane")&&document.querySelector("#mc-stage-content .mc-case-split .mc-game-pane"),"Case "+caseId+" needs separate story and play panes.");assert(document.querySelector("#mc-stage-content .mc-story-guide p").textContent===MathCourtData.getCase(caseId).voice,"Case "+caseId+" should use its own character voice.");}' +
     'MathCourt.openCase(11); MathCourt.setPatternRule("double"); assert(document.querySelector(".mc-pattern-next strong"), "Pattern Garden needs a live next-value tile.");' +
     'MathCourt.openCase(21); MathCourt.setFraction("numerator",1); assert(document.querySelector(".mc-fraction-equation strong"), "Fraction Studio should update the share display.");' +
     'MathCourt.openCase(31); const areaBefore=MathCourt.shapeStats().area; MathCourt.toggleShapeCell(47); assert(MathCourt.shapeStats().area===areaBefore+1, "Shape Workshop must count a square added by the player.");' +
@@ -339,23 +339,22 @@ async function main() {
     'MathCourt.openCase(61); MathCourt.setRuleInput(5); assert(document.querySelectorAll(".mc-machine-box strong")[2].textContent==="11", "Rule Machine should calculate a live output.");' +
     'MathCourt.openCase(71); MathCourt.adjustShare(0,1); assert(document.querySelector(".mc-shares-summary").textContent.includes("10"), "Fair-Share Market should update the number of counters.");' +
     'MathCourt.openCase(81); MathCourt.extendRoute(1); assert(document.querySelector(".mc-shares-summary").textContent.includes("4"), "Route Garden should compute the selected road length.");' +
-    'MathCourt.openCase(91); MathCourt.adjustAllocation(0,1); assert(document.querySelector(".mc-budget-label").textContent.includes("9 of 12"), "Town Planner should update the resource budget.");' +
+    'MathCourt.openCase(91); MathCourt.adjustAllocation(0,1); assert(document.querySelector(".mc-budget-label").textContent.includes("9 of 12"), "Town Planner should update the resource budget.");
+    'MathCourt.openCase(5); MathCourt.toggleThirdOperand(); MathCourt.chooseLabSlot("a"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabSlot("b"); MathCourt.chooseLabNumber(0); MathCourt.chooseLabOperator("×"); MathCourt.chooseLabSlot("c"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabOperator2("+"); MathCourt.calculateLab(); assert(document.querySelector(".mc-equation-result strong").textContent==="78", "Number Forge should build the three-number chain (6 × 12) + 6.");' +' +
     'MathCourt.openCase(1); assert(!document.getElementById("mc-play").hidden, "Opening a case did not reveal the proceeding.");' +
     'assert(document.querySelectorAll("#mc-stage-content .mc-case-split > .mc-story-pane").length===1 && document.querySelectorAll("#mc-stage-content .mc-case-split > .mc-game-pane").length===1, "The case should split into a story half and play half.");' +
     'assert(parseFloat(getComputedStyle(document.querySelector("#mc-stage-content .mc-story-text")).fontSize)>=18, "Story text must be comfortably readable at 18px or larger.");' +
+    'assert(document.querySelector(".mc-story-guide p").textContent===MathCourtData.getCase(1).voice, "The story should speak in a case-specific character voice.");' +
+    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Witness examination", "Opening did not progress to witness examination.");' +
+    'assert(document.querySelectorAll("#mc-stage-content .mc-evidence-card").length===2, "Both clues should be visible without reveal-clicks.");' +
+    'assert(document.querySelectorAll("#mc-stage-content .mc-evidence-button").length===0, "The clue stage should not waste clicks on opening cards.");' +
+    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "Visible clues should advance directly to the maths investigation.");' +
+    'assert(document.querySelector("#mc-stage-content .mc-math-play"), "The maths stage must show the hands-on workshop.");' +
+    'assert(document.querySelectorAll("#mc-stage-content .mc-answer-tile[draggable=true]").length===3,"The first task should present three draggable result tiles.");' +
+    'MathCourt.answerInvestigation(MathCourtData.getCase(1).answer);' +
+    'assert(document.getElementById("mc-feedback").textContent.includes("Number Forge"), "The result should be backed by a built calculation, not just a tap.");' +
     'MathCourt.chooseLabSlot("a"); MathCourt.chooseLabNumber(0); MathCourt.chooseLabSlot("b"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabOperator("-"); MathCourt.calculateLab();' +
     'assert(document.querySelector(".mc-equation-result strong").textContent==="15", "The number forge should compute 52 − 37 from manipulable number tiles.");' +
-    'assert(document.querySelector("#mc-stage-content .mc-visual-lab"), "The opening of a case must include a visual evidence board.");' +
-    'assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"model\\"]"), "The model view should be visible first.");' +
-    'MathCourt.setVisualMode("compare"); assert(document.querySelector("#mc-stage-content svg[data-visual-mode=\\"compare\\"]"), "Compare mode did not change the visual representation.");' +
-    'assert(document.querySelector(".mc-visual-tab[aria-pressed=\\"true\\"]").textContent.includes("Compare"), "Visual mode state was not announced.");' +
-    'MathCourt.focusVisual(1); assert(document.querySelectorAll(".mc-value-chip.is-active").length === 1, "Selecting a value should highlight exactly one evidence chip.");' +
-    'MathCourt.setVisualMode("model");' +
-    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Witness examination", "Opening did not progress to witness examination.");' +
-    'MathCourt.chooseEvidence("claim"); MathCourt.chooseEvidence("evidence"); MathCourt.advance();' +
-    'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "Witness stage did not progress after both exhibits were inspected.");' +
-    'assert(document.querySelector("#mc-stage-content .mc-visual-lab"), "The mathematical task must retain its visual workbench.");' +
-    'assert(document.querySelectorAll("#mc-stage-content .mc-answer-tile[draggable=true]").length===3,"The first task should present three draggable answer tiles.");' +
     'MathCourt.answerInvestigation((MathCourtData.getCase(1).answer + 1) % MathCourtData.getCase(1).options.length);' +
     'assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "A wrong first answer should allow a retry within the same stage.");' +
     'const task1Data={};const task1Transfer={setData:(k,v)=>task1Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).answer,"investigation",{dataTransfer:task1Transfer});' +
@@ -376,7 +375,8 @@ async function main() {
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Verdict", "The verdict stage is missing.");' +
     'MathCourt.selectVerdict("disproved"); MathCourt.advance();' +
     'assert(document.getElementById("mc-stage-name").textContent === "The court" + String.fromCharCode(39) + "s reflection", "The case did not reach the reflection stage.");' +
-    'assert(document.getElementById("mc-stage-content").innerText.includes("VIRTUE TO CARRY FORWARD"), "The virtue reflection is missing.");' +
+    'assert(document.getElementById("mc-stage-content").innerText.includes("VIRTUE TO CARRY FORWARD"), "The virtue reflection is missing.");
+    assert(!/\\b(?:thieves|stolen|stealing|blame)\\b/i.test(document.getElementById("mc-stage-content").innerText), "The case play screen should avoid criminal/blaming language.");' +
     'MathCourt.advance();' +
     'const saved = JSON.parse(localStorage.getItem("mfa_math_court_v1"));' +
     'assert(saved.completed.includes(1), "Closing a case did not save its completion.");' +
