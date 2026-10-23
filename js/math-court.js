@@ -167,42 +167,67 @@
     const numbers=[...text.matchAll(/-?\d+(?:\.\d+)?/g)];
     return numbers.length===1?Number(numbers[0][0]):null;
   }
+  function submitPatternPrediction() {
+    const input=$("mc-pattern-prediction");
+    if(!input||input.value.trim()===""){setFeedback("Type the next number you predict, then place it in the garden.","hint");return;}
+    const next=Number(input.value);
+    if(!Number.isFinite(next)){setFeedback("Enter a number to test your pattern idea.","hint");return;}
+    if(state.lab.patternPrediction!==next){state.lab.patternPrediction=next;markLabPlay();}
+    state.lab.note="Prediction placed on the path.";
+    refreshCaseKeepingScroll();
+  }
+  function selectDataRecord(index) {
+    const item=data().getCase(state.caseId),task=state.investigationSolved?2:1;
+    if(!Number.isInteger(index)||index<0||index>=dataGoal(item,task).values.length)return;
+    if(state.lab.dataSelection===index)return;
+    state.lab.dataSelection=index;markLabPlay();refreshCaseKeepingScroll();
+  }
+  function checkPlayGoal() {
+    const item=data().getCase(state.caseId),task=state.investigationSolved?2:1;
+    if(!state.lab)return;
+    const baseline=task===2?state.lab.challengeBaseline:0;
+    if(state.lab.playCount<=baseline){
+      state.lab.goalSolved=false;
+      setFeedback(task===1?"Try the maths playground first. Build, change or explore the model, then check it.":"Make a fresh move for the second challenge before checking the new model.","hint");
+      refreshCaseKeepingScroll();return;
+    }
+    if(playGoalMet(item,task)){
+      state.lab.goalSolved=true;
+      setFeedback("✨ Workshop goal complete! Your model matches the challenge. Now use that finding in the case.","success");
+    }else{
+      state.lab.goalSolved=false;
+      setFeedback(playGoal(item,task).hint,"hint");
+    }
+    refreshCaseKeepingScroll();
+  }
+
   function answerInvestigation(index) {
     const item=data().getCase(state.caseId);
-    const expected=expectedNumericChoice(item.options[item.answer]);
-    if(item.chapter===1&&expected!==null&&(state.lab.calculationResult===null||Math.abs(state.lab.calculationResult-expected)>0.0001)){
-      setFeedback("Before placing your result, build a calculation in the Number Forge that reaches the case answer. Choose the number tiles, set the operation and make the result appear.","hint");
-      return;
-    }
-    if(!state.lab||state.lab.playCount===0){
-      setFeedback("Give the "+(item.chapter===1?"Number Forge":"maths playground")+" a try first. Change a number, shape, fraction, rule, route or share and watch what happens.","hint");
-      return;
+    if(!state.lab||!state.lab.goalSolved||!playGoalMet(item,1)){
+      setFeedback(state.lab&&state.lab.playCount>0?playGoal(item,1).hint:"Try the hands-on maths challenge first, then check your model before choosing the court's answer.","hint");
+      syncSession();renderCase();return;
     }
     if(index===item.answer){
       state.investigationSolved=true;
       state.lab.challengeBaseline=state.lab.playCount;
-      setFeedback("✨ Aha! Exhibit verified. "+item.explanation,"success");
+      state.lab.goalSolved=false;
+      setFeedback("✨ Aha! Your model fits the workshop goal. Exhibit verified. "+item.explanation,"success");
     }else{
-      setFeedback("Good experimenting. Try another arrangement on the play table and compare it with the story. "+hintFor(item),"hint");
+      setFeedback("You have the model ready. Compare its evidence with the story and try another conclusion.","hint");
     }
     syncSession();renderCase();
   }
   function answerChallenge(index) {
     const item=data().getCase(state.caseId),challenge=item.challenge;
-    if(!state.lab||state.lab.playCount<=state.lab.challengeBaseline){
-      setFeedback("Now make one more move in the maths playground. Try a new value, rule, shape, share or route, then use what you discovered in this second puzzle.","hint");
-      return;
-    }
-    const expected=expectedNumericChoice(challenge.options[challenge.answer]);
-    if(item.chapter===1&&expected!==null&&(state.lab.calculationResult===null||Math.abs(state.lab.calculationResult-expected)>0.0001)){
-      setFeedback("Build a fresh calculation for this second clue. Change the number tiles or operation so your result matches the new question.","hint");
-      return;
+    if(!state.lab||state.lab.playCount<=state.lab.challengeBaseline||!state.lab.goalSolved||!playGoalMet(item,2)){
+      setFeedback(state.lab&&state.lab.playCount>state.lab.challengeBaseline?playGoal(item,2).hint:"Complete a fresh hands-on challenge for the second exhibit before choosing its result.","hint");
+      syncSession();renderCase();return;
     }
     if(index===challenge.answer){
       state.challengeSolved=true;
-      setFeedback("✨ Second exhibit verified. "+challenge.explanation,"success");
+      setFeedback("✨ Second workshop goal complete! Exhibit verified. "+challenge.explanation,"success");
     }else{
-      setFeedback("You are exploring possibilities. Recheck the quantities and test another choice.","hint");
+      setFeedback("Your model is ready. Compare the new clue with the result and try another conclusion.","hint");
     }
     syncSession();renderCase();
   }
@@ -881,5 +906,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
 })(window);
