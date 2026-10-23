@@ -694,82 +694,96 @@
       '<p class="mc-play-feedback" aria-live="polite">'+esc(lab.note||"Try different combinations. Notice how each operation changes the result.")+'</p></section>';
   }
 
-  function renderPatternGarden(item) {
-    const vals=visualNumbers(item).slice(0,4),lab=state.lab,last=vals[vals.length-1]||5;
+
+  function renderPatternGarden(item,task) {
+    const goal=patternGoal(item,task),lab=state.lab;
     const step=lab.patternRule==="add1"?1:lab.patternRule==="add2"?2:lab.patternRule==="add3"?3:null;
-    const next=step===null?last*2:last+step;
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🌱 PATTERN GARDEN</span><h3>Grow the next number</h3><p>Change the rule and watch how the number path grows.</p></div>'+
-      '<div class="mc-pattern-path">'+vals.map((n,i)=>'<div class="mc-pattern-stone"><small>'+String(i+1).padStart(2,"0")+'</small><strong>'+esc(String(n))+'</strong></div>').join("")+'<div class="mc-pattern-stone mc-pattern-next"><small>NEXT</small><strong>'+esc(String(next))+'</strong></div></div>'+
-      '<div class="mc-rule-tiles">'+[{id:"add1",label:"+ 1"},{id:"add2",label:"+ 2"},{id:"add3",label:"+ 3"},{id:"double",label:"× 2"}].map(r=>'<button class="mc-op-tile '+(lab.patternRule===r.id?"is-selected":"")+'" data-rule="'+r.id+'" onclick="MathCourt.setPatternRule(this.dataset.rule)">'+r.label+'</button>').join("")+'</div>'+
-      '<p class="mc-play-feedback">Rule selected: '+(step===null?"double the last value":"add "+step)+" · next value = "+next+'</p></section>';
+    const preview=step===null?goal.sequence[2]*2:goal.sequence[2]+step;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🌱 PATTERN GARDEN</span><h3>Grow the number path</h3><p>Find the rule that explains both jumps. Predict the next stone before checking your idea.</p></div>'+
+      '<div class="mc-pattern-path">'+goal.sequence.map((n,i)=>'<div class="mc-pattern-stone"><small>STONE '+(i+1)+'</small><strong>'+n+'</strong></div>').join("")+'<div class="mc-pattern-stone mc-pattern-next"><small>NEXT</small><strong>'+(lab.patternPrediction===null?"?":esc(String(lab.patternPrediction)))+'</strong></div></div>'+
+      '<div class="mc-rule-tiles">'+[{id:"add1",label:"+ 1"},{id:"add2",label:"+ 2"},{id:"add3",label:"+ 3"},{id:"double",label:"× 2"}].map(r=>'<button type="button" class="mc-op-tile '+(lab.patternRule===r.id?"is-selected":"")+'" data-rule="'+r.id+'" aria-pressed="'+(lab.patternRule===r.id)+'" onclick="MathCourt.setPatternRule(this.dataset.rule)">'+r.label+'</button>').join("")+'</div>'+
+      '<p class="mc-play-feedback">Preview with this rule: next value = '+preview+'.</p>'+
+      '<label class="mc-range-label" for="mc-pattern-prediction">Your prediction for the next stone</label><div class="mc-prediction-row"><input id="mc-pattern-prediction" class="mc-play-number-input" type="number" inputmode="numeric" value="'+(lab.patternPrediction===null?"":esc(String(lab.patternPrediction)))+'" placeholder="Enter the next value"/><button class="mc-button mc-button-secondary" type="button" onclick="MathCourt.submitPatternPrediction()">Place prediction</button></div></section>';
   }
-  function renderFractionStudio() {
-    const lab=state.lab,den=lab.fractionDenominator,num=lab.fractionNumerator;
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🍰 FRACTION STUDIO</span><h3>Share the whole</h3><p>Change the number of equal parts and shade how many belong in your share.</p></div>'+
-      '<div class="mc-fraction-strip" role="img" aria-label="'+num+' of '+den+' equal parts selected">'+Array.from({length:den},(_,i)=>'<button type="button" class="mc-fraction-part '+(i<num?"is-filled":"")+'" aria-label="Part '+(i+1)+'" data-which="numerator" data-delta="'+(i<num?-1:1)+'" onclick="MathCourt.setFraction(this.dataset.which,Number(this.dataset.delta))"></button>').join("")+'</div>'+
+  function renderFractionStudio(item,task) {
+    const lab=state.lab,den=lab.fractionDenominator,num=lab.fractionNumerator,goal=fractionGoal(item,task);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🍰 FRACTION STUDIO</span><h3>Share the whole</h3><p>Build the target share by changing equal parts and shading the right amount.</p></div>'+
+      '<div class="mc-workshop-target"><small>TARGET SHARE</small><strong>'+goal.numerator+'/'+goal.denominator+'</strong><span>of one whole</span></div>'+
+      '<div class="mc-fraction-strip" role="group" aria-label="'+num+' of '+den+' equal parts shaded">'+Array.from({length:den},(_,i)=>'<button type="button" class="mc-fraction-part '+(i<num?"is-filled":"")+'" aria-label="Part '+(i+1)+' '+(i<num?"shaded":"empty")+'" data-which="numerator" data-delta="'+(i<num?-1:1)+'" onclick="MathCourt.setFraction(this.dataset.which,Number(this.dataset.delta))"></button>').join("")+'</div>'+
       '<div class="mc-fraction-equation"><strong>'+num+'/'+den+'</strong><span>of one whole</span><strong>'+Math.round(num/den*100)+'%</strong></div>'+
-      '<div class="mc-play-control-row"><span>Shade parts</span><button class="mc-stepper" data-which="numerator" data-delta="-1" onclick="MathCourt.setFraction(this.dataset.which,-1)" aria-label="One fewer shaded part">−</button><button class="mc-stepper" data-which="numerator" data-delta="1" onclick="MathCourt.setFraction(this.dataset.which,1)" aria-label="One more shaded part">+</button></div>'+
+      '<div class="mc-play-control-row"><span>Shaded parts</span><button class="mc-stepper" data-which="numerator" data-delta="-1" onclick="MathCourt.setFraction(this.dataset.which,-1)" aria-label="One fewer shaded part">−</button><strong>'+num+'</strong><button class="mc-stepper" data-which="numerator" data-delta="1" onclick="MathCourt.setFraction(this.dataset.which,1)" aria-label="One more shaded part">+</button></div>'+
       '<div class="mc-play-control-row"><span>Equal slices</span><button class="mc-stepper" data-which="denominator" data-delta="-1" onclick="MathCourt.setFraction(this.dataset.which,-1)" aria-label="Fewer equal parts">−</button><strong>'+den+'</strong><button class="mc-stepper" data-which="denominator" data-delta="1" onclick="MathCourt.setFraction(this.dataset.which,1)" aria-label="More equal parts">+</button></div></section>';
   }
-  function renderShapeWorkshop() {
-    const stats=shapeStats();
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧩 SHAPE WORKSHOP</span><h3>Build a shape, discover its measures</h3><p>Tap squares to add or remove them. Compare the inside space with the outside edge.</p></div>'+
+  function renderShapeWorkshop(item,task) {
+    const stats=shapeStats(),goal=shapeGoal(item,task);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧩 SHAPE WORKSHOP</span><h3>Build a connected shape</h3><p>Tap grid squares to design a shape. Shared edges are inside edges, not part of the outside boundary.</p></div>'+
+      '<div class="mc-workshop-target"><small>SHAPE CHALLENGE</small><strong>'+goal.area+' squares · '+goal.perimeter+' outside edges</strong><span>All selected squares must connect.</span></div>'+
       '<div class="mc-shape-builder" role="group" aria-label="48-square shape builder">'+Array.from({length:48},(_,i)=>'<button type="button" class="mc-shape-cell '+(state.lab.cells.includes(i)?"is-filled":"")+'" aria-label="Grid square '+(i+1)+'" aria-pressed="'+state.lab.cells.includes(i)+'" onclick="MathCourt.toggleShapeCell('+i+')"></button>').join("")+'</div>'+
       '<div class="mc-shape-stats"><div><small>AREA</small><strong>'+stats.area+'</strong><span>square units</span></div><div><small>PERIMETER</small><strong>'+stats.perimeter+'</strong><span>edge units</span></div></div>'+
-      '<button class="mc-button mc-button-quiet" onclick="MathCourt.resetShape()">Start a fresh shape ↻</button></section>';
+      '<button class="mc-button mc-button-quiet" type="button" onclick="MathCourt.resetShape()">Start a fresh shape ↻</button></section>';
   }
-  function renderTimeline() {
-    const mins=state.lab.timelineMinutes,start=14*60+35,end=start+mins;
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>⏱️ TIMELINE STUDIO</span><h3>Move through time</h3><p>Slide the marker and see how minutes change the arrival time.</p></div>'+
+  function renderTimeline(item,task) {
+    const mins=state.lab.timelineMinutes,start=14*60+35,end=start+mins,goal=timelineGoal(item,task);
+    const goalEnd=start+goal;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>⏱️ TIMELINE STUDIO</span><h3>Move through time</h3><p>Use elapsed time to match a planned arrival. Watch the clock move as the duration changes.</p></div>'+
+      '<div class="mc-workshop-target"><small>PLANNED ARRIVAL</small><strong>'+formatClock(goalEnd)+'</strong><span>Starting at 2:35 PM</span></div>'+
       '<div class="mc-timeline-track"><span class="mc-time-start">'+formatClock(start)+'</span><div class="mc-time-rail"><span style="width:'+Math.min(100,mins/180*100)+'%"></span><i style="left:'+Math.min(100,mins/180*100)+'%"></i></div><span class="mc-time-end">'+formatClock(end)+'</span></div>'+
-      '<div class="mc-time-result"><small>TRAVEL TIME</small><strong>'+mins+' minutes</strong><span>'+Math.floor(mins/60)+' hour'+(Math.floor(mins/60)===1?"":"s")+' and '+(mins%60)+' minutes</span></div>'+
+      '<div class="mc-time-result"><small>YOUR JOURNEY</small><strong>'+mins+' minutes</strong><span>'+Math.floor(mins/60)+' hour'+(Math.floor(mins/60)===1?"":"s")+' and '+(mins%60)+' minutes</span></div>'+
       '<label class="mc-range-label" for="mc-timeline-range">Move the journey marker</label><input id="mc-timeline-range" class="mc-range" type="range" min="0" max="180" step="5" value="'+mins+'" oninput="MathCourt.setLabTimeline(this.value)"/></section>';
   }
-  function renderDataGarden(item) {
-    const vals=visualNumbers(item).slice(0,4).map(n=>Math.abs(n));
+  function renderDataGarden(item,task) {
+    const goal=dataGoal(item,task),vals=goal.values;
     const min=Math.min(...vals),max=Math.max(...vals),base=state.lab.dataZoom?Math.max(0,min-10):0,range=Math.max(1,max-base);
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>📊 DATA GARDEN</span><h3>See how a graph tells its story</h3><p>Change where the graph scale begins. The data stay the same, but the visual impression changes.</p></div>'+
-      '<div class="mc-data-chart" role="img" aria-label="Bar chart with '+(state.lab.dataZoom?"zoomed":"zero")+' baseline">'+vals.map((n,i)=>'<div class="mc-data-bar-wrap"><strong>'+n+'</strong><div class="mc-data-bar-track"><span style="height:'+Math.max(4,(n-base)/range*100)+'%"></span></div><small>Record '+(i+1)+'</small></div>').join("")+'</div>'+
-      '<div class="mc-chart-scale-label">Scale starts at <strong>'+base+'</strong></div><div class="mc-rule-tiles"><button class="mc-op-tile '+(!state.lab.dataZoom?"is-selected":"")+'" onclick="MathCourt.setDataZoom(false)">Start at zero</button><button class="mc-op-tile '+(state.lab.dataZoom?"is-selected":"")+'" onclick="MathCourt.setDataZoom(true)">Zoom in</button></div>'+
-      '<p class="mc-play-feedback">'+(state.lab.dataZoom?"Zooming in highlights small gaps; disclose the scale so readers can judge fairly.":"A zero baseline makes the full bar lengths easier to compare.")+'</p></section>';
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>📊 DATA GARDEN</span><h3>Read the evidence bars</h3><p>Tap a record to choose it. Compare both the written values and the visible bar lengths.</p></div>'+
+      '<div class="mc-workshop-target"><small>CHART QUEST</small><strong>Select the '+goal.which+' record</strong><span>Choose one bar from the records below.</span></div>'+
+      '<div class="mc-data-chart" role="group" aria-label="Select one of the evidence values">'+vals.map((n,i)=>'<button type="button" class="mc-data-bar-wrap '+(state.lab.dataSelection===i?"is-selected":"")+'" aria-pressed="'+(state.lab.dataSelection===i)+'" aria-label="Record '+(i+1)+", value "+n+'" onclick="MathCourt.selectDataRecord('+i+')"><strong>'+n+'</strong><div class="mc-data-bar-track"><span style="height:'+Math.max(4,(n-base)/range*100)+'%"></span></div><small>Record '+(i+1)+'</small></button>').join("")+'</div>'+
+      '<div class="mc-chart-scale-label">Scale starts at <strong>'+base+'</strong></div><div class="mc-rule-tiles"><button type="button" class="mc-op-tile '+(!state.lab.dataZoom?"is-selected":"")+'" aria-pressed="'+(!state.lab.dataZoom)+'" onclick="MathCourt.setDataZoom(false)">Start at zero</button><button type="button" class="mc-op-tile '+(state.lab.dataZoom?"is-selected":"")+'" aria-pressed="'+state.lab.dataZoom+'" onclick="MathCourt.setDataZoom(true)">Zoom in</button></div>'+
+      '<p class="mc-play-feedback">'+(state.lab.dataZoom?"Zooming in highlights small gaps; show the scale so everyone can judge fairly.":"A zero baseline makes the full bar lengths easier to compare.")+'</p></section>';
   }
-  function renderRuleMachine() {
-    const lab=state.lab,x=lab.ruleInput,y=lab.ruleType==="doublePlusOne"?2*x+1:lab.ruleType==="add3"?x+3:lab.ruleType==="triple"?3*x:x*x;
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>⚙️ RULE MACHINE</span><h3>Feed a number into the machine</h3><p>Choose a rule, then move the input to watch the output update.</p></div>'+
+  function renderRuleMachine(item,task) {
+    const lab=state.lab,x=lab.ruleInput,y=lab.ruleType==="doublePlusOne"?2*x+1:lab.ruleType==="add3"?x+3:lab.ruleType==="triple"?3*x:x*x,goal=ruleGoal(item,task);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>⚙️ RULE MACHINE</span><h3>Tune the mystery machine</h3><p>Choose a rule and move the input. The output changes immediately.</p></div>'+
+      '<div class="mc-workshop-target"><small>MYSTERY MACHINE CARD</small><strong>Input '+goal.input+' → Output '+goal.output+'</strong><span>Find the rule that makes both match.</span></div>'+
       '<div class="mc-machine-flow"><div class="mc-machine-box"><small>INPUT</small><strong>'+x+'</strong></div><div class="mc-machine-arrow">→</div><div class="mc-machine-box mc-machine-core"><small>RULE</small><strong>'+(lab.ruleType==="doublePlusOne"?"2x + 1":lab.ruleType==="add3"?"x + 3":lab.ruleType==="triple"?"3x":"x²")+'</strong></div><div class="mc-machine-arrow">→</div><div class="mc-machine-box"><small>OUTPUT</small><strong>'+y+'</strong></div></div>'+
       '<label class="mc-range-label" for="mc-rule-input">Change input</label><input id="mc-rule-input" class="mc-range" type="range" min="1" max="12" value="'+x+'" oninput="MathCourt.setRuleInput(this.value)"/>'+
-      '<div class="mc-rule-tiles">'+[{id:"doublePlusOne",label:"2x + 1"},{id:"add3",label:"x + 3"},{id:"triple",label:"3x"},{id:"square",label:"x²"}].map(r=>'<button class="mc-op-tile '+(lab.ruleType===r.id?"is-selected":"")+'" data-rule="'+r.id+'" onclick="MathCourt.setRuleType(this.dataset.rule)">'+r.label+'</button>').join("")+'</div>'+
+      '<div class="mc-rule-tiles">'+[{id:"doublePlusOne",label:"2x + 1"},{id:"add3",label:"x + 3"},{id:"triple",label:"3x"},{id:"square",label:"x²"}].map(r=>'<button type="button" class="mc-op-tile '+(lab.ruleType===r.id?"is-selected":"")+'" data-rule="'+r.id+'" aria-pressed="'+(lab.ruleType===r.id)+'" onclick="MathCourt.setRuleType(this.dataset.rule)">'+r.label+'</button>').join("")+'</div>'+
       '<p class="mc-play-feedback">'+y+' comes from applying '+(lab.ruleType==="doublePlusOne"?"2 × "+x+" + 1":lab.ruleType==="add3"?x+" + 3":lab.ruleType==="triple"?"3 × "+x:x+" × "+x)+'.</p></section>';
   }
-  function renderShareMarket() {
-    const shares=state.lab.shares,total=shares.reduce((s,n)=>s+n,0),gap=Math.max(...shares)-Math.min(...shares);
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🫶 FAIR-SHARE MARKET</span><h3>Share the counters</h3><p>Move the number up or down for each group. Watch the total and compare the shares.</p></div>'+
+  function renderShareMarket(item,task) {
+    const shares=state.lab.shares,total=shares.reduce((s,n)=>s+n,0),gap=Math.max(...shares)-Math.min(...shares),goal=shareGoal(item,task);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🫶 FAIR-SHARE MARKET</span><h3>Share the counters with care</h3><p>Each counter is one unit of resource. Adjust the shares and watch the total change.</p></div>'+
+      '<div class="mc-workshop-target"><small>COMMUNITY NEEDS</small><strong>Total: '+goal.total+' counters</strong><span>Minimum needs for A, B and C: '+goal.minimums.join(" · ")+'</span></div>'+
       '<div class="mc-share-groups">'+shares.map((n,i)=>'<div class="mc-share-group"><strong>Group '+String.fromCharCode(65+i)+'</strong><div class="mc-share-dots">'+Array.from({length:n},()=>'<i aria-hidden="true"></i>').join("")+'</div><div class="mc-share-adjust"><button class="mc-stepper" onclick="MathCourt.adjustShare('+i+',-1)" aria-label="Give one fewer counter to group '+String.fromCharCode(65+i)+'">−</button><strong>'+n+'</strong><button class="mc-stepper" onclick="MathCourt.adjustShare('+i+',1)" aria-label="Give one more counter to group '+String.fromCharCode(65+i)+'">+</button></div></div>').join("")+'</div>'+
       '<div class="mc-shares-summary"><span>Total counters <strong>'+total+'</strong></span><span>Largest gap <strong>'+gap+'</strong></span></div>'+
-      '<p class="mc-play-feedback">'+(gap===0?"Every group has an equal share. Now consider whether the situation asks for equal shares or needs-based shares.":"The groups have different amounts. Decide whether equal shares or another stated rule best fits the situation.")+'</p></section>';
+      '<p class="mc-play-feedback">'+(total===goal.total&&shares.every((n,i)=>n>=goal.minimums[i])?"Every stated need is met. Check that the total stays exactly 12.":total===goal.total?"The total fits. Check each group's stated minimum.":"Move counters between groups to meet every minimum and use exactly 12.")+'</p></section>';
   }
-  function renderRouteGarden() {
-    const route=state.lab.route,total=route.slice(1).reduce((sum,n,i)=>sum+(routeEdge(route[i],n)||[0,0,0])[2],0);
+  function renderRouteGarden(item,task) {
+    const route=state.lab.route,total=route.slice(1).reduce((sum,n,i)=>sum+(routeEdge(route[i],n)||[0,0,0])[2],0),goal=routeGoal();
     const nodes=[[55,70],[182,40],[306,74],[94,170],[242,166]],labels=["A","B","C","D","E"];
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🗺️ ROUTE GARDEN</span><h3>Build a journey across town</h3><p>Start at A and choose a connected stop. Every road adds to your journey length.</p></div>'+
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🗺️ ROUTE GARDEN</span><h3>Find a short connected journey</h3><p>Start at A, then choose one connected stop at a time. Every road adds to your journey length.</p></div>'+
+      '<div class="mc-workshop-target"><small>ROUTE MISSION</small><strong>Reach C in '+goal.maxLength+' road units or fewer</strong><span>Read each road label and compare complete routes.</span></div>'+
       '<svg viewBox="0 0 360 220" class="mc-route-map" role="img" aria-label="Five-stop route network">'+routeEdges.map(e=>'<line x1="'+nodes[e[0]][0]+'" y1="'+nodes[e[0]][1]+'" x2="'+nodes[e[1]][0]+'" y2="'+nodes[e[1]][1]+'" class="'+(route.some((n,i)=>i<route.length-1&&routeEdge(n,route[i+1])===e)?"mc-route-selected":"")+'"/><text x="'+((nodes[e[0]][0]+nodes[e[1]][0])/2)+'" y="'+((nodes[e[0]][1]+nodes[e[1]][1])/2-7)+'">'+e[2]+'</text>').join("")+nodes.map((n,i)=>'<g class="mc-route-node '+(route.includes(i)?"is-visited":"")+'"><circle cx="'+n[0]+'" cy="'+n[1]+'" r="20"/><text x="'+n[0]+'" y="'+(n[1]+5)+'" class="mc-route-label">'+labels[i]+'</text></g>').join("")+'</svg>'+
-      '<div class="mc-route-buttons">'+labels.map((label,i)=>'<button class="mc-route-choice '+(route[route.length-1]===i?"is-current":"")+'" onclick="MathCourt.extendRoute('+i+')">'+label+'</button>').join("")+'</div>'+
+      '<div class="mc-route-buttons">'+labels.map((label,i)=>'<button type="button" class="mc-route-choice '+(route[route.length-1]===i?"is-current":"")+'" aria-pressed="'+(route[route.length-1]===i)+'" onclick="MathCourt.extendRoute('+i+')">'+label+'</button>').join("")+'</div>'+
       '<div class="mc-shares-summary"><span>Stops <strong>'+route.map(n=>labels[n]).join(" → ")+'</strong></span><span>Journey length <strong>'+total+'</strong></span></div>'+
-      '<button class="mc-button mc-button-quiet" onclick="MathCourt.resetRoute()">New journey ↻</button></section>';
+      '<button class="mc-button mc-button-quiet" type="button" onclick="MathCourt.resetRoute()">New journey ↻</button></section>';
   }
-  function renderTownPlanner() {
-    const allocations=state.lab.allocations,total=allocations.reduce((s,n)=>s+n,0),budget=12;
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🏡 TOWN PLANNER</span><h3>Plan with a shared budget</h3><p>Allocate twelve resource tokens to three neighbourhoods and keep the total within the limit.</p></div>'+
-      '<div class="mc-resource-bar"><span style="width:'+(total/budget*100)+'%"></span></div><p class="mc-budget-label">'+total+' of '+budget+' tokens planned · '+(budget-total)+' still available</p>'+
-      '<div class="mc-town-bins">'+allocations.map((n,i)=>'<div class="mc-town-bin"><strong>Town '+String.fromCharCode(65+i)+'</strong><div class="mc-town-tokens">'+Array.from({length:n},()=>'<i></i>').join("")+'</div><div class="mc-share-adjust"><button class="mc-stepper" onclick="MathCourt.adjustAllocation('+i+',-1)" aria-label="Remove a token from town '+String.fromCharCode(65+i)+'">−</button><strong>'+n+'</strong><button class="mc-stepper" '+(total>=budget?'disabled':'')+' onclick="MathCourt.adjustAllocation('+i+',1)" aria-label="Add a token to town '+String.fromCharCode(65+i)+'">+</button></div></div>').join("")+'</div>'+
-      '<p class="mc-play-feedback">'+(total===budget?"All tokens are allocated. Explain why your plan is fair and how it meets the stated needs.":"You have "+(budget-total)+" tokens left. Choose where they would help most, and explain your reasoning.")+'</p></section>';
+  function renderTownPlanner(item,task) {
+    const allocations=state.lab.allocations,total=allocations.reduce((s,n)=>s+n,0),goal=townGoal(item,task);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🏡 TOWN PLANNER</span><h3>Make a plan that fits everyone's needs</h3><p>Allocate resource tokens, satisfy each stated minimum and keep within the shared budget.</p></div>'+
+      '<div class="mc-workshop-target"><small>PLANNING CONSTRAINTS</small><strong>Use exactly '+goal.total+' tokens</strong><span>Minimum needs for A, B and C: '+goal.minimums.join(" · ")+'</span></div>'+
+      '<div class="mc-resource-bar"><span style="width:'+(total/goal.total*100)+'%"></span></div><p class="mc-budget-label">'+total+' of '+goal.total+' tokens planned · '+(goal.total-total)+' still available</p>'+
+      '<div class="mc-town-bins">'+allocations.map((n,i)=>'<div class="mc-town-bin"><strong>Town '+String.fromCharCode(65+i)+'</strong><div class="mc-town-tokens">'+Array.from({length:n},()=>'<i></i>').join("")+'</div><div class="mc-share-adjust"><button class="mc-stepper" onclick="MathCourt.adjustAllocation('+i+',-1)" aria-label="Remove a token from town '+String.fromCharCode(65+i)+'">−</button><strong>'+n+'</strong><button class="mc-stepper" '+(total>=goal.total?'disabled':'')+' onclick="MathCourt.adjustAllocation('+i+',1)" aria-label="Add a token to town '+String.fromCharCode(65+i)+'">+</button></div></div>').join("")+'</div>'+
+      '<p class="mc-play-feedback">'+(total===goal.total&&allocations.every((n,i)=>n>=goal.minimums[i])?"The plan fits the budget and every town's stated minimum.":total===goal.total?"The budget is fully allocated; check the minimums for each town.":"You have "+(goal.total-total)+" tokens to place. Meet the minimums and use the whole budget.")+'</p></section>';
   }
   function renderPlayActivity(item) {
-    const activity=item.chapter===1?renderNumberForge(item):item.chapter===2?renderPatternGarden(item):item.chapter===3?renderFractionStudio():item.chapter===4?renderShapeWorkshop():item.chapter===5?renderTimeline():item.chapter===6?renderDataGarden(item):item.chapter===7?renderRuleMachine():item.chapter===8?renderShareMarket():item.chapter===9?renderRouteGarden():renderTownPlanner();
-    return '<div class="mc-play-station"><div class="mc-station-top"><span>✨ PLAY & DISCOVER</span><span>CHAPTER '+String(item.chapter).padStart(2,"0")+'</span></div>'+activity+'</div>';
+    const task=state.investigationSolved?2:1;
+    const activity=item.chapter===1?renderNumberForge(item,task):item.chapter===2?renderPatternGarden(item,task):item.chapter===3?renderFractionStudio(item,task):item.chapter===4?renderShapeWorkshop(item,task):item.chapter===5?renderTimeline(item,task):item.chapter===6?renderDataGarden(item,task):item.chapter===7?renderRuleMachine(item,task):item.chapter===8?renderShareMarket(item,task):item.chapter===9?renderRouteGarden(item,task):renderTownPlanner(item,task);
+    const goal=playGoal(item,task),goalSolved=Boolean(state.lab&&state.lab.goalSolved&&playGoalMet(item,task));
+    return '<div class="mc-play-station"><div class="mc-station-top"><span>✨ PLAY & DISCOVER</span><span>CHAPTER '+String(item.chapter).padStart(2,"0")+' · TASK '+task+' OF 2</span></div>'+activity+
+      '<section class="mc-workshop-check '+(goalSolved?"is-solved":"")+'" aria-live="polite"><div class="mc-workshop-check-icon" aria-hidden="true">'+(goalSolved?"✓":"✦")+'</div><div class="mc-workshop-check-copy"><small>YOUR HANDS-ON CHALLENGE</small><strong>'+esc(goal.title)+'</strong><p>'+esc(goal.instruction)+'</p></div><button type="button" class="mc-button mc-button-secondary" onclick="MathCourt.checkPlayGoal()">'+(goalSolved?"Model checked ✓":"Check my model")+'</button>'+(goalSolved?'<span class="mc-workshop-complete">Goal complete! Ready to use this finding.</span>':'')+'</section></div>';
   }
 
-  function renderStoryNarrative(item) {
+    function renderStoryNarrative(item) {
     const beats=[item.opening||"The community has gathered to explore a question together.",item.story||""].filter(Boolean);
     return beats.map((part,index)=>'<p class="mc-story-text '+(index===0?"mc-story-hook":"mc-story-close")+'">'+esc(part)+'</p>').join("");
   }
