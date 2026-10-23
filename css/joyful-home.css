@@ -11,6 +11,7 @@
 }
 .home-welcome-panel { min-width: 0; }
 #screen-menu .home-welcome-panel .arcade-header {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: center;
@@ -22,8 +23,7 @@
   border-radius: 20px;
   text-align: left;
 }
-#screen-menu .home-welcome-panel .arcade-illustration { display: none; }
-#screen-menu .home-welcome-panel .arcade-copy { max-width: none; text-align: left; }
+#screen-menu .home-welcome-panel .arcade-copy { max-width: none; padding-right: 104px; text-align: left; }
 #screen-menu .home-welcome-panel .arcade-badge { margin: 0 0 4px; font-size: .72rem; line-height: 1.2; }
 #screen-menu .home-welcome-panel .arena-title { font-size: clamp(1.6rem, 2.1vw, 2rem); line-height: 1; }
 #screen-menu .home-welcome-panel .title-arena { margin-left: 4px; }
@@ -33,7 +33,17 @@
 #screen-menu .home-welcome-panel .learning-promise span { font-size: .76rem; line-height: 1.25; }
 #screen-menu .home-welcome-panel .math-wisdom { justify-content: flex-start; gap: 4px; margin: 6px 0 0; }
 #screen-menu .home-welcome-panel .math-wisdom-sanskrit { font-size: 1rem; }
-#screen-menu .home-welcome-panel .arcade-illustration { width: 100%; max-width: 100%; max-height: none; }
+#screen-menu .home-welcome-panel .arcade-illustration {
+  position: absolute;
+  top: 9px;
+  right: 12px;
+  display: block;
+  width: 88px;
+  max-width: 88px;
+  height: auto;
+  max-height: 48px;
+  justify-self: auto;
+}
 .home-games-panel { min-width: 0; }
 .home-games-panel .menu-section-heading { margin: 0 0 12px; }
 .home-games-panel .menu-section-heading h2 { font-size: clamp(1.5rem, 2vw, 2rem); line-height: 1.2; }
@@ -96,6 +106,8 @@ button, input, select, textarea { font: inherit; }
 }
 @media (max-width: 600px) {
   #screen-menu { padding: 10px; }
+  #screen-menu .home-welcome-panel .arcade-copy { padding-right: 84px; }
+  #screen-menu .home-welcome-panel .arcade-illustration { width: 72px; max-width: 72px; max-height: 40px; right: 8px; top: 8px; }
   #screen-menu .home-welcome-panel .arcade-header {
     grid-template-columns: minmax(0, 1.2fr) minmax(115px, .65fr);
     gap: 8px;
@@ -113,6 +125,8 @@ button, input, select, textarea { font: inherit; }
   #screen-menu .home-welcome-panel .arcade-copy { text-align: center; }
   #screen-menu .home-welcome-panel .learning-promise { justify-content: center; }
   #screen-menu .home-welcome-panel .math-wisdom { justify-content: center; }
+  #screen-menu .home-welcome-panel .arcade-copy { padding-right: 0; }
+  #screen-menu .home-welcome-panel .arcade-illustration { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .home-two-panel * { scroll-behavior: auto; }
