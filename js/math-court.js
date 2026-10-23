@@ -14,12 +14,6 @@
     {id:"partly",label:"Partly supported",note:"Part of the claim is right, but it goes too far."},
     {id:"uncertain",label:"Not enough evidence",note:"The records do not justify a firm conclusion."}
   ];
-  const cast = [
-    {name:"Judge Mira",role:"Presiding judge",line:"We are here to test the claim, not to attack the people who made it."},
-    {name:"Pip",role:"Court clerk",line:"I have put the source record and the claim on the evidence table."},
-    {name:"Asha",role:"Senior advocate",line:"A good question narrows the problem. A good verdict explains what the evidence can actually show."},
-    {name:"Dot",role:"Evidence bird",line:"Keep your eyes open. A small detail can change the whole case."}
-  ];
   const state = {
     caseId:1, phase:0, seenClaim:false, seenEvidence:false,
     investigationSolved:false, challengeSolved:false, crossSolved:false, verdictChosen:null,
@@ -881,10 +875,6 @@
     const paneActions='<div class="mc-play-actions">'+action+'<button class="mc-button mc-button-quiet" onclick="MathCourt.back()">← Case map</button>'+(state.phase>0?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">Review previous stage</button>':'')+'</div>';
     host.innerHTML='<div class="mc-case-split"><section class="mc-story-pane" aria-label="Story and community case">'+left+'</section><section class="mc-game-pane" aria-label="Interactive mathematics playground"><div class="mc-game-pane-heading"><span>🎨 THE MATHS PLAYGROUND</span><strong>'+String(item.chapter).padStart(2,"0")+' / 10</strong></div>'+right+paneActions+'</section></div>';
     if(state.feedback){$("mc-feedback").textContent=state.feedback;$("mc-feedback").className="mc-feedback is-visible mc-feedback-"+state.feedbackKind;}
-  }
-  function topicFor(check,chapter) {
-    const topics={calculation:"Calculation and verification",records:"Records and data integrity",assumptions:"Assumptions and modelling",definition:"Mathematical definitions",comparison:"Fair comparison",units:"Units and precision",constraints:"Constraints and optimisation",representation:"Graphs and representation",sample:"Sampling and statistics",causation:"Causation and evidence",logic:"Logic and conditions"};
-    return topics[check]||data().chapters.find(ch=>ch.id===chapter).theme;
   }
   function showHint() {
     const item=data().getCase(state.caseId);
