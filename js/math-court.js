@@ -15,7 +15,7 @@
     {id:"uncertain",label:"Not enough evidence",note:"The records do not justify a firm conclusion."}
   ];
   const state = {
-    caseId:1, phase:0, seenClaim:false, seenEvidence:false,
+    caseId:1, phase:0, docketChapterId:null, seenClaim:false, seenEvidence:false,
     investigationSolved:false, challengeSolved:false, crossSolved:false, verdictChosen:null,
     visualMode:"model", visualFocus:0, lab:null, completed:new Set(), session:null, feedback:"", feedbackKind:""
   };
@@ -61,6 +61,7 @@
     const screen=$("screen-math-court");
     if(screen) screen.classList.add("active");
     window.scrollTo(0,0);
+    state.docketChapterId=null;
     load();
     renderDocket();
     if (state.session) {
@@ -69,7 +70,10 @@
     }
   }
   function goDocket() {
-    syncSession();
+    if(state.completed.has(state.caseId)){state.session=null;persist();}
+    else syncSession();
+    const item=data().getCase(state.caseId);
+    if(item)state.docketChapterId=item.chapter;
     renderDocket();
     window.scrollTo(0,0);
   }
@@ -77,61 +81,99 @@
     const docket=$("mc-docket"), play=$("mc-play");
     if(!docket||!play)return;
     docket.hidden=false; play.hidden=true;
+
+    const chapters=data().chapters;
     const completed=state.completed.size;
     const next=data().cases.find(item=>!state.completed.has(item.id));
-    const resume=state.session && data().getCase(state.session.caseId);
+    const resume=state.session && data().getCase(state.session.caseId) && !state.completed.has(state.session.caseId)
+      ? data().getCase(state.session.caseId) : null;
     const focusCase=resume||next;
-    const activeChapterId=focusCase?focusCase.chapter:data().chapters[data().chapters.length-1].id;
-    const progressLabel=completed===100?"All 100 cases explored":completed+" of 100 cases completed";
+    const defaultChapterId=focusCase?focusCase.chapter:chapters[chapters.length-1].id;
+    if(!chapters.some(ch=>ch.id===Number(state.docketChapterId))) state.docketChapterId=defaultChapterId;
+    const activeChapter=chapters.find(ch=>ch.id===Number(state.docketChapterId))||chapters[0];
+    const entries=data().cases.filter(item=>item.chapter===activeChapter.id);
+    const chapterDone=entries.filter(item=>state.completed.has(item.id)).length;
+    const progressLabel=completed===100?"All 100 cases completed":completed+" of 100 cases completed";
+    const mainAction=resume
+      ? '<button class="mc-button mc-button-primary" type="button" id="mc-resume" onclick="MathCourt.resume()">Resume Case '+String(resume.id).padStart(3,"0")+' <span aria-hidden="true">→</span></button>'
+      : next
+        ? '<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase('+next.id+')">Start Case '+String(next.id).padStart(3,"0")+' <span aria-hidden="true">→</span></button>'
+        : '<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase(1)">Play a case again <span aria-hidden="true">↻</span></button>';
+
     docket.innerHTML =
-      '<section class="mc-docket-hero" aria-labelledby="mc-docket-title">' +
-        '<div class="mc-docket-intro">' +
-          '<div class="mc-eyebrow">COMMON GROUND COURT</div>' +
-          '<h2 id="mc-docket-title">Choose your next case</h2>' +
-          '<p>Each case starts with a clue. Follow the story, test the maths, and see where the evidence leads.</p>' +
-          '<div class="mc-hero-actions">' +
-            (resume?'<button class="mc-button mc-button-primary" type="button" id="mc-resume" onclick="MathCourt.resume()">Continue Case '+String(resume.id).padStart(3,"0")+' →</button>':next?'<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase('+next.id+')">Start Case '+String(next.id).padStart(3,"0")+' →</button>':'<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase(1)">Play a case again ↻</button>') +
-            '<button class="mc-button mc-button-quiet" type="button" onclick="MathCourt.resetProgress()">Reset progress</button>' +
+      '<header class="mc-docket-heading">' +
+        '<div class="mc-docket-heading-copy">' +
+          '<div class="mc-eyebrow">MATH COURT <span aria-hidden="true">/</span> CASE FILES</div>' +
+          '<h2 id="mc-docket-title">Choose a case</h2>' +
+          '<p>Ten chapters. One hundred investigations. Pick a theme and follow the evidence.</p>' +
+        '</div>' +
+        '<div class="mc-docket-heading-actions">' +
+          mainAction +
+          (completed>0||resume?'<button class="mc-button mc-button-quiet" type="button" onclick="MathCourt.resetProgress()">Reset progress</button>':"") +
+        '</div>' +
+      '</header>' +
+      '<div class="mc-docket-progress-strip">' +
+        '<span class="mc-progress-label">YOUR PROGRESS</span>' +
+        '<div class="mc-progress-track" role="progressbar" aria-label="Cases completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+completed+'"><span style="width:'+completed+'%"></span></div>' +
+        '<strong>'+progressLabel+'</strong>' +
+      '</div>' +
+      '<section class="mc-case-browser" aria-label="Choose a chapter and case">' +
+        '<aside class="mc-chapter-rail" aria-label="Choose a chapter">' +
+          '<div class="mc-chapter-rail-heading"><strong>CHAPTERS</strong><span>01–10</span></div>' +
+          '<nav class="mc-chapter-rail-list">' +
+            chapters.map(ch=>{
+              const items=data().cases.filter(item=>item.chapter===ch.id);
+              const done=items.filter(item=>state.completed.has(item.id)).length;
+              const isCurrent=ch.id===activeChapter.id;
+              const isResume=Boolean(resume&&resume.chapter===ch.id);
+              const isNext=Boolean(!resume&&next&&next.chapter===ch.id);
+              const tag=done===items.length?"Complete":isResume?"In progress":isNext?"Next up":done>0?done+"/10 done":"";
+              return '<button type="button" class="mc-chapter-choice '+(isCurrent?"is-current ":"")+(done===items.length?"is-complete ":"")+(isResume?"has-resume ":"")+(isNext?"has-next":"")+'" data-chapter-id="'+ch.id+'" aria-pressed="'+isCurrent+'" onclick="MathCourt.chooseChapter('+ch.id+')">' +
+                '<span class="mc-chapter-choice-number">'+String(ch.id).padStart(2,"0")+'</span>' +
+                '<span class="mc-chapter-choice-copy"><strong>'+esc(ch.name)+'</strong><small>'+esc(ch.theme)+'</small></span>' +
+                '<span class="mc-chapter-choice-status">'+(done===items.length?"✓":isResume?"↻":isNext?"→":"")+'</span>' +
+                '<span class="mc-chapter-choice-progress">'+tag+'</span>' +
+              '</button>';
+            }).join("") +
+          '</nav>' +
+        '</aside>' +
+        '<div class="mc-chapter-detail" data-active-chapter="'+activeChapter.id+'">' +
+          '<header class="mc-chapter-detail-heading">' +
+            '<div><p class="mc-chapter-detail-kicker">CHAPTER '+String(activeChapter.id).padStart(2,"0")+' <span aria-hidden="true">·</span> CASES '+String(activeChapter.from).padStart(3,"0")+'–'+String(activeChapter.to).padStart(3,"0")+'</p>' +
+            '<h3>'+esc(activeChapter.name)+'</h3><p>'+esc(activeChapter.theme)+'</p></div>' +
+            '<span class="mc-chapter-count">'+chapterDone+' <small>/ 10 complete</small></span>' +
+          '</header>' +
+          '<div class="mc-chapter-progress-track" role="progressbar" aria-label="Cases completed in '+esc(activeChapter.name)+'" aria-valuemin="0" aria-valuemax="10" aria-valuenow="'+chapterDone+'"><span style="width:'+(chapterDone*10)+'%"></span></div>' +
+          '<div class="mc-case-grid" aria-label="Cases in '+esc(activeChapter.name)+'">' +
+            entries.map(item=>{
+              const isDone=state.completed.has(item.id);
+              const isResume=Boolean(resume&&resume.id===item.id);
+              const isNext=Boolean(!resume&&next&&next.id===item.id);
+              const status=isDone?"Completed":isResume?"Resume this case →":isNext?"Start here →":"Open case →";
+              const cardClass="mc-case-card"+(isDone?" is-complete":"")+(isResume?" is-resume":"")+(isNext?" is-next":"");
+              return '<button type="button" class="'+cardClass+'" data-case-id="'+item.id+'" aria-label="Case '+String(item.id).padStart(3,"0")+': '+esc(item.title)+'. '+status+'" onclick="MathCourt.openCase('+item.id+')">' +
+                '<span class="mc-case-top"><span class="mc-case-number">CASE '+String(item.id).padStart(3,"0")+'</span><span class="mc-case-mark" aria-hidden="true">'+(isDone?"✓":isResume?"↻":isNext?"→":"")+'</span></span>' +
+                '<strong>'+esc(item.title)+'</strong>' +
+                '<small>'+(isDone?"Completed":isResume?"Continue →":isNext?"Start here →":"Open case →")+'</small>' +
+              '</button>';
+            }).join("") +
           '</div>' +
+          '<p class="mc-chapter-detail-foot">'+(chapterDone===10?"Every case in this chapter is complete. Revisit one to explore it again.":chapterDone+" of 10 cases complete. You can open any case in this chapter.")+'</p>' +
         '</div>' +
-        '<div class="mc-docket-progress">' +
-          '<div class="mc-docket-progress-top"><strong>'+completed+'<span> / 100</span></strong><span>CASE PROGRESS</span></div>' +
-          '<div class="mc-progress-track" role="progressbar" aria-label="Cases completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+completed+'"><span style="width:'+completed+'%"></span></div>' +
-          '<div class="mc-progress-caption"><strong>'+progressLabel+'</strong><span>Seven stages per case</span></div>' +
-        '</div>' +
-      '</section>' +
-      '<div class="mc-case-map-heading"><div><h3>Case map</h3><p>Choose a chapter, then pick any case inside it.</p></div><span class="mc-case-map-total">10 chapters · 100 cases</span></div>' +
-      '<div class="mc-chapter-list">'+data().chapters.map(ch=>{
-        const entries=data().cases.filter(item=>item.chapter===ch.id);
-        const done=entries.filter(item=>state.completed.has(item.id)).length;
-        const isCurrent=ch.id===activeChapterId;
-        const chapterStatus=done===entries.length?"Complete":isCurrent?(resume?"In progress":"Up next"):"Explore";
-        return '<details class="mc-chapter '+(isCurrent?"is-current":"")+'" data-chapter-id="'+ch.id+'" '+(isCurrent?"open":"")+'>' +
-          '<summary>' +
-            '<span class="mc-chapter-number">'+String(ch.id).padStart(2,"0")+'</span>' +
-            '<span class="mc-chapter-copy"><strong>'+esc(ch.name)+'</strong><small>'+esc(ch.theme)+'</small></span>' +
-            '<span class="mc-chapter-meta"><strong>'+done+'/10</strong><span class="mc-chapter-mini-track"><i style="width:'+(done*10)+'%"></i></span></span>' +
-            '<span class="mc-chapter-state '+(done===entries.length?"is-complete":isCurrent?"is-current":"")+'">'+chapterStatus+'</span>' +
-          '</summary>' +
-          '<div class="mc-case-grid">'+entries.map(item=>{
-            const isDone=state.completed.has(item.id);
-            const isResume=Boolean(resume&&resume.id===item.id);
-            const isNext=Boolean(!resume&&next&&next.id===item.id);
-            const status=isDone?"Completed ✓":isResume?"Continue case →":isNext?"Start here →":"Choose case →";
-            const cardClass="mc-case-card"+(isDone?" is-complete":"")+(isResume?" is-resume":"")+(isNext?" is-next":"");
-            return '<button type="button" class="'+cardClass+'" data-case-id="'+item.id+'" aria-label="Case '+String(item.id).padStart(3,"0")+': '+esc(item.title)+'. '+status+'" onclick="MathCourt.openCase('+item.id+')">' +
-              '<span class="mc-case-top"><span class="mc-case-number">CASE '+String(item.id).padStart(3,"0")+'</span><span class="mc-case-mark" aria-hidden="true">'+(isDone?"✓":isResume?"↻":isNext?"◆":"·")+'</span></span>' +
-              '<strong>'+esc(item.title)+'</strong>' +
-              '<small>'+(isDone?"Completed":isResume?"Continue case →":isNext?"Start here →":"Choose case →")+'</small>' +
-            '</button>';
-          }).join("")+'</div></details>';
-      }).join("")+'</div>';
+      '</section>';
+  }
+  function chooseChapter(id) {
+    const chapter=data().chapters.find(ch=>ch.id===Number(id));
+    if(!chapter)return;
+    state.docketChapterId=chapter.id;
+    renderDocket();
   }
   function openCase(id) {
     const item=data().getCase(id);
     if(!item)return;
     const saved=state.session&&state.session.caseId===item.id&&!state.completed.has(item.id)?state.session:null;
     state.caseId=item.id;
+    state.docketChapterId=item.chapter;
     state.phase=saved?saved.phase:0;
     state.seenClaim=saved?saved.seenClaim:false;
     state.seenEvidence=saved?saved.seenEvidence:false;
@@ -937,7 +979,7 @@
   function previous() {if(state.phase>0)reviewStage(state.phase-1);}
   function resetProgress() {
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
-    state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
+    state.completed.clear();state.session=null;state.docketChapterId=1;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,chooseChapter,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
 })(window);
