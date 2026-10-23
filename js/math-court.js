@@ -23,7 +23,7 @@
   const state = {
     caseId:1, phase:0, seenClaim:false, seenEvidence:false,
     investigationSolved:false, challengeSolved:false, crossSolved:false, verdictChosen:null,
-    visualMode:"model", visualFocus:0, completed:new Set(), session:null, feedback:"", feedbackKind:""
+    visualMode:"model", visualFocus:0, lab:null, completed:new Set(), session:null, feedback:"", feedbackKind:""
   };
   function normalVerdict(value) { return value === "insufficient" ? "uncertain" : value; }
   function load() {
@@ -48,7 +48,7 @@
       caseId:state.caseId, phase:state.phase, seenClaim:state.seenClaim,
       seenEvidence:state.seenEvidence, investigationSolved:state.investigationSolved,
       challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, verdictChosen:state.verdictChosen,
-      visualMode:state.visualMode, visualFocus:state.visualFocus
+      visualMode:state.visualMode, visualFocus:state.visualFocus, lab:state.lab
     };
     persist();
   }
@@ -125,6 +125,7 @@
     state.visualMode=saved&&["model","compare","trace"].includes(saved.visualMode)?saved.visualMode:"model";
     state.visualFocus=saved&&Number.isInteger(saved.visualFocus)?Math.max(0,Math.min(4,saved.visualFocus)):0;
     state.verdictChosen=saved?saved.verdictChosen:null;
+    state.lab=saved&&saved.lab?normaliseLab(saved.lab,item):freshLab(item);
     state.feedback="";state.feedbackKind="";
     syncSession();
     const docket=$("mc-docket"),play=$("mc-play");
