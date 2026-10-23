@@ -1357,3 +1357,129 @@
   padding: 0;
   background: none;
 }
+
+
+/* Math Court v2: a guided single-flow investigation. One document scroll, one active stage. */
+#screen-math-court {
+  padding: 10px clamp(12px, 2vw, 26px) 24px;
+  scroll-behavior: auto;
+}
+#screen-math-court .mc-shell { width: 100%; max-width: 1180px; margin: 0 auto; }
+#screen-math-court .mc-header { margin-bottom: 12px; }
+#screen-math-court .mc-case-header { gap: 10px; margin-bottom: 8px; }
+#screen-math-court .mc-stage-track { margin: 10px 0 8px; height: 5px; }
+#screen-math-court #mc-stage-name { margin: 6px 0 10px; font-size: .9rem; }
+#screen-math-court #mc-stage-content { min-width: 0; }
+#screen-math-court .mc-stage-nav {
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 7px; margin: 10px 0 14px;
+}
+#screen-math-court .mc-stage-tab {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  min-width: 0; min-height: 44px; padding: 7px 8px;
+  border: 1px solid #ded6e7; border-radius: 13px; background: #fff;
+  color: #53565d; font-size: .88rem; font-weight: 750; cursor: pointer;
+}
+#screen-math-court .mc-stage-tab-number {
+  flex: 0 0 23px; display: grid; place-items: center;
+  width: 23px; height: 23px; border-radius: 50%;
+  background: #f1edf5; color: #655274; font-size: .78rem; font-weight: 900;
+}
+#screen-math-court .mc-stage-tab.is-current {
+  border-color: #694c83; background: #f3eef8; color: #4e3565;
+  box-shadow: inset 0 0 0 1px #694c83;
+}
+#screen-math-court .mc-stage-tab.is-current .mc-stage-tab-number { color: #fff; background: #694c83; }
+#screen-math-court .mc-stage-tab.is-done { border-color: #c7dfcf; background: #f2faf4; color: #285b42; }
+#screen-math-court .mc-stage-tab.is-done .mc-stage-tab-number { background: #dcefe2; color: #285b42; }
+#screen-math-court .mc-stage-tab:disabled { opacity: .52; cursor: not-allowed; }
+#screen-math-court .mc-stage-tab:focus-visible { outline: 3px solid #267b70; outline-offset: 2px; }
+#screen-math-court .mc-active-stage {
+  min-width: 0; padding: clamp(14px, 2vw, 24px);
+  border: 1px solid #ded6e7; border-radius: 22px; background: #fffefa;
+  box-shadow: 0 6px 22px rgba(54, 41, 67, .045);
+}
+#screen-math-court .mc-stage-layout {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start;
+}
+#screen-math-court .mc-stage-layout > .mc-panel { min-width: 0; margin: 0; }
+#screen-math-court .mc-stage-layout--story,
+#screen-math-court .mc-stage-layout--evidence,
+#screen-math-court .mc-stage-layout--question,
+#screen-math-court .mc-stage-layout--verdict,
+#screen-math-court .mc-stage-layout--reflection { max-width: 940px; margin: 0 auto; }
+#screen-math-court .mc-stage-layout--reveal {
+  grid-template-columns: minmax(0, 1.2fr) minmax(240px, .8fr);
+}
+#screen-math-court .mc-stage-layout--investigation {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  grid-template-areas: "work task"; gap: 16px;
+}
+#screen-math-court .mc-investigation-work { grid-area: work; min-width: 0; }
+#screen-math-court .mc-investigation-task { grid-area: task; min-width: 0; }
+#screen-math-court .mc-investigation-task .mc-panel { margin: 0; }
+#screen-math-court .mc-stage-nudge {
+  margin: 12px 0 0; padding: 10px 12px;
+  border-left: 4px solid #90bfa0; border-radius: 0 11px 11px 0;
+  background: #f1f8f2; color: #42594b; font-size: .98rem; line-height: 1.5;
+}
+#screen-math-court .mc-active-stage .mc-story-text { font-size: 1.1rem !important; line-height: 1.62 !important; }
+#screen-math-court .mc-active-stage .mc-panel p { margin: 9px 0; }
+#screen-math-court .mc-active-stage .mc-claim { margin-top: 14px; }
+#screen-math-court .mc-active-stage .mc-evidence-pair { margin-top: 12px; }
+#screen-math-court .mc-evidence-pair-compact { margin-top: 12px; }
+#screen-math-court .mc-stage-actions {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 9px;
+  margin-top: 18px; padding-top: 14px; border-top: 1px solid #eee8f0;
+}
+#screen-math-court .mc-stage-actions .mc-button { min-height: 46px; }
+#screen-math-court #mc-feedback { margin: 14px 0 0; padding: 0; }
+#screen-math-court #mc-feedback.is-visible { padding: 11px 13px; border-radius: 13px; }
+#screen-math-court .mc-investigation-work .mc-math-play { margin: 0; padding: 13px; }
+#screen-math-court .mc-investigation-work .mc-play-heading p { font-size: .96rem; line-height: 1.43; }
+#screen-math-court .mc-investigation-work .mc-workshop-check {
+  display: grid; grid-template-columns: 30px minmax(0, 1fr);
+  gap: 8px 10px; padding: 12px;
+}
+#screen-math-court .mc-investigation-work .mc-workshop-check-icon { grid-row: span 2; }
+#screen-math-court .mc-investigation-work .mc-workshop-check button { grid-column: 2; justify-self: start; }
+#screen-math-court .mc-investigation-task .mc-answer-tiles { grid-template-columns: 1fr; }
+#screen-math-court .mc-investigation-task .mc-answer-tile { min-height: 70px; }
+#screen-math-court .mc-investigation-task .mc-panel h3 { margin-bottom: 8px; }
+#screen-math-court .mc-result-card .mc-solution { margin: 12px 0; }
+#screen-math-court .mc-active-stage .mc-option { min-height: 50px; }
+#screen-math-court .mc-active-stage .mc-verdict-button { min-height: 78px; }
+#screen-math-court .mc-case-header,
+#screen-math-court .mc-stage-nav,
+#screen-math-court .mc-active-stage,
+#screen-math-court .mc-stage-layout,
+#screen-math-court .mc-stage-actions { overflow: visible; }
+#screen-math-court .mc-story-pane,
+#screen-math-court .mc-game-pane,
+#screen-math-court .mc-case-split,
+#screen-math-court .mc-play-actions {
+  height: auto; min-height: 0; max-height: none; overflow: visible; position: static;
+}
+@media (max-width: 900px) {
+  #screen-math-court .mc-stage-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #screen-math-court .mc-stage-layout--reveal { grid-template-columns: minmax(0, 1fr); }
+  #screen-math-court .mc-stage-layout--investigation {
+    grid-template-columns: minmax(0, 1fr); grid-template-areas: "work" "task";
+  }
+}
+@media (max-width: 520px) {
+  #screen-math-court { padding: 8px 10px 20px; }
+  #screen-math-court .mc-header { align-items: flex-start; }
+  #screen-math-court .mc-header-title { min-width: 0; }
+  #screen-math-court .mc-stage-tab {
+    flex-direction: column; gap: 3px; padding: 5px 2px;
+    min-height: 54px; font-size: .76rem;
+  }
+  #screen-math-court .mc-stage-tab-number { width: 22px; height: 22px; }
+  #screen-math-court .mc-active-stage { padding: 12px; border-radius: 17px; }
+  #screen-math-court .mc-stage-actions { align-items: stretch; }
+  #screen-math-court .mc-stage-actions .mc-button { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #screen-math-court .mc-progress-track span { transition: none; }
+}

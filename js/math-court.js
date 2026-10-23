@@ -175,6 +175,15 @@
     if(state.lab.dataSelection===index)return;
     state.lab.dataSelection=index;markLabPlay();refreshCaseKeepingScroll();
   }
+  function updateWorkshopCheckAfterPlay() {
+    const check=document.querySelector(".mc-workshop-check");if(!check)return;
+    check.classList.remove("is-solved");
+    const icon=check.querySelector(".mc-workshop-check-icon");if(icon)icon.textContent="✦";
+    const button=check.querySelector("button");if(button)button.textContent="Check my model";
+    check.querySelector(".mc-workshop-complete")?.remove();
+    state.lab.goalSolved=false;state.feedback="";state.feedbackKind="";
+    const feedback=$("mc-feedback");if(feedback){feedback.textContent="";feedback.className="mc-feedback";}
+  }
   function checkPlayGoal() {
     const item=data().getCase(state.caseId),task=state.investigationSolved?2:1;
     if(!state.lab)return;
@@ -558,10 +567,21 @@
     if(state.lab){state.lab.playCount=Math.max(0,Number(state.lab.playCount)||0)+1;state.lab.goalSolved=false;}
   }
   function refreshCaseKeepingScroll() {
+    const active=document.activeElement;
+    const canRestore=active&&active!==document.body&&active.closest&&active.closest("#mc-stage-content");
+    const snapshot=canRestore?{tag:active.tagName.toLowerCase(),id:active.id||"",className:typeof active.className==="string"?active.className:"",dataset:{...active.dataset},label:active.getAttribute("aria-label")||"",text:(active.innerText||active.textContent||"").trim(),top:active.getBoundingClientRect().top}:null;
     const pageY=window.scrollY;
-    syncSession();
-    renderCase();
-    window.scrollTo({top:pageY,behavior:"auto"});
+    syncSession();renderCase();window.scrollTo({top:pageY,behavior:"auto"});
+    if(snapshot){
+      let target=snapshot.id?document.getElementById(snapshot.id):null;
+      if(!target)target=Array.from(document.querySelectorAll("#mc-stage-content "+snapshot.tag)).find(node=>{
+        if(snapshot.className&&node.className!==snapshot.className)return false;
+        if(snapshot.label&&node.getAttribute("aria-label")!==snapshot.label)return false;
+        if((node.innerText||node.textContent||"").trim()!==snapshot.text)return false;
+        return Object.entries(snapshot.dataset).every(([key,value])=>node.dataset[key]===value);
+      })||null;
+      if(target){target.focus({preventScroll:true});const delta=target.getBoundingClientRect().top-snapshot.top;if(Math.abs(delta)>1)window.scrollBy({top:delta,behavior:"auto"});}
+    }
   }
   function scrollCaseIntoView() {
     const target=$("mc-case-header");
@@ -652,7 +672,15 @@
   function setLabTimeline(value) {
     const next=Math.max(0,Math.min(180,Number(value)||0));
     if(next===state.lab.timelineMinutes)return;
-    state.lab.timelineMinutes=next;markLabPlay();refreshCaseKeepingScroll();
+    state.lab.timelineMinutes=next;markLabPlay();
+    const end=14*60+35+next,rail=document.querySelector(".mc-time-rail");
+    const fill=rail&&rail.querySelector("span"),marker=rail&&rail.querySelector("i");
+    if(fill)fill.style.width=Math.min(100,next/180*100)+"%";
+    if(marker)marker.style.left=Math.min(100,next/180*100)+"%";
+    const endNode=document.querySelector(".mc-time-end");if(endNode)endNode.textContent=formatClock(end);
+    const result=document.querySelector(".mc-time-result");
+    if(result){const strong=result.querySelector("strong"),small=result.querySelector("span");if(strong)strong.textContent=next+" minutes";if(small)small.textContent=Math.floor(next/60)+" hour"+(Math.floor(next/60)===1?"":"s")+" and "+(next%60)+" minutes";}
+    updateWorkshopCheckAfterPlay();syncSession();
   }
   function toggleDataZoom() {
     state.lab.dataZoom=!state.lab.dataZoom;markLabPlay();refreshCaseKeepingScroll();
@@ -660,7 +688,12 @@
   function setRuleInput(value) {
     const next=Math.max(1,Math.min(12,Number(value)||1));
     if(next===state.lab.ruleInput)return;
-    state.lab.ruleInput=next;markLabPlay();refreshCaseKeepingScroll();
+    state.lab.ruleInput=next;markLabPlay();
+    const lab=state.lab,output=lab.ruleType==="doublePlusOne"?2*next+1:lab.ruleType==="add3"?next+3:lab.ruleType==="triple"?3*next:next*next;
+    const boxes=document.querySelectorAll(".mc-machine-box strong");if(boxes[0])boxes[0].textContent=String(next);if(boxes[2])boxes[2].textContent=String(output);
+    const feedback=document.querySelector(".mc-math-play .mc-play-feedback");
+    if(feedback)feedback.textContent=output+" comes from applying "+(lab.ruleType==="doublePlusOne"?"2 × "+next+" + 1":lab.ruleType==="add3"?next+" + 3":lab.ruleType==="triple"?"3 × "+next:next+" × "+next)+".";
+    updateWorkshopCheckAfterPlay();syncSession();
   }
   function setRuleType(rule) {
     if(!["doublePlusOne","add3","triple","square"].includes(rule))return;
@@ -810,82 +843,81 @@
   function renderCase() {
     const item=data().getCase(state.caseId),host=$("mc-stage-content");
     if(!item||!host)return;
+    const feedbackNode=$("mc-feedback");
     $("mc-docket").hidden=true;$("mc-play").hidden=false;
     $("mc-case-title").textContent="Case "+String(item.id).padStart(3,"0")+" · "+item.title;
     $("mc-case-chapter").textContent=data().chapters.find(ch=>ch.id===item.chapter).name;
     $("mc-stage-name").textContent=PHASE_LABELS[state.phase];
-    $("mc-stage-count").textContent="Stage "+(state.phase+1)+" of 7";
+    $("mc-stage-count").textContent=(state.phase+1)+" / 7";
     $("mc-stage-fill").style.width=((state.phase+1)/7*100)+"%";
     $("mc-stage-fill").parentElement.setAttribute("aria-valuenow",String(state.phase+1));
-    $("mc-feedback").textContent=state.feedback;
-    $("mc-feedback").className="mc-feedback"+(state.feedback?" is-visible mc-feedback-"+state.feedbackKind:"");
-    const panel=(label,title,body)=>'<section class="mc-panel"><span class="mc-kicker">'+label+'</span><h3>'+esc(title)+'</h3>'+body+'</section>';
-    const board=renderVisualBoard(item);
-    const playground=renderPlayActivity(item);
-    let left="",right="",action="";
+    const panel=(label,title,body,extraClass="")=>'<section class="mc-panel '+extraClass+'"><span class="mc-kicker">'+esc(label)+'</span><h3>'+esc(title)+'</h3>'+body+'</section>';
+    const shortLabels=["Story","Evidence","Maths","New clue","Question","Verdict","Reflection"];
+    const tabs='<nav class="mc-stage-nav" aria-label="Case stage navigation">'+PHASE_LABELS.map((label,i)=>
+      '<button type="button" class="mc-stage-tab '+(i===state.phase?'is-current':i<state.phase?'is-done':'is-upcoming')+'" data-phase="'+i+'" aria-label="Stage '+(i+1)+': '+esc(label)+'" '+(i===state.phase?'aria-current="step"':'')+' '+(i>state.phase?'disabled':'')+' onclick="MathCourt.reviewStage('+i+')"><span class="mc-stage-tab-number">'+(i<state.phase?'✓':i+1)+'</span><span>'+shortLabels[i]+'</span></button>'
+    ).join("")+'</nav>';
+    const claim='<div class="mc-claim"><span>CLAIM TO TEST</span><strong>'+esc(item.claim)+'</strong></div>';
+    const evidencePair='<div class="mc-evidence-pair"><article class="mc-evidence-card mc-evidence-claim"><span>CLAIM</span><strong>'+esc(item.claim)+'</strong></article><article class="mc-evidence-card mc-evidence-record"><span>RECORD</span><strong>'+esc(item.evidence)+'</strong></article></div>';
+    let content="",action="";
     if(state.phase===0) {
-      left+=panel("CASE STORY",item.title,renderStoryNarrative(item)+'<div class="mc-claim"><span>CLAIM</span><strong>'+esc(item.claim)+'</strong></div>');
-      right+=playground;
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Let’s investigate together →</button>';
+      content='<div class="mc-stage-layout mc-stage-layout--story">'+panel("CASE STORY",item.title,renderStoryNarrative(item)+claim,"mc-stage-story-card")+'<p class="mc-stage-nudge">Start with the story. Then compare its claim with the record.</p></div>';
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Compare the evidence →</button>';
     } else if(state.phase===1) {
-      left+=panel("EVIDENCE","Claim and record",'<div class="mc-evidence-pair"><article class="mc-evidence-card mc-evidence-claim"><span>CLAIM</span><strong>'+esc(item.claim)+'</strong></article><article class="mc-evidence-card mc-evidence-record"><span>RECORD</span><strong>'+esc(item.evidence)+'</strong></article></div>');
-      right+=playground;
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Build the maths model →</button>';
+      content='<div class="mc-stage-layout mc-stage-layout--evidence">'+panel("TWO THINGS TO COMPARE","What does the record actually show?",evidencePair+'<p class="mc-stage-nudge">Keep the claim and the record separate. The numbers will help you decide whether they agree.</p>')+'</div>';
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Open the maths workshop →</button>';
     } else if(state.phase===2) {
-      left+=panel("INVESTIGATION","Solve the question",'<p class="mc-task-prompt">'+esc(item.prompt)+'</p>');
-      right+=playground;
+      let taskPanel="";
       if(!state.investigationSolved) {
-        right+=panel("TASK 1 OF 2","Choose the result",renderAnswerTiles(item.options,"investigation"));
+        taskPanel=panel("TASK 1 OF 2","Find the first result",'<p class="mc-task-prompt">'+esc(item.prompt)+'</p>'+renderAnswerTiles(item.options,"investigation"),"mc-investigation-task-card");
       } else if(!state.challengeSolved) {
-        right+=panel("TASK 2 OF 2","Try a second question",'<div class="mc-solution"><strong>First finding</strong><p>'+esc(item.explanation)+'</p></div><p class="mc-task-prompt">'+esc(item.challenge.prompt)+'</p>'+renderAnswerTiles(item.challenge.options,"challenge"));
+        taskPanel=panel("TASK 2 OF 2","Use the new clue",'<div class="mc-solution"><strong>First finding</strong><p>'+esc(item.explanation)+'</p></div><p class="mc-task-prompt">'+esc(item.challenge.prompt)+'</p>'+renderAnswerTiles(item.challenge.options,"challenge"),"mc-investigation-task-card");
       } else {
-        right+=panel("INVESTIGATION COMPLETE","Both results",'<div class="mc-solution"><strong>Finding A</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>Finding B</strong><p>'+esc(item.challenge.explanation)+'</p></div>');
+        taskPanel=panel("BOTH FINDINGS VERIFIED","You have your evidence",'<div class="mc-solution"><strong>Finding A</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>Finding B</strong><p>'+esc(item.challenge.explanation)+'</p></div><p class="mc-stage-nudge">Bring both findings into the next stage.</p>',"mc-investigation-task-card");
       }
-      action='<button class="mc-button mc-button-primary" '+(state.investigationSolved&&state.challengeSolved?'':'disabled')+' onclick="MathCourt.advance()">Bring your findings to the court →</button><button class="mc-button mc-button-quiet" onclick="MathCourt.showHint()">Show me a helpful hint</button>';
+      content='<div class="mc-stage-layout mc-stage-layout--investigation"><div class="mc-investigation-work">'+renderPlayActivity(item)+'</div><div class="mc-investigation-task">'+taskPanel+'</div></div>';
+      action='<button class="mc-button mc-button-primary" '+(state.investigationSolved&&state.challengeSolved?'':'disabled')+' onclick="MathCourt.advance()">Bring both findings to court →</button><button class="mc-button mc-button-quiet" onclick="MathCourt.showHint()">Give me a hint</button>';
     } else if(state.phase===3) {
-      left+=panel("NEW EVIDENCE","What changed?",'<p class="mc-story-text">'+esc(item.twist)+'</p>');
-      right+=playground;
-      right+=panel("CHECK THE MODEL","Does the claim still fit?",'<p>'+esc(item.explanation)+'</p>');
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Ask a thoughtful question →</button>';
+      content='<div class="mc-stage-layout mc-stage-layout--reveal">'+
+        panel("NEW EVIDENCE","A detail has changed",'<p class="mc-story-text">'+esc(item.twist)+'</p><div class="mc-evidence-pair mc-evidence-pair-compact"><article class="mc-evidence-card"><span>ORIGINAL CLAIM</span><strong>'+esc(item.claim)+'</strong></article><article class="mc-evidence-card mc-evidence-record"><span>RECORD</span><strong>'+esc(item.evidence)+'</strong></article></div>')+
+        panel("CHECK YOUR REASONING","Does the new detail matter?",'<p class="mc-stage-nudge">Use the two verified results and this new clue. It is thoughtful to revise an idea when better evidence arrives.</p>')+'</div>';
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Ask a careful question →</button>';
     } else if(state.phase===4) {
       const check=data().checks[item.check],rotated=rotatedChoices(check.choices,check.correct,item.id);
-      left+=panel("QUESTION","Think critically",'<p>Choose the question that best tests the claim.</p>');
-      right+=playground;
-      right+=panel("ASK THE COURT","Choose a question",'<p class="mc-task-prompt">'+esc(check.prompt)+'</p><div class="mc-answer-options">'+rotated.choices.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerCross('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div>');
-      action='<button class="mc-button mc-button-primary" '+(state.crossSolved?'':'disabled')+' onclick="MathCourt.advance()">Prepare the final explanation →</button>';
+      content='<div class="mc-stage-layout mc-stage-layout--question">'+panel("CURIOSITY ROUND","Which question helps most?",'<p class="mc-task-prompt">'+esc(check.prompt)+'</p><div class="mc-answer-options">'+rotated.choices.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerCross('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-stage-nudge">Choose a question that checks an assumption or clarifies the record respectfully.</p>')+'</div>';
+      action='<button class="mc-button mc-button-primary" '+(state.crossSolved?'':'disabled')+' onclick="MathCourt.advance()">Prepare the verdict →</button>';
     } else if(state.phase===5) {
       const verdicts=[
         {id:"supported",label:"Supported",note:"The evidence supports the claim."},
-        {id:"disproved",label:"Not supported",note:"The evidence contradicts the claim."},
-        {id:"partly",label:"Partly supported",note:"Some parts need revision."},
-        {id:"uncertain",label:"Not enough evidence",note:"More evidence is needed."}
+        {id:"disproved",label:"Not supported",note:"The evidence does not fit the claim."},
+        {id:"partly",label:"Partly supported",note:"Some parts fit, some need revision."},
+        {id:"uncertain",label:"Need more evidence",note:"The record does not settle it yet."}
       ];
-      left+=panel("VERDICT","What does the evidence show?",'<div class="mc-claim"><span>CLAIM</span><strong>'+esc(item.claim)+'</strong></div>');
-      right+=playground;
-      right+=panel("DELIVER A THOUGHTFUL VERDICT","Which conclusion fits the evidence?",'<div class="mc-verdict-options">'+verdicts.map(v=>'<button class="mc-verdict-button '+(state.verdictChosen===v.id?"is-selected":"")+'" data-verdict="'+v.id+'" onclick="MathCourt.selectVerdict(this.dataset.verdict)"><strong>'+v.label+'</strong><small>'+v.note+'</small></button>').join("")+'</div>');
-      action='<button class="mc-button mc-button-primary" '+(state.verdictChosen&&normalVerdict(state.verdictChosen)===normalVerdict(item.verdict)?'':'disabled')+' onclick="MathCourt.advance()">Hear the court’s reflection →</button>';
+      content='<div class="mc-stage-layout mc-stage-layout--verdict">'+panel("YOUR CONCLUSION","Which verdict fits the evidence?",claim+'<div class="mc-verdict-options">'+verdicts.map(v=>'<button class="mc-verdict-button '+(state.verdictChosen===v.id?'is-selected':'')+'" data-verdict="'+v.id+'" aria-pressed="'+(state.verdictChosen===v.id)+'" onclick="MathCourt.selectVerdict(this.dataset.verdict)"><strong>'+v.label+'</strong><small>'+v.note+'</small></button>').join("")+'</div>')+'</div>';
+      action='<button class="mc-button mc-button-primary" '+(state.verdictChosen&&normalVerdict(state.verdictChosen)===normalVerdict(item.verdict)?'':'disabled')+' onclick="MathCourt.advance()">Hear the reflection →</button>';
     } else {
       const verdictLabels={supported:"The evidence fits",disproved:"Let’s revise the idea",partly:"Some parts fit",uncertain:"Let’s gather one more clue"};
       const v=normalVerdict(item.verdict);
-      left+=panel("CASE COMPLETE","What we learned",'<p class="mc-story-text">'+esc(item.moral||item.twist)+'</p>');
-      right+=playground;
-      right+=panel("MATHS RESULT",verdictLabels[v]||"Final result",'<div class="mc-solution"><strong>'+esc(item.claim)+'</strong><p>'+esc(item.explanation)+'</p></div>');
+      content='<div class="mc-stage-layout mc-stage-layout--reflection">'+panel("MATHS RESULT",verdictLabels[v]||"Final result",'<div class="mc-solution"><strong>'+esc(item.claim)+'</strong><p>'+esc(item.explanation)+'</p></div><p class="mc-story-text">'+esc(item.moral||item.twist)+'</p>','mc-result-card')+'</div>';
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Open Case '+(item.id+1)+' →':'Celebrate the 100-case journey 🎉')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to the case map</button>';
     }
-    const paneActions='<div class="mc-play-actions">'+action+'<button class="mc-button mc-button-quiet" onclick="MathCourt.back()">← Case map</button>'+(state.phase>0?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">Review previous stage</button>':'')+'</div>';
-    host.innerHTML='<div class="mc-case-split"><section class="mc-story-pane" aria-label="Story and community case">'+left+'</section><section class="mc-game-pane" aria-label="Interactive mathematics playground"><div class="mc-game-pane-heading"><span>🎨 THE MATHS PLAYGROUND</span><strong>'+String(item.chapter).padStart(2,"0")+' / 10</strong></div>'+right+paneActions+'</section></div>';
-    if(state.feedback){$("mc-feedback").textContent=state.feedback;$("mc-feedback").className="mc-feedback is-visible mc-feedback-"+state.feedbackKind;}
+    host.innerHTML=tabs+'<section class="mc-active-stage mc-stage-phase-'+state.phase+'">'+content+'<div class="mc-stage-actions">'+action+(state.phase>0&&state.phase<6?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">← Review previous stage</button>':'')+'</div></section>';
+    const actions=host.querySelector(".mc-stage-actions");
+    if(feedbackNode&&actions)actions.parentNode.insertBefore(feedbackNode,actions);
+    const feedback=$("mc-feedback");
+    if(feedback){feedback.textContent=state.feedback;feedback.className="mc-feedback"+(state.feedback?" is-visible mc-feedback-"+state.feedbackKind:"");}
   }
   function showHint() {
     const item=data().getCase(state.caseId);
     setFeedback(hintFor(item),"hint");
   }
-  function previous() {
-    if(state.phase>0){state.phase--;state.feedback="";state.feedbackKind="";syncSession();renderCase();scrollCaseIntoView();}
+  function reviewStage(index) {
+    if(!Number.isInteger(index)||index<0||index>state.phase||index>=PHASE_LABELS.length||index===state.phase)return;
+    state.phase=index;state.feedback="";state.feedbackKind="";syncSession();renderCase();scrollCaseIntoView();
   }
+  function previous() {if(state.phase>0)reviewStage(state.phase-1);}
   function resetProgress() {
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
 })(window);
