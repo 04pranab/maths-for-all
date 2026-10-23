@@ -3,7 +3,7 @@
 #screen-menu { font-size: calc(19px * var(--font-scale)); padding: clamp(12px, 2vw, 26px); }
 .home-two-panel {
   display: grid;
-  grid-template-columns: minmax(300px, 0.75fr) minmax(0, 1.25fr);
+  grid-template-columns: minmax(300px, 0.65fr) minmax(0, 1.35fr);
   align-items: start;
   gap: clamp(18px, 2.2vw, 32px);
   max-width: 1560px;
