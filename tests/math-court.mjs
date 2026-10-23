@@ -9,14 +9,18 @@ assert.deepEqual(data.chapters.map(ch => ch.id), [1,2,3,4,5,6,7,8,9,10]);
 assert.ok(data.chapters.every(ch => ch.to - ch.from + 1 === 10), "Each chapter must contain ten case numbers.");
 assert.equal(new Set(data.cases.map(c => c.id)).size, 100, "Case IDs must be unique.");
 assert.equal(new Set(data.cases.map(c => c.title.toLowerCase())).size, 100, "Case titles must be unique.");
+assert.equal(new Set(data.cases.map(c => c.opening)).size, 100, "Every docket needs a distinct story opening.");
+assert.equal(new Set(data.cases.map(c => c.voice)).size, 100, "Every docket needs a distinct character voice.");
 assert.equal(data.phases.length, 7, "Cases must use the seven-stage court procedure.");
 assert.deepEqual(data.phases, [
   "The case is called", "Witness examination", "Build the evidence",
   "New evidence", "Cross-examination", "Verdict", "The court's reflection"
 ]);
-const unhelpfulLanguage = /\b(thief|thieves|stolen|steal|stealing|theft|robbery|robbed|murder|criminal|crime|liar|cheat|fraud|punish|guilty|blame|accuse|accused|accusation|dishonest|lie|lied|lies|wrongdoer|villain)\b/i;
+const unhelpfulLanguage = /\b(thief|thieves|stolen|steal|stealing|theft|robbery|robber|robbed|murder|criminal|crime|liar|cheat|fraud|punish|guilty|blame|accuse|accused|accusation|dishonest|lie|lied|lies|wrongdoer|villain|suspect|suspicious)\b/i;
+const discouragingLanguage = /\b(wrong|error|mistake|failure|fault|missing)\b/i;
 for (const item of data.cases) {
   assert.ok(item.story.length >= 30, "Case " + item.id + " needs a real story.");
+  assert.ok(item.opening && item.opening.length >= 50, "Case " + item.id + " needs its own scene-setting story opening.");
   assert.ok(item.claim.length >= 8, "Case " + item.id + " needs a claim to test.");
   assert.ok(item.prompt.endsWith("?"), "Case " + item.id + " needs a clear question.");
   assert.ok(item.options.every(option => typeof option === "string" && option.length > 0), "Case " + item.id + " has an empty answer option.");
@@ -28,7 +32,9 @@ for (const item of data.cases) {
   assert.ok(item.twist.length >= 20, "Case " + item.id + " needs a case development.");
   assert.ok(item.moral.length >= 15, "Case " + item.id + " needs a reflection/value.");
   assert.ok(item.virtue && item.virtue.length >= 3, "Case " + item.id + " needs a named virtue.");
-  const storyBundle = [item.title,item.story,item.narrative,item.claim,item.prompt,item.twist,item.moral,item.evidence,item.explanation,item.challenge.prompt,item.challenge.explanation].join(" ");
+  assert.ok(item.speaker && item.voice && item.voice.length >= 30, "Case " + item.id + " needs a character voice with warmth and purpose.");
+  assert.ok(!discouragingLanguage.test([item.title,item.opening,item.story,item.narrative,item.claim,item.prompt,item.twist,item.moral,item.evidence,item.explanation,item.challenge.prompt,item.challenge.explanation,item.voice,item.options.join(" "),item.challenge.options.join(" ")].join(" ")), "Case " + item.id + " contains discouraging wording where a constructive description is possible.");
+  const storyBundle = [item.title,item.opening,item.story,item.narrative,item.claim,item.prompt,item.twist,item.moral,item.evidence,item.explanation,item.challenge.prompt,item.challenge.explanation,item.voice,item.options.join(" "),item.challenge.options.join(" ")].join(" ");
   assert.ok(!unhelpfulLanguage.test(storyBundle), "Case " + item.id + " contains discouraged criminal/blaming language.");
   assert.ok(data.checks[item.check], "Case " + item.id + " references an unknown cross-examination skill.");
   assert.ok(["supported","disproved","partly","uncertain","insufficient"].includes(item.verdict), "Case " + item.id + " has an unsupported verdict.");

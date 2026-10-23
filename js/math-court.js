@@ -140,16 +140,13 @@
   function back() { goDocket(); }
   function advance() {
     const item=data().getCase(state.caseId);
-    if(state.phase===1&&!(state.seenClaim&&state.seenEvidence)){
-      setFeedback("Examine both the claim and the source exhibit before proceeding.","hint");return;
-    }
     if(state.phase===2&&!(state.investigationSolved&&state.challengeSolved)){setFeedback("Solve both linked mathematical tasks before admitting the exhibits. You can retry without losing progress.","hint");return;}
     if(state.phase===4&&!state.crossSolved){setFeedback("Choose the strongest line of cross-examination first.","hint");return;}
     if(state.phase===5&&!state.verdictChosen){setFeedback("Select a verdict and support it with what you have learned.","hint");return;}
     if(state.phase===5&&normalVerdict(state.verdictChosen)!==normalVerdict(item.verdict)){
       setFeedback("Reconsider the claim and the exhibits. You may revise your verdict.","hint");return;
     }
-    if(state.phase<6){state.phase++;state.feedback="";state.feedbackKind="";syncSession();renderCase();window.scrollTo(0,0);return;}
+    if(state.phase<6){state.phase++;if(state.phase===1){state.seenClaim=true;state.seenEvidence=true;}state.feedback="";state.feedbackKind="";syncSession();renderCase();window.scrollTo(0,0);return;}
     if(!state.completed.has(item.id))state.completed.add(item.id);
     state.session=null;persist();
     if(item.id<100){openCase(item.id+1);}else{goDocket();}
@@ -164,36 +161,66 @@
     const sorted=choices.slice(shift).concat(choices.slice(0,shift));
     return {choices:sorted,correct:(correct-shift+choices.length)%choices.length};
   }
+  function expectedNumericChoice(choice) {
+    const text=String(choice==null?"":choice).replace(/,/g,"").trim();
+    if(/[=+×÷*\/]/.test(text)||/\d\s*(?:to|through|[-–—])\s*\d/i.test(text)||/\b(?:between|range|not enough|unknown|cannot be determined)\b/i.test(text))return null;
+    const numbers=[...text.matchAll(/-?\d+(?:\.\d+)?/g)];
+    return numbers.length===1?Number(numbers[0][0]):null;
+  }
   function answerInvestigation(index) {
     const item=data().getCase(state.caseId);
+    const expected=expectedNumericChoice(item.options[item.answer]);
+    if(item.chapter===1&&expected!==null&&(state.lab.calculationResult===null||Math.abs(state.lab.calculationResult-expected)>0.0001)){
+      setFeedback("Before placing your result, build a calculation in the Number Forge that reaches the case answer. Choose the number tiles, set the operation and make the result appear.","hint");
+      return;
+    }
+    if(!state.lab||state.lab.playCount===0){
+      setFeedback("Give the "+(item.chapter===1?"Number Forge":"maths playground")+" a try first. Change a number, shape, fraction, rule, route or share and watch what happens.","hint");
+      return;
+    }
     if(index===item.answer){
-      state.investigationSolved=true;setFeedback("Exhibit verified. "+item.explanation,"success");
+      state.investigationSolved=true;
+      state.lab.challengeBaseline=state.lab.playCount;
+      setFeedback("✨ Aha! Exhibit verified. "+item.explanation,"success");
     }else{
-      setFeedback("That does not fit all the evidence yet. "+hintFor(item),"hint");
+      setFeedback("Good experimenting. Try another arrangement on the play table and compare it with the story. "+hintFor(item),"hint");
     }
     syncSession();renderCase();
   }
   function answerChallenge(index) {
     const item=data().getCase(state.caseId),challenge=item.challenge;
-    if(index===challenge.answer){state.challengeSolved=true;setFeedback("Second exhibit verified. "+challenge.explanation,"success");}
-    else{setFeedback("That result does not fit the second exhibit yet. Recheck the quantities and try again.","hint");}
+    if(!state.lab||state.lab.playCount<=state.lab.challengeBaseline){
+      setFeedback("Now make one more move in the maths playground. Try a new value, rule, shape, share or route, then use what you discovered in this second puzzle.","hint");
+      return;
+    }
+    const expected=expectedNumericChoice(challenge.options[challenge.answer]);
+    if(item.chapter===1&&expected!==null&&(state.lab.calculationResult===null||Math.abs(state.lab.calculationResult-expected)>0.0001)){
+      setFeedback("Build a fresh calculation for this second clue. Change the number tiles or operation so your result matches the new question.","hint");
+      return;
+    }
+    if(index===challenge.answer){
+      state.challengeSolved=true;
+      setFeedback("✨ Second exhibit verified. "+challenge.explanation,"success");
+    }else{
+      setFeedback("You are exploring possibilities. Recheck the quantities and test another choice.","hint");
+    }
     syncSession();renderCase();
   }
   function answerCross(index) {
     const item=data().getCase(state.caseId),check=data().checks[item.check];
     const rotated=rotatedChoices(check.choices,check.correct,item.id);
-    if(index===rotated.correct){state.crossSolved=true;setFeedback("Excellent question. You tested the reasoning with curiosity and respect.","success");}
-    else{setFeedback("That approach leaves an important gap. Look for a check that tests the claim, not the person.","hint");}
+    if(index===rotated.correct){state.crossSolved=true;setFeedback("✨ Excellent question. You used curiosity and respect to help everyone learn.","success");}
+    else{setFeedback("Try a question that reveals a detail, tests an assumption or compares the evidence.","hint");}
     syncSession();renderCase();
   }
   function selectVerdict(id) {
     const item=data().getCase(state.caseId);
     if(normalVerdict(id)===normalVerdict(item.verdict)){
       state.verdictChosen=id;
-      setFeedback("The verdict matches the case record. Read the ruling and the limits of what the evidence proves.","success");
+      setFeedback("🌟 A thoughtful conclusion. You matched the idea to the evidence.","success");
     }else{
       state.verdictChosen=null;
-      setFeedback("The claim, calculation and new evidence do not line up with that verdict yet. Reconsider before deciding.","hint");
+      setFeedback("Let’s compare the idea with both exhibits and choose the conclusion that best matches what we learned.","hint");
     }
     syncSession();renderCase();
   }
@@ -349,17 +376,22 @@
   function freshLab(item) {
     const nums=visualNumbers(item);
     return {
-      slot:"a",a:nums[0]===undefined?3:nums[0],b:nums[1]===undefined?2:nums[1],op:"-",
+      slot:"a",a:null,b:null,c:null,op:"+",op2:"+",useThird:false,
       calculationResult:null,patternRule:"add3",fractionNumerator:3,fractionDenominator:8,
       cells:[0,1,2,8,9,10],timelineMinutes:30,dataZoom:false,ruleInput:4,ruleType:"doublePlusOne",
-      shares:[3,2,4],route:[0],allocations:[3,3,2],note:""
+      shares:[3,2,4],route:[0],allocations:[3,3,2],playCount:0,challengeBaseline:0,note:""
     };
   }
   function normaliseLab(saved,item) {
     const base=freshLab(item);
     const lab={...base,...saved};
-    lab.slot=lab.slot==="b"?"b":"a";
+    lab.slot=["a","b","c"].includes(lab.slot)?lab.slot:"a";
     lab.op=["+","-","×","÷"].includes(lab.op)?lab.op:"-";
+    lab.op2=["+","-","×","÷"].includes(lab.op2)?lab.op2:"+";
+    lab.useThird=Boolean(lab.useThird);
+    if(!Number.isInteger(saved.playCount)){lab.a=null;lab.b=null;lab.c=null;lab.op="+";lab.useThird=false;lab.calculationResult=null;}
+    lab.playCount=Math.max(0,Math.floor(Number(lab.playCount)||0));
+    lab.challengeBaseline=Math.max(0,Math.floor(Number(lab.challengeBaseline)||0));
     lab.patternRule=["add1","add2","add3","double"].includes(lab.patternRule)?lab.patternRule:"add3";
     lab.fractionDenominator=[2,3,4,6,8,10,12].includes(lab.fractionDenominator)?lab.fractionDenominator:8;
     lab.fractionNumerator=Math.max(0,Math.min(lab.fractionDenominator,Number(lab.fractionNumerator)||0));
@@ -374,6 +406,9 @@
     lab.allocations=Array.isArray(lab.allocations)?[0,1,2].map(i=>Math.max(0,Math.min(12,Number(lab.allocations[i])||0))):base.allocations;
     return lab;
   }
+  function markLabPlay() {
+    if(state.lab)state.lab.playCount=Math.max(0,Number(state.lab.playCount)||0)+1;
+  }
   function refreshCaseKeepingScroll() {
     const host=$("mc-stage-content");
     const left=host&&host.querySelector(".mc-story-pane");
@@ -387,34 +422,55 @@
     if(newRight)newRight.scrollTop=rightTop;
   }
   function chooseLabSlot(slot) {
-    if(!["a","b"].includes(slot))return;
+    if(!["a","b","c"].includes(slot))return;
     state.lab.slot=slot;refreshCaseKeepingScroll();
   }
   function chooseLabNumber(index) {
     const item=data().getCase(state.caseId),nums=visualNumbers(item);
     if(!Number.isInteger(index)||index<0||index>=nums.length)return;
+    if(state.lab[state.lab.slot]===nums[index]){state.lab.note="Choose a different number tile to change this slot.";refreshCaseKeepingScroll();return;}
     state.lab[state.lab.slot]=nums[index];
+    markLabPlay();
     state.lab.calculationResult=null;
-    state.lab.note="Number tile placed in Slot "+state.lab.slot.toUpperCase()+".";
+    state.lab.note="Number tile placed in Slot "+state.lab.slot.toUpperCase()+". Try a second step when your problem needs one.";
     refreshCaseKeepingScroll();
   }
   function chooseLabOperator(op) {
     if(!["+","-","×","÷"].includes(op))return;
-    state.lab.op=op;state.lab.calculationResult=null;refreshCaseKeepingScroll();
+    if(state.lab.op===op){state.lab.note="Try a different operation to explore a new result.";refreshCaseKeepingScroll();return;}
+    state.lab.op=op;markLabPlay();state.lab.calculationResult=null;refreshCaseKeepingScroll();
+  }
+  function chooseLabOperator2(op) {
+    if(!["+","-","×","÷"].includes(op))return;
+    if(state.lab.op2===op){state.lab.note="Try another operation for the second step.";refreshCaseKeepingScroll();return;}
+    state.lab.op2=op;markLabPlay();state.lab.calculationResult=null;refreshCaseKeepingScroll();
+  }
+  function toggleThirdOperand() {
+    state.lab.useThird=!state.lab.useThird;markLabPlay();state.lab.calculationResult=null;
+    if(state.lab.useThird)state.lab.slot="c";else if(state.lab.slot==="c")state.lab.slot="a";
+    state.lab.note=state.lab.useThird?"A second step is ready. Choose a third number tile.":"Back to a two-number calculation.";
+    refreshCaseKeepingScroll();
   }
   function calculateLab() {
-    const {a,b,op}=state.lab;
-    if(a===null||b===null||b===0&&op==="÷"){state.lab.note="Choose two values that make a defined calculation.";state.lab.calculationResult=null;refreshCaseKeepingScroll();return;}
-    const result=op==="+"?a+b:op==="-"?a-b:op==="×"?a*b:a/b;
+    const {a,b,c,op,op2,useThird}=state.lab;
+    if(a===null||b===null||(op==="÷"&&b===0)||(useThird&&(c===null||(op2==="÷"&&c===0)))){
+      state.lab.note="Choose number tiles that make a defined calculation.";state.lab.calculationResult=null;refreshCaseKeepingScroll();return;
+    }
+    markLabPlay();
+    const first=op==="+"?a+b:op==="-"?a-b:op==="×"?a*b:a/b;
+    const result=useThird?(op2==="+"?first+c:op2==="-"?first-c:op2==="×"?first*c:first/c):first;
     state.lab.calculationResult=Number.isFinite(result)?Number(result.toFixed(4)):null;
-    state.lab.note=state.lab.calculationResult===null?"Choose a defined calculation.":"Your model gives "+state.lab.calculationResult+". Explain how the quantities connect.";
+    state.lab.note=state.lab.calculationResult===null?"Choose a defined calculation.":"Aha! "+(useThird?"("+a+" "+op+" "+b+") "+op2+" "+c:a+" "+op+" "+b)+" = "+state.lab.calculationResult+". Try matching this model to the case.";
     refreshCaseKeepingScroll();
   }
   function setPatternRule(rule) {
     if(!["add1","add2","add3","double"].includes(rule))return;
-    state.lab.patternRule=rule;refreshCaseKeepingScroll();
+    if(state.lab.patternRule===rule)return;
+    state.lab.patternRule=rule;markLabPlay();refreshCaseKeepingScroll();
   }
   function setFraction(which,delta) {
+    if(!["numerator","denominator"].includes(which))return;
+    const oldNumerator=state.lab.fractionNumerator,oldDenominator=state.lab.fractionDenominator;
     if(which==="numerator")state.lab.fractionNumerator=Math.max(0,Math.min(state.lab.fractionDenominator,state.lab.fractionNumerator+delta));
     if(which==="denominator"){
       const choices=[2,3,4,6,8,10,12],i=choices.indexOf(state.lab.fractionDenominator);
@@ -422,10 +478,12 @@
       state.lab.fractionDenominator=choices[next];
       state.lab.fractionNumerator=Math.min(state.lab.fractionNumerator,state.lab.fractionDenominator);
     }
+    if(oldNumerator!==state.lab.fractionNumerator||oldDenominator!==state.lab.fractionDenominator)markLabPlay();
     refreshCaseKeepingScroll();
   }
   function toggleShapeCell(index) {
     if(!Number.isInteger(index)||index<0||index>=48)return;
+    markLabPlay();
     const cells=new Set(state.lab.cells);
     if(cells.has(index))cells.delete(index);else cells.add(index);
     state.lab.cells=[...cells];refreshCaseKeepingScroll();
@@ -442,40 +500,46 @@
     return {area:cells.size,perimeter};
   }
   function setLabTimeline(value) {
-    state.lab.timelineMinutes=Math.max(0,Math.min(180,Number(value)||0));refreshCaseKeepingScroll();
+    const next=Math.max(0,Math.min(180,Number(value)||0));
+    if(next===state.lab.timelineMinutes)return;
+    state.lab.timelineMinutes=next;markLabPlay();refreshCaseKeepingScroll();
   }
   function toggleDataZoom() {
-    state.lab.dataZoom=!state.lab.dataZoom;refreshCaseKeepingScroll();
+    state.lab.dataZoom=!state.lab.dataZoom;markLabPlay();refreshCaseKeepingScroll();
   }
   function setRuleInput(value) {
-    state.lab.ruleInput=Math.max(1,Math.min(12,Number(value)||1));refreshCaseKeepingScroll();
+    const next=Math.max(1,Math.min(12,Number(value)||1));
+    if(next===state.lab.ruleInput)return;
+    state.lab.ruleInput=next;markLabPlay();refreshCaseKeepingScroll();
   }
   function setRuleType(rule) {
     if(!["doublePlusOne","add3","triple","square"].includes(rule))return;
-    state.lab.ruleType=rule;refreshCaseKeepingScroll();
+    if(state.lab.ruleType===rule)return;
+    state.lab.ruleType=rule;markLabPlay();refreshCaseKeepingScroll();
   }
   function adjustShare(group,delta) {
     if(!Number.isInteger(group)||group<0||group>2)return;
-    state.lab.shares[group]=Math.max(0,Math.min(15,state.lab.shares[group]+delta));
+    const next=Math.max(0,Math.min(15,state.lab.shares[group]+delta));if(next===state.lab.shares[group])return;
+    state.lab.shares[group]=next;markLabPlay();
     refreshCaseKeepingScroll();
   }
   const routeEdges=[[0,1,4],[1,2,5],[0,3,2],[3,4,3],[4,2,2],[1,4,4]];
   function routeEdge(a,b) {return routeEdges.find(e=>(e[0]===a&&e[1]===b)||(e[0]===b&&e[1]===a));}
   function extendRoute(node) {
     const route=state.lab.route;
-    if(node===route[route.length-2]){route.pop();refreshCaseKeepingScroll();return;}
+    if(node===route[route.length-2]){route.pop();markLabPlay();refreshCaseKeepingScroll();return;}
     if(node===route[route.length-1])return;
     if(route.includes(node)){state.lab.note="Try a fresh route without revisiting a stop.";setFeedback(state.lab.note,"hint");refreshCaseKeepingScroll();return;}
     if(!routeEdge(route[route.length-1],node)){state.lab.note="Choose a connected stop. The roads show where you can travel next.";setFeedback(state.lab.note,"hint");refreshCaseKeepingScroll();return;}
-    route.push(node);state.lab.note="Route extended. Add up the road lengths to compare journeys.";refreshCaseKeepingScroll();
+    route.push(node);markLabPlay();state.lab.note="Route extended. Add up the road lengths to compare journeys.";refreshCaseKeepingScroll();
   }
-  function resetRoute() {state.lab.route=[0];state.lab.note="Begin at A and build a connected route.";refreshCaseKeepingScroll();}
+  function resetRoute() {if(state.lab.route.length===1&&state.lab.route[0]===0)return;state.lab.route=[0];markLabPlay();state.lab.note="Begin at A and build a connected route.";refreshCaseKeepingScroll();}
   function adjustAllocation(group,delta) {
     if(!Number.isInteger(group)||group<0||group>2)return;
     const next=state.lab.allocations[group]+delta;
     const total=state.lab.allocations.reduce((sum,n)=>sum+n,0);
     if(next<0||next>12||delta>0&&total>=12)return;
-    state.lab.allocations[group]=next;refreshCaseKeepingScroll();
+    state.lab.allocations[group]=next;markLabPlay();refreshCaseKeepingScroll();
   }
   function formatClock(minutes) {
     const value=((minutes%1440)+1440)%1440,hour=Math.floor(value/60),minute=value%60;
@@ -484,15 +548,22 @@
   function renderNumberForge(item) {
     const vals=visualNumbers(item).slice(0,5),lab=state.lab;
     const shown=lab.calculationResult===null?"?":String(lab.calculationResult);
-    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧱 NUMBER FORGE</span><h3>Build a calculation</h3><p>Choose a slot, place two number tiles and pick the operation that connects them.</p></div>'+
-      '<div class="mc-equation-board"><button class="mc-equation-slot '+(lab.slot==="a"?"is-selected":"")+'" data-slot="a" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT A</small><strong>'+esc(String(lab.a))+'</strong></button>'+
-      '<div class="mc-equation-operation">'+esc(lab.op)+'</div><button class="mc-equation-slot '+(lab.slot==="b"?"is-selected":"")+'" data-slot="b" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT B</small><strong>'+esc(String(lab.b))+'</strong></button>'+
+    const slot=(name,value)=>'<button type="button" class="mc-equation-slot '+(lab.slot===name?"is-selected":"")+'" data-slot="'+name+'" aria-pressed="'+(lab.slot===name)+'" onclick="MathCourt.chooseLabSlot(this.dataset.slot)"><small>SLOT '+name.toUpperCase()+'</small><strong>'+esc(value===null?"Place a tile":String(value))+'</strong></button>';
+    const op=(value,second)=>'<span class="mc-equation-operation" aria-label="operation">'+esc(value)+'</span>';
+    const opPicker=(current,second)=>'<div class="mc-operation-picker mc-operation-picker-'+(second?"second":"first")+'">'+["+","-","×","÷"].map(value=>'<button type="button" class="mc-op-tile '+(current===value?"is-selected":"")+'" data-op="'+value+'" onclick="MathCourt.'+(second?"chooseLabOperator2":"chooseLabOperator")+'(this.dataset.op)">'+esc(value)+'</button>').join("")+'</div>';
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧱 NUMBER FORGE</span><h3>Build the calculation</h3><p>Place number tiles into slots, choose the operation, and watch your result appear. Some cases need one step; others need a chain.</p></div>'+
+      '<div class="mc-equation-board mc-equation-chain">'+
+      (lab.useThird?op("(",false):'')+slot("a",lab.a)+op(lab.op,false)+slot("b",lab.b)+
+      (lab.useThird?op(")",false)+op(lab.op2,true)+slot("c",lab.c):'')+
       '<div class="mc-equation-equals">=</div><div class="mc-equation-result"><small>YOUR RESULT</small><strong>'+shown+'</strong></div></div>'+
-      '<div class="mc-number-pool">'+vals.map((n,i)=>'<button type="button" class="mc-number-tile" onclick="MathCourt.chooseLabNumber('+i+')">'+esc(String(n))+'</button>').join("")+'</div>'+
-      '<div class="mc-operation-picker">'+["+","-","×","÷"].map(op=>'<button type="button" class="mc-op-tile '+(lab.op===op?"is-selected":"")+'" data-op="'+op+'" onclick="MathCourt.chooseLabOperator(this.dataset.op)">'+esc(op)+'</button>').join("")+
-      '<button type="button" class="mc-button mc-button-primary mc-build-button" onclick="MathCourt.calculateLab()">Calculate it ✨</button></div>'+
-      '<p class="mc-play-feedback" aria-live="polite">'+esc(lab.note||"Try different combinations and notice how the result changes.")+'</p></section>';
+      '<div class="mc-number-pool" role="group" aria-label="Number tiles">'+vals.map((n,i)=>'<button type="button" class="mc-number-tile" data-number-index="'+i+'" onclick="MathCourt.chooseLabNumber('+i+')">'+esc(String(n))+'</button>').join("")+'</div>'+
+      '<div class="mc-forge-controls"><div><span class="mc-forge-label">STEP 1 · combine A and B</span>'+opPicker(lab.op,false)+'</div>'+
+      (lab.useThird?'<div><span class="mc-forge-label">STEP 2 · combine the result and C</span>'+opPicker(lab.op2,true)+'</div>':'')+
+      '<button type="button" class="mc-button mc-button-secondary mc-forge-chain-toggle" aria-pressed="'+lab.useThird+'" onclick="MathCourt.toggleThirdOperand()">'+(lab.useThird?'− Use two numbers':'＋ Add another step')+'</button>'+
+      '<button type="button" class="mc-button mc-button-primary mc-build-button" onclick="MathCourt.calculateLab()">Make the calculation ✨</button></div>'+
+      '<p class="mc-play-feedback" aria-live="polite">'+esc(lab.note||"Try different combinations. Notice how each operation changes the result.")+'</p></section>';
   }
+
   function renderPatternGarden(item) {
     const vals=visualNumbers(item).slice(0,4),lab=state.lab,last=vals[vals.length-1]||5;
     const step=lab.patternRule==="add1"?1:lab.patternRule==="add2"?2:lab.patternRule==="add3"?3:null;
@@ -569,8 +640,8 @@
   }
 
   function renderStoryNarrative(item) {
-    const story=(item.narrative||item.story||"").split(/\n{2,}/).filter(Boolean);
-    return story.map((part,index)=>'<p class="mc-story-text '+(index===0?"mc-story-hook":index===story.length-1?"mc-story-close":"")+'">'+esc(part)+'</p>').join("");
+    const beats=[item.opening||"The community has gathered to explore a question together.",item.story||""].filter(Boolean);
+    return beats.map((part,index)=>'<p class="mc-story-text '+(index===0?"mc-story-hook":"mc-story-close")+'">'+esc(part)+'</p>').join("");
   }
   function renderCase() {
     const item=data().getCase(state.caseId),host=$("mc-stage-content");
@@ -586,7 +657,11 @@
     $("mc-feedback").textContent=state.feedback;
     $("mc-feedback").className="mc-feedback"+(state.feedback?" is-visible mc-feedback-"+state.feedbackKind:"");
     const actor=cast[(item.id+state.phase)%cast.length];
-    const actorBlock='<div class="mc-story-guide"><span class="mc-avatar" aria-hidden="true">'+["⚖️","🦉","🧭","🐦"][(item.id+state.phase)%4]+'</span><div><strong>'+actor.name+'</strong><p>'+esc(actor.line||"Every clue can help us learn together.")+'</p></div></div>';
+    const speaker=item.speaker||actor.name;
+    const voice=item.voice||actor.line||"Every clue can help us learn together.";
+    const role=(cast.find(person=>person.name===speaker)||actor).role;
+    const icon=speaker==="Judge Mira"?"⚖️":speaker==="Pip"?"🐦":speaker==="Asha"?"🧭":"🦉";
+    const actorBlock='<div class="mc-story-guide"><span class="mc-avatar" aria-hidden="true">'+icon+'</span><div><strong>'+esc(speaker)+'</strong><small>'+esc(role)+'</small><p>'+esc(voice)+'</p></div></div>';
     const panel=(label,title,body)=>'<section class="mc-panel"><span class="mc-kicker">'+label+'</span><h3>'+esc(title)+'</h3>'+body+'</section>';
     const virtue='<div class="mc-virtue-chip"><span aria-hidden="true">🌱</span><div><small>VIRTUE TO PRACTISE</small><strong>'+esc(item.virtue||"Curiosity")+'</strong></div></div>';
     const board=renderVisualBoard(item);
@@ -595,17 +670,15 @@
     if(state.phase===0) {
       left+=panel("A STORY FROM THE COMMUNITY",item.title,'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><div class="mc-claim"><span>THE IDEA TO EXPLORE</span><strong>'+esc(item.claim)+'</strong></div><div class="mc-story-facts"><span>Maths focus</span><strong>'+esc(topicFor(item.check,item.chapter))+'</strong><span>Case '+String(item.id).padStart(3,"0")+' of 100</span></div>'+virtue);
       left+='<div class="mc-kindness-note"><span aria-hidden="true">💛</span><p>In this court, people learn together. We test ideas, share clues and celebrate a better understanding.</p></div>';
-      right+=board+playground;
-      right+=panel("YOUR MISSION","Can you make the maths visible?",'<p>'+esc(item.prompt)+'</p><p class="mc-soft-note">Play with the model on this side. Change values, build a shape or explore a route before you begin the formal evidence round.</p>');
+      right+=playground;
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Let’s investigate together →</button>';
     } else if(state.phase===1) {
-      left+=panel("LISTEN AND LOOK","Gather the first clues",'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><p>Every person may notice a different detail. Open both cards and build a shared picture of the situation.</p><div class="mc-evidence-actions"><button class="mc-evidence-button '+(state.seenClaim?'is-open':'')+'" data-kind="claim" onclick="MathCourt.chooseEvidence(this.dataset.kind)"><span>🗣️ CLUE 1</span><strong>Hear the idea</strong><small>'+(state.seenClaim?'✓ Heard':'Open the story card')+'</small></button><button class="mc-evidence-button '+(state.seenEvidence?'is-open':'')+'" data-kind="evidence" onclick="MathCourt.chooseEvidence(this.dataset.kind)"><span>🔎 CLUE 2</span><strong>Read the record</strong><small>'+(state.seenEvidence?'✓ Read':'Open the source record')+'</small></button></div>'+(state.seenClaim?'<blockquote class="mc-testimony"><b>The idea:</b> '+esc(item.claim)+'</blockquote>':'')+(state.seenEvidence?'<blockquote class="mc-testimony"><b>Source record:</b> '+esc(item.evidence)+'</blockquote>':'')+virtue);
-      right+=board+playground;
-      right+=panel("CLUE BOARD","Connect the story to the maths",'<p>Use the play table to inspect the quantities and relationships. Once you have heard the idea and read the record, the next task is to build a mathematical explanation.</p>');
-      action='<button class="mc-button mc-button-primary" '+(state.seenClaim&&state.seenEvidence?'':'disabled')+' onclick="MathCourt.advance()">Build the maths model →</button>';
+      left+=panel("THE CLUES ARE ON THE TABLE","Let’s look at both pieces together",'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><p>Every clue is visible now. Read the idea, compare the original record, and decide what you want to test in the maths playground.</p><div class="mc-evidence-pair"><article class="mc-evidence-card mc-evidence-claim"><span>🗣️ THE IDEA</span><strong>'+esc(item.claim)+'</strong></article><article class="mc-evidence-card mc-evidence-record"><span>🔎 THE ORIGINAL RECORD</span><strong>'+esc(item.evidence)+'</strong></article></div>'+virtue);
+      right+=playground;
+      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Build the maths model →</button>';
     } else if(state.phase===2) {
       left+=panel("YOUR INVESTIGATION","Let’s work it out",'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><div class="mc-claim"><span>QUESTION TO SOLVE</span><strong>'+esc(item.prompt)+'</strong></div><p>Use the pictures and manipulatives on the right to try strategies. You may experiment, revise and try again.</p>'+virtue);
-      right+=board+playground;
+      right+=playground;
       if(!state.investigationSolved) {
         right+=panel("TASK 1 OF 2","Find the first result",'<p class="mc-task-prompt">'+esc(item.prompt)+'</p>'+renderAnswerTiles(item.options,"investigation")+'<p class="mc-soft-note">Choose or drag the result into the evidence tray when your model supports it.</p>');
       } else if(!state.challengeSolved) {
@@ -617,13 +690,13 @@
     } else if(state.phase===3) {
       left+=panel("A NEW CLUE ARRIVES","The story has another layer",'<p class="mc-story-text">'+esc(item.twist)+'</p><p>Good investigators welcome new information. It can help us improve a first idea and see the situation more clearly.</p>'+virtue);
       left+='<div class="mc-kindness-note"><span aria-hidden="true">✨</span><p>Changing your mind after learning something new is a strength. That is how understanding grows.</p></div>';
-      right+=board+playground;
+      right+=playground;
       right+=panel("REVISIT YOUR MODEL","Does the new clue change your thinking?",'<p>'+esc(item.explanation)+'</p><p>Explore the model again, then decide which question would help the court understand the reasoning.</p>');
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Ask a thoughtful question →</button>';
     } else if(state.phase===4) {
       const check=data().checks[item.check],rotated=rotatedChoices(check.choices,check.correct,item.id);
       left+=panel("CURIOSITY ROUND","Which question helps everyone understand?",'<p class="mc-story-text">'+esc(item.twist)+'</p><p>A good question looks at the method, tests an assumption or asks for a missing detail. Choose the question that helps the group learn more.</p>'+virtue);
-      right+=board+playground;
+      right+=playground;
       right+=panel("ASK THE COURT","Choose a useful question",'<p class="mc-task-prompt">'+esc(check.prompt)+'</p><div class="mc-answer-options">'+rotated.choices.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerCross('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-soft-note">Be curious about the idea. Treat every person with respect.</p>');
       action='<button class="mc-button mc-button-primary" '+(state.crossSolved?'':'disabled')+' onclick="MathCourt.advance()">Prepare the final explanation →</button>';
     } else if(state.phase===5) {
@@ -634,14 +707,14 @@
         {id:"uncertain",label:"Let’s gather one more clue",note:"A little more information would help us decide fairly."}
       ];
       left+=panel("YOUR CLOSING THOUGHT","Explain what you have learned",'<p class="mc-story-text">'+renderStoryNarrative(item)+'</p><div class="mc-claim"><span>THE IDEA WE INVESTIGATED</span><strong>'+esc(item.claim)+'</strong></div><p>Choose a conclusion that matches the evidence. A careful answer is a better goal than a quick answer.</p>'+virtue);
-      right+=board+playground;
+      right+=playground;
       right+=panel("DELIVER A THOUGHTFUL VERDICT","Which conclusion fits the evidence?",'<div class="mc-verdict-options">'+verdicts.map(v=>'<button class="mc-verdict-button '+(state.verdictChosen===v.id?"is-selected":"")+'" data-verdict="'+v.id+'" onclick="MathCourt.selectVerdict(this.dataset.verdict)"><strong>'+v.label+'</strong><small>'+v.note+'</small></button>').join("")+'</div>');
       action='<button class="mc-button mc-button-primary" '+(state.verdictChosen&&normalVerdict(state.verdictChosen)===normalVerdict(item.verdict)?'':'disabled')+' onclick="MathCourt.advance()">Hear the court’s reflection →</button>';
     } else {
       const verdictLabels={supported:"The evidence fits",disproved:"Let’s revise the idea",partly:"Some parts fit",uncertain:"Let’s gather one more clue"};
       const v=normalVerdict(item.verdict);
       left+=panel("A COMMUNITY LESSON","A case closed, a mind opened",'<p class="mc-story-text">'+esc(item.twist)+'</p><div class="mc-virtue-reflection"><span aria-hidden="true">🌟</span><div><small>VIRTUE TO CARRY FORWARD</small><h3>'+esc(item.virtue||"Curiosity")+'</h3><p>'+esc(item.moral)+'</p></div></div><p>You helped the community understand its question more clearly. Every puzzle makes your next question stronger.</p>');
-      right+=board+playground;
+      right+=playground;
       right+=panel("THE COURT'S FINDING",verdictLabels[v]||"A thoughtful conclusion",'<div class="mc-solution"><strong>What the maths showed</strong><p>'+esc(item.explanation)+'</p></div><div class="mc-solution"><strong>How the new clue helped</strong><p>'+esc(item.twist)+'</p></div><p>Ready for another story and another chance to discover?</p>');
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Open Case '+(item.id+1)+' →':'Celebrate the 100-case journey 🎉')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to the case map</button>';
     }
@@ -664,5 +737,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,calculateLab,setPatternRule,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){state.lab.cells=[];refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
 })(window);
