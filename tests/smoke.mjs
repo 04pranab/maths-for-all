@@ -382,7 +382,8 @@ async function main() {
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Verdict", "The verdict stage is missing.");' +
     'MathCourt.selectVerdict("disproved"); MathCourt.advance();' +
     'assert(document.getElementById("mc-stage-name").textContent === "The court" + String.fromCharCode(39) + "s reflection", "The case did not reach the reflection stage.");' +
-    'assert(document.getElementById("mc-stage-content").innerText.includes("VIRTUE TO CARRY FORWARD"), "The virtue reflection is missing.");' +
+    'assert(document.getElementById("mc-stage-content").innerText.includes("MATHS RESULT"), "The final stage should show the maths result, not a separate virtue card.");' +
+    'assert(document.getElementById("mc-stage-content").innerText.includes(MathCourtData.getCase(1).explanation), "The final stage is missing the case explanation.");' +
     'assert(!/\\b(?:thieves|stolen|stealing|blame)\\b/i.test(document.getElementById("mc-stage-content").innerText), "The case play screen should avoid criminal/blaming language.");' +
     'MathCourt.advance();' +
     'const saved = JSON.parse(localStorage.getItem("mfa_math_court_v1"));' +
