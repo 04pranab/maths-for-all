@@ -345,6 +345,229 @@
     else if(task==="challenge")answerChallenge(index);
   }
 
+
+  function freshLab(item) {
+    const nums=visualNumbers(item);
+    return {
+      slot:"a",a:nums[0]===undefined?3:nums[0],b:nums[1]===undefined?2:nums[1],op:"-",
+      calculationResult:null,patternRule:"add3",fractionNumerator:3,fractionDenominator:8,
+      cells:[0,1,2,8,9,10],timelineMinutes:30,dataZoom:false,ruleInput:4,ruleType:"doublePlusOne",
+      shares:[3,2,4],route:[0],allocations:[3,3,2],note:""
+    };
+  }
+  function normaliseLab(saved,item) {
+    const base=freshLab(item);
+    const lab={...base,...saved};
+    lab.slot=lab.slot==="b"?"b":"a";
+    lab.op=["+","-","×","÷"].includes(lab.op)?lab.op:"-";
+    lab.patternRule=["add1","add2","add3","double"].includes(lab.patternRule)?lab.patternRule:"add3";
+    lab.fractionDenominator=[2,3,4,6,8,10,12].includes(lab.fractionDenominator)?lab.fractionDenominator:8;
+    lab.fractionNumerator=Math.max(0,Math.min(lab.fractionDenominator,Number(lab.fractionNumerator)||0));
+    lab.cells=Array.isArray(lab.cells)?[...new Set(lab.cells.filter(n=>Number.isInteger(n)&&n>=0&&n<48))]:base.cells;
+    lab.timelineMinutes=Math.max(0,Math.min(180,Number(lab.timelineMinutes)||0));
+    lab.dataZoom=Boolean(lab.dataZoom);
+    lab.ruleInput=Math.max(1,Math.min(12,Number(lab.ruleInput)||1));
+    lab.ruleType=["doublePlusOne","add3","triple","square"].includes(lab.ruleType)?lab.ruleType:"doublePlusOne";
+    lab.shares=Array.isArray(lab.shares)?[0,1,2].map(i=>Math.max(0,Math.min(15,Number(lab.shares[i])||0))):base.shares;
+    const validRoute=Array.isArray(lab.route)&&lab.route.length?lab.route.filter(n=>Number.isInteger(n)&&n>=0&&n<5):[0];
+    lab.route=validRoute.length?validRoute:[0];
+    lab.allocations=Array.isArray(lab.allocations)?[0,1,2].map(i=>Math.max(0,Math.min(12,Number(lab.allocations[i])||0))):base.allocations;
+    return lab;
+  }
+  function refreshCaseKeepingScroll() {
+    const host=$("mc-stage-content");
+    const left=host&&host.querySelector(".mc-story-pane");
+    const right=host&&host.querySelector(".mc-game-pane");
+    const leftTop=left?left.scrollTop:0,rightTop=right?right.scrollTop:0;
+    syncSession();
+    renderCase();
+    const newLeft=host&&host.querySelector(".mc-story-pane");
+    const newRight=host&&host.querySelector(".mc-game-pane");
+    if(newLeft)newLeft.scrollTop=leftTop;
+    if(newRight)newRight.scrollTop=rightTop;
+  }
+  function chooseLabSlot(slot) {
+    if(!["a","b"].includes(slot))return;
+    state.lab.slot=slot;refreshCaseKeepingScroll();
+  }
+  function chooseLabNumber(index) {
+    const item=data().getCase(state.caseId),nums=visualNumbers(item);
+    if(!Number.isInteger(index)||index<0||index>=nums.length)return;
+    state.lab[state.lab.slot]=nums[index];
+    state.lab.calculationResult=null;
+    state.lab.note="Number tile placed in Slot "+state.lab.slot.toUpperCase()+".";
+    refreshCaseKeepingScroll();
+  }
+  function chooseLabOperator(op) {
+    if(!["+","-","×","÷"].includes(op))return;
+    state.lab.op=op;state.lab.calculationResult=null;refreshCaseKeepingScroll();
+  }
+  function calculateLab() {
+    const {a,b,op}=state.lab;
+    if(a===null||b===null||b===0&&op==="÷"){state.lab.note="Choose two values that make a defined calculation.";state.lab.calculationResult=null;refreshCaseKeepingScroll();return;}
+    const result=op==="+"?a+b:op==="-"?a-b:op==="×"?a*b:a/b;
+    state.lab.calculationResult=Number.isFinite(result)?Number(result.toFixed(4)):null;
+    state.lab.note=state.lab.calculationResult===null?"Choose a defined calculation.":"Your model gives "+state.lab.calculationResult+". Explain how the quantities connect.";
+    refreshCaseKeepingScroll();
+  }
+  function setPatternRule(rule) {
+    if(!["add1","add2","add3","double"].includes(rule))return;
+    state.lab.patternRule=rule;refreshCaseKeepingScroll();
+  }
+  function setFraction(which,delta) {
+    if(which==="numerator")state.lab.fractionNumerator=Math.max(0,Math.min(state.lab.fractionDenominator,state.lab.fractionNumerator+delta));
+    if(which==="denominator"){
+      const choices=[2,3,4,6,8,10,12],i=choices.indexOf(state.lab.fractionDenominator);
+      const next=Math.max(0,Math.min(choices.length-1,i+delta));
+      state.lab.fractionDenominator=choices[next];
+      state.lab.fractionNumerator=Math.min(state.lab.fractionNumerator,state.lab.fractionDenominator);
+    }
+    refreshCaseKeepingScroll();
+  }
+  function toggleShapeCell(index) {
+    if(!Number.isInteger(index)||index<0||index>=48)return;
+    const cells=new Set(state.lab.cells);
+    if(cells.has(index))cells.delete(index);else cells.add(index);
+    state.lab.cells=[...cells];refreshCaseKeepingScroll();
+  }
+  function shapeStats() {
+    const cells=new Set(state.lab.cells);let perimeter=0;
+    for(const n of cells){
+      const r=Math.floor(n/8),c=n%8;
+      if(r===0||!cells.has(n-8))perimeter++;
+      if(r===5||!cells.has(n+8))perimeter++;
+      if(c===0||!cells.has(n-1))perimeter++;
+      if(c===7||!cells.has(n+1))perimeter++;
+    }
+    return {area:cells.size,perimeter};
+  }
+  function setLabTimeline(value) {
+    state.lab.timelineMinutes=Math.max(0,Math.min(180,Number(value)||0));refreshCaseKeepingScroll();
+  }
+  function toggleDataZoom() {
+    state.lab.dataZoom=!state.lab.dataZoom;refreshCaseKeepingScroll();
+  }
+  function setRuleInput(value) {
+    state.lab.ruleInput=Math.max(1,Math.min(12,Number(value)||1));refreshCaseKeepingScroll();
+  }
+  function setRuleType(rule) {
+    if(!["doublePlusOne","add3","triple","square"].includes(rule))return;
+    state.lab.ruleType=rule;refreshCaseKeepingScroll();
+  }
+  function adjustShare(group,delta) {
+    if(!Number.isInteger(group)||group<0||group>2)return;
+    state.lab.shares[group]=Math.max(0,Math.min(15,state.lab.shares[group]+delta));
+    refreshCaseKeepingScroll();
+  }
+  const routeEdges=[[0,1,4],[1,2,5],[0,3,2],[3,4,3],[4,2,2],[1,4,4]];
+  function routeEdge(a,b) {return routeEdges.find(e=>(e[0]===a&&e[1]===b)||(e[0]===b&&e[1]===a));}
+  function extendRoute(node) {
+    const route=state.lab.route;
+    if(node===route[route.length-2]){route.pop();refreshCaseKeepingScroll();return;}
+    if(node===route[route.length-1])return;
+    if(route.includes(node)){state.lab.note="Try a fresh route without revisiting a stop.";setFeedback(state.lab.note,"hint");refreshCaseKeepingScroll();return;}
+    if(!routeEdge(route[route.length-1],node)){state.lab.note="Choose a connected stop. The roads show where you can travel next.";setFeedback(state.lab.note,"hint");refreshCaseKeepingScroll();return;}
+    route.push(node);state.lab.note="Route extended. Add up the road lengths to compare journeys.";refreshCaseKeepingScroll();
+  }
+  function resetRoute() {state.lab.route=[0];state.lab.note="Begin at A and build a connected route.";refreshCaseKeepingScroll();}
+  function adjustAllocation(group,delta) {
+    if(!Number.isInteger(group)||group<0||group>2)return;
+    const next=state.lab.allocations[group]+delta;
+    const total=state.lab.allocations.reduce((sum,n)=>sum+n,0);
+    if(next<0||next>12||delta>0&&total>=12)return;
+    state.lab.allocations[group]=next;refreshCaseKeepingScroll();
+  }
+  function formatClock(minutes) {
+    const value=((minutes%1440)+1440)%1440,hour=Math.floor(value/60),minute=value%60;
+    return ((hour%12)||12)+":"+String(minute).padStart(2,"0")+" "+(hour<12?"AM":"PM");
+  }
+  function renderNumberForge(item) {
+    const vals=visualNumbers(item).slice(0,5),lab=state.lab;
+    const shown=lab.calculationResult===null?"?":String(lab.calculationResult);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧱 NUMBER FORGE</span><h3>Build a calculation</h3><p>Choose a slot, place two number tiles and pick the operation that connects them.</p></div>'+
+      '<div class="mc-equation-board"><button class="mc-equation-slot '+(lab.slot==="a"?"is-selected":"")+'" onclick="MathCourt.chooseLabSlot(\\'a\\')"><small>SLOT A</small><strong>'+esc(String(lab.a))+'</strong></button>'+
+      '<div class="mc-equation-operation">'+esc(lab.op)+'</div><button class="mc-equation-slot '+(lab.slot==="b"?"is-selected":"")+'" onclick="MathCourt.chooseLabSlot(\\'b\\')"><small>SLOT B</small><strong>'+esc(String(lab.b))+'</strong></button>'+
+      '<div class="mc-equation-equals">=</div><div class="mc-equation-result"><small>YOUR RESULT</small><strong>'+shown+'</strong></div></div>'+
+      '<div class="mc-number-pool">'+vals.map((n,i)=>'<button type="button" class="mc-number-tile" onclick="MathCourt.chooseLabNumber('+i+')">'+esc(String(n))+'</button>').join("")+'</div>'+
+      '<div class="mc-operation-picker">'+["+","-","×","÷"].map(op=>'<button type="button" class="mc-op-tile '+(lab.op===op?"is-selected":"")+'" onclick="MathCourt.chooseLabOperator(\\''+op+'\\')">'+esc(op)+'</button>').join("")+
+      '<button type="button" class="mc-button mc-button-primary mc-build-button" onclick="MathCourt.calculateLab()">Calculate it ✨</button></div>'+
+      '<p class="mc-play-feedback" aria-live="polite">'+esc(lab.note||"Try different combinations and notice how the result changes.")+'</p></section>';
+  }
+  function renderPatternGarden(item) {
+    const vals=visualNumbers(item).slice(0,4),lab=state.lab,last=vals[vals.length-1]||5;
+    const step=lab.patternRule==="add1"?1:lab.patternRule==="add2"?2:lab.patternRule==="add3"?3:null;
+    const next=step===null?last*2:last+step;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🌱 PATTERN GARDEN</span><h3>Grow the next number</h3><p>Change the rule and watch how the number path grows.</p></div>'+
+      '<div class="mc-pattern-path">'+vals.map((n,i)=>'<div class="mc-pattern-stone"><small>'+String(i+1).padStart(2,"0")+'</small><strong>'+esc(String(n))+'</strong></div>').join("")+'<div class="mc-pattern-stone mc-pattern-next"><small>NEXT</small><strong>'+esc(String(next))+'</strong></div></div>'+
+      '<div class="mc-rule-tiles">'+[{id:"add1",label:"+ 1"},{id:"add2",label:"+ 2"},{id:"add3",label:"+ 3"},{id:"double",label:"× 2"}].map(r=>'<button class="mc-op-tile '+(lab.patternRule===r.id?"is-selected":"")+'" onclick="MathCourt.setPatternRule(\\''+r.id+'\\')">'+r.label+'</button>').join("")+'</div>'+
+      '<p class="mc-play-feedback">Rule selected: '+(step===null?"double the last value":"add "+step)+" · next value = "+next+'</p></section>';
+  }
+  function renderFractionStudio() {
+    const lab=state.lab,den=lab.fractionDenominator,num=lab.fractionNumerator;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🍰 FRACTION STUDIO</span><h3>Share the whole</h3><p>Change the number of equal parts and shade how many belong in your share.</p></div>'+
+      '<div class="mc-fraction-strip" role="img" aria-label="'+num+' of '+den+' equal parts selected">'+Array.from({length:den},(_,i)=>'<button type="button" class="mc-fraction-part '+(i<num?"is-filled":"")+'" aria-label="Part '+(i+1)+'" onclick="MathCourt.setFraction(\\'numerator\\','+(i<num?-1:1)+')"></button>').join("")+'</div>'+
+      '<div class="mc-fraction-equation"><strong>'+num+'/'+den+'</strong><span>of one whole</span><strong>'+Math.round(num/den*100)+'%</strong></div>'+
+      '<div class="mc-play-control-row"><span>Shade parts</span><button class="mc-stepper" onclick="MathCourt.setFraction(\\'numerator\\',-1)" aria-label="One fewer shaded part">−</button><button class="mc-stepper" onclick="MathCourt.setFraction(\\'numerator\\',1)" aria-label="One more shaded part">+</button></div>'+
+      '<div class="mc-play-control-row"><span>Equal slices</span><button class="mc-stepper" onclick="MathCourt.setFraction(\\'denominator\\',-1)" aria-label="Fewer equal parts">−</button><strong>'+den+'</strong><button class="mc-stepper" onclick="MathCourt.setFraction(\\'denominator\\',1)" aria-label="More equal parts">+</button></div></section>';
+  }
+  function renderShapeWorkshop() {
+    const stats=shapeStats();
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🧩 SHAPE WORKSHOP</span><h3>Build a shape, discover its measures</h3><p>Tap squares to add or remove them. Compare the inside space with the outside edge.</p></div>'+
+      '<div class="mc-shape-builder" role="group" aria-label="48-square shape builder">'+Array.from({length:48},(_,i)=>'<button type="button" class="mc-shape-cell '+(state.lab.cells.includes(i)?"is-filled":"")+'" aria-label="Grid square '+(i+1)+'" aria-pressed="'+state.lab.cells.includes(i)+'" onclick="MathCourt.toggleShapeCell('+i+')"></button>').join("")+'</div>'+
+      '<div class="mc-shape-stats"><div><small>AREA</small><strong>'+stats.area+'</strong><span>square units</span></div><div><small>PERIMETER</small><strong>'+stats.perimeter+'</strong><span>edge units</span></div></div>'+
+      '<button class="mc-button mc-button-quiet" onclick="MathCourt.resetShape()">Start a fresh shape ↻</button></section>';
+  }
+  function renderTimeline() {
+    const mins=state.lab.timelineMinutes,start=14*60+35,end=start+mins;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>⏱️ TIMELINE STUDIO</span><h3>Move through time</h3><p>Slide the marker and see how minutes change the arrival time.</p></div>'+
+      '<div class="mc-timeline-track"><span class="mc-time-start">'+formatClock(start)+'</span><div class="mc-time-rail"><span style="width:'+Math.min(100,mins/180*100)+'%"></span><i style="left:'+Math.min(100,mins/180*100)+'%"></i></div><span class="mc-time-end">'+formatClock(end)+'</span></div>'+
+      '<div class="mc-time-result"><small>TRAVEL TIME</small><strong>'+mins+' minutes</strong><span>'+Math.floor(mins/60)+' hour'+(Math.floor(mins/60)===1?"":"s")+' and '+(mins%60)+' minutes</span></div>'+
+      '<label class="mc-range-label" for="mc-timeline-range">Move the journey marker</label><input id="mc-timeline-range" class="mc-range" type="range" min="0" max="180" step="5" value="'+mins+'" oninput="MathCourt.setLabTimeline(this.value)"/></section>';
+  }
+  function renderDataGarden(item) {
+    const vals=visualNumbers(item).slice(0,4).map(n=>Math.abs(n));
+    const min=Math.min(...vals),max=Math.max(...vals),base=state.lab.dataZoom?Math.max(0,min-10):0,range=Math.max(1,max-base);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>📊 DATA GARDEN</span><h3>See how a graph tells its story</h3><p>Change the graph's starting point. The data stay the same, but the visual impression changes.</p></div>'+
+      '<div class="mc-data-chart" role="img" aria-label="Bar chart with '+(state.lab.dataZoom?"zoomed":"zero")+' baseline">'+vals.map((n,i)=>'<div class="mc-data-bar-wrap"><strong>'+n+'</strong><div class="mc-data-bar-track"><span style="height:'+Math.max(4,(n-base)/range*100)+'%"></span></div><small>Record '+(i+1)+'</small></div>').join("")+'</div>'+
+      '<div class="mc-chart-scale-label">Scale starts at <strong>'+base+'</strong></div><div class="mc-rule-tiles"><button class="mc-op-tile '+(!state.lab.dataZoom?"is-selected":"")+'" onclick="MathCourt.setDataZoom(false)">Start at zero</button><button class="mc-op-tile '+(state.lab.dataZoom?"is-selected":"")+'" onclick="MathCourt.setDataZoom(true)">Zoom in</button></div>'+
+      '<p class="mc-play-feedback">'+(state.lab.dataZoom?"Zooming in highlights small gaps; disclose the scale so readers can judge fairly.":"A zero baseline makes the full bar lengths easier to compare.")+'</p></section>';
+  }
+  function renderRuleMachine() {
+    const lab=state.lab,x=lab.ruleInput,y=lab.ruleType==="doublePlusOne"?2*x+1:lab.ruleType==="add3"?x+3:lab.ruleType==="triple"?3*x:x*x;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>⚙️ RULE MACHINE</span><h3>Feed a number into the machine</h3><p>Choose a rule, then move the input to watch the output update.</p></div>'+
+      '<div class="mc-machine-flow"><div class="mc-machine-box"><small>INPUT</small><strong>'+x+'</strong></div><div class="mc-machine-arrow">→</div><div class="mc-machine-box mc-machine-core"><small>RULE</small><strong>'+(lab.ruleType==="doublePlusOne"?"2x + 1":lab.ruleType==="add3"?"x + 3":lab.ruleType==="triple"?"3x":"x²")+'</strong></div><div class="mc-machine-arrow">→</div><div class="mc-machine-box"><small>OUTPUT</small><strong>'+y+'</strong></div></div>'+
+      '<label class="mc-range-label" for="mc-rule-input">Change input</label><input id="mc-rule-input" class="mc-range" type="range" min="1" max="12" value="'+x+'" oninput="MathCourt.setRuleInput(this.value)"/>'+
+      '<div class="mc-rule-tiles">'+[{id:"doublePlusOne",label:"2x + 1"},{id:"add3",label:"x + 3"},{id:"triple",label:"3x"},{id:"square",label:"x²"}].map(r=>'<button class="mc-op-tile '+(lab.ruleType===r.id?"is-selected":"")+'" onclick="MathCourt.setRuleType(\\''+r.id+'\\')">'+r.label+'</button>').join("")+'</div>'+
+      '<p class="mc-play-feedback">'+y+' comes from applying '+(lab.ruleType==="doublePlusOne"?"2 × "+x+" + 1":lab.ruleType==="add3"?x+" + 3":lab.ruleType==="triple"?"3 × "+x:x+" × "+x)+'.</p></section>';
+  }
+  function renderShareMarket() {
+    const shares=state.lab.shares,total=shares.reduce((s,n)=>s+n,0),gap=Math.max(...shares)-Math.min(...shares);
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🫶 FAIR-SHARE MARKET</span><h3>Share the counters</h3><p>Move the number up or down for each group. Watch the total and compare the shares.</p></div>'+
+      '<div class="mc-share-groups">'+shares.map((n,i)=>'<div class="mc-share-group"><strong>Group '+String.fromCharCode(65+i)+'</strong><div class="mc-share-dots">'+Array.from({length:n},()=>'<i aria-hidden="true"></i>').join("")+'</div><div class="mc-share-adjust"><button class="mc-stepper" onclick="MathCourt.adjustShare('+i+',-1)" aria-label="Give one fewer counter to group '+String.fromCharCode(65+i)+'">−</button><strong>'+n+'</strong><button class="mc-stepper" onclick="MathCourt.adjustShare('+i+',1)" aria-label="Give one more counter to group '+String.fromCharCode(65+i)+'">+</button></div></div>').join("")+'</div>'+
+      '<div class="mc-shares-summary"><span>Total counters <strong>'+total+'</strong></span><span>Largest gap <strong>'+gap+'</strong></span></div>'+
+      '<p class="mc-play-feedback">'+(gap===0?"Every group has an equal share. Now consider whether the situation asks for equal shares or needs-based shares.":"The groups have different amounts. Decide whether equal shares or another stated rule best fits the situation.")+'</p></section>';
+  }
+  function renderRouteGarden() {
+    const route=state.lab.route,total=route.slice(1).reduce((sum,n,i)=>sum+(routeEdge(route[i],n)||[0,0,0])[2],0);
+    const nodes=[[55,70],[182,40],[306,74],[94,170],[242,166]],labels=["A","B","C","D","E"];
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🗺️ ROUTE GARDEN</span><h3>Build a journey across town</h3><p>Start at A and choose a connected stop. Every road adds to your journey length.</p></div>'+
+      '<svg viewBox="0 0 360 220" class="mc-route-map" role="img" aria-label="Five-stop route network">'+routeEdges.map(e=>'<line x1="'+nodes[e[0]][0]+'" y1="'+nodes[e[0]][1]+'" x2="'+nodes[e[1]][0]+'" y2="'+nodes[e[1]][1]+'" class="'+(route.some((n,i)=>i<route.length-1&&routeEdge(n,route[i+1])===e)?"mc-route-selected":"")+'"/><text x="'+((nodes[e[0]][0]+nodes[e[1]][0])/2)+'" y="'+((nodes[e[0]][1]+nodes[e[1]][1])/2-7)+'">'+e[2]+'</text>').join("")+nodes.map((n,i)=>'<g class="mc-route-node '+(route.includes(i)?"is-visited":"")+'"><circle cx="'+n[0]+'" cy="'+n[1]+'" r="20"/><text x="'+n[0]+'" y="'+(n[1]+5)+'" class="mc-route-label">'+labels[i]+'</text></g>').join("")+'</svg>'+
+      '<div class="mc-route-buttons">'+labels.map((label,i)=>'<button class="mc-route-choice '+(route[route.length-1]===i?"is-current":"")+'" onclick="MathCourt.extendRoute('+i+')">'+label+'</button>').join("")+'</div>'+
+      '<div class="mc-shares-summary"><span>Stops <strong>'+route.map(n=>labels[n]).join(" → ")+'</strong></span><span>Journey length <strong>'+total+'</strong></span></div>'+
+      '<button class="mc-button mc-button-quiet" onclick="MathCourt.resetRoute()">New journey ↻</button></section>';
+  }
+  function renderTownPlanner() {
+    const allocations=state.lab.allocations,total=allocations.reduce((s,n)=>s+n,0),budget=12;
+    return '<section class="mc-math-play"><div class="mc-play-heading"><span>🏡 TOWN PLANNER</span><h3>Plan with a shared budget</h3><p>Allocate twelve resource tokens to three neighbourhoods and keep the total within the limit.</p></div>'+
+      '<div class="mc-resource-bar"><span style="width:'+(total/budget*100)+'%"></span></div><p class="mc-budget-label">'+total+' of '+budget+' tokens planned · '+(budget-total)+' still available</p>'+
+      '<div class="mc-town-bins">'+allocations.map((n,i)=>'<div class="mc-town-bin"><strong>Town '+String.fromCharCode(65+i)+'</strong><div class="mc-town-tokens">'+Array.from({length:n},()=>'<i></i>').join("")+'</div><div class="mc-share-adjust"><button class="mc-stepper" onclick="MathCourt.adjustAllocation('+i+',-1)" aria-label="Remove a token from town '+String.fromCharCode(65+i)+'">−</button><strong>'+n+'</strong><button class="mc-stepper" '+(total>=budget?'disabled':'')+' onclick="MathCourt.adjustAllocation('+i+',1)" aria-label="Add a token to town '+String.fromCharCode(65+i)+'">+</button></div></div>').join("")+'</div>'+
+      '<p class="mc-play-feedback">'+(total===budget?"All tokens are allocated. Explain why your plan is fair and how it meets the stated needs.":"You have "+(budget-total)+" tokens left. Choose where they would help most, and explain your reasoning.")+'</p></section>';
+  }
+  function renderPlayActivity(item) {
+    const activity=item.chapter===1?renderNumberForge(item):item.chapter===2?renderPatternGarden(item):item.chapter===3?renderFractionStudio():item.chapter===4?renderShapeWorkshop():item.chapter===5?renderTimeline():item.chapter===6?renderDataGarden(item):item.chapter===7?renderRuleMachine():item.chapter===8?renderShareMarket():item.chapter===9?renderRouteGarden():renderTownPlanner();
+    return '<div class="mc-play-station"><div class="mc-station-top"><span>✨ PLAY & DISCOVER</span><span>CHAPTER '+String(item.chapter).padStart(2,"0")+'</span></div>'+activity+'</div>';
+  }
+
   function renderCase() {
     const item=data().getCase(state.caseId),host=$("mc-stage-content");
     if(!item||!host)return;
@@ -412,5 +635,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer};
+  root.MathCourt={open,openCase,resume,goDocket,back,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,calculateLab,setPatternRule,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){state.lab.cells=[];refreshCaseKeepingScroll();}};
 })(window);
