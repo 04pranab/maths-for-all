@@ -9,6 +9,8 @@ assert.deepEqual(data.chapters.map(ch => ch.id), [1,2,3,4,5,6,7,8,9,10]);
 assert.ok(data.chapters.every(ch => ch.to - ch.from + 1 === 10), "Each chapter must contain ten case numbers.");
 assert.equal(new Set(data.cases.map(c => c.id)).size, 100, "Case IDs must be unique.");
 assert.equal(new Set(data.cases.map(c => c.title.toLowerCase())).size, 100, "Case titles must be unique.");
+assert.equal(new Set(data.cases.map(c => c.opening)).size, 100, "Every docket needs a distinct story opening.");
+assert.equal(new Set(data.cases.map(c => c.voice)).size, 100, "Every docket needs a distinct character voice.");
 assert.equal(data.phases.length, 7, "Cases must use the seven-stage court procedure.");
 assert.deepEqual(data.phases, [
   "The case is called", "Witness examination", "Build the evidence",
