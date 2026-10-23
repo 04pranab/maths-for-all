@@ -5,9 +5,9 @@
   {
     "id": 1,
     "chapter": 1,
-    "title": "The Missing Festival Crates",
-    "story": "A festival delivery ledger lists 37 crates already unloaded from an order of 52.",
-    "claim": "The organiser claims 15 crates are still unaccounted for.",
+    "title": "The Festival's Full Count",
+    "story": "The festival's craft team received 52 crates in two carts. They carefully recorded 37 crates from the first cart and are using the second cart's tally to complete the picture.",
+    "claim": "The early tally leaves 15 crates for the second cart's record.",
     "prompt": "How many crates had not yet been recorded as unloaded?",
     "options": [
       "15",
@@ -15,12 +15,12 @@
       "89"
     ],
     "answer": 0,
-    "explanation": "52 − 37 = 15 crates had not yet been recorded. This is a difference in records, not proof that the crates were stolen.",
-    "twist": "The second cart's manifest lists the remaining 15 crates, all logged ten minutes later. The first tally was taken too early.",
-    "moral": "Check the whole record before blaming someone.",
+    "explanation": "52 − 37 = 15 crates were recorded on the second cart. Both records fit together to account for the complete delivery.",
+    "twist": "Pip finds the second cart's beautifully neat manifest, recorded ten minutes later. Adding 37 and 15 gives the full 52-crate order. The two notes were snapshots of different moments.",
+    "moral": "Patience and careful checking help a community see the whole picture.",
     "verdict": "disproved",
     "check": "calculation",
-    "evidence": "Order: 52 crates. First unloading tally: 37. Second cart manifest: 15 crates logged later.",
+    "evidence": "Delivery order: 52 crates. First cart tally: 37 crates. Second cart record: 15 crates.",
     "challenge": {
       "prompt": "Use the two records to check the total shipment: 37 crates were unloaded first and 15 were on the later cart. How many crates were delivered altogether?",
       "options": [
@@ -30,7 +30,8 @@
       ],
       "answer": 0,
       "explanation": "37 + 15 = 52. The later manifest reconciles the shipment."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 2,
@@ -47,7 +48,7 @@
     "answer": 1,
     "explanation": "470 − 407 = 63. Check the difference by adding it back: 407 + 63 = 470.",
     "twist": "The original page shows the last digit of 407 was smudged, so arithmetic alone cannot tell which total was intended.",
-    "moral": "Verify the source as well as the calculation.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "Two copies read 407 and 470; the original is smudged.",
@@ -60,12 +61,13 @@
       ],
       "answer": 0,
       "explanation": "407 + 63 = 470, returning to the larger recorded quantity."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 3,
     "chapter": 1,
-    "title": "The Two Receipts",
+    "title": "The Receipt Puzzle",
     "story": "A receipt lists items costing ₹18, ₹12 and ₹12. The customer says the final ₹12 line was copied twice for the same item.",
     "claim": "The customer claims the corrected bill is ₹42.",
     "prompt": "What is the bill after removing the duplicated ₹12 line?",
@@ -77,7 +79,7 @@
     "answer": 0,
     "explanation": "₹18 + ₹12 = ₹30. Removing the duplicate line avoids charging twice for the same item.",
     "twist": "The second ₹12 entry turns out to be a copying error, not an extra purchase.",
-    "moral": "Correct the record without assuming bad intentions.",
+    "moral": "Honesty and care make shared records dependable. A small correction can help everyone move forward with confidence.",
     "verdict": "disproved",
     "check": "records",
     "evidence": "The second ₹12 entry refers to the same item as the first.",
@@ -90,12 +92,13 @@
       ],
       "answer": 0,
       "explanation": "₹50 − ₹30 = ₹20 change."
-    }
+    },
+    "virtue": "Honesty"
   },
   {
     "id": 4,
     "chapter": 1,
-    "title": "The Endless Queue",
+    "title": "The Festival Seating Plan",
     "story": "Six rows of seats hold eight people each. A photograph shows every seat occupied, but a marshal counted people also standing near the entrance.",
     "claim": "The marshal estimates 56 people were seated.",
     "prompt": "How many people fit in six full rows of eight?",
@@ -107,7 +110,7 @@
     "answer": 1,
     "explanation": "Six complete rows of eight seats give 6 × 8 = 48 seats. The nearby crowd is not part of the seating capacity.",
     "twist": "The marshal included people outside the seating rows in the estimate.",
-    "moral": "State whether a number is a count, estimate, or capacity.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "There are six rows and eight seats in every row.",
@@ -120,7 +123,8 @@
       ],
       "answer": 0,
       "explanation": "Eight rows × eight seats = 64 seats."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 5,
@@ -137,7 +141,7 @@
     "answer": 1,
     "explanation": "6 × 12 + 6 = 78 jars.",
     "twist": "The final cart was half full, so counting seven full carts overstates the delivery.",
-    "moral": "Account for partial groups rather than treating them as complete.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "Six carts have 12 jars each; the last cart has 6 jars.",
@@ -150,12 +154,13 @@
       ],
       "answer": 0,
       "explanation": "Six full carts × 12 jars = 72 jars."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 6,
     "chapter": 1,
-    "title": "The Empty Drawer",
+    "title": "Two Coin Records",
     "story": "Two ledgers report 304 coins and 34 coins. The clerk says one must be wrong and asks the court to quantify the discrepancy.",
     "claim": "The clerk claims the difference is 280 coins.",
     "prompt": "What is 304 − 34?",
@@ -167,7 +172,7 @@
     "answer": 0,
     "explanation": "304 − 34 = 270 coins. The difference can be checked by adding 270 back to 34 to get 304.",
     "twist": "The smaller total was written before the day's final deposit, so the records refer to different times.",
-    "moral": "Check dates and context before treating records as contradictory.",
+    "moral": "Clear, accurate records help everyone trust the picture and make decisions together.",
     "verdict": "disproved",
     "check": "records",
     "evidence": "The two ledgers were written at different times.",
@@ -180,7 +185,8 @@
       ],
       "answer": 0,
       "explanation": "34 + 270 = 304, confirming the subtraction."
-    }
+    },
+    "virtue": "Honesty"
   },
   {
     "id": 7,
@@ -197,7 +203,7 @@
     "answer": 0,
     "explanation": "28 + 17 − 5 = 40 distinct visitors.",
     "twist": "The same five visitors were counted at both gates. Both gate counts were accurate, but their sum was not a unique-person count.",
-    "moral": "Define what is being counted and remove duplicates.",
+    "moral": "Clear, accurate records help everyone trust the picture and make decisions together.",
     "verdict": "disproved",
     "check": "records",
     "evidence": "North gate: 28. South gate: 17. Duplicates: 5.",
@@ -210,12 +216,13 @@
       ],
       "answer": 0,
       "explanation": "28 + 17 − 3 = 42 distinct visitors."
-    }
+    },
+    "virtue": "Honesty"
   },
   {
     "id": 8,
     "chapter": 1,
-    "title": "The Borrowed Numbers",
+    "title": "The Helper's Number Check",
     "story": "A helper subtracts 47 from 83 and writes 46. A second helper suspects a regrouping error.",
     "claim": "The first helper says 83 − 47 = 46.",
     "prompt": "What is the correct difference?",
@@ -227,7 +234,7 @@
     "answer": 0,
     "explanation": "83 − 47 = 36. Check by addition: 36 + 47 = 83.",
     "twist": "The inverse-operation check exposes the slip.",
-    "moral": "Use an inverse operation to check an answer.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "The result should add back to 83 when 47 is added.",
@@ -240,7 +247,8 @@
       ],
       "answer": 0,
       "explanation": "Adding the subtracted quantity back must recover the starting number."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 9,
@@ -257,7 +265,7 @@
     "answer": 1,
     "explanation": "Whole-number counts 75 through 84 round to 80 under standard nearest-ten rounding.",
     "twist": "The original tally was recycled, so the exact count cannot be recovered from the rounded total alone.",
-    "moral": "Be honest about the precision of evidence.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "uncertain",
     "check": "assumptions",
     "evidence": "The only surviving record is rounded to the nearest ten.",
@@ -270,7 +278,8 @@
       ],
       "answer": 0,
       "explanation": "74 rounds to 70; 77 and 82 round to 80."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 10,
@@ -287,7 +296,7 @@
     "answer": 1,
     "explanation": "120 + 65 − 143 = 42 candles.",
     "twist": "The keeper accidentally used the opening stock twice when writing the note.",
-    "moral": "Show each step so mistakes can be traced.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "Opening stock 120; delivery 65; used 143.",
@@ -300,12 +309,13 @@
       ],
       "answer": 0,
       "explanation": "120 opening candles + 65 delivered candles = 185 available."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 11,
     "chapter": 2,
-    "title": "The Locker That Would Not Open",
+    "title": "The Three-Digit Practice Lock",
     "story": "The archive practice lock accepts a three-digit code divisible by three. The clerk suggests 425 because every digit is odd.",
     "claim": "The clerk claims 425 fits the lock's rule.",
     "prompt": "Which candidate is divisible by three?",
@@ -317,7 +327,7 @@
     "answer": 1,
     "explanation": "4 + 2 + 6 = 12, which is divisible by three; therefore 426 is divisible by three.",
     "twist": "The lock's rule concerns divisibility, not whether the digits are odd.",
-    "moral": "Use the stated rule rather than a superficial pattern.",
+    "moral": "Precise words and definitions help us explain ideas so everyone can follow.",
     "verdict": "disproved",
     "check": "definition",
     "evidence": "The code must be divisible by 3.",
@@ -330,7 +340,8 @@
       ],
       "answer": 0,
       "explanation": "4 + 2 + 5 = 11, which is not divisible by three."
-    }
+    },
+    "virtue": "Clarity"
   },
   {
     "id": 12,
@@ -347,7 +358,7 @@
     "answer": 1,
     "explanation": "23 has no positive factors other than 1 and 23; 21 and 27 are composite.",
     "twist": "The gardener checked only whether the number was even.",
-    "moral": "Check definitions, not appearances.",
+    "moral": "Precise words and definitions help us explain ideas so everyone can follow.",
     "verdict": "disproved",
     "check": "definition",
     "evidence": "21 = 3 × 7 and 27 = 3 × 9.",
@@ -360,7 +371,8 @@
       ],
       "answer": 0,
       "explanation": "21 = 3 × 7, so it has factors besides 1 and itself."
-    }
+    },
+    "virtue": "Clarity"
   },
   {
     "id": 13,
@@ -377,7 +389,7 @@
     "answer": 1,
     "explanation": "4 × 7 = 28, leaving one lantern.",
     "twist": "The rule requires whole lanterns and equal team sizes; the remainder cannot disappear.",
-    "moral": "Explain the remainder instead of hiding it.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "29 lanterns are split into four equal whole-number groups.",
@@ -390,7 +402,8 @@
       ],
       "answer": 0,
       "explanation": "4 × 7 = 28, leaving two lanterns."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 14,
@@ -407,7 +420,7 @@
     "answer": 1,
     "explanation": "The greatest common divisor of 24 and 36 is 12.",
     "twist": "A size of 18 works only for the second group if the first group is ignored.",
-    "moral": "A fair rule must satisfy every group in the agreement.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "Both 24 and 36 must be divisible by the team size.",
@@ -420,7 +433,8 @@
       ],
       "answer": 0,
       "explanation": "24 ÷ 12 = 2 teams and 36 ÷ 12 = 3 teams."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 15,
@@ -437,7 +451,7 @@
     "answer": 1,
     "explanation": "The differences are 3, 3 and 3, so the next value under the stated pattern is 13 + 3 = 16, not 17.",
     "twist": "The witness noticed direction but not the size of each change.",
-    "moral": "Identify a rule precisely and test it.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "The first four terms increase by three each time.",
@@ -450,7 +464,8 @@
       ],
       "answer": 0,
       "explanation": "The tenth term is 4 + 9 × 3 = 31."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 16,
@@ -467,7 +482,7 @@
     "answer": 2,
     "explanation": "8 × 8 = 64, four times the original 16.",
     "twist": "The new grid reveals how doubling both dimensions quadruples area.",
-    "moral": "Test how a change in dimensions affects area.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Original grid: 4 by 4. New grid: 8 by 8.",
@@ -480,7 +495,8 @@
       ],
       "answer": 0,
       "explanation": "64 − 16 = 48 additional stones."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 17,
@@ -497,7 +513,7 @@
     "answer": 0,
     "explanation": "5 + 7 + 3 = 15, divisible by three. The other digit sums are 16 and 17.",
     "twist": "A faded stamp made the last digit hard to read, but divisibility helps verify the candidate.",
-    "moral": "Use a quick check, then verify the original record.",
+    "moral": "Precise words and definitions help us explain ideas so everyone can follow.",
     "verdict": "disproved",
     "check": "definition",
     "evidence": "A number is divisible by 3 when its digit sum is divisible by 3.",
@@ -510,12 +526,13 @@
       ],
       "answer": 0,
       "explanation": "5 + 7 + 4 = 16, not divisible by three."
-    }
+    },
+    "virtue": "Clarity"
   },
   {
     "id": 18,
     "chapter": 2,
-    "title": "The Rounded Parade Count",
+    "title": "The Parade's Rounded Count",
     "story": "A parade report records 340 visitors rounded to the nearest ten. A speaker announces that exactly 340 people attended.",
     "claim": "The speaker claims 340 is exact.",
     "prompt": "Which whole-number counts could round to 340?",
@@ -527,7 +544,7 @@
     "answer": 1,
     "explanation": "Counts from 335 through 344 round to 340.",
     "twist": "The counter recorded rounded estimates, not an exact total.",
-    "moral": "Do not turn a rounded value into a false exact count.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "partly",
     "check": "assumptions",
     "evidence": "The report was rounded to the nearest ten.",
@@ -540,7 +557,8 @@
       ],
       "answer": 0,
       "explanation": "334 rounds to 330; 338 and 344 round to 340."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 19,
@@ -557,7 +575,7 @@
     "answer": 1,
     "explanation": "Seven boats carry 14 people, so an eighth boat is needed.",
     "twist": "The organiser omitted the possibility of one partly occupied boat.",
-    "moral": "State whether spare capacity is permitted.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "Each boat carries at most two people; a boat may carry one.",
@@ -570,7 +588,8 @@
       ],
       "answer": 0,
       "explanation": "Eight boats hold 16 people, leaving one seat empty."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 20,
@@ -587,7 +606,7 @@
     "answer": 1,
     "explanation": "The temperature starts at −2°C and rises by five degrees: −2 + 5 = 3°C. Moving right on the number line reaches 3.",
     "twist": "The witness confused a negative starting value with a negative change.",
-    "moral": "Represent signed quantities before calculating.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A thermometer reads −2°C before sunrise. By noon, the temperature rises by 5 degrees. A witness treats the rise as a negative change.",
@@ -600,7 +619,8 @@
       ],
       "answer": 0,
       "explanation": "3 − 4 = −1°C. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 21,
@@ -617,7 +637,7 @@
     "answer": 0,
     "explanation": "A quarter is larger than a sixth when the wholes are equal.",
     "twist": "Both pies are the same size, so comparing the denominators is meaningful here.",
-    "moral": "Explain what the denominator counts.",
+    "moral": "Precise words and definitions help us explain ideas so everyone can follow.",
     "verdict": "disproved",
     "check": "definition",
     "evidence": "Two identical pies are compared. One slice is 1/4 of a pie and another is 1/6. A witness says the sixth must be larger because six is larger than four.",
@@ -630,12 +650,13 @@
       ],
       "answer": 0,
       "explanation": "Multiplying numerator and denominator of 1/4 by 3 gives 3/12."
-    }
+    },
+    "virtue": "Clarity"
   },
   {
     "id": 22,
     "chapter": 3,
-    "title": "The Festival Punch Dispute",
+    "title": "The Festival Punch Recipe",
     "story": "One jug mixes 2 cups concentrate with 3 cups water. Another mixes 3 cups concentrate with 6 cups water. The second contains more liquid overall.",
     "claim": "The organiser claims the second mixture is stronger.",
     "prompt": "Which mixture has the stronger concentrate-to-water ratio?",
@@ -660,15 +681,16 @@
       ],
       "answer": 0,
       "explanation": "Doubling the water from 3 to 6 cups doubles concentrate from 2 to 4 cups."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 23,
     "chapter": 3,
-    "title": "The Meter That Lied",
-    "story": "Two devices show 2.4 m and 2.40 m. A clerk declares one must be longer because it has more digits.",
-    "claim": "The clerk claims 2.40 m is longer.",
-    "prompt": "Which statement is correct?",
+    "title": "The Meter's Extra Decimal",
+    "story": "Two measuring devices show 2.4 m and 2.40 m. The measurement team wants to understand why the displays look different and what each one communicates.",
+    "claim": "The team wonders whether 2.40 m represents a longer object than 2.4 m.",
+    "prompt": "Which statement correctly compares the two measurements?",
     "options": [
       "2.40 m is longer",
       "They represent the same length",
@@ -676,8 +698,8 @@
     ],
     "answer": 1,
     "explanation": "2.4 and 2.40 have the same numerical value, though they may communicate different precision.",
-    "twist": "The devices record to different precision, so displayed digits alone do not prove reliability.",
-    "moral": "Distinguish value from measurement precision.",
+    "twist": "A measuring guide explains that both displays represent the same numerical length, while the extra zero can communicate the precision of the recording.",
+    "moral": "Curiosity helps us look beyond appearances and understand what a measurement really tells us.",
     "verdict": "disproved",
     "check": "units",
     "evidence": "Two devices show 2.4 m and 2.40 m. A clerk declares one must be longer because it has more digits.",
@@ -690,7 +712,8 @@
       ],
       "answer": 0,
       "explanation": "2.4 × 100 = 240 cm. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Carefulness"
   },
   {
     "id": 24,
@@ -707,7 +730,7 @@
     "answer": 0,
     "explanation": "20% of ₹500 is ₹100, so the discounted price is ₹400.",
     "twist": "The cashier treated 20 percent as 20 rupees.",
-    "moral": "Identify the whole to which a percentage applies.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A jacket costs ₹500. A sign says 20% off. The cashier reduces the price by ₹20 and says that is the promised saving.",
@@ -720,7 +743,8 @@
       ],
       "answer": 0,
       "explanation": "20% = 20/100 = 1/5. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 25,
@@ -737,7 +761,7 @@
     "answer": 1,
     "explanation": "The same fraction of a larger whole is larger; the large cake's quarter has twice the area.",
     "twist": "Both witnesses used the word quarter but imagined different wholes.",
-    "moral": "Name the whole before comparing fractions.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "A quarter of a small cake is compared with a quarter of a large cake. The larger cake is twice the area of the smaller one.",
@@ -750,12 +774,13 @@
       ],
       "answer": 0,
       "explanation": "The large cake has area 160 cm²; one quarter is 40 cm²."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 26,
     "chapter": 3,
-    "title": "The Recipe That Would Not Scale",
+    "title": "The Recipe Scaling Studio",
     "story": "A recipe for four people needs 200 g of rice. A cook prepares ten servings using 300 g.",
     "claim": "The cook claims 300 g is enough to preserve the recipe.",
     "prompt": "How much rice is needed for ten people at the same rate?",
@@ -767,7 +792,7 @@
     "answer": 1,
     "explanation": "200 ÷ 4 = 50 g per person; 50 × 10 = 500 g.",
     "twist": "The cook increased the batch without preserving its ratio.",
-    "moral": "Preserve ratios when scaling a recipe.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "A recipe for four people needs 200 g of rice. A cook prepares ten servings using 300 g.",
@@ -780,7 +805,8 @@
       ],
       "answer": 0,
       "explanation": "50 × 12 = 600 g. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 27,
@@ -797,7 +823,7 @@
     "answer": 0,
     "explanation": "2 × ₹240 + ₹60 = ₹540.",
     "twist": "The second batch does not require a second equipment fee in this arrangement.",
-    "moral": "Separate fixed costs from per-batch costs.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "A batch costs ₹240 in ingredients plus a fixed ₹60 equipment fee per cooking session. Two batches are cooked in one session.",
@@ -810,12 +836,13 @@
       ],
       "answer": 0,
       "explanation": "Three ingredient batches cost ₹720; adding one ₹60 fee gives ₹780."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 28,
     "chapter": 3,
-    "title": "The Two-Discount Trick",
+    "title": "The Two-Discount Calculation",
     "story": "A ₹1,000 item receives a 10% discount followed by another 10% off the reduced price. A seller says this equals 20% off the original price.",
     "claim": "The seller claims the final price is ₹800.",
     "prompt": "What is the final price after both discounts?",
@@ -840,7 +867,8 @@
       ],
       "answer": 0,
       "explanation": "Successive discounts leave ₹810; a single 20% discount leaves ₹800."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 29,
@@ -857,7 +885,7 @@
     "answer": 0,
     "explanation": "A has 12 ÷ 8 = 1.5 per player; B has 15 ÷ 12 = 1.25.",
     "twist": "The larger total belongs to a larger team.",
-    "moral": "Use a unit rate for a fair comparison.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Team A has 12 shirts for 8 players. Team B has 15 shirts for 12 players. A manager says B is better supplied because it has more shirts.",
@@ -870,7 +898,8 @@
       ],
       "answer": 0,
       "explanation": "12 × 1.5 = 18 shirts."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 30,
@@ -887,7 +916,7 @@
     "answer": 1,
     "explanation": "There are five parts: 120 ÷ 5 = 24 L per part; the first gets 48 L.",
     "twist": "The proposal totals 150 L, more than the available supply.",
-    "moral": "Check both the ratio and the resource limit.",
+    "moral": "Creative thinking finds a good solution while respecting real limits and people's needs.",
     "verdict": "disproved",
     "check": "constraints",
     "evidence": "A supply of 120 litres is divided in ratio 2:3 between two neighbourhood tanks. A proposal assigns 60 L and 90 L.",
@@ -900,7 +929,8 @@
       ],
       "answer": 0,
       "explanation": "The second tank receives 3/5 × 120 = 72 L."
-    }
+    },
+    "virtue": "Creativity"
   },
   {
     "id": 31,
@@ -917,7 +947,7 @@
     "answer": 1,
     "explanation": "Perimeter is 2(3 + 8) = 22 m; the other plot has perimeter 20 m.",
     "twist": "Equal area does not imply equal boundary length.",
-    "moral": "Match the measurement to what is being built.",
+    "moral": "Precise words and definitions help us explain ideas so everyone can follow.",
     "verdict": "disproved",
     "check": "definition",
     "evidence": "A 3 m by 8 m plot and a 4 m by 6 m plot both have area 24 m². A builder says they need equal lengths of fence.",
@@ -930,12 +960,13 @@
       ],
       "answer": 0,
       "explanation": "22 − 20 = 2 m. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Clarity"
   },
   {
     "id": 32,
     "chapter": 4,
-    "title": "The Sign That Pointed Backwards",
+    "title": "The Compass Sign",
     "story": "A sign faces east. A worker turns it clockwise a quarter-turn, then claims it faces north.",
     "claim": "The worker claims the sign faces north.",
     "prompt": "Where does it face?",
@@ -947,7 +978,7 @@
     "answer": 1,
     "explanation": "A clockwise quarter-turn from east points south.",
     "twist": "The worker imagined a counterclockwise turn while saying clockwise.",
-    "moral": "Use a shared reference frame for directions.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "A sign faces east. A worker turns it clockwise a quarter-turn, then claims it faces north.",
@@ -960,7 +991,8 @@
       ],
       "answer": 0,
       "explanation": "A clockwise quarter-turn from south points west."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 33,
@@ -977,7 +1009,7 @@
     "answer": 1,
     "explanation": "The height-to-shadow ratio is 2:3. Tower height is 24 × 2 ÷ 3 = 16 m.",
     "twist": "A second shadow was measured later after the sun angle changed, so only the simultaneous measurement fits the model.",
-    "moral": "State the conditions required for proportional measurements.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "Pole: 2 m tall, 3 m shadow. Tower shadow: 24 m at the same time.",
@@ -990,12 +1022,13 @@
       ],
       "answer": 0,
       "explanation": "Tower height = 30 × 2/3 = 20 m."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 34,
     "chapter": 4,
-    "title": "The Mosaic With One Side Missing",
+    "title": "The Mosaic Pattern",
     "story": "A mosaic outline is symmetrical, but its left half contains three blue tiles while the reflected right half has two.",
     "claim": "The artist claims the full design has reflection symmetry.",
     "prompt": "What must be true for reflection symmetry?",
@@ -1007,7 +1040,7 @@
     "answer": 1,
     "explanation": "Reflection symmetry requires corresponding parts on both sides to match.",
     "twist": "The outline was mirrored, but an inner tile was changed later.",
-    "moral": "Examine the whole object, not only its outline.",
+    "moral": "Precise words and definitions help us explain ideas so everyone can follow.",
     "verdict": "disproved",
     "check": "definition",
     "evidence": "A mosaic outline is symmetrical, but its left half contains three blue tiles while the reflected right half has two.",
@@ -1020,7 +1053,8 @@
       ],
       "answer": 0,
       "explanation": "Reflection symmetry applies to all corresponding parts."
-    }
+    },
+    "virtue": "Clarity"
   },
   {
     "id": 35,
@@ -1037,7 +1071,7 @@
     "answer": 2,
     "explanation": "Half-turn moves top to bottom; the next clockwise quarter-turn moves bottom to the left.",
     "twist": "The report omitted the extra quarter-turn.",
-    "moral": "Track every step, not just the first part.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "A wheel mark starts at the top, turns half a turn and then another quarter-turn clockwise. The witness reports only the first turn.",
@@ -1050,12 +1084,13 @@
       ],
       "answer": 0,
       "explanation": "From the left side, a clockwise quarter-turn moves the mark to the bottom."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 36,
     "chapter": 4,
-    "title": "The Map With the Wrong Address",
+    "title": "The Neighbourhood Map",
     "story": "The library is at coordinate (3, 7). A courier swaps the coordinates and goes to (7, 3).",
     "claim": "The courier claims the two coordinate pairs name the same location.",
     "prompt": "How many coordinates remain in the same ordered position?",
@@ -1067,7 +1102,7 @@
     "answer": 0,
     "explanation": "Neither coordinate stays in the same position: the first changes from 3 to 7 and the second from 7 to 3.",
     "twist": "The courier assumed an ordered pair can be rearranged without changing location.",
-    "moral": "Coordinates are ordered pairs.",
+    "moral": "Precise words and definitions help us explain ideas so everyone can follow.",
     "verdict": "disproved",
     "check": "definition",
     "evidence": "Library: (3, 7); courier went to (7, 3).",
@@ -1080,7 +1115,8 @@
       ],
       "answer": 0,
       "explanation": "The x-coordinate increases by 4 and the y-coordinate decreases by 4."
-    }
+    },
+    "virtue": "Clarity"
   },
   {
     "id": 37,
@@ -1097,7 +1133,7 @@
     "answer": 1,
     "explanation": "Each half is 5 × 6 = 30 m².",
     "twist": "The gardener used one dimension twice and omitted the other.",
-    "moral": "Label dimensions and units before calculating area.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A 10 m by 6 m parcel is divided into two equal 5 m by 6 m rectangles. A gardener claims each half has area 25 m².",
@@ -1110,12 +1146,13 @@
       ],
       "answer": 0,
       "explanation": "The two 30 m² halves total 60 m², matching 10 × 6."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 38,
     "chapter": 4,
-    "title": "The Impossible Package",
+    "title": "The Parcel in Three Dimensions",
     "story": "A box's internal dimensions are 4 cm by 5 cm by 6 cm. A seller multiplies the dimensions correctly but calls the result square centimetres.",
     "claim": "The seller claims the box volume is 120 cm².",
     "prompt": "What is its correct volume and unit?",
@@ -1127,7 +1164,7 @@
     "answer": 0,
     "explanation": "4 × 5 × 6 = 120 cubic centimetres. Volume is three-dimensional.",
     "twist": "The number was correct but the unit was not.",
-    "moral": "A correct number with the wrong unit can still be wrong.",
+    "moral": "Careful measurement respects every detail and helps our results be useful.",
     "verdict": "partly",
     "check": "units",
     "evidence": "A box's internal dimensions are 4 cm by 5 cm by 6 cm. A seller multiplies the dimensions correctly but calls the result square centimetres.",
@@ -1140,7 +1177,8 @@
       ],
       "answer": 0,
       "explanation": "Doubling height doubles the volume: 4 × 5 × 12 = 240 cm³."
-    }
+    },
+    "virtue": "Carefulness"
   },
   {
     "id": 39,
@@ -1157,7 +1195,7 @@
     "answer": 2,
     "explanation": "The original ratio is 1:5. Doubling the rise requires a 10 m run.",
     "twist": "The proposed layout halves neither rise nor ratio; it doubles steepness.",
-    "moral": "Preserve the stated constraint and consider accessibility.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "A ramp rises 1 m over 5 m horizontal run. A new design rises 2 m over the same 5 m run.",
@@ -1170,12 +1208,13 @@
       ],
       "answer": 0,
       "explanation": "The run is five times the rise: 1.5 × 5 = 7.5 m."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 40,
     "chapter": 4,
-    "title": "The Round Stage Dispute",
+    "title": "The Round Stage Design",
     "story": "A circular stage has diameter 14 m. Using π ≈ 22/7, a builder says the distance around it is 14 m.",
     "claim": "The builder claims the circumference is 14 m.",
     "prompt": "What is the approximate circumference?",
@@ -1200,12 +1239,13 @@
       ],
       "answer": 0,
       "explanation": "Circumference ≈ πd = (22/7) × 7 = 22 m."
-    }
+    },
+    "virtue": "Clarity"
   },
   {
     "id": 41,
     "chapter": 5,
-    "title": "The Missing Twenty Minutes",
+    "title": "The Time-Line Puzzle",
     "story": "A meeting begins at 10:45 and finishes at 12:15. A witness reports 70 minutes.",
     "claim": "The witness claims the meeting lasted 70 minutes.",
     "prompt": "How long did it last?",
@@ -1217,7 +1257,7 @@
     "answer": 1,
     "explanation": "From 10:45 to 11:45 is 60 minutes, then 30 more minutes: 90 minutes.",
     "twist": "The witness subtracted the minute digits without accounting for the hour boundary.",
-    "moral": "Use a timeline for elapsed time.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A meeting begins at 10:45 and finishes at 12:15. A witness reports 70 minutes.",
@@ -1230,12 +1270,13 @@
       ],
       "answer": 0,
       "explanation": "Add 1 hour and then 30 minutes to get 4:05 pm."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 42,
     "chapter": 5,
-    "title": "The Bus That Was Called Late",
+    "title": "The Bus Schedule",
     "story": "A bus was scheduled for 9:20 and arrived at 9:32. The report says it was 20 minutes late.",
     "claim": "The report claims a 20-minute delay.",
     "prompt": "How many minutes late was the bus?",
@@ -1247,7 +1288,7 @@
     "answer": 1,
     "explanation": "9:32 − 9:20 = 12 minutes.",
     "twist": "The report compared the arrival with a time not listed on the schedule.",
-    "moral": "Compare the observation with the stated reference time.",
+    "moral": "Clear, accurate records help everyone trust the picture and make decisions together.",
     "verdict": "disproved",
     "check": "records",
     "evidence": "A bus was scheduled for 9:20 and arrived at 9:32. The report says it was 20 minutes late.",
@@ -1260,7 +1301,8 @@
       ],
       "answer": 0,
       "explanation": "9:40 − 9:20 = 20 minutes."
-    }
+    },
+    "virtue": "Honesty"
   },
   {
     "id": 43,
@@ -1277,7 +1319,7 @@
     "answer": 1,
     "explanation": "100 cm = 1 m, so 250 cm = 2.5 m.",
     "twist": "The reports used different units but describe the same length.",
-    "moral": "Convert to a common unit before comparing.",
+    "moral": "Careful measurement respects every detail and helps our results be useful.",
     "verdict": "disproved",
     "check": "units",
     "evidence": "A path is recorded as 250 cm on one map and 2.5 m on another. A clerk declares the records disagree.",
@@ -1290,7 +1332,8 @@
       ],
       "answer": 0,
       "explanation": "3.2 × 100 = 320 cm. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Carefulness"
   },
   {
     "id": 44,
@@ -1307,7 +1350,7 @@
     "answer": 0,
     "explanation": "The fruit alone weighs 3.2 − 0.4 = 2.8 kg. Remove the empty basket's mass before charging for the fruit.",
     "twist": "The scale reading included the basket.",
-    "moral": "Separate the measured object from its container.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "A basket with fruit weighs 3.2 kg; the empty basket weighs 0.4 kg. The seller charges for 3.2 kg of fruit.",
@@ -1320,12 +1363,13 @@
       ],
       "answer": 0,
       "explanation": "Each basket contains 2.8 kg of fruit; 5 × 2.8 = 14 kg."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 45,
     "chapter": 5,
-    "title": "The Leaking Canal",
+    "title": "The Canal Flow Model",
     "story": "Water flows at 12 L/min for five minutes, then slows to 6 L/min for five more minutes.",
     "claim": "The keeper estimates 120 L entered during ten minutes.",
     "prompt": "How much water entered?",
@@ -1350,12 +1394,13 @@
       ],
       "answer": 0,
       "explanation": "120 − 90 = 30 L. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 46,
     "chapter": 5,
-    "title": "The Cyclists' Dispute",
+    "title": "The Cyclists' Route Study",
     "story": "Cyclist A travels 18 km in one hour. Cyclist B travels 24 km in two hours. A witness says B is faster because 24 is greater than 18.",
     "claim": "The witness claims B has the higher average speed.",
     "prompt": "Who has the greater average speed?",
@@ -1367,7 +1412,7 @@
     "answer": 0,
     "explanation": "A travels at 18 km/h; B at 12 km/h.",
     "twist": "The witness compared distance without considering time.",
-    "moral": "Use a unit rate when comparing speeds.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Cyclist A travels 18 km in one hour. Cyclist B travels 24 km in two hours. A witness says B is faster because 24 is greater than 18.",
@@ -1380,7 +1425,8 @@
       ],
       "answer": 0,
       "explanation": "Distance = speed × time = 18 × 3 = 54 km."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 47,
@@ -1397,7 +1443,7 @@
     "answer": 1,
     "explanation": "A costs ₹480; B costs ₹450.",
     "twist": "The longer route costs less because its rate per kilometre is lower.",
-    "moral": "Optimise the total cost, not just distance.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Route A is 60 km at ₹8 per km. Route B is 75 km at ₹6 per km. The planner chooses A because it is shorter.",
@@ -1410,12 +1456,13 @@
       ],
       "answer": 0,
       "explanation": "80 × ₹6 = ₹480. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 48,
     "chapter": 5,
-    "title": "The Missing Day",
+    "title": "The Calendar's Extra Day",
     "story": "A task begins on 27 February in a leap year and lasts three days, counting the start as day one. The clerk records 1 March.",
     "claim": "The clerk claims day three is 1 March.",
     "prompt": "What is day three?",
@@ -1427,7 +1474,7 @@
     "answer": 1,
     "explanation": "27 February is day one; 28 February is day two; 29 February is day three.",
     "twist": "The clerk used a non-leap-year calendar.",
-    "moral": "Check the calendar year and counting convention.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "A task begins on 27 February in a leap year and lasts three days, counting the start as day one. The clerk records 1 March.",
@@ -1440,7 +1487,8 @@
       ],
       "answer": 0,
       "explanation": "27, 28, 29 February are the first three days; 1 March is day four."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 49,
@@ -1457,7 +1505,7 @@
     "answer": 2,
     "explanation": "The uncertainty ranges overlap, so the small difference cannot establish a reliable temperature difference.",
     "twist": "Repeated measurements under controlled conditions would provide better evidence.",
-    "moral": "Match confidence to measurement uncertainty.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "uncertain",
     "check": "assumptions",
     "evidence": "One thermometer reads 21.4°C and another 21.6°C. Each has stated uncertainty of ±0.5°C.",
@@ -1470,7 +1518,8 @@
       ],
       "answer": 0,
       "explanation": "The intervals share values from 21.1°C through 21.9°C."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 50,
@@ -1500,12 +1549,13 @@
       ],
       "answer": 0,
       "explanation": "The least common multiple of 6 and 9 is 18."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 51,
     "chapter": 6,
-    "title": "The Graph That Shouted",
+    "title": "The Garden Chart's Scale",
     "story": "A garden chart records 100 visitors in May, 110 in June and 120 in July. Its vertical axis starts at 90 and makes the final bar look three times as tall.",
     "claim": "The headline says visits tripled from May to July.",
     "prompt": "What was the percentage increase from May to July?",
@@ -1517,7 +1567,7 @@
     "answer": 0,
     "explanation": "The increase is 20 visitors; relative to 100, this is 20%.",
     "twist": "The data are real, but the truncated axis exaggerates the visible difference.",
-    "moral": "Report data honestly and avoid blame without evidence.",
+    "moral": "A clear, fair picture lets others understand the evidence without exaggeration.",
     "verdict": "disproved",
     "check": "representation",
     "evidence": "May 100 visitors; June 110; July 120. Axis begins at 90.",
@@ -1530,12 +1580,13 @@
       ],
       "answer": 0,
       "explanation": "The increase is 20 out of 100, which simplifies to 1/5."
-    }
+    },
+    "virtue": "Honest communication"
   },
   {
     "id": 52,
     "chapter": 6,
-    "title": "The Average That Nobody Reached",
+    "title": "The Average and the Team",
     "story": "Four teams score 6, 8, 10 and 12 points. The organiser says the mean proves each team scored 9.",
     "claim": "The organiser claims each team scored 9.",
     "prompt": "What is the mean score?",
@@ -1547,7 +1598,7 @@
     "answer": 1,
     "explanation": "(6 + 8 + 10 + 12) ÷ 4 = 9; the mean does not say each team scored 9.",
     "twist": "No team received 9 points, even though the mean is 9.",
-    "moral": "A summary value does not describe every individual.",
+    "moral": "Precise words and definitions help us explain ideas so everyone can follow.",
     "verdict": "partly",
     "check": "definition",
     "evidence": "Four teams score 6, 8, 10 and 12 points. The organiser says the mean proves each team scored 9.",
@@ -1560,7 +1611,8 @@
       ],
       "answer": 0,
       "explanation": "For four ordered values, median = (8 + 10)/2 = 9."
-    }
+    },
+    "virtue": "Clarity"
   },
   {
     "id": 53,
@@ -1577,7 +1629,7 @@
     "answer": 0,
     "explanation": "The middle ordered value is 3 minutes; the long wait pulls the mean upward.",
     "twist": "One unusually long wait belongs to an exceptional incident.",
-    "moral": "Choose the statistic that fits the question.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Waiting times are 2, 3, 3, 4 and 18 minutes. A witness says a typical wait must be six minutes because that is the mean.",
@@ -1590,12 +1642,13 @@
       ],
       "answer": 0,
       "explanation": "The sum is 30 minutes and 30 ÷ 5 = 6 minutes."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 54,
     "chapter": 6,
-    "title": "The Survey of Three Friends",
+    "title": "The School-Wide Survey",
     "story": "A survey asks three friends from one club whether the whole school prefers football. All three say yes, and the organiser generalises to the whole school.",
     "claim": "The organiser claims the school prefers football.",
     "prompt": "What is the main weakness in the evidence?",
@@ -1607,7 +1660,7 @@
     "answer": 0,
     "explanation": "Three friends from one club cannot reliably represent the whole school.",
     "twist": "The answers may be sincere, but the sample was selected from one group.",
-    "moral": "Collect representative evidence before generalising.",
+    "moral": "Listening to a range of voices helps a group understand the people it serves.",
     "verdict": "insufficient",
     "check": "sample",
     "evidence": "A survey asks three friends from one club whether the whole school prefers football. All three say yes, and the organiser generalises to the whole school.",
@@ -1620,12 +1673,13 @@
       ],
       "answer": 0,
       "explanation": "A broader suitable sample is more likely to represent the school."
-    }
+    },
+    "virtue": "Inclusion"
   },
   {
     "id": 55,
     "chapter": 6,
-    "title": "The Ice-Cream Mystery",
+    "title": "The Summer Garden Mystery",
     "story": "Ice-cream sales and swimming accidents both increase on hot days. A report claims ice cream causes the accidents.",
     "claim": "The report claims ice cream causes accidents.",
     "prompt": "What can the records alone establish?",
@@ -1637,7 +1691,7 @@
     "answer": 1,
     "explanation": "Both measures may be related to hot weather; co-movement alone does not prove cause.",
     "twist": "Weather was not included in the comparison.",
-    "moral": "Distinguish association from causation.",
+    "moral": "Open-minded thinkers consider more than one explanation before deciding what caused a result.",
     "verdict": "insufficient",
     "check": "causation",
     "evidence": "Ice-cream sales and swimming accidents both increase on hot days. A report claims ice cream causes the accidents.",
@@ -1650,12 +1704,13 @@
       ],
       "answer": 0,
       "explanation": "Hot weather could influence both; association alone does not establish direct causation."
-    }
+    },
+    "virtue": "Open-mindedness"
   },
   {
     "id": 56,
     "chapter": 6,
-    "title": "The Missing Column",
+    "title": "The Complete Data Table",
     "story": "A table has entries 14, 18 and an unknown value; its row total is 50. A clerk says the missing entry is 20.",
     "claim": "The clerk claims the missing entry is 20.",
     "prompt": "What is the missing value?",
@@ -1667,7 +1722,7 @@
     "answer": 0,
     "explanation": "50 − 14 − 18 = 18; using 20 would make the total 52.",
     "twist": "An independent copy of the table confirms the row total.",
-    "moral": "Use independent constraints to reconstruct missing data.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A table has entries 14, 18 and an unknown value; its row total is 50. A clerk says the missing entry is 20.",
@@ -1680,7 +1735,8 @@
       ],
       "answer": 0,
       "explanation": "52 − 14 − 18 = 20. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 57,
@@ -1697,7 +1753,7 @@
     "answer": 1,
     "explanation": "An unusual value should be checked for measurement or recording errors, not removed merely because it is inconvenient.",
     "twist": "The value came from a second instrument and needs verification.",
-    "moral": "Investigate surprising evidence transparently.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "Five measurements are 4, 5, 5, 6 and 30. A researcher wants to delete 30 because it looks unusual.",
@@ -1710,7 +1766,8 @@
       ],
       "answer": 0,
       "explanation": "The total is 50 and 50 ÷ 5 = 10. Investigate the outlier before excluding it."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 58,
@@ -1727,7 +1784,7 @@
     "answer": 0,
     "explanation": "Total points are 10×8 + 30×6 = 260; divide by 40 to get 6.5.",
     "twist": "The groups differ in size, so their means cannot be weighted equally.",
-    "moral": "Account for group sizes when combining averages.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Team A has 10 people averaging 8 points each. Team B has 30 people averaging 6 points. The organiser averages 8 and 6 equally.",
@@ -1740,12 +1797,13 @@
       ],
       "answer": 0,
       "explanation": "With equal group sizes, the combined mean is (8 + 6)/2 = 7."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 59,
     "chapter": 6,
-    "title": "The Busy Shop That Wasn't",
+    "title": "The Shop's Busy Hour",
     "story": "Shop A serves 40 customers in two hours. Shop B serves 54 in three hours. A poster says B is faster because it served more people.",
     "claim": "The poster claims Shop B serves customers faster.",
     "prompt": "Which shop serves more customers per hour?",
@@ -1757,7 +1815,7 @@
     "answer": 0,
     "explanation": "A serves 20 per hour; B serves 18 per hour.",
     "twist": "Shop B was open longer, explaining its greater total.",
-    "moral": "Compare rates when durations differ.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Shop A serves 40 customers in two hours. Shop B serves 54 in three hours. A poster says B is faster because it served more people.",
@@ -1770,7 +1828,8 @@
       ],
       "answer": 0,
       "explanation": "20 customers per hour × 3 hours = 60 customers."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 60,
@@ -1787,7 +1846,7 @@
     "answer": 1,
     "explanation": "The wording frames the issue differently, so the surveys do not measure exactly the same prompt.",
     "twist": "Both records are authentic, but the question wording differs.",
-    "moral": "Ask neutral questions and explain how data were collected.",
+    "moral": "Listening to a range of voices helps a group understand the people it serves.",
     "verdict": "partly",
     "check": "sample",
     "evidence": "One survey asks whether people support a new park. Another asks whether they support an expensive park that raises fees. The results differ.",
@@ -1800,7 +1859,8 @@
       ],
       "answer": 0,
       "explanation": "The first asks about support without embedding positive or negative framing."
-    }
+    },
+    "virtue": "Inclusion"
   },
   {
     "id": 61,
@@ -1817,7 +1877,7 @@
     "answer": 0,
     "explanation": "For n = 2, 3, 4, the rule 2n + 1 gives 5, 7, 9.",
     "twist": "A fourth test input can distinguish this rule from other rules fitting fewer observations.",
-    "moral": "Choose tests that separate possible explanations.",
+    "moral": "Thoughtful reasoning checks each step and makes sure a conclusion follows from its clues.",
     "verdict": "disproved",
     "check": "logic",
     "evidence": "A machine maps 2 to 5, 3 to 7 and 4 to 9. A visitor claims the rule is add three because it fits the first input.",
@@ -1830,7 +1890,8 @@
       ],
       "answer": 0,
       "explanation": "2 × 10 + 1 = 21. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Thoughtful reasoning"
   },
   {
     "id": 62,
@@ -1847,7 +1908,7 @@
     "answer": 0,
     "explanation": "₹110 − ₹50 = ₹60 for three tickets, so each costs ₹20.",
     "twist": "The witness divided the whole total by the ticket count without removing the fixed fee.",
-    "moral": "Separate fixed and variable quantities.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A venue charges a fixed ₹50 booking fee plus ₹20 per ticket. Three tickets total ₹110. A witness divides the total evenly and says each ticket costs ₹30.",
@@ -1860,12 +1921,13 @@
       ],
       "answer": 0,
       "explanation": "₹50 + 5 × ₹20 = ₹150."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 63,
     "chapter": 7,
-    "title": "The Budget That Almost Fits",
+    "title": "The Club's Budget Plan",
     "story": "A club has ₹500. Each kit costs ₹70 and delivery has a one-time ₹80 fee. The organiser says seven kits fit.",
     "claim": "The organiser claims seven kits fit the budget.",
     "prompt": "What is the maximum number of kits?",
@@ -1877,7 +1939,7 @@
     "answer": 1,
     "explanation": "After delivery, ₹420 remains. Six kits cost ₹420; seven plus delivery exceed ₹500.",
     "twist": "The organiser forgot the fixed delivery fee.",
-    "moral": "Check every constraint, including fixed costs.",
+    "moral": "Creative thinking finds a good solution while respecting real limits and people's needs.",
     "verdict": "disproved",
     "check": "constraints",
     "evidence": "A club has ₹500. Each kit costs ₹70 and delivery has a one-time ₹80 fee. The organiser says seven kits fit.",
@@ -1890,7 +1952,8 @@
       ],
       "answer": 0,
       "explanation": "₹80 + 6 × ₹70 = ₹500, so nothing remains."
-    }
+    },
+    "virtue": "Creativity"
   },
   {
     "id": 64,
@@ -1907,7 +1970,7 @@
     "answer": 1,
     "explanation": "At n = 1, A costs 14 and B costs 20, so they are not equivalent. The matching total at n = 4 is only one shared example.",
     "twist": "The matching total at n = 3 was accidental.",
-    "moral": "One matching example does not prove two rules identical.",
+    "moral": "Thoughtful reasoning checks each step and makes sure a conclusion follows from its clues.",
     "verdict": "disproved",
     "check": "logic",
     "evidence": "Contract A costs 10 + 4n; Contract B costs 2n + 18. They both cost 22 when n = 3. A clerk says they are equivalent.",
@@ -1920,7 +1983,8 @@
       ],
       "answer": 0,
       "explanation": "A costs 30 and B costs 28, a difference of 2."
-    }
+    },
+    "virtue": "Thoughtful reasoning"
   },
   {
     "id": 65,
@@ -1937,7 +2001,7 @@
     "answer": 1,
     "explanation": "The nth term is 5 + 4(n − 1); for n = 20 it is 81.",
     "twist": "The planner used 20 additions after the first term instead of 19.",
-    "moral": "Translate a pattern into a precise general rule.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A sequence is 5, 9, 13, 17. The planner claims the 20th term is 80.",
@@ -1950,7 +2014,8 @@
       ],
       "answer": 0,
       "explanation": "The tenth term is 5 + 9 × 4 = 41."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 66,
@@ -1980,14 +2045,15 @@
       ],
       "answer": 0,
       "explanation": "5 × 4 = 20; the digit sum is 9."
-    }
+    },
+    "virtue": "Thoughtful reasoning"
   },
   {
     "id": 67,
     "chapter": 7,
-    "title": "The Rule That Was Reversed",
-    "story": "A rule says: if a person is captain, they must have completed safety training. A witness says anyone who completed training must be a captain.",
-    "claim": "The witness claims completing training proves captaincy.",
+    "title": "The Captain's Training Rule",
+    "story": "A community team uses this rule: every captain has completed training. The learners explore whether completing training also proves that someone is a captain.",
+    "claim": "A learner suggests that anyone who completed training must be a captain.",
     "prompt": "What is the logical error?",
     "options": [
       "Confusing a statement with its converse",
@@ -1996,8 +2062,8 @@
     ],
     "answer": 0,
     "explanation": "Captain implies training; training does not imply captain.",
-    "twist": "Many trained members are not captains.",
-    "moral": "Do not reverse an implication without evidence.",
+    "twist": "The team checks other trained helpers. They can be well prepared and still have different roles, so the reverse statement needs its own evidence.",
+    "moral": "Thoughtful reasoning checks each step and makes sure a conclusion follows from its clues.",
     "verdict": "disproved",
     "check": "logic",
     "evidence": "A rule says: if a person is captain, they must have completed safety training. A witness says anyone who completed training must be a captain.",
@@ -2010,12 +2076,13 @@
       ],
       "answer": 0,
       "explanation": "The rule only guarantees that every captain has completed training."
-    }
+    },
+    "virtue": "Thoughtful reasoning"
   },
   {
     "id": 68,
     "chapter": 7,
-    "title": "The Witness Who Could Not Be Right",
+    "title": "Three Statements and One Ledger",
     "story": "Witness A says the ledger is correct. B says its total is 20 higher than recorded. C says A and B are both correct. The arithmetic confirms the ledger.",
     "claim": "The witnesses claim all three statements can be true.",
     "prompt": "Which conclusion follows?",
@@ -2027,7 +2094,7 @@
     "answer": 0,
     "explanation": "If the ledger is correct, B's claim is false, so C cannot have both A and B true.",
     "twist": "The contradiction does not prove that any witness intended to mislead the court.",
-    "moral": "Test claims without attacking a person's character.",
+    "moral": "Thoughtful reasoning checks each step and makes sure a conclusion follows from its clues.",
     "verdict": "disproved",
     "check": "logic",
     "evidence": "Witness A says the ledger is correct. B says its total is 20 higher than recorded. C says A and B are both correct. The arithmetic confirms the ledger.",
@@ -2040,7 +2107,8 @@
       ],
       "answer": 0,
       "explanation": "A is true; B and C are false because A and B cannot both be true."
-    }
+    },
+    "virtue": "Thoughtful reasoning"
   },
   {
     "id": 69,
@@ -2057,7 +2125,7 @@
     "answer": 2,
     "explanation": "B opens room 3, so A must open room 2 and C room 1.",
     "twist": "A confident witness ignored the one-key-per-room constraint.",
-    "moral": "Use every constraint before deciding.",
+    "moral": "Thoughtful reasoning checks each step and makes sure a conclusion follows from its clues.",
     "verdict": "disproved",
     "check": "logic",
     "evidence": "Keys A, B and C open rooms 1, 2 and 3, one each. A does not open room 1; B opens room 3. A witness says A opens room 3.",
@@ -2070,7 +2138,8 @@
       ],
       "answer": 0,
       "explanation": "With one key per room, A must open room 2 and C room 1."
-    }
+    },
+    "virtue": "Thoughtful reasoning"
   },
   {
     "id": 70,
@@ -2087,7 +2156,7 @@
     "answer": 0,
     "explanation": "n + p = 15 and 2n + 3p = 39. Subtracting 2(n + p) gives p = 9, so n = 6.",
     "twist": "A copy swapped the item labels; solving both equations exposes the error.",
-    "moral": "Use independent equations to distinguish unknowns.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "supported",
     "check": "calculation",
     "evidence": "Two notebooks and three pens cost ₹39. One notebook and one pen cost ₹15. Prices are fixed whole-rupee values.",
@@ -2100,7 +2169,8 @@
       ],
       "answer": 0,
       "explanation": "3 × ₹6 + 2 × ₹9 = ₹36."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 71,
@@ -2117,7 +2187,7 @@
     "answer": 0,
     "explanation": "The winner received 42 out of 100 votes, or 42%, which is less than half. Most-votes wins is not the same as receiving a majority.",
     "twist": "The winner has more votes than either rival, but 58 voters chose someone else.",
-    "moral": "Describe exactly what a voting rule establishes.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Candidates receive 42, 35 and 23 votes. The candidate with 42 wins under the most-votes rule. A speaker says the winner has support from most voters.",
@@ -2130,7 +2200,8 @@
       ],
       "answer": 0,
       "explanation": "35 + 23 = 58 votes, or 58%."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 72,
@@ -2147,7 +2218,7 @@
     "answer": 0,
     "explanation": "There are five total parts; 10 seats split into 4 and 6.",
     "twist": "Other population ratios can require a stated rounding method.",
-    "moral": "Publish the allocation rule and check the total.",
+    "moral": "Creative thinking finds a good solution while respecting real limits and people's needs.",
     "verdict": "supported",
     "check": "constraints",
     "evidence": "Two districts have populations 60,000 and 90,000 and share 10 seats proportionally. A clerk proposes 4 and 6 seats.",
@@ -2160,7 +2231,8 @@
       ],
       "answer": 0,
       "explanation": "There are five parts and each part is three seats, giving 6 and 9."
-    }
+    },
+    "virtue": "Creativity"
   },
   {
     "id": 73,
@@ -2177,7 +2249,7 @@
     "answer": 1,
     "explanation": "A = 0.6×90 + 0.4×50 = 74; B = 0.6×70 + 0.4×90 = 78.",
     "twist": "The posted card had accidentally changed teamwork to 20% without updating other weights.",
-    "moral": "Publish weights before judging and apply them consistently.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A score is 60% skill and 40% teamwork. Team A scores 90 and 50; Team B scores 70 and 90 respectively.",
@@ -2190,12 +2262,13 @@
       ],
       "answer": 0,
       "explanation": "0.4 × 70 + 0.6 × 90 = 82."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 74,
     "chapter": 8,
-    "title": "The Unequal Duty Roster",
+    "title": "A Balanced Duty Roster",
     "story": "Four people each work three shifts. One roster gives all three late shifts to the same person. The coordinator says the totals are equal, so the roster is fair.",
     "claim": "The coordinator claims equal shift totals prove fairness.",
     "prompt": "What else should the court examine?",
@@ -2207,7 +2280,7 @@
     "answer": 1,
     "explanation": "Equal totals can hide unequal burdens; timing and difficulty matter to this roster.",
     "twist": "A second week shows the same person repeatedly receives late shifts.",
-    "moral": "Fairness may require comparing burdens over time.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "partly",
     "check": "comparison",
     "evidence": "Four people each work three shifts. One roster gives all three late shifts to the same person. The coordinator says the totals are equal, so the roster is fair.",
@@ -2220,12 +2293,13 @@
       ],
       "answer": 0,
       "explanation": "Equal totals can hide an uneven distribution of difficult shifts."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 75,
     "chapter": 8,
-    "title": "The Tournament That Never Ends",
+    "title": "The Round-Robin Festival",
     "story": "Eight teams play a round-robin tournament where every pair meets once. The organiser schedules only eight matches.",
     "claim": "The organiser claims eight teams need eight matches.",
     "prompt": "How many matches are needed?",
@@ -2237,7 +2311,7 @@
     "answer": 1,
     "explanation": "There are 8×7/2 = 28 unique pairs.",
     "twist": "The organiser counted teams rather than pairings.",
-    "moral": "Count the structure of the task, not just participants.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "Eight teams play a round-robin tournament where every pair meets once. The organiser schedules only eight matches.",
@@ -2250,12 +2324,13 @@
       ],
       "answer": 0,
       "explanation": "Six teams make 6 × 5 ÷ 2 = 15 unique pairs."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 76,
     "chapter": 8,
-    "title": "The Emergency Supply Hearing",
+    "title": "The Community Supply Plan",
     "story": "Three shelters need 11, 17 and 22 supply kits. A delivery contains 50 kits. The clerk proposes 15 for each shelter.",
     "claim": "The clerk claims the equal split meets every stated need.",
     "prompt": "How many kits remain after meeting stated needs exactly?",
@@ -2267,7 +2342,7 @@
     "answer": 0,
     "explanation": "11 + 17 + 22 = 50, so no kits remain if those stated needs govern allocation.",
     "twist": "An equal split leaves one shelter with extra kits and two short.",
-    "moral": "Use the stated objective and explain trade-offs.",
+    "moral": "Creative thinking finds a good solution while respecting real limits and people's needs.",
     "verdict": "disproved",
     "check": "constraints",
     "evidence": "Three shelters need 11, 17 and 22 supply kits. A delivery contains 50 kits. The clerk proposes 15 for each shelter.",
@@ -2280,12 +2355,13 @@
       ],
       "answer": 0,
       "explanation": "3 × 15 = 45, leaving 5 kits."
-    }
+    },
+    "virtue": "Creativity"
   },
   {
     "id": 77,
     "chapter": 8,
-    "title": "The Queue With Two Doors",
+    "title": "The Queue with Two Doors",
     "story": "Policy A produces waits of 2, 2, 2 and 18 minutes. Policy B produces 6, 6, 6 and 6 minutes.",
     "claim": "The manager claims both policies are equally fair because their means match.",
     "prompt": "Which policy has the lower longest wait?",
@@ -2297,7 +2373,7 @@
     "answer": 1,
     "explanation": "A's longest wait is 18 minutes; B's is six. Both means are six minutes.",
     "twist": "The average hid the long wait experienced by one person.",
-    "moral": "Choose measures that reveal individual outcomes.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "partly",
     "check": "comparison",
     "evidence": "Policy A produces waits of 2, 2, 2 and 18 minutes. Policy B produces 6, 6, 6 and 6 minutes.",
@@ -2310,7 +2386,8 @@
       ],
       "answer": 0,
       "explanation": "18 − 6 = 12 minutes."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 78,
@@ -2327,7 +2404,7 @@
     "answer": 1,
     "explanation": "₹90 ÷ 6 = ₹15; ₹130 ÷ 10 = ₹13 per item.",
     "twist": "A lower total price can still be worse value per item.",
-    "moral": "Compare unit prices and consider actual need.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "A small pack has 6 items for ₹90; a large pack has 10 items for ₹130. A poster says the small pack is better because its total price is lower.",
@@ -2340,7 +2417,8 @@
       ],
       "answer": 0,
       "explanation": "The per-item difference is ₹2, so ten items differ by ₹20."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 79,
@@ -2370,14 +2448,15 @@
       ],
       "answer": 0,
       "explanation": "90 − 85 = 5 points. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 80,
     "chapter": 8,
-    "title": "The Rule That Excluded a Neighbour",
-    "story": "A recreation grant automatically goes to groups with at least 20 members. A group of 19 serves a remote area with few services and receives nothing.",
-    "claim": "The panel claims the size threshold proves the group is not valuable.",
+    "title": "The Neighbourhood Grant Review",
+    "story": "A recreation grant is designed for groups with at least 20 members. A group of 19 also serves a remote area with few nearby services, so the community panel studies which details matter for a fair review.",
+    "claim": "The panel asks whether member count alone describes a group's value to its neighbourhood.",
     "prompt": "What does the threshold establish by itself?",
     "options": [
       "The group cannot be valuable",
@@ -2386,8 +2465,8 @@
     ],
     "answer": 1,
     "explanation": "The group has 19 members and misses the stated threshold. The rule alone does not measure need or impact.",
-    "twist": "The policy never accounted for isolated neighbourhoods.",
-    "moral": "Consistent rules can still omit relevant circumstances.",
+    "twist": "A map adds travel distance and access needs to the discussion. The panel can now consider group size alongside the needs of the people served.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "A recreation grant automatically goes to groups with at least 20 members. A group of 19 serves a remote area with few services and receives nothing.",
@@ -2400,12 +2479,13 @@
       ],
       "answer": 0,
       "explanation": "19 is at least 18, so the group meets the changed threshold."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 81,
     "chapter": 9,
-    "title": "The Shortest Route to Safety",
+    "title": "The Swiftest Route",
     "story": "Route A has segments of 4, 4 and 4 minutes. Route B has segments of 5 and 3 minutes. A planner chooses A because it has fewer turns.",
     "claim": "The planner claims Route A is faster.",
     "prompt": "Which route takes less time?",
@@ -2417,7 +2497,7 @@
     "answer": 1,
     "explanation": "A takes 12 minutes; B takes 8. Compare total weights, not segment count.",
     "twist": "Fewer turns did not mean less travel time.",
-    "moral": "Define and optimise the real cost.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Route A has segments of 4, 4 and 4 minutes. Route B has segments of 5 and 3 minutes. A planner chooses A because it has fewer turns.",
@@ -2430,7 +2510,8 @@
       ],
       "answer": 0,
       "explanation": "Route B takes eight minutes, less than ten and twelve."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 82,
@@ -2447,7 +2528,7 @@
     "answer": 1,
     "explanation": "A closed route using each edge exactly once requires every vertex to have even degree.",
     "twist": "The map is connected, but connectivity alone is insufficient.",
-    "moral": "Check global structure, not just local reachability.",
+    "moral": "Thoughtful reasoning checks each step and makes sure a conclusion follows from its clues.",
     "verdict": "disproved",
     "check": "logic",
     "evidence": "A network has four land areas; three areas have an odd number of bridges. The planner wants a closed walk crossing every bridge exactly once.",
@@ -2460,7 +2541,8 @@
       ],
       "answer": 0,
       "explanation": "An Euler trail can have zero or two odd-degree vertices, but not three."
-    }
+    },
+    "virtue": "Thoughtful reasoning"
   },
   {
     "id": 83,
@@ -2477,7 +2559,7 @@
     "answer": 0,
     "explanation": "8 + 7 = 15; after one 12-step cycle, the dial displays 3.",
     "twist": "The dial wraps around after 12 positions.",
-    "moral": "Account for repeating cycles and the answer domain.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A dial cycles from 0 to 11 and returns to 0. It starts at 8 and advances 7 positions. A clerk writes 15 as the displayed value.",
@@ -2490,12 +2572,13 @@
       ],
       "answer": 0,
       "explanation": "5 + 10 = 15; after wrapping around 12 positions the dial displays 3."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 84,
     "chapter": 9,
-    "title": "The Cargo That Would Not Fit",
+    "title": "The Best-Fitting Cargo",
     "story": "A cargo hold has capacity 10 units. Crates of size 6, 5 and 4 are available, one of each. The loader takes the 6-unit crate and says no better load is possible.",
     "claim": "The loader claims 6 units is the best achievable total.",
     "prompt": "What is the greatest total size that fits?",
@@ -2507,7 +2590,7 @@
     "answer": 2,
     "explanation": "The 6-unit and 4-unit crates fit exactly into the 10-unit hold. The best total is 10 units.",
     "twist": "A careful measurement shows the 4-unit crate fits alongside the 6-unit crate. The first plan stopped too early.",
-    "moral": "Compare combinations before committing to a greedy choice.",
+    "moral": "Creative thinking finds a good solution while respecting real limits and people's needs.",
     "verdict": "disproved",
     "check": "constraints",
     "evidence": "Hold capacity: 10 units. Crates available: 6, 5 and 4 units.",
@@ -2520,7 +2603,8 @@
       ],
       "answer": 0,
       "explanation": "The 6- and 5-unit crates cannot fit together, so the best single crate is 6 units."
-    }
+    },
+    "virtue": "Creativity"
   },
   {
     "id": 85,
@@ -2537,7 +2621,7 @@
     "answer": 2,
     "explanation": "Six small containers provide only 18 L. Two large and two small provide 20 L for ₹74, less than three large containers at ₹75.",
     "twist": "The apparently cheapest total does not meet the required volume.",
-    "moral": "Check feasible combinations before declaring an optimum.",
+    "moral": "Creative thinking finds a good solution while respecting real limits and people's needs.",
     "verdict": "disproved",
     "check": "constraints",
     "evidence": "A team needs at least 20 L. Small containers hold 3 L for ₹12; large containers hold 7 L for ₹25. Both types are available.",
@@ -2550,7 +2634,8 @@
       ],
       "answer": 0,
       "explanation": "Three large containers provide 21 L for ₹75, below the other listed costs."
-    }
+    },
+    "virtue": "Creativity"
   },
   {
     "id": 86,
@@ -2567,7 +2652,7 @@
     "answer": 0,
     "explanation": "Plan A has ₹120; Plan B has ₹110.",
     "twist": "Their long-term paths differ even though the first-year comparison is simple.",
-    "moral": "Know whether a rule adds a fixed amount or applies a rate.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "A fund starts at ₹100. Plan A adds ₹20 each year; Plan B increases the current amount by 10% each year. The first comparison is after one year.",
@@ -2580,7 +2665,8 @@
       ],
       "answer": 0,
       "explanation": "Plan A reaches ₹140; Plan B goes from ₹100 to ₹110 to ₹121."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 87,
@@ -2597,7 +2683,7 @@
     "answer": 2,
     "explanation": "Area changes from 9 cm² to 36 cm², four times as large.",
     "twist": "The cartographer applied a linear scale factor directly to area.",
-    "moral": "Understand how scaling affects dimensions and area.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "A square map tile has side length 3 cm. A revised map doubles the side length to 6 cm. The cartographer says area doubles.",
@@ -2610,7 +2696,8 @@
       ],
       "answer": 0,
       "explanation": "36 − 9 = 27 cm². This confirms the stated relationship."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 88,
@@ -2640,14 +2727,15 @@
       ],
       "answer": 0,
       "explanation": "Better sampling and explicit uncertainty help judge whether a narrow lead is meaningful."
-    }
+    },
+    "virtue": "Inclusion"
   },
   {
     "id": 89,
     "chapter": 9,
-    "title": "The Promise That Proved Nothing",
-    "story": "A rule says an approved package has passed safety checks. A witness says passing checks proves approval.",
-    "claim": "The witness claims safety checks guarantee approval.",
+    "title": "The Steps to Approval",
+    "story": "A community charter says that every approved package has passed its safety checks. The review team wants to know whether passing those checks alone is enough to establish approval.",
+    "claim": "A learner suggests that passing safety checks guarantees approval.",
     "prompt": "Is that logically guaranteed?",
     "options": [
       "Yes, the statements are identical",
@@ -2656,11 +2744,11 @@
     ],
     "answer": 1,
     "explanation": "Approval implies safety checks under the rule, but checks may be necessary without being sufficient for approval.",
-    "twist": "The package still lacks budget sign-off.",
-    "moral": "Distinguish necessary conditions from sufficient conditions.",
+    "twist": "The record shows that budget sign-off is another required step. The safety checks are valuable, and the full path to approval includes both requirements.",
+    "moral": "Careful logic checks the whole path, including every necessary step.",
     "verdict": "disproved",
     "check": "logic",
-    "evidence": "A rule says an approved package has passed safety checks. A witness says passing checks proves approval.",
+    "evidence": "The charter states that approval requires completed safety checks. The review notes also list budget sign-off as a separate step.",
     "challenge": {
       "prompt": "A package passed safety checks and has budget approval. Is final approval guaranteed by those facts alone?",
       "options": [
@@ -2670,14 +2758,15 @@
       ],
       "answer": 0,
       "explanation": "Passing necessary checks does not establish every approval condition."
-    }
+    },
+    "virtue": "Thoughtful reasoning"
   },
   {
     "id": 90,
     "chapter": 9,
-    "title": "The Model That Failed in the Rain",
-    "story": "A walkway model assumes dry ground. Heavy rain changes the surface and makes its old travel-time estimate unreliable.",
-    "claim": "The planner claims the old estimate is still reliable because the arithmetic was correct.",
+    "title": "The Rainy-Day Walkway Model",
+    "story": "A walkway model was built using measurements from dry ground. After rain changes the surface, the community checks whether the same travel-time estimate still describes the route.",
+    "claim": "The planner suggests that a correct calculation will describe the route under every condition.",
     "prompt": "What should the court do?",
     "options": [
       "Keep it because the arithmetic was correct",
@@ -2686,8 +2775,8 @@
     ],
     "answer": 1,
     "explanation": "A model is useful only while its assumptions describe the situation; changed conditions require new evidence.",
-    "twist": "The calculation was consistent but the conditions changed.",
-    "moral": "Revise a model when reality changes.",
+    "twist": "The wet surface changes travel times, so the team gathers fresh measurements and improves the model for rainy days.",
+    "moral": "Curiosity welcomes new evidence and helps a model grow closer to reality.",
     "verdict": "partly",
     "check": "assumptions",
     "evidence": "A walkway model assumes dry ground. Heavy rain changes the surface and makes its old travel-time estimate unreliable.",
@@ -2700,14 +2789,15 @@
       ],
       "answer": 0,
       "explanation": "Changed conditions require new observations and a revised model."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 91,
     "chapter": 10,
-    "title": "The Festival Budget on Trial",
-    "story": "A budget includes ₹1,200 for materials, ₹450 for food and ₹350 for transport. It also includes a cancelled ₹200 order in a reported spend of ₹2,200.",
-    "claim": "The treasurer claims ₹2,200 was actually spent, including a cancelled order.",
+    "title": "The Festival's Clear Accounts",
+    "story": "The festival account lists ₹1,200 for materials, ₹450 for food and ₹350 for transport. A cancelled ₹200 order also appears in the reported total, so the treasurer checks which amounts were actually paid.",
+    "claim": "The first report includes the cancelled ₹200 order in the total spent.",
     "prompt": "What is the corrected total after removing the unpaid cancelled order?",
     "options": [
       "₹1,800",
@@ -2716,11 +2806,11 @@
     ],
     "answer": 1,
     "explanation": "The itemized amounts total ₹1,200 + ₹450 + ₹350 = ₹2,000. Removing the unpaid ₹200 line from the reported ₹2,200 also leaves ₹2,000.",
-    "twist": "A bank receipt confirms no payment was made for the cancelled ₹200 order, and the itemized paid amounts add to ₹2,000.",
-    "moral": "Correct the record before assigning responsibility.",
+    "twist": "A bank receipt confirms the cancelled order was never paid. The itemized paid amounts add neatly to ₹2,000.",
+    "moral": "Accurate records and openness help a team make good decisions together.",
     "verdict": "disproved",
     "check": "records",
-    "evidence": "Itemized amounts: ₹1,200 + ₹450 + ₹350. Cancelled order: ₹200, unpaid. Reported total: ₹2,200.",
+    "evidence": "Paid amounts: ₹1,200 + ₹450 + ₹350. Cancelled order: ₹200, unpaid. First reported total: ₹2,200.",
     "challenge": {
       "prompt": "The reported budget is ₹2,200 while itemized materials, food and transport add to ₹2,000. What is the discrepancy?",
       "options": [
@@ -2730,12 +2820,13 @@
       ],
       "answer": 0,
       "explanation": "₹2,200 − ₹2,000 = ₹200, the cancelled unpaid order's value."
-    }
+    },
+    "virtue": "Honesty"
   },
   {
     "id": 92,
     "chapter": 10,
-    "title": "The River Crossing Decision",
+    "title": "The River Crossing Plan",
     "story": "A rescue bus carries 12 people per trip. There are 29 people waiting, and a planner has arranged only two trips.",
     "claim": "The planner claims the two trips can carry everyone.",
     "prompt": "What is the minimum number of trips needed?",
@@ -2747,7 +2838,7 @@
     "answer": 1,
     "explanation": "Two trips carry 24 people; a third is needed for the remaining five.",
     "twist": "The plan treated spare seats as if capacity could be exceeded.",
-    "moral": "Optimise under the real capacity constraint.",
+    "moral": "Creative thinking finds a good solution while respecting real limits and people's needs.",
     "verdict": "disproved",
     "check": "constraints",
     "evidence": "A rescue bus carries 12 people per trip. There are 29 people waiting, and a planner has arranged only two trips.",
@@ -2760,7 +2851,8 @@
       ],
       "answer": 0,
       "explanation": "36 − 29 = 7 unused seats."
-    }
+    },
+    "virtue": "Creativity"
   },
   {
     "id": 93,
@@ -2777,7 +2869,7 @@
     "answer": 0,
     "explanation": "There are 60 households, so each gets 1.5 L. The first neighbourhood receives 20 × 1.5 = 30 L.",
     "twist": "Equal totals per neighbourhood and equal amounts per household are different rules.",
-    "moral": "Clarify whether fairness means equal shares or needs-based shares.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "Two neighbourhoods have 20 and 40 households and share 90 litres. A proposal gives 45 litres to each neighbourhood.",
@@ -2790,7 +2882,8 @@
       ],
       "answer": 0,
       "explanation": "40 × 1.5 = 60 L. This confirms the stated relationship."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 94,
@@ -2807,7 +2900,7 @@
     "answer": 1,
     "explanation": "The ratio changes from 0.6/6 = 0.1 to 0.6/3 = 0.2, twice as steep.",
     "twist": "The cheaper layout changes the gradient relevant to accessibility.",
-    "moral": "A design must satisfy human needs as well as the drawing.",
+    "moral": "Fair comparisons use the same units, starting point and relevant conditions.",
     "verdict": "disproved",
     "check": "comparison",
     "evidence": "A ramp rises 0.6 m over a 6 m horizontal run. A new design keeps the rise but shortens the run to 3 m.",
@@ -2820,7 +2913,8 @@
       ],
       "answer": 0,
       "explanation": "0.6 ÷ run ≤ 0.1 requires a run of at least 6 m."
-    }
+    },
+    "virtue": "Fairness"
   },
   {
     "id": 95,
@@ -2837,7 +2931,7 @@
     "answer": 1,
     "explanation": "Seven panels produce 1,400 Wh and three produce 300 Wh; total 1,700 Wh.",
     "twist": "The original estimate assumed equal sunlight for every panel.",
-    "moral": "State assumptions and account for operating conditions.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "Ten panels each produce 200 Wh in test conditions. Three panels are shaded and produce half as much as the others today.",
@@ -2850,7 +2944,8 @@
       ],
       "answer": 0,
       "explanation": "2,000 − 1,700 = 300 Wh lost."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 96,
@@ -2867,7 +2962,7 @@
     "answer": 0,
     "explanation": "Route A ends at 10:30, so the same bus cannot depart Route B at 10:10.",
     "twist": "Each route was checked alone; the shared resource was ignored.",
-    "moral": "A system's parts must fit together in time.",
+    "moral": "Creative thinking finds a good solution while respecting real limits and people's needs.",
     "verdict": "disproved",
     "check": "constraints",
     "evidence": "One bus is scheduled on Route A at 10:00, taking 30 minutes, and Route B at 10:10. The same bus is required for both departures.",
@@ -2880,7 +2975,8 @@
       ],
       "answer": 0,
       "explanation": "The bus is ready at 10:40 after its 10:30 arrival and ten-minute turnaround."
-    }
+    },
+    "virtue": "Creativity"
   },
   {
     "id": 97,
@@ -2897,7 +2993,7 @@
     "answer": 1,
     "explanation": "The least common multiple of 9 and 12 is 36 days.",
     "twist": "The clerk added the intervals instead of finding a common multiple.",
-    "moral": "Use precise definitions for repeating events.",
+    "moral": "Working carefully, one step at a time, turns a large puzzle into something we can understand.",
     "verdict": "disproved",
     "check": "calculation",
     "evidence": "A community bell rings every 9 days and a market flag rises every 12 days. Both happen today. A clerk predicts they next coincide after 21 days.",
@@ -2910,7 +3006,8 @@
       ],
       "answer": 0,
       "explanation": "They coincide after 36 and 72 days, so there are two future coincidences."
-    }
+    },
+    "virtue": "Perseverance"
   },
   {
     "id": 98,
@@ -2927,7 +3024,7 @@
     "answer": 1,
     "explanation": "Weighted results depend on their weights; changing them after seeing outcomes undermines consistency and transparency.",
     "twist": "The new weights were chosen after judges saw who would win.",
-    "moral": "Make scoring rules transparent before judging.",
+    "moral": "Curiosity asks what we know, what we assume and what one more clue might reveal.",
     "verdict": "disproved",
     "check": "assumptions",
     "evidence": "A contest score is 70% skill and 30% teamwork. After the event, the proposal changes weights to 40% skill and 60% teamwork, changing the winner.",
@@ -2940,12 +3037,13 @@
       ],
       "answer": 0,
       "explanation": "Rules should be known before results are available."
-    }
+    },
+    "virtue": "Curiosity"
   },
   {
     "id": 99,
     "chapter": 10,
-    "title": "The Page That Changed the Town",
+    "title": "The Table That Connected the Town",
     "story": "A copied table shifts one column's values down a row. All numbers remain present but are matched to the wrong neighbourhoods.",
     "claim": "A clerk claims the copied table is reliable because no values are missing.",
     "prompt": "What should happen first?",
@@ -2970,14 +3068,15 @@
       ],
       "answer": 0,
       "explanation": "Values must be re-associated with the correct neighbourhoods before decisions are recalculated."
-    }
+    },
+    "virtue": "Honesty"
   },
   {
     "id": 100,
     "chapter": 10,
-    "title": "The People v. The Old Rule",
-    "story": "The charter requires every public decision to follow the same numerical rule. A review finds the rule consistently excludes a remote neighbourhood because it ignores travel distance and access needs.",
-    "claim": "The old court claims consistency alone proves the rule is fair.",
+    "title": "The Charter of Shared Paths",
+    "story": "The town uses a common numerical rule to guide public decisions. A community review shows that the rule should also consider travel distance and access needs in a remote neighbourhood.",
+    "claim": "The council asks whether applying one rule consistently is enough to make it fair for every neighbourhood.",
     "prompt": "What should the final court require before replacing the rule?",
     "options": [
       "Choose a rule that sounds fair without testing it",
@@ -2986,8 +3085,8 @@
     ],
     "answer": 1,
     "explanation": "A defensible policy states its goals, uses suitable evidence, tests consequences and explains trade-offs. Consistency alone is not enough.",
-    "twist": "The archive reveals the charter demanded transparent evidence and review, not blind obedience to a formula.",
-    "moral": "Truth, fairness, humility and accountability must work together.",
+    "twist": "The original charter calls for transparent evidence and review. The town can use those principles to improve the rule together.",
+    "moral": "Fairness, humility and accountability help a community build wiser rules.",
     "verdict": "partly",
     "check": "constraints",
     "evidence": "The charter requires every public decision to follow the same numerical rule. A review finds the rule consistently excludes a remote neighbourhood because it ignores travel distance and access needs.",
@@ -3000,7 +3099,8 @@
       ],
       "answer": 0,
       "explanation": "A defensible rule states its goal and constraints, tests consequences, and explains trade-offs."
-    }
+    },
+    "virtue": "Creativity"
   }
 ];
   const chapters = [
