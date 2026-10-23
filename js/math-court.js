@@ -400,7 +400,7 @@
 
 
   const patternRuleIds=["add1","add2","add3","double"];
-  const fractionGoals=[[1,2],[1,3],[2,3],[1,4],[3,4],[2,5],[3,5],[4,5]];
+  const fractionGoals=[[1,2],[1,3],[2,3],[1,4],[3,4],[2,6],[3,8],[5,10]];
   const machineRuleIds=["doublePlusOne","add3","triple","square"];
   function patternGoal(item,task) {
     const rule=patternRuleIds[(item.id+task-1)%patternRuleIds.length];
