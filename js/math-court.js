@@ -897,7 +897,7 @@
     } else {
       const verdictLabels={supported:"The evidence fits",disproved:"Let’s revise the idea",partly:"Some parts fit",uncertain:"Let’s gather one more clue"};
       const v=normalVerdict(item.verdict);
-      content='<div class="mc-stage-layout mc-stage-layout--reflection">'+panel("CASE COMPLETE",verdictLabels[v]||"Final result",'<div class="mc-solution"><strong>'+esc(item.claim)+'</strong><p>'+esc(item.explanation)+'</p></div><p class="mc-story-text">'+esc(item.moral||item.twist)+'</p>','mc-result-card')+'</div>';
+      content='<div class="mc-stage-layout mc-stage-layout--reflection">'+panel("MATHS RESULT",verdictLabels[v]||"Final result",'<div class="mc-solution"><strong>'+esc(item.claim)+'</strong><p>'+esc(item.explanation)+'</p></div><p class="mc-story-text">'+esc(item.moral||item.twist)+'</p>','mc-result-card')+'</div>';
       action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">'+(item.id<100?'Open Case '+(item.id+1)+' →':'Celebrate the 100-case journey 🎉')+'</button><button class="mc-button mc-button-quiet" onclick="MathCourt.goDocket()">Return to the case map</button>';
     }
     host.innerHTML=tabs+'<section class="mc-active-stage mc-stage-phase-'+state.phase+'">'+content+'<div class="mc-stage-actions">'+action+(state.phase>0&&state.phase<6?'<button class="mc-button mc-button-quiet" onclick="MathCourt.previous()">← Review previous stage</button>':'')+'</div></section>';
