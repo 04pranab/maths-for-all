@@ -366,7 +366,7 @@ async function main() {
     'assert(task1Data["text/plain"]===String(MathCourtData.getCase(1).answer),"Dragging a result tile should carry the selected answer.");' +
     'MathCourt.dropAnswer("investigation",{preventDefault:()=>{},dataTransfer:{getData:k=>task1Data[k]||""}});' +
     'MathCourt.answerInvestigation(MathCourtData.getCase(1).answer);' +
-    'assert(document.getElementById("mc-feedback").textContent.includes("Exhibit verified"), "A correct mathematical answer did not receive useful feedback.");' +
+    'assert(document.getElementById("mc-feedback").textContent.includes("Exhibit verified"), "A correct mathematical answer did not receive useful feedback: " + document.getElementById("mc-feedback").textContent);' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "The second linked challenge must be completed before admitting evidence.");' +
     'MathCourt.answerChallenge(MathCourtData.getCase(1).challenge.answer); assert(document.getElementById("mc-feedback").textContent.includes("fresh hands-on challenge"), "The second challenge should require a fresh goal, not merely another click.");' +
     'MathCourt.chooseLabSlot("a"); MathCourt.chooseLabNumber(1); MathCourt.chooseLabSlot("b"); MathCourt.chooseLabNumber(2); MathCourt.chooseLabOperator("+"); MathCourt.calculateLab(); assert(document.querySelector(".mc-equation-result strong").textContent==="52", "The second exhibit should be built from the 37- and 15-crate records.");' +
