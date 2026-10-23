@@ -60,6 +60,19 @@ for (const [id, expected] of expectedAnswers) {
   const item = data.getCase(id);
   assert.equal(item.options[item.answer], expected, "Case " + id + " has an incorrect keyed answer.");
 }
+const expectedVerdicts = new Map([
+  [1,"supported"],
+  [70,"disproved"],
+  [72,"supported"],
+  [91,"supported"],
+  [100,"partly"]
+]);
+for (const [id, expected] of expectedVerdicts) {
+  assert.equal(data.getCase(id).verdict, expected, "Case " + id + " has an inconsistent verdict key.");
+}
+assert.match(data.getCase(70).claim, /notebook costs ₹9/, "Case 70's claim must be testable against the supplied equations.");
+assert.match(data.getCase(80).claim, /member count alone is enough/i, "Case 80 must state a claim rather than pose a question as the claim.");
+
 const expectedChallengeAnswers = new Map([
   [1,"52 crates"],[6,"304"],[15,"31"],[21,"3/12"],[23,"240 cm"],[30,"72 L"],
   [41,"4:05 pm"],[43,"320 cm"],[50,"18 minutes"],[57,"10"],[61,"21"],[70,"₹36"],
