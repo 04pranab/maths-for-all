@@ -77,6 +77,48 @@
     renderDocket();
     window.scrollTo(0,0);
   }
+
+  const CHAPTER_NOTES = {
+    1:"Every number leaves a trail. Start by checking what was counted, and when.",
+    2:"Patterns hide in plain sight. Find the rule that links the clues.",
+    3:"Fairness often starts with how we share. Make sure the wholes match.",
+    4:"A shape can tell a story that a list of numbers cannot. Measure every side.",
+    5:"A good plan respects time, distance, and the units we use.",
+    6:"A chart can look convincing at first glance. Look closer at its scale.",
+    7:"A rule should work beyond one example. Test it, then test it again.",
+    8:"A fair decision listens to the people affected and checks the numbers.",
+    9:"A useful model has to fit the real world, not just the page.",
+    10:"Bring every clue together. Explain your reasoning and leave room to learn."
+  };
+  function chapterIcon(id) {
+    const art = {
+      1:'<rect x="6" y="5" width="20" height="23" rx="2"/><path d="M11 11h10M11 16h10M11 21h6"/>',
+      2:'<circle cx="10" cy="10" r="2"/><circle cx="16" cy="10" r="2"/><circle cx="22" cy="10" r="2"/><circle cx="10" cy="17" r="2"/><circle cx="16" cy="17" r="2"/><circle cx="22" cy="17" r="2"/><path d="M9 25h14"/>',
+      3:'<circle cx="16" cy="16" r="11"/><path d="M16 5v11h11M16 16l-8 8"/>',
+      4:'<path d="M5 26 15 5l12 21Z"/><path d="M10 22h4M13 16h4M16 10h3"/>',
+      5:'<circle cx="16" cy="16" r="11"/><path d="M16 9v8l6 3M11 3h10"/>',
+      6:'<path d="M5 27V5M5 27h23"/><rect x="9" y="18" width="4" height="9" rx="1"/><rect x="16" y="12" width="4" height="15" rx="1"/><rect x="23" y="7" width="4" height="20" rx="1"/>',
+      7:'<path d="M12 7H8v18h4M20 7h4v18h-4M14 12h4M16 10v4M14 21h4"/>',
+      8:'<path d="M16 5v21M7 10h18M8 10 4 19h8ZM24 10l-4 9h8ZM10 27h12"/>',
+      9:'<circle cx="7" cy="24" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="26" cy="23" r="3"/><path d="M9 21 14 11M19 10l5 10M10 24h13"/>',
+      10:'<path d="M4 27h24M6 8h20M4 8l12-5 12 5M8 10v15M14 10v15M20 10v15M26 10v15"/>'
+    };
+    return '<svg class="mc-chapter-svg" viewBox="0 0 32 32" aria-hidden="true" focusable="false">'+(art[id]||art[1])+'</svg>';
+  }
+  function courtSealArt() {
+    return '<svg class="mc-court-illustration" viewBox="0 0 340 220" aria-hidden="true" focusable="false">' +
+      '<circle cx="170" cy="111" r="96" class="mc-seal-orbit"/>' +
+      '<circle cx="170" cy="111" r="78" class="mc-seal-inner"/>' +
+      '<path d="M78 91 Q170 21 262 91" class="mc-court-roof"/>' +
+      '<path d="M93 91h154M84 174h172M73 188h194" class="mc-court-line"/>' +
+      '<path d="M103 98v72M133 98v72M207 98v72M237 98v72" class="mc-court-pillar"/>' +
+      '<path d="M170 64v51M135 78h70M145 78l-16 26h32ZM195 78l-16 26h32ZM159 119h22M164 125h12" class="mc-scale-line"/>' +
+      '<circle cx="170" cy="78" r="4" class="mc-scale-pin"/>' +
+      '<path d="M117 201h106" class="mc-court-line"/>' +
+      '<path d="M156 201v-11h28v11" class="mc-door"/>' +
+      '</svg>';
+  }
+
   function renderDocket() {
     const docket=$("mc-docket"), play=$("mc-play");
     if(!docket||!play)return;
@@ -87,39 +129,46 @@
     const next=data().cases.find(item=>!state.completed.has(item.id));
     const resume=state.session && data().getCase(state.session.caseId) && !state.completed.has(state.session.caseId)
       ? data().getCase(state.session.caseId) : null;
-    const focusCase=resume||next;
+    const focusCase=resume||next||data().getCase(1);
     const defaultChapterId=focusCase?focusCase.chapter:chapters[chapters.length-1].id;
     if(!chapters.some(ch=>ch.id===Number(state.docketChapterId))) state.docketChapterId=defaultChapterId;
     const activeChapter=chapters.find(ch=>ch.id===Number(state.docketChapterId))||chapters[0];
     const entries=data().cases.filter(item=>item.chapter===activeChapter.id);
     const chapterDone=entries.filter(item=>state.completed.has(item.id)).length;
-    const progressLabel=completed===100?"All 100 cases completed":completed+" of 100 cases completed";
+    const progressLabel=completed===100?"The full 100-case journey is complete":completed+" of 100 cases explored";
     const mainAction=resume
-      ? '<button class="mc-button mc-button-primary" type="button" id="mc-resume" onclick="MathCourt.resume()">Resume Case '+String(resume.id).padStart(3,"0")+' <span aria-hidden="true">→</span></button>'
+      ? '<button class="mc-button mc-button-primary" type="button" id="mc-resume" onclick="MathCourt.resume()">Continue this case <span aria-hidden="true">→</span></button>'
       : next
-        ? '<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase('+next.id+')">Start Case '+String(next.id).padStart(3,"0")+' <span aria-hidden="true">→</span></button>'
-        : '<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase(1)">Play a case again <span aria-hidden="true">↻</span></button>';
+        ? '<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase('+next.id+')">Enter the case <span aria-hidden="true">→</span></button>'
+        : '<button class="mc-button mc-button-primary" type="button" onclick="MathCourt.openCase(1)">Revisit the first case <span aria-hidden="true">↻</span></button>';
+    const caseIdLabel=String(focusCase.id).padStart(3,"0");
 
     docket.innerHTML =
-      '<header class="mc-docket-heading">' +
-        '<div class="mc-docket-heading-copy">' +
-          '<div class="mc-eyebrow">MATH COURT <span aria-hidden="true">/</span> CASE FILES</div>' +
-          '<h2 id="mc-docket-title">Choose a case</h2>' +
-          '<p>Ten chapters. One hundred investigations. Pick a theme and follow the evidence.</p>' +
+      '<section class="mc-court-welcome" aria-labelledby="mc-docket-title">' +
+        '<div class="mc-court-welcome-copy">' +
+          '<div class="mc-eyebrow mc-court-kicker"><span class="mc-kicker-dot" aria-hidden="true"></span> THE COMMON GROUND COURT</div>' +
+          '<h2 id="mc-docket-title">Every clue has a story.</h2>' +
+          '<p>Welcome, junior advocate. Judge Mira has left a hundred case files for you. Read the story, test the maths, and help the court reach a fair conclusion.</p>' +
+          '<div class="mc-court-promise"><span>Listen closely</span><i aria-hidden="true">·</i><span>Think carefully</span><i aria-hidden="true">·</i><span>Be fair</span></div>' +
         '</div>' +
-        '<div class="mc-docket-heading-actions">' +
-          mainAction +
-          (completed>0||resume?'<button class="mc-button mc-button-quiet" type="button" onclick="MathCourt.resetProgress()">Reset progress</button>':"") +
+        '<div class="mc-court-welcome-scene">' +
+          courtSealArt() +
+          '<div class="mc-next-file" aria-label="Next recommended case">' +
+            '<div class="mc-next-file-top"><span>'+(resume?"PICK UP WHERE YOU LEFT OFF":completed===100?"A CASE TO REVISIT":"YOUR FIRST FILE")+'</span><span>NO. '+caseIdLabel+'</span></div>' +
+            '<h3>'+esc(focusCase.title)+'</h3>' +
+            '<p>'+esc(focusCase.opening||focusCase.story)+'</p>' +
+            '<div class="mc-next-file-bottom">'+mainAction+'</div>' +
+          '</div>' +
         '</div>' +
-      '</header>' +
-      '<div class="mc-docket-progress-strip">' +
-        '<span class="mc-progress-label">YOUR PROGRESS</span>' +
+      '</section>' +
+      '<div class="mc-court-progress-line">' +
+        '<div class="mc-court-progress-copy"><span class="mc-progress-label">YOUR JOURNEY</span><strong>'+progressLabel+'</strong></div>' +
         '<div class="mc-progress-track" role="progressbar" aria-label="Cases completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+completed+'"><span style="width:'+completed+'%"></span></div>' +
-        '<strong>'+progressLabel+'</strong>' +
+        (completed>0||resume?'<button class="mc-reset-link" type="button" onclick="MathCourt.resetProgress()">Start fresh</button>':'<span class="mc-progress-whisper">One thoughtful step at a time.</span>') +
       '</div>' +
-      '<section class="mc-case-browser" aria-label="Choose a chapter and case">' +
+      '<section class="mc-case-browser" aria-label="Explore the court archive">' +
         '<aside class="mc-chapter-rail" aria-label="Choose a chapter">' +
-          '<div class="mc-chapter-rail-heading"><strong>CHAPTERS</strong><span>01–10</span></div>' +
+          '<div class="mc-chapter-rail-heading"><span class="mc-rail-heading-stamp">✦</span><div><strong>THE COURT TRAIL</strong><small>Follow a line of clues</small></div></div>' +
           '<nav class="mc-chapter-rail-list">' +
             chapters.map(ch=>{
               const items=data().cases.filter(item=>item.chapter===ch.id);
@@ -127,41 +176,45 @@
               const isCurrent=ch.id===activeChapter.id;
               const isResume=Boolean(resume&&resume.chapter===ch.id);
               const isNext=Boolean(!resume&&next&&next.chapter===ch.id);
-              const tag=done===items.length?"Complete":isResume?"In progress":isNext?"Next up":done>0?done+"/10 done":"";
-              return '<button type="button" class="mc-chapter-choice '+(isCurrent?"is-current ":"")+(done===items.length?"is-complete ":"")+(isResume?"has-resume ":"")+(isNext?"has-next":"")+'" data-chapter-id="'+ch.id+'" aria-pressed="'+isCurrent+'" onclick="MathCourt.chooseChapter('+ch.id+')">' +
-                '<span class="mc-chapter-choice-number">'+String(ch.id).padStart(2,"0")+'</span>' +
-                '<span class="mc-chapter-choice-copy"><strong>'+esc(ch.name)+'</strong><small>'+esc(ch.theme)+'</small></span>' +
-                '<span class="mc-chapter-choice-status">'+(done===items.length?"✓":isResume?"↻":isNext?"→":"")+'</span>' +
-                '<span class="mc-chapter-choice-progress">'+tag+'</span>' +
+              const tag=done===items.length?"All explored":isResume?"Your open case":isNext?"Begin here":done>0?done+"/10 explored":"10 case files";
+              return '<button type="button" class="mc-chapter-choice mc-chapter-choice--'+ch.id+' '+(isCurrent?"is-current ":"")+(done===items.length?"is-complete ":"")+(isResume?"has-resume ":"")+(isNext?"has-next":"")+'" data-chapter-id="'+ch.id+'" aria-pressed="'+isCurrent+'" onclick="MathCourt.chooseChapter('+ch.id+')">' +
+                '<span class="mc-chapter-choice-symbol">'+chapterIcon(ch.id)+'</span>' +
+                '<span class="mc-chapter-choice-copy"><strong>'+esc(ch.name)+'</strong><small>'+esc(ch.theme)+'</small><span>'+tag+'</span></span>' +
+                '<span class="mc-chapter-choice-status" aria-hidden="true">'+(done===items.length?"✓":isResume?"↻":isNext?"→":"")+'</span>' +
               '</button>';
             }).join("") +
           '</nav>' +
+          '<p class="mc-rail-whisper">No rush. Take the clue that catches your eye.</p>' +
         '</aside>' +
-        '<div class="mc-chapter-detail" data-active-chapter="'+activeChapter.id+'">' +
+        '<div class="mc-chapter-detail mc-chapter-detail--'+activeChapter.id+'" data-active-chapter="'+activeChapter.id+'">' +
           '<header class="mc-chapter-detail-heading">' +
-            '<div><p class="mc-chapter-detail-kicker">CHAPTER '+String(activeChapter.id).padStart(2,"0")+' <span aria-hidden="true">·</span> CASES '+String(activeChapter.from).padStart(3,"0")+'–'+String(activeChapter.to).padStart(3,"0")+'</p>' +
+            '<div class="mc-chapter-detail-storymark">'+chapterIcon(activeChapter.id)+'</div>' +
+            '<div class="mc-chapter-detail-title"><p class="mc-chapter-detail-kicker">CHAPTER '+String(activeChapter.id).padStart(2,"0")+' <span aria-hidden="true">·</span> CASES '+String(activeChapter.from).padStart(3,"0")+'–'+String(activeChapter.to).padStart(3,"0")+'</p>' +
             '<h3>'+esc(activeChapter.name)+'</h3><p>'+esc(activeChapter.theme)+'</p></div>' +
-            '<span class="mc-chapter-count">'+chapterDone+' <small>/ 10 complete</small></span>' +
+            '<span class="mc-chapter-count">'+chapterDone+' <small>/ 10 explored</small></span>' +
           '</header>' +
-          '<div class="mc-chapter-progress-track" role="progressbar" aria-label="Cases completed in '+esc(activeChapter.name)+'" aria-valuemin="0" aria-valuemax="10" aria-valuenow="'+chapterDone+'"><span style="width:'+(chapterDone*10)+'%"></span></div>' +
-          '<div class="mc-case-grid" aria-label="Cases in '+esc(activeChapter.name)+'">' +
+          '<div class="mc-chapter-mission"><span>JUDGE MIRA’S NOTE</span><p>'+CHAPTER_NOTES[activeChapter.id]+'</p></div>' +
+          '<div class="mc-chapter-progress-track" role="progressbar" aria-label="Cases explored in '+esc(activeChapter.name)+'" aria-valuemin="0" aria-valuemax="10" aria-valuenow="'+chapterDone+'"><span style="width:'+(chapterDone*10)+'%"></span></div>' +
+          '<div class="mc-case-grid" aria-label="Case files in '+esc(activeChapter.name)+'">' +
             entries.map(item=>{
               const isDone=state.completed.has(item.id);
               const isResume=Boolean(resume&&resume.id===item.id);
               const isNext=Boolean(!resume&&next&&next.id===item.id);
-              const status=isDone?"Completed":isResume?"Resume this case →":isNext?"Start here →":"Open case →";
+              const status=isDone?"Completed":isResume?"Continue this case":isNext?"Your next case":"Read this case";
               const cardClass="mc-case-card"+(isDone?" is-complete":"")+(isResume?" is-resume":"")+(isNext?" is-next":"");
               return '<button type="button" class="'+cardClass+'" data-case-id="'+item.id+'" aria-label="Case '+String(item.id).padStart(3,"0")+': '+esc(item.title)+'. '+status+'" onclick="MathCourt.openCase('+item.id+')">' +
-                '<span class="mc-case-top"><span class="mc-case-number">CASE '+String(item.id).padStart(3,"0")+'</span><span class="mc-case-mark" aria-hidden="true">'+(isDone?"✓":isResume?"↻":isNext?"→":"")+'</span></span>' +
+                '<span class="mc-case-top"><span class="mc-case-number">FILE '+String(item.id).padStart(3,"0")+'</span><span class="mc-case-mark" aria-hidden="true">'+(isDone?"✓":isResume?"↻":isNext?"✦":"")+'</span></span>' +
                 '<strong>'+esc(item.title)+'</strong>' +
-                '<small>'+(isDone?"Completed":isResume?"Continue →":isNext?"Start here →":"Open case →")+'</small>' +
+                '<p class="mc-case-teaser">'+esc(item.opening||item.story)+'</p>' +
+                '<small>'+(isDone?"Read again":isResume?"Pick up here":isNext?"Start the inquiry →":"Read the file →")+'</small>' +
               '</button>';
             }).join("") +
           '</div>' +
-          '<p class="mc-chapter-detail-foot">'+(chapterDone===10?"Every case in this chapter is complete. Revisit one to explore it again.":chapterDone+" of 10 cases complete. You can open any case in this chapter.")+'</p>' +
+          '<p class="mc-chapter-detail-foot">'+(chapterDone===10?"Every file in this chapter has been explored. You can revisit any one.":chapterDone+" of 10 files explored. Follow your curiosity, or continue with the highlighted file.")+'</p>' +
         '</div>' +
       '</section>';
   }
+
   function chooseChapter(id) {
     const chapter=data().chapters.find(ch=>ch.id===Number(id));
     if(!chapter)return;
