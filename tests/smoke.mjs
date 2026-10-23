@@ -331,7 +331,9 @@ async function main() {
     'assert(document.querySelectorAll("#mc-docket .mc-case-card").length === 100, "The docket must render all 100 cases.");' +
     'assert(document.querySelectorAll("#mc-docket .mc-chapter").length === 10, "The docket must group cases into ten chapters.");' +
     'for(let caseId=1;caseId<=100;caseId++){MathCourt.openCase(caseId);const play=document.querySelector("#mc-stage-content .mc-math-play");assert(play&&play.querySelector("button,input"),"Case "+caseId+" needs a playable maths workshop, not a decorative picture.");assert(!document.querySelector("#mc-stage-content .mc-visual-lab"),"Case "+caseId+" should avoid duplicating the activity with a generic visual panel.");assert(document.querySelector("#mc-stage-content .mc-case-split .mc-story-pane")&&document.querySelector("#mc-stage-content .mc-case-split .mc-game-pane"),"Case "+caseId+" needs separate story and play panes.");assert(document.querySelector("#mc-stage-content .mc-story-guide p").textContent===MathCourtData.getCase(caseId).voice,"Case "+caseId+" should use its own character voice.");assert(document.querySelector("#mc-stage-content .mc-story-hook").textContent===MathCourtData.getCase(caseId).opening,"Case "+caseId+" should open with its own story scene.");}' +
-    'MathCourt.openCase(11); MathCourt.setPatternRule("double"); assert(document.querySelector(".mc-pattern-next strong"), "Pattern Garden needs a live next-value tile.");' +
+    'MathCourt.openCase(11); MathCourt.answerInvestigation(MathCourtData.getCase(11).answer); assert(document.getElementById("mc-feedback").textContent.includes("maths playground"), "A case cannot be solved before the workshop is used.");' +
+    'MathCourt.setPatternRule("double"); assert(document.querySelector(".mc-pattern-next strong"), "Pattern Garden needs a live next-value tile.");' +
+    'MathCourt.answerInvestigation(MathCourtData.getCase(11).answer); assert(document.getElementById("mc-feedback").textContent.includes("Aha!"), "A workshop interaction should unlock the mathematical finding.");' +
     'MathCourt.openCase(21); MathCourt.setFraction("numerator",1); assert(document.querySelector(".mc-fraction-equation strong"), "Fraction Studio should update the share display.");' +
     'MathCourt.openCase(31); const areaBefore=MathCourt.shapeStats().area; MathCourt.toggleShapeCell(47); assert(MathCourt.shapeStats().area===areaBefore+1, "Shape Workshop must count a square added by the player.");' +
     'MathCourt.openCase(41); MathCourt.setLabTimeline(90); assert(document.querySelector(".mc-time-result strong").textContent.includes("90 minutes"), "Timeline Studio should update its journey duration.");' +
@@ -363,6 +365,8 @@ async function main() {
     'MathCourt.answerInvestigation(MathCourtData.getCase(1).answer);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Exhibit verified"), "A correct mathematical answer did not receive useful feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Build the evidence", "The second linked challenge must be completed before admitting evidence.");' +
+    'MathCourt.answerChallenge(MathCourtData.getCase(1).challenge.answer); assert(document.getElementById("mc-feedback").textContent.includes("one more move"), "The second challenge should require another hands-on exploration.");' +
+    'MathCourt.toggleThirdOperand();' +
     'MathCourt.answerChallenge((MathCourtData.getCase(1).challenge.answer + 1) % MathCourtData.getCase(1).challenge.options.length);' +
     'const task2Data={};const task2Transfer={setData:(k,v)=>task2Data[k]=v,effectAllowed:""};MathCourt.startAnswerDrag(MathCourtData.getCase(1).challenge.answer,"challenge",{dataTransfer:task2Transfer});' +
     'MathCourt.dropAnswer("challenge",{preventDefault:()=>{},dataTransfer:{getData:k=>task2Data[k]||""}});' +
