@@ -182,7 +182,7 @@
   function answerCross(index) {
     const item=data().getCase(state.caseId),check=data().checks[item.check];
     const rotated=rotatedChoices(check.choices,check.correct,item.id);
-    if(index===rotated.correct){state.crossSolved=true;setFeedback("Objection sustained. You tested the reasoning instead of judging the speaker.","success");}
+    if(index===rotated.correct){state.crossSolved=true;setFeedback("Excellent question. You tested the reasoning with curiosity and respect.","success");}
     else{setFeedback("That approach leaves an important gap. Look for a check that tests the claim, not the person.","hint");}
     syncSession();renderCase();
   }
