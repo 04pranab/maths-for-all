@@ -2709,3 +2709,23 @@
   background:#edf7f1;
   box-shadow:0 0 0 2px #c7e1d4;
 }
+
+#screen-math-court .mc-clue-token-pool,
+#screen-math-court .mc-clue-token-slots {
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:14px 0;
+}
+#screen-math-court .mc-clue-token-drag {
+  min-width:58px; min-height:54px; padding:10px 16px; border:2px solid #b7cec3;
+  border-radius:12px; background:#fff; color:#273b35; font-size:1.15rem; font-weight:800;
+  cursor:grab; touch-action:manipulation;
+}
+#screen-math-court .mc-clue-token-drag:active { cursor:grabbing; }
+#screen-math-court .mc-clue-token-slot {
+  display:grid; gap:6px; min-width:90px; min-height:68px; padding:10px 14px;
+  border:2px dashed #9db9ab; border-radius:12px; background:#f1f8f3;
+}
+#screen-math-court .mc-clue-token-slot span { font-size:.78rem; font-weight:700; color:#496b5d; }
+#screen-math-court .mc-clue-token-slot strong { font-size:1.2rem; }
+#screen-math-court .mc-clue-accessible-note { font-size:.92rem; margin:8px 0 12px; }
+#screen-math-court .mc-clue-token-drag:focus-visible,
+#screen-math-court .mc-clue-token-slot:focus-visible { outline:3px solid #267b70; outline-offset:3px; }
