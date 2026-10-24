@@ -16,7 +16,7 @@
   ];
   const state = {
     caseId:1, phase:0, docketChapterId:null, seenClaim:false, seenEvidence:false,
-    investigationSolved:false, challengeSolved:false, crossSolved:false, clueSolved:false, clueCells:[], clueValue:null, verdictChosen:null,
+    investigationSolved:false, challengeSolved:false, crossSolved:false, clueSolved:false, clueCells:[], clueValue:null, clueOrder:null, verdictChosen:null,
     visualMode:"model", visualFocus:0, lab:null, completed:new Set(), session:null, feedback:"", feedbackKind:""
   };
   function normalVerdict(value) { return value === "insufficient" ? "uncertain" : value; }
@@ -41,7 +41,7 @@
     state.session = {
       caseId:state.caseId, phase:state.phase, seenClaim:state.seenClaim,
       seenEvidence:state.seenEvidence, investigationSolved:state.investigationSolved,
-      challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, clueSolved:state.clueSolved, clueCells:state.clueCells, clueValue:state.clueValue, verdictChosen:state.verdictChosen,
+      challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, clueSolved:state.clueSolved, clueCells:state.clueCells, clueValue:state.clueValue, clueOrder:state.clueOrder, verdictChosen:state.verdictChosen,
       visualMode:state.visualMode, visualFocus:state.visualFocus, lab:state.lab
     };
     persist();
@@ -236,6 +236,7 @@
     state.clueSolved=saved?Boolean(saved.clueSolved):false;
     state.clueCells=saved&&Array.isArray(saved.clueCells)?saved.clueCells.filter(n=>Number.isInteger(n)&&n>=0&&n<9):[];
     state.clueValue=saved&&Number.isFinite(Number(saved.clueValue))?Number(saved.clueValue):null;
+    state.clueOrder=saved&&Array.isArray(saved.clueOrder)?saved.clueOrder.slice(0,3).map(Number):null;
     state.visualMode=saved&&["model","compare","trace"].includes(saved.visualMode)?saved.visualMode:"model";
     state.visualFocus=saved&&Number.isInteger(saved.visualFocus)?Math.max(0,Math.min(4,saved.visualFocus)):0;
     state.verdictChosen=saved?saved.verdictChosen:null;
@@ -995,7 +996,7 @@
     ];
     let controls="";
     if(g.type===0){
-      controls='<div class="mc-clue-token-row">'+g.values.map((v,i)=>'<label class="mc-clue-token"><span>Position '+(i+1)+'</span><select id="mc-clue-order-'+i+'" onchange="MathCourt.markClueChanged()">'+g.values.map(x=>'<option value="'+x+'">'+x+'</option>').join("")+'</select></label>').join("")+'</div>';
+      controls='<div class="mc-clue-token-row">'+g.values.map((v,i)=>'<label class="mc-clue-token"><span>Position '+(i+1)+'</span><select id="mc-clue-order-'+i+'" onchange="MathCourt.markClueChanged()">'+g.values.map(x=>'<option value="'+x+'" '+((state.clueOrder?state.clueOrder[i]:v)===x?'selected':'')+'>'+x+'</option>').join("")+'</select></label>').join("")+'</div>';
     } else if(g.type===1){
       controls='<div class="mc-clue-bars">'+g.bars.map((v,i)=>'<button type="button" class="mc-clue-bar-choice" onclick="MathCourt.chooseClueValue('+i+')"><span class="mc-clue-bar" style="height:'+(24+v*9)+'px"></span><strong>Record '+String.fromCharCode(65+i)+'</strong><small>'+v+' units</small></button>').join("")+'</div>';
     } else if(g.type===2){
@@ -1017,7 +1018,15 @@
     }
     return '<section class="mc-clue-adventure '+(state.clueSolved?"is-solved":"")+'"><div class="mc-clue-adventure-head"><span>NEW CLUE · FIELD MOVE '+String(g.type+1).padStart(2,"0")+'</span><h3>'+titles[g.type]+'</h3><p>'+esc(item.twist||item.evidence)+'</p><p class="mc-clue-adventure-instruction">'+intros[g.type]+'</p></div>'+controls+'<div class="mc-clue-adventure-foot"><button type="button" class="mc-button mc-button-primary" onclick="MathCourt.submitClueMove()">'+(state.clueSolved?"Clue verified ✓":"Check this clue")+'</button><span aria-live="polite">'+(state.clueSolved?"The clue is now part of your evidence.": "Try, inspect the result, and adjust your model.")+'</span></div></section>';
   }
-  function markClueChanged() { state.clueSolved=false; syncSession(); }
+  function markClueChanged() {
+    state.clueSolved=false;
+    const selects=[0,1,2].map(i=>$("mc-clue-order-"+i));
+    if(selects.every(Boolean))state.clueOrder=selects.map(node=>Number(node.value));
+    const numerator=$("mc-clue-numerator"),equation=$("mc-clue-equation-input");
+    if(numerator)state.clueValue=numerator.value===""?null:Number(numerator.value);
+    if(equation)state.clueValue=equation.value===""?null:Number(equation.value);
+    syncSession();
+  }
   function setClueValue(value) { state.clueValue=Number(value); state.clueSolved=false; syncSession(); }
   function chooseClueValue(value) { state.clueValue=Number(value); state.clueSolved=false; refreshCaseKeepingScroll(); }
   function toggleClueCell(index) {
