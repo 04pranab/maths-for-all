@@ -16,7 +16,7 @@
   ];
   const state = {
     caseId:1, phase:0, docketChapterId:null, seenClaim:false, seenEvidence:false,
-    investigationSolved:false, challengeSolved:false, crossSolved:false, clueSolved:false, clueCells:[], verdictChosen:null,
+    investigationSolved:false, challengeSolved:false, crossSolved:false, clueSolved:false, clueCells:[], clueValue:null, verdictChosen:null,
     visualMode:"model", visualFocus:0, lab:null, completed:new Set(), session:null, feedback:"", feedbackKind:""
   };
   function normalVerdict(value) { return value === "insufficient" ? "uncertain" : value; }
@@ -41,7 +41,7 @@
     state.session = {
       caseId:state.caseId, phase:state.phase, seenClaim:state.seenClaim,
       seenEvidence:state.seenEvidence, investigationSolved:state.investigationSolved,
-      challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, clueSolved:state.clueSolved, clueCells:state.clueCells, verdictChosen:state.verdictChosen,
+      challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, clueSolved:state.clueSolved, clueCells:state.clueCells, clueValue:state.clueValue, verdictChosen:state.verdictChosen,
       visualMode:state.visualMode, visualFocus:state.visualFocus, lab:state.lab
     };
     persist();
@@ -235,6 +235,7 @@
     state.crossSolved=saved?saved.crossSolved:false;
     state.clueSolved=saved?Boolean(saved.clueSolved):false;
     state.clueCells=saved&&Array.isArray(saved.clueCells)?saved.clueCells.filter(n=>Number.isInteger(n)&&n>=0&&n<9):[];
+    state.clueValue=saved&&Number.isFinite(Number(saved.clueValue))?Number(saved.clueValue):null;
     state.visualMode=saved&&["model","compare","trace"].includes(saved.visualMode)?saved.visualMode:"model";
     state.visualFocus=saved&&Number.isInteger(saved.visualFocus)?Math.max(0,Math.min(4,saved.visualFocus)):0;
     state.verdictChosen=saved?saved.verdictChosen:null;
