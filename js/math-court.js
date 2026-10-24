@@ -966,8 +966,8 @@
 
   function clueMoveSpec(item) {
     const type=(item.id-1)%10, n=item.id, storyNumbers=[...String(item.twist||"").matchAll(/-?\d[\d,]*(?:\.\d+)?/g)].map(m=>Number(m[0].replace(/,/g,""))).filter(Number.isFinite), source=[...new Set([...storyNumbers,...visualNumbers(item)])];
-    const values=[source[0]??(3+(n%7)),source[1]??(5+((n*3)%9)),source[2]??(2+((n*5)%8))];
-    const sorted=[...values].sort((a,b)=>a-b);
+    while(source.length<3){const fallback=[3,5,8,13][source.length]+n;if(!source.includes(fallback))source.push(fallback);else source.push(fallback+source.length+1);}
+    const values=source.slice(0,3);
     const numerator=1+(Math.abs(values[0])%4),denominator=numerator+1+(Math.abs(values[1])%4);
     const minutes=15+(Math.abs(values[0])%13)*5;
     const bars=values.map(v=>Math.abs(v));
