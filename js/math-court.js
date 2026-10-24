@@ -412,7 +412,7 @@
       '<line x1="160" y1="32" x2="160" y2="210" stroke="#c9c0d3" stroke-width="2"/>'+
       values.map((v,i)=>{
         const y=38+i*39,w=Math.max(4,Math.abs(v)/max*445);
-        return '<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" aria-label="Focus '+esc(labels[i])+'" onclick="MathCourt.focusVisual('+i+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();MathCourt.focusVisual('+i+')}">'+
+        return '<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" aria-label="Focus '+esc(labels[i])+'" onclick="MathCourt.focusVisual('+i+')">'+
           '<text x="12" y="'+(y+17)+'" class="mc-svg-label">'+esc(labels[i])+'</text>'+
           '<rect x="160" y="'+y+'" width="'+w+'" height="24" rx="7" class="mc-svg-bar '+(focus===i?'is-focused':'')+'"/>'+
           '<text x="'+Math.min(665,174+w)+'" y="'+(y+17)+'" class="mc-svg-number">'+esc(String(v))+'</text></g>';
@@ -454,7 +454,7 @@
       const maxT=Math.max(1,...v.map(n=>Math.abs(n)));
       return '<svg viewBox="0 0 720 205" role="img" aria-label="Timeline or measuring scale" data-visual-mode="model"><line x1="40" y1="105" x2="680" y2="105" stroke="#694c83" stroke-width="4" stroke-linecap="round"/>'+v.map((n,i)=>{
         const x=55+(Math.abs(n)/maxT)*590;
-        return '<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" onclick="MathCourt.focusVisual('+i+')" aria-label="Inspect marker '+esc(String(n))+'"><line x1="'+x+'" y1="84" x2="'+x+'" y2="128" stroke="#267b70" stroke-width="4"/><circle cx="'+x+'" cy="105" r="'+(focus===i?12:8)+'" fill="'+(focus===i?'#694c83':'#267b70')+'"/><text x="'+x+'" y="64" text-anchor="middle" class="mc-svg-number">'+esc(String(n))+'</text><text x="'+x+'" y="151" text-anchor="middle" class="mc-svg-note">'+(i===0?'START':i===v.length-1?'END':'MARK '+(i+1))+'</text></g>';
+        return '<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" onclick="MathCourt.focusVisual('+i+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();MathCourt.focusVisual('+i+')}" aria-label="Inspect marker '+esc(String(n))+'"><line x1="'+x+'" y1="84" x2="'+x+'" y2="128" stroke="#267b70" stroke-width="4"/><circle cx="'+x+'" cy="105" r="'+(focus===i?12:8)+'" fill="'+(focus===i?'#694c83':'#267b70')+'"/><text x="'+x+'" y="64" text-anchor="middle" class="mc-svg-number">'+esc(String(n))+'</text><text x="'+x+'" y="151" text-anchor="middle" class="mc-svg-note">'+(i===0?'START':i===v.length-1?'END':'MARK '+(i+1))+'</text></g>';
       }).join("")+'<text x="40" y="190" class="mc-svg-note">Compare gaps between marks, not only their positions.</text></svg>';
     }
     if(item.chapter===6) return svgBars(v,focus,v.map((_,i)=>"Record "+(i+1))).replace('data-visual-mode="compare"','data-visual-mode="model"');

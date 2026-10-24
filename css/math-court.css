@@ -2551,3 +2551,70 @@
 @media (prefers-reduced-motion:reduce) {
   #screen-math-court .mc-case-card:hover { transform:none; }
 }
+
+
+/* Interaction audit follow-up: consistent keyboard focus and predictable split-screen play. */
+#screen-math-court .mc-stage-layout--investigation {
+  grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);
+  grid-template-areas:"work task";
+  align-items:start;
+  gap:clamp(14px,1.8vw,24px);
+}
+#screen-math-court .mc-investigation-work,
+#screen-math-court .mc-investigation-task { min-width:0; }
+#screen-math-court .mc-investigation-task {
+  position:sticky;
+  top:12px;
+}
+#screen-math-court .mc-stage-layout--investigation .mc-math-play,
+#screen-math-court .mc-stage-layout--investigation .mc-panel { height:auto; }
+#screen-math-court .mc-stage-tab,
+#screen-math-court .mc-visual-tab,
+#screen-math-court .mc-value-chip,
+#screen-math-court .mc-number-tile,
+#screen-math-court .mc-op-tile,
+#screen-math-court .mc-route-choice,
+#screen-math-court .mc-stepper,
+#screen-math-court .mc-fraction-part,
+#screen-math-court .mc-shape-cell,
+#screen-math-court .mc-data-bar-wrap,
+#screen-math-court .mc-equation-slot,
+#screen-math-court .mc-answer-tile,
+#screen-math-court .mc-verdict-button,
+#screen-math-court .mc-chapter-choice {
+  touch-action:manipulation;
+}
+#screen-math-court .mc-stage-tab:focus-visible,
+#screen-math-court .mc-visual-tab:focus-visible,
+#screen-math-court .mc-value-chip:focus-visible,
+#screen-math-court .mc-number-tile:focus-visible,
+#screen-math-court .mc-op-tile:focus-visible,
+#screen-math-court .mc-route-choice:focus-visible,
+#screen-math-court .mc-stepper:focus-visible,
+#screen-math-court .mc-fraction-part:focus-visible,
+#screen-math-court .mc-shape-cell:focus-visible,
+#screen-math-court .mc-data-bar-wrap:focus-visible,
+#screen-math-court .mc-equation-slot:focus-visible,
+#screen-math-court .mc-answer-tile:focus-visible,
+#screen-math-court .mc-verdict-button:focus-visible,
+#screen-math-court .mc-chapter-choice:focus-visible,
+#screen-math-court .mc-reset-link:focus-visible,
+#screen-math-court .mc-svg-pick:focus-visible {
+  outline:3px solid #267b70;
+  outline-offset:3px;
+}
+#screen-math-court .mc-svg-pick[role="button"] { cursor:pointer; }
+#screen-math-court .mc-answer-dropzone { min-height:66px; }
+#screen-math-court .mc-answer-instruction,
+#screen-math-court .mc-task-prompt,
+#screen-math-court .mc-play-feedback { font-size:1.03rem; }
+@media (max-width:900px) {
+  #screen-math-court .mc-stage-layout--investigation {
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"work" "task";
+  }
+  #screen-math-court .mc-investigation-task { position:static; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #screen-math-court .mc-case-card:hover { transform:none; }
+}
