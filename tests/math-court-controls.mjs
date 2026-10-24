@@ -25,9 +25,10 @@ assert.deepEqual(missing, [], "Visible Math Court controls call methods that are
 for (const dynamicAction of ["answerInvestigation", "answerChallenge"]) {
   assert.ok(api.has(dynamicAction), "Dynamically selected answer action is missing: " + dynamicAction);
 }
-for (const chapter of [1,2,3,4,5,6,7,8,9,10]) {
+for (const chapter of [1,2,3,4,5,6,7,8,9]) {
   assert.ok(game.includes("item.chapter===" + chapter), "Chapter " + chapter + " has no chapter-specific play mechanic.");
 }
+assert.match(game, /item\.chapter===9\?renderRouteGarden\(item,task\):renderTownPlanner\(item,task\)/, "Chapter 10 should use the Town Planner fallback.");
 for (const renderer of [
   "renderNumberForge", "renderPatternGarden", "renderFractionStudio", "renderShapeWorkshop",
   "renderTimeline", "renderDataGarden", "renderRuleMachine", "renderShareMarket",
