@@ -435,14 +435,14 @@ async function main() {
           const input=document.getElementById("mc-clue-numerator");
           input.value=target[0];input.dispatchEvent(new Event("input",{bubbles:true}));
         } else if(type===3) {
-          const area=Number(document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.match(/\d+/)[0]);
+          const shapeTarget=document.querySelector("#mc-stage-content .mc-workshop-target strong"); assert(shapeTarget,"Missing footprint target node for case "+id); const shapeMatch=shapeTarget.textContent.match(/\d+/); assert(shapeMatch,"Missing numeric footprint target for case "+id+": "+shapeTarget.textContent); const area=Number(shapeMatch[0]);
           for(let i=0;i<area;i++)document.querySelectorAll(".mc-clue-shape-cell")[i].click();
         } else if(type===4) {
           const target=Number(document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.match(/\d+/)[0]);
           const input=document.getElementById("mc-clue-minutes");
           input.value=String(target);input.dispatchEvent(new Event("input",{bubbles:true}));
         } else if(type===6) {
-          const target=Number(document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.match(/Output\s+(\d+)/)[1]);
+          const machineTarget=document.querySelector("#mc-stage-content .mc-workshop-target strong"); assert(machineTarget,"Missing machine target node for case "+id); const machineMatch=machineTarget.textContent.match(/Output\s+(\d+)/); assert(machineMatch,"Missing machine output target for case "+id+": "+machineTarget.textContent); const target=Number(machineMatch[1]);
           const button=[...document.querySelectorAll(".mc-clue-rule-tiles button")].find(node=>node.querySelector("small").textContent.includes("→ "+target));
           assert(button,"No rule-machine control matched the target output for case "+id);button.click();
         } else if(type===7) {
