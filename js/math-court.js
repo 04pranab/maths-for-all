@@ -1024,6 +1024,18 @@
     const cells=new Set(state.clueCells);if(cells.has(index))cells.delete(index);else cells.add(index);
     state.clueCells=[...cells];state.clueSolved=false;refreshCaseKeepingScroll();
   }
+  function clueShapeIsConnected(cells) {
+    if(!cells.length)return false;
+    const set=new Set(cells),visited=new Set(),queue=[cells[0]];
+    while(queue.length){
+      const cell=queue.pop();if(visited.has(cell))continue;visited.add(cell);
+      const row=Math.floor(cell/3),col=cell%3;
+      for(const next of [col>0?cell-1:-1,col<2?cell+1:-1,row>0?cell-3:-1,row<2?cell+3:-1]){
+        if(next>=0&&set.has(next)&&!visited.has(next))queue.push(next);
+      }
+    }
+    return visited.size===set.size;
+  }
   function submitClueMove() {
     const item=data().getCase(state.caseId),g=clueMoveSpec(item);
     let ok=false;
@@ -1032,7 +1044,7 @@
       ok=values.join(",")===g.sorted.join(",");
     } else if(g.type===1){ok=state.clueValue===g.bars.indexOf(Math.max(...g.bars));}
     else if(g.type===2){ok=Number($("mc-clue-numerator")?.value)===g.numerator;}
-    else if(g.type===3){ok=state.clueCells.length===g.area;}
+    else if(g.type===3){ok=state.clueCells.length===g.area&&clueShapeIsConnected(state.clueCells);}
     else if(g.type===4){ok=Number(state.clueValue)===g.minutes;}
     else if(g.type===5){ok=state.clueValue===g.bars.indexOf(Math.max(...g.bars));}
     else if(g.type===6){ok=state.clueValue===g.rule;}
