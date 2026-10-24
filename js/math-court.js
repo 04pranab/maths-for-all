@@ -965,7 +965,7 @@
   }
 
   function clueMoveSpec(item) {
-    const type=(item.id-1)%10, n=item.id, source=visualNumbers(item);
+    const type=(item.id-1)%10, n=item.id, storyNumbers=[...String(item.twist||"").matchAll(/-?\d[\d,]*(?:\.\d+)?/g)].map(m=>Number(m[0].replace(/,/g,""))).filter(Number.isFinite), source=[...new Set([...storyNumbers,...visualNumbers(item)])];
     const values=[source[0]??(3+(n%7)),source[1]??(5+((n*3)%9)),source[2]??(2+((n*5)%8))];
     const sorted=[...values].sort((a,b)=>a-b);
     const numerator=1+(Math.abs(values[0])%4),denominator=numerator+1+(Math.abs(values[1])%4);
@@ -977,7 +977,7 @@
     return {type,values,sorted,numerator,denominator,minutes,bars,rule,input,outputs,target:values[(n+type)%3],area:3+(Math.abs(values[2])%4),share:2+(Math.abs(values[0])%5),route:1,equation:values[0]+values[1]};
   }
   function renderClueMove(item) {
-    const g=clueMoveSpec(item), titles=[
+    const g=clueMoveSpec(item), maxBar=Math.max(1,...g.bars), titles=[
       "Put the number tokens in order","Compare the evidence bars","Build the fraction clue",
       "Shape the footprint","Set the travel timeline","Inspect the data garden",
       "Tune the pattern machine","Allocate the shared resources","Trace a connected route","Balance the equation"
@@ -998,7 +998,7 @@
     if(g.type===0){
       controls='<div class="mc-clue-token-row">'+g.values.map((v,i)=>'<label class="mc-clue-token"><span>Position '+(i+1)+'</span><select id="mc-clue-order-'+i+'" onchange="MathCourt.markClueChanged()">'+g.values.map(x=>'<option value="'+x+'" '+((state.clueOrder?state.clueOrder[i]:v)===x?'selected':'')+'>'+x+'</option>').join("")+'</select></label>').join("")+'</div>';
     } else if(g.type===1){
-      controls='<div class="mc-clue-bars">'+g.bars.map((v,i)=>'<button type="button" class="mc-clue-bar-choice" onclick="MathCourt.chooseClueValue('+i+')"><span class="mc-clue-bar" style="height:'+(24+v*9)+'px"></span><strong>Record '+String.fromCharCode(65+i)+'</strong><small>'+v+' units</small></button>').join("")+'</div>';
+      controls='<div class="mc-clue-bars">'+g.bars.map((v,i)=>'<button type="button" class="mc-clue-bar-choice" onclick="MathCourt.chooseClueValue('+i+')"><span class="mc-clue-bar" style="height:'+(24+Math.min(100,v/maxBar*80))+'px"></span><strong>Record '+String.fromCharCode(65+i)+'</strong><small>'+v+' units</small></button>').join("")+'</div>';
     } else if(g.type===2){
       controls='<div class="mc-workshop-target"><small>TARGET FRACTION</small><strong>'+g.numerator+'/'+g.denominator+'</strong><span>of one whole</span></div><div class="mc-clue-fraction"><label>Shaded parts <input id="mc-clue-numerator" type="number" min="0" max="12" oninput="MathCourt.markClueChanged()" value="'+(state.clueValue==null?0:state.clueValue)+'"/></label><span>of</span><strong>'+g.denominator+' equal parts</strong></div>';
     } else if(g.type===3){
