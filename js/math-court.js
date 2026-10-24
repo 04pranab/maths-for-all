@@ -995,11 +995,11 @@
     ];
     let controls="";
     if(g.type===0){
-      controls='<div class="mc-clue-token-row">'+g.values.map((v,i)=>'<label class="mc-clue-token"><span>Position '+(i+1)+'</span><select id="mc-clue-order-'+i+'">'+g.values.map(x=>'<option value="'+x+'">'+x+'</option>').join("")+'</select></label>').join("")+'</div>';
+      controls='<div class="mc-clue-token-row">'+g.values.map((v,i)=>'<label class="mc-clue-token"><span>Position '+(i+1)+'</span><select id="mc-clue-order-'+i+'" onchange="MathCourt.markClueChanged()">'+g.values.map(x=>'<option value="'+x+'">'+x+'</option>').join("")+'</select></label>').join("")+'</div>';
     } else if(g.type===1){
       controls='<div class="mc-clue-bars">'+g.bars.map((v,i)=>'<button type="button" class="mc-clue-bar-choice" onclick="MathCourt.chooseClueValue('+i+')"><span class="mc-clue-bar" style="height:'+(24+v*9)+'px"></span><strong>Record '+String.fromCharCode(65+i)+'</strong><small>'+v+' units</small></button>').join("")+'</div>';
     } else if(g.type===2){
-      controls='<div class="mc-workshop-target"><small>TARGET FRACTION</small><strong>'+g.numerator+'/'+g.denominator+'</strong><span>of one whole</span></div><div class="mc-clue-fraction"><label>Shaded parts <input id="mc-clue-numerator" type="number" min="0" max="12" value="'+(state.clueValue==null?0:state.clueValue)+'"/></label><span>of</span><strong>'+g.denominator+' equal parts</strong></div>';
+      controls='<div class="mc-workshop-target"><small>TARGET FRACTION</small><strong>'+g.numerator+'/'+g.denominator+'</strong><span>of one whole</span></div><div class="mc-clue-fraction"><label>Shaded parts <input id="mc-clue-numerator" type="number" min="0" max="12" oninput="MathCourt.markClueChanged()" value="'+(state.clueValue==null?0:state.clueValue)+'"/></label><span>of</span><strong>'+g.denominator+' equal parts</strong></div>';
     } else if(g.type===3){
       controls='<div class="mc-workshop-target"><small>FOOTPRINT AREA</small><strong>'+g.area+' squares</strong><span>Use a connected group of squares.</span></div><div class="mc-clue-shape-grid" role="group" aria-label="Nine-square footprint">'+Array.from({length:9},(_,i)=>'<button type="button" class="mc-clue-shape-cell '+(state.clueCells.includes(i)?"is-filled":"")+'" aria-pressed="'+state.clueCells.includes(i)+'" aria-label="Footprint square '+(i+1)+'" onclick="MathCourt.toggleClueCell('+i+')"></button>').join("")+'</div><p class="mc-clue-count">'+state.clueCells.length+' of '+g.area+' squares selected</p>';
     } else if(g.type===4){
@@ -1013,12 +1013,13 @@
     } else if(g.type===8){
       controls='<div class="mc-workshop-target"><small>ROUTE CHALLENGE</small><strong>Choose the shortest connected route</strong><span>Compare 9 units with 7 units.</span></div><div class="mc-clue-route-choices"><button type="button" class="mc-button mc-button-secondary" onclick="MathCourt.chooseClueValue(0)">A → B → C <small>4 + 5 = 9 units</small></button><button type="button" class="mc-button mc-button-secondary" onclick="MathCourt.chooseClueValue(1)">A → D → E → C <small>2 + 3 + 2 = 7 units</small></button></div>';
     } else {
-      controls='<label class="mc-clue-equation" for="mc-clue-equation-input">'+g.values[0]+' + '+g.values[1]+' = <input id="mc-clue-equation-input" type="number" value="'+(state.clueValue==null?"":state.clueValue)+'" inputmode="numeric"/></label>';
+      controls='<label class="mc-clue-equation" for="mc-clue-equation-input">'+g.values[0]+' + '+g.values[1]+' = <input id="mc-clue-equation-input" type="number" oninput="MathCourt.markClueChanged()" value="'+(state.clueValue==null?"":state.clueValue)+'" inputmode="numeric"/></label>';
     }
     return '<section class="mc-clue-adventure '+(state.clueSolved?"is-solved":"")+'"><div class="mc-clue-adventure-head"><span>NEW CLUE · FIELD MOVE '+String(g.type+1).padStart(2,"0")+'</span><h3>'+titles[g.type]+'</h3><p>'+esc(item.twist||item.evidence)+'</p><p class="mc-clue-adventure-instruction">'+intros[g.type]+'</p></div>'+controls+'<div class="mc-clue-adventure-foot"><button type="button" class="mc-button mc-button-primary" onclick="MathCourt.submitClueMove()">'+(state.clueSolved?"Clue verified ✓":"Check this clue")+'</button><span aria-live="polite">'+(state.clueSolved?"The clue is now part of your evidence.": "Try, inspect the result, and adjust your model.")+'</span></div></section>';
   }
-  function setClueValue(value) { state.clueValue=Number(value); syncSession(); }
-  function chooseClueValue(value) { state.clueValue=Number(value); refreshCaseKeepingScroll(); }
+  function markClueChanged() { state.clueSolved=false; syncSession(); }
+  function setClueValue(value) { state.clueValue=Number(value); state.clueSolved=false; syncSession(); }
+  function chooseClueValue(value) { state.clueValue=Number(value); state.clueSolved=false; refreshCaseKeepingScroll(); }
   function toggleClueCell(index) {
     if(!Number.isInteger(index)||index<0||index>8)return;
     const cells=new Set(state.clueCells);if(cells.has(index))cells.delete(index);else cells.add(index);
@@ -1133,5 +1134,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.docketChapterId=1;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,chooseChapter,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,submitClueMove,chooseClueValue,setClueValue,toggleClueCell,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,chooseChapter,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,submitClueMove,chooseClueValue,setClueValue,markClueChanged,toggleClueCell,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
 })(window);
