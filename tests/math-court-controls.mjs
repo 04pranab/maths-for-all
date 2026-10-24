@@ -61,7 +61,7 @@ for (const type of [
 ]) {
   assert.ok(game.includes(type), "Missing hands-on clue mechanic: " + type);
 }
-for (const action of ["submitClueMove", "chooseClueValue", "setClueValue", "toggleClueCell"]) {
+for (const action of ["submitClueMove", "chooseClueValue", "setClueValue", "markClueChanged", "toggleClueCell"]) {
   assert.ok(api.has(action), "Field-move control is not exported: " + action);
 }
 assert.match(game, /state\.phase===3&&!state\.clueSolved/,
