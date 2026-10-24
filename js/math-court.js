@@ -1051,6 +1051,7 @@
     let ok=false;
     if(g.type===0){
       const values=[0,1,2].map(i=>Number($("mc-clue-order-"+i)?.value));
+      state.clueOrder=values;
       ok=values.join(",")===g.sorted.join(",");
     } else if(g.type===1){ok=state.clueValue===g.bars.indexOf(Math.max(...g.bars));}
     else if(g.type===2){state.clueValue=Number($("mc-clue-numerator")?.value);ok=state.clueValue===g.numerator;}
