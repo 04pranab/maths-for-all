@@ -16,7 +16,7 @@
   ];
   const state = {
     caseId:1, phase:0, docketChapterId:null, seenClaim:false, seenEvidence:false,
-    investigationSolved:false, challengeSolved:false, crossSolved:false, verdictChosen:null,
+    investigationSolved:false, challengeSolved:false, crossSolved:false, clueSolved:false, clueCells:[], verdictChosen:null,
     visualMode:"model", visualFocus:0, lab:null, completed:new Set(), session:null, feedback:"", feedbackKind:""
   };
   function normalVerdict(value) { return value === "insufficient" ? "uncertain" : value; }
@@ -41,7 +41,7 @@
     state.session = {
       caseId:state.caseId, phase:state.phase, seenClaim:state.seenClaim,
       seenEvidence:state.seenEvidence, investigationSolved:state.investigationSolved,
-      challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, verdictChosen:state.verdictChosen,
+      challengeSolved:state.challengeSolved, crossSolved:state.crossSolved, clueSolved:state.clueSolved, clueCells:state.clueCells, verdictChosen:state.verdictChosen,
       visualMode:state.visualMode, visualFocus:state.visualFocus, lab:state.lab
     };
     persist();
@@ -233,6 +233,8 @@
     state.investigationSolved=saved?saved.investigationSolved:false;
     state.challengeSolved=saved?Boolean(saved.challengeSolved):false;
     state.crossSolved=saved?saved.crossSolved:false;
+    state.clueSolved=saved?Boolean(saved.clueSolved):false;
+    state.clueCells=saved&&Array.isArray(saved.clueCells)?saved.clueCells.filter(n=>Number.isInteger(n)&&n>=0&&n<9):[];
     state.visualMode=saved&&["model","compare","trace"].includes(saved.visualMode)?saved.visualMode:"model";
     state.visualFocus=saved&&Number.isInteger(saved.visualFocus)?Math.max(0,Math.min(4,saved.visualFocus)):0;
     state.verdictChosen=saved?saved.verdictChosen:null;
@@ -252,6 +254,7 @@
   function advance() {
     const item=data().getCase(state.caseId);
     if(state.phase===2&&!(state.investigationSolved&&state.challengeSolved)){setFeedback("Solve both linked mathematical tasks before admitting the exhibits. You can retry without losing progress.","hint");return;}
+    if(state.phase===3&&!state.clueSolved){setFeedback("Explore the new clue and complete its hands-on move before continuing. You can try again.", "hint");return;}
     if(state.phase===4&&!state.crossSolved){setFeedback("Choose the strongest line of cross-examination first.","hint");return;}
     if(state.phase===5&&!state.verdictChosen){setFeedback("Select a verdict and support it with what you have learned.","hint");return;}
     if(state.phase===5&&normalVerdict(state.verdictChosen)!==normalVerdict(item.verdict)){
@@ -958,6 +961,89 @@
     const story = item.story || item.opening || "Use the records to test the claim.";
     return '<p class="mc-story-text mc-story-hook">'+esc(story)+'</p>';
   }
+
+  function clueMoveSpec(item) {
+    const type=(item.id-1)%10, n=item.id;
+    const values=[3+(n%7),5+((n*3)%9),2+((n*5)%8)];
+    const sorted=[...values].sort((a,b)=>a-b);
+    const numerator=1+(n%4),denominator=numerator+1+(n%4);
+    const minutes=15+((n*7)%13)*5;
+    const bars=[4+(n%6),2+((n*3)%8),5+((n*5)%7)];
+    const rule=(n%3);
+    const input=2+(n%6);
+    const outputs=[input+3,2*input+1,input*input];
+    return {type,values,sorted,numerator,denominator,minutes,bars,rule,input,outputs,target:values[(n+type)%3],area:3+(n%4),share:2+(n%5),route:n%2,equation:values[0]+values[1]};
+  }
+  function renderClueMove(item) {
+    const g=clueMoveSpec(item), titles=[
+      "Put the number tokens in order","Compare the evidence bars","Build the fraction clue",
+      "Shape the footprint","Set the travel timeline","Inspect the data garden",
+      "Tune the pattern machine","Allocate the shared resources","Trace a connected route","Balance the equation"
+    ];
+    const intros=[
+      "Move from the smallest record to the largest. The order helps reveal which entry should be checked first.",
+      "Compare the displayed records rather than guessing from the story. Select the taller bar.",
+      "Build the fraction named in the new clue. Count equal parts and shaded parts separately.",
+      "Tap squares to make the footprint described by the new clue. Every selected square counts.",
+      "Set the elapsed time on the timeline and compare the arrival with the new schedule.",
+      "Read the values and select the record with the largest measurement.",
+      "Test the machine rule against its input. Only one rule produces the recorded output.",
+      "Move the resource slider to match the amount requested by the new clue.",
+      "Choose a connected route that follows the marked roads from the starting point to the destination.",
+      "Use the two recorded quantities to balance the equation."
+    ];
+    let controls="";
+    if(g.type===0){
+      controls='<div class="mc-clue-token-row">'+g.values.map((v,i)=>'<label class="mc-clue-token"><span>Position '+(i+1)+'</span><select id="mc-clue-order-'+i+'">'+g.values.map(x=>'<option value="'+x+'">'+x+'</option>').join("")+'</select></label>').join("")+'</div>';
+    } else if(g.type===1){
+      controls='<div class="mc-clue-bars">'+g.bars.map((v,i)=>'<button type="button" class="mc-clue-bar-choice" onclick="MathCourt.chooseClueValue('+i+')"><span class="mc-clue-bar" style="height:'+(24+v*9)+'px"></span><strong>Record '+String.fromCharCode(65+i)+'</strong><small>'+v+' units</small></button>').join("")+'</div>';
+    } else if(g.type===2){
+      controls='<div class="mc-clue-fraction"><label>Shaded parts <input id="mc-clue-numerator" type="number" min="0" max="12" value="'+(state.clueValue==null?0:state.clueValue)+'"/></label><span>of</span><strong>'+g.denominator+' equal parts</strong></div>';
+    } else if(g.type===3){
+      controls='<div class="mc-clue-shape-grid" role="group" aria-label="Nine-square footprint">'+Array.from({length:9},(_,i)=>'<button type="button" class="mc-clue-shape-cell '+(state.clueCells.includes(i)?"is-filled":"")+'" aria-pressed="'+state.clueCells.includes(i)+'" aria-label="Footprint square '+(i+1)+'" onclick="MathCourt.toggleClueCell('+i+')"></button>').join("")+'</div><p class="mc-clue-count">'+state.clueCells.length+' of '+g.area+' squares selected</p>';
+    } else if(g.type===4){
+      controls='<label class="mc-clue-range-label" for="mc-clue-minutes">Elapsed time <strong id="mc-clue-minutes-label">'+(state.clueValue==null?0:state.clueValue)+' minutes</strong></label><input id="mc-clue-minutes" type="range" min="0" max="120" step="5" value="'+(state.clueValue==null?0:state.clueValue)+'" oninput="document.getElementById(\\'mc-clue-minutes-label\\').textContent=this.value+\\' minutes\\';MathCourt.setClueValue(this.value)"/>';
+    } else if(g.type===5){
+      controls='<div class="mc-clue-bars">'+g.bars.map((v,i)=>'<button type="button" class="mc-clue-bar-choice" onclick="MathCourt.chooseClueValue('+i+')"><span class="mc-clue-bar" style="height:'+(24+v*9)+'px"></span><strong>Sample '+String.fromCharCode(65+i)+'</strong><small>'+v+'</small></button>').join("")+'</div>';
+    } else if(g.type===6){
+      controls='<div class="mc-clue-rule-tiles">'+g.outputs.map((v,i)=>'<button type="button" class="mc-op-tile '+(state.clueValue===i?"is-selected":"")+'" aria-pressed="'+(state.clueValue===i)+'" onclick="MathCourt.chooseClueValue('+i+')">'+(["Add 3","Double + 1","Square"][i])+'<small>'+g.input+' → '+v+'</small></button>').join("")+'</div>';
+    } else if(g.type===7){
+      controls='<label class="mc-clue-range-label" for="mc-clue-share">Resource tokens <strong id="mc-clue-share-label">'+(state.clueValue==null?0:state.clueValue)+'</strong></label><input id="mc-clue-share" type="range" min="0" max="12" step="1" value="'+(state.clueValue==null?0:state.clueValue)+'" oninput="document.getElementById(\\'mc-clue-share-label\\').textContent=this.value;MathCourt.setClueValue(this.value)"/>';
+    } else if(g.type===8){
+      controls='<div class="mc-clue-route-choices"><button type="button" class="mc-button mc-button-secondary" onclick="MathCourt.chooseClueValue(0)">A → B → C <small>4 + 5 units</small></button><button type="button" class="mc-button mc-button-secondary" onclick="MathCourt.chooseClueValue(1)">A → D → E → C <small>2 + 3 + 2 units</small></button></div>';
+    } else {
+      controls='<label class="mc-clue-equation" for="mc-clue-equation-input">'+g.values[0]+' + '+g.values[1]+' = <input id="mc-clue-equation-input" type="number" value="'+(state.clueValue==null?"":state.clueValue)+'" inputmode="numeric"/></label>';
+    }
+    return '<section class="mc-clue-adventure '+(state.clueSolved?"is-solved":"")+'"><div class="mc-clue-adventure-head"><span>NEW CLUE · FIELD MOVE '+String(g.type+1).padStart(2,"0")+'</span><h3>'+titles[g.type]+'</h3><p>'+esc(item.twist||item.evidence)+'</p><p class="mc-clue-adventure-instruction">'+intros[g.type]+'</p></div>'+controls+'<div class="mc-clue-adventure-foot"><button type="button" class="mc-button mc-button-primary" onclick="MathCourt.submitClueMove()">'+(state.clueSolved?"Clue verified ✓":"Check this clue")+'</button><span aria-live="polite">'+(state.clueSolved?"The clue is now part of your evidence.": "Try, inspect the result, and adjust your model.")+'</span></div></section>';
+  }
+  function setClueValue(value) { state.clueValue=Number(value); syncSession(); }
+  function chooseClueValue(value) { state.clueValue=Number(value); refreshCaseKeepingScroll(); }
+  function toggleClueCell(index) {
+    if(!Number.isInteger(index)||index<0||index>8)return;
+    const cells=new Set(state.clueCells);if(cells.has(index))cells.delete(index);else cells.add(index);
+    state.clueCells=[...cells];state.clueSolved=false;refreshCaseKeepingScroll();
+  }
+  function submitClueMove() {
+    const item=data().getCase(state.caseId),g=clueMoveSpec(item);
+    let ok=false;
+    if(g.type===0){
+      const values=[0,1,2].map(i=>Number($("mc-clue-order-"+i)?.value));
+      ok=values.join(",")===g.sorted.join(",");
+    } else if(g.type===1){ok=state.clueValue===g.bars.indexOf(Math.max(...g.bars));}
+    else if(g.type===2){ok=Number($("mc-clue-numerator")?.value)===g.numerator;}
+    else if(g.type===3){ok=state.clueCells.length===g.area;}
+    else if(g.type===4){ok=Number(state.clueValue)===g.minutes;}
+    else if(g.type===5){ok=state.clueValue===g.bars.indexOf(Math.max(...g.bars));}
+    else if(g.type===6){ok=state.clueValue===g.rule;}
+    else if(g.type===7){ok=Number(state.clueValue)===g.share;}
+    else if(g.type===8){ok=state.clueValue===g.route;}
+    else {ok=Number($("mc-clue-equation-input")?.value)===g.equation;}
+    state.clueSolved=ok;
+    if(ok){setFeedback("✨ New clue verified. You used a different mathematical move to update the investigation.","success");}
+    else{setFeedback("Not quite yet. Re-read the clue, inspect the model, and try another move.","hint");}
+    syncSession();renderCase();
+  }
+
   function renderCase() {
     const item=data().getCase(state.caseId),host=$("mc-stage-content");
     if(!item||!host)return;
@@ -996,8 +1082,8 @@
     } else if(state.phase===3) {
       content='<div class="mc-stage-layout mc-stage-layout--reveal">'+
         panel("NEW EVIDENCE","A detail has changed",'<p class="mc-story-text">'+esc(item.twist)+'</p><div class="mc-evidence-pair mc-evidence-pair-compact"><article class="mc-evidence-card"><span>ORIGINAL CLAIM</span><strong>'+esc(item.claim)+'</strong></article><article class="mc-evidence-card mc-evidence-record"><span>RECORD</span><strong>'+esc(item.evidence)+'</strong></article></div>')+
-        panel("CHECK YOUR REASONING","Does the new detail matter?",'<p class="mc-stage-nudge">Use the two verified results and this new clue. It is thoughtful to revise an idea when better evidence arrives.</p>')+'</div>';
-      action='<button class="mc-button mc-button-primary" onclick="MathCourt.advance()">Ask a careful question →</button>';
+        panel("INVESTIGATE THE CHANGE","A new clue needs a new move",'<p class="mc-stage-nudge">This case now has a hands-on field move. Use the new detail, test the mathematical model, and verify the clue before moving on.</p>'+renderClueMove(item))+'</div>';
+      action='<button class="mc-button mc-button-primary" '+(state.clueSolved?'':'disabled')+' onclick="MathCourt.advance()">Ask a careful question →</button>';
     } else if(state.phase===4) {
       const check=data().checks[item.check],rotated=rotatedChoices(check.choices,check.correct,item.id);
       content='<div class="mc-stage-layout mc-stage-layout--question">'+panel("CURIOSITY ROUND","Which question helps most?",'<p class="mc-task-prompt">'+esc(check.prompt)+'</p><div class="mc-answer-options">'+rotated.choices.map((opt,i)=>'<button class="mc-option" onclick="MathCourt.answerCross('+i+')"><span>'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>').join("")+'</div><p class="mc-stage-nudge">Choose a question that checks an assumption or clarifies the record respectfully.</p>')+'</div>';
@@ -1034,5 +1120,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.docketChapterId=1;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,chooseChapter,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,chooseChapter,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,submitClueMove,chooseClueValue,setClueValue,toggleClueCell,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
 })(window);
