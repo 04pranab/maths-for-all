@@ -403,7 +403,7 @@ async function main() {
     'return { ok: true, cases: 100, chapters: 10, linkedTasksPerCase: 2, stagesCompleted: 7, progressSaved: true };' +
   '})()');
 
-  const mathCourtFieldMovesResult = await evaluate(\`(async () => {
+  const mathCourtFieldMovesResult = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     const storageKey = "mfa_math_court_v1";
     const originalProgress = localStorage.getItem(storageKey);
@@ -471,7 +471,7 @@ async function main() {
       if(originalProgress===null)localStorage.removeItem(storageKey);
       else localStorage.setItem(storageKey,originalProgress);
     }
-  })()\`);
+  })()`);
   const numberMazeResult = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     const waitForComputedStyle = async (element, property, expected, label) => {
