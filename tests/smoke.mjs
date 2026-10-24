@@ -386,7 +386,7 @@ async function main() {
     'MathCourt.dropAnswer("challenge",{preventDefault:()=>{},dataTransfer:{getData:k=>task2Data[k]||""}});' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Second workshop goal complete"), "The linked challenge did not provide positive mathematical feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
-    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
+    'document.getElementById("mc-clue-order-1").value="7"; document.getElementById("mc-clue-order-2").value="8"; MathCourt.submitClueMove(); assert(document.getElementById("mc-feedback").textContent.includes("New clue verified"), "The hands-on new-clue move did not accept the correctly ordered number tokens."); MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
     'const correctCrossIndex = (0 - (1 % 3) + 3) % 3; MathCourt.answerCross(correctCrossIndex);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Excellent question"), "The cross-examination skill check did not accept the keyed strategy.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Verdict", "The verdict stage is missing.");' +
