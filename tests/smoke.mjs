@@ -403,6 +403,75 @@ async function main() {
     'return { ok: true, cases: 100, chapters: 10, linkedTasksPerCase: 2, stagesCompleted: 7, progressSaved: true };' +
   '})()');
 
+  const mathCourtFieldMovesResult = await evaluate(\`(async () => {
+    const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    const storageKey = "mfa_math_court_v1";
+    const originalProgress = localStorage.getItem(storageKey);
+    const tested = [];
+    const buildSession = caseId => ({
+      caseId, phase:3, seenClaim:true, seenEvidence:true,
+      investigationSolved:true, challengeSolved:true, crossSolved:false,
+      clueSolved:false, clueCells:[], clueValue:null, clueOrder:null,
+      verdictChosen:null, visualMode:"model", visualFocus:0,
+      lab:{playCount:1,challengeBaseline:0,goalSolved:false}
+    });
+    try {
+      for (let id = 11; id <= 20; id++) {
+        localStorage.setItem(storageKey, JSON.stringify({completed:[1],session:buildSession(id)}));
+        MathCourt.open();
+        MathCourt.resume();
+        const type=(id-1)%10;
+        if(type===0) {
+          const selects=[0,1,2].map(i=>document.getElementById("mc-clue-order-"+i));
+          const values=[...selects[0].options].map(option=>Number(option.value)).sort((a,b)=>a-b);
+          selects.forEach((select,i)=>{select.value=String(values[i]);select.dispatchEvent(new Event("change",{bubbles:true}));});
+        } else if(type===1||type===5) {
+          const buttons=[...document.querySelectorAll(".mc-clue-bar-choice")];
+          const index=buttons.reduce((best,button,i)=>Number(button.querySelector("small").textContent)>Number(buttons[best].querySelector("small").textContent)?i:best,0);
+          buttons[index].click();
+        } else if(type===2) {
+          const target=document.querySelector(".mc-workshop-target strong").textContent.split("/");
+          const input=document.getElementById("mc-clue-numerator");
+          input.value=target[0];input.dispatchEvent(new Event("input",{bubbles:true}));
+        } else if(type===3) {
+          const area=Number(document.querySelector(".mc-workshop-target strong").textContent.match(/\d+/)[0]);
+          for(let i=0;i<area;i++)document.querySelectorAll(".mc-clue-shape-cell")[i].click();
+        } else if(type===4) {
+          const target=Number(document.querySelector(".mc-workshop-target strong").textContent.match(/\d+/)[0]);
+          const input=document.getElementById("mc-clue-minutes");
+          input.value=String(target);input.dispatchEvent(new Event("input",{bubbles:true}));
+        } else if(type===6) {
+          const target=Number(document.querySelector(".mc-workshop-target strong").textContent.match(/Output\s+(\d+)/)[1]);
+          const button=[...document.querySelectorAll(".mc-clue-rule-tiles button")].find(node=>node.querySelector("small").textContent.includes("→ "+target));
+          assert(button,"No rule-machine control matched the target output for case "+id);button.click();
+        } else if(type===7) {
+          const target=Number(document.querySelector(".mc-workshop-target strong").textContent.match(/\d+/)[0]);
+          const input=document.getElementById("mc-clue-share");
+          input.value=String(target);input.dispatchEvent(new Event("input",{bubbles:true}));
+        } else if(type===8) {
+          const buttons=[...document.querySelectorAll(".mc-clue-route-choices button")];
+          const shortest=buttons.find(button=>button.textContent.includes("7 units"));
+          assert(shortest,"No shorter-route choice was rendered for case "+id);shortest.click();
+        } else if(type===9) {
+          const label=document.querySelector(".mc-clue-equation");
+          const nums=label.textContent.match(/-?\d+(?:\.\d+)?/g).map(Number);
+          const input=document.getElementById("mc-clue-equation-input");
+          input.value=String(nums[0]+nums[1]);input.dispatchEvent(new Event("input",{bubbles:true}));
+        }
+        MathCourt.submitClueMove();
+        assert(document.getElementById("mc-feedback").textContent.includes("New clue verified"),
+          "Field-move family "+type+" failed its correct browser interaction in case "+id+": "+document.getElementById("mc-feedback").textContent);
+        MathCourt.advance();
+        assert(document.getElementById("mc-stage-name").textContent==="Cross-examination",
+          "A verified field move did not unlock the next stage for case "+id);
+        tested.push(type);
+      }
+      return {ok:true,fieldMoveFamilies:tested.length,types:tested,allRequiredToAdvance:true};
+    } finally {
+      if(originalProgress===null)localStorage.removeItem(storageKey);
+      else localStorage.setItem(storageKey,originalProgress);
+    }
+  })()\`);
   const numberMazeResult = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     const waitForComputedStyle = async (element, property, expected, label) => {
