@@ -412,7 +412,7 @@
       '<line x1="160" y1="32" x2="160" y2="210" stroke="#c9c0d3" stroke-width="2"/>'+
       values.map((v,i)=>{
         const y=38+i*39,w=Math.max(4,Math.abs(v)/max*445);
-        return '<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" aria-label="Focus '+esc(labels[i])+'" onclick="MathCourt.focusVisual('+i+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();MathCourt.focusVisual('+i+')}">'+
+        return '<g class="mc-svg-pick '+(focus===i?'is-focused':'')+'" role="button" tabindex="0" aria-label="Focus '+esc(labels[i])+'" onclick="MathCourt.focusVisual('+i+')">'+
           '<text x="12" y="'+(y+17)+'" class="mc-svg-label">'+esc(labels[i])+'</text>'+
           '<rect x="160" y="'+y+'" width="'+w+'" height="24" rx="7" class="mc-svg-bar '+(focus===i?'is-focused':'')+'"/>'+
           '<text x="'+Math.min(665,174+w)+'" y="'+(y+17)+'" class="mc-svg-number">'+esc(String(v))+'</text></g>';
