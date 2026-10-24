@@ -50,11 +50,37 @@ assert.match(css, /@media \(max-width:900px\)[\s\S]*?grid-template-areas:"work" 
 assert.match(css, /\.mc-svg-pick:focus-visible[\s\S]*?outline:3px solid/,
   "Keyboard focus must remain visible on SVG evidence controls.");
 
+assert.match(game, /function clueMoveSpec\(item\)[\s\S]*?const type=\(item\.id-1\)%10/,
+  "Every case must be assigned a case-specific field-move family.");
+assert.match(game, /function renderClueMove\(item\)[\s\S]*?mc-clue-adventure/,
+  "The new-clue stage must render a playable investigation.");
+for (const type of [
+  "mc-clue-token-row", "mc-clue-bars", "mc-clue-fraction", "mc-clue-shape-grid",
+  "mc-clue-minutes", "mc-clue-rule-tiles", "mc-clue-share", "mc-clue-route-choices",
+  "mc-clue-equation-input"
+]) {
+  assert.ok(game.includes(type), "Missing hands-on clue mechanic: " + type);
+}
+for (const action of ["submitClueMove", "chooseClueValue", "setClueValue", "toggleClueCell"]) {
+  assert.ok(api.has(action), "Field-move control is not exported: " + action);
+}
+assert.match(game, /state\.phase===3&&!state\.clueSolved/,
+  "The new clue must be verified before the case can progress.");
+assert.match(game, /clueSolved:state\.clueSolved[\s\S]*?clueValue:state\.clueValue/,
+  "Field-move progress must be included in saved sessions.");
+assert.match(game, /state\.clueSolved=saved\?Boolean\(saved\.clueSolved\):false/,
+  "Resuming a case must restore field-move completion.");
+assert.match(css, /\.mc-clue-shape-grid[\s\S]*?display:grid/,
+  "The shape clue needs a real interactive grid.");
+assert.match(css, /\.mc-clue-bar-choice:focus-visible/,
+  "Clue controls must have a visible keyboard focus state.");
+
 console.log(JSON.stringify({
   status: "PASS",
   exportedMethods: api.size,
   referencedMethods: references.size,
   chaptersWithPlayMechanics: 10,
+  clueMoveFamilies: 10,
   checkedRenderers: 10,
   checks: [
     "all statically referenced MathCourt handlers are exported",
@@ -62,6 +88,8 @@ console.log(JSON.stringify({
     "drop targets route to the correct challenge",
     "timeline controls update and are keyboard accessible",
     "wide split-screen and responsive stacking rules exist",
-    "keyboard focus styling exists for SVG evidence"
+    "keyboard focus styling exists for SVG evidence",
+    "all ten case-specific field-move families render and export working handlers",
+    "field-move progress is saved, resumed, and required before stage progression"
   ]
 }, null, 2));
