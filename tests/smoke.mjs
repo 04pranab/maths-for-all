@@ -430,22 +430,22 @@ async function main() {
           const index=buttons.reduce((best,button,i)=>Number(button.querySelector("small").textContent)>Number(buttons[best].querySelector("small").textContent)?i:best,0);
           buttons[index].click();
         } else if(type===2) {
-          const target=document.querySelector(".mc-workshop-target strong").textContent.split("/");
+          const target=document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.split("/");
           const input=document.getElementById("mc-clue-numerator");
           input.value=target[0];input.dispatchEvent(new Event("input",{bubbles:true}));
         } else if(type===3) {
-          const area=Number(document.querySelector(".mc-workshop-target strong").textContent.match(/\d+/)[0]);
+          const area=Number(document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.match(/\d+/)[0]);
           for(let i=0;i<area;i++)document.querySelectorAll(".mc-clue-shape-cell")[i].click();
         } else if(type===4) {
-          const target=Number(document.querySelector(".mc-workshop-target strong").textContent.match(/\d+/)[0]);
+          const target=Number(document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.match(/\d+/)[0]);
           const input=document.getElementById("mc-clue-minutes");
           input.value=String(target);input.dispatchEvent(new Event("input",{bubbles:true}));
         } else if(type===6) {
-          const target=Number(document.querySelector(".mc-workshop-target strong").textContent.match(/Output\s+(\d+)/)[1]);
+          const target=Number(document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.match(/Output\s+(\d+)/)[1]);
           const button=[...document.querySelectorAll(".mc-clue-rule-tiles button")].find(node=>node.querySelector("small").textContent.includes("→ "+target));
           assert(button,"No rule-machine control matched the target output for case "+id);button.click();
         } else if(type===7) {
-          const target=Number(document.querySelector(".mc-workshop-target strong").textContent.match(/\d+/)[0]);
+          const target=Number(document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.match(/\d+/)[0]);
           const input=document.getElementById("mc-clue-share");
           input.value=String(target);input.dispatchEvent(new Event("input",{bubbles:true}));
         } else if(type===8) {
