@@ -16,7 +16,7 @@
     "test:little-shop-money": "node tests/little-shop-money.mjs",
     "test:little-shop-cashier": "node tests/little-shop-cashier.mjs",
     "test:number-maze": "node tests/number-maze-engine.mjs",
-    "test:math-court": "node tests/math-court.mjs"
+    "test:math-court": "node tests/math-court.mjs && node tests/math-court-controls.mjs"
   },
   "dependencies": {
     "pg": "^8.16.3",
