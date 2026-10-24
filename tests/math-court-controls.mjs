@@ -52,6 +52,8 @@ assert.match(css, /\.mc-svg-pick:focus-visible[\s\S]*?outline:3px solid/,
 
 assert.match(game, /function clueMoveSpec\(item\)[\s\S]*?const type=\(item\.id-1\)%10/,
   "Every case must be assigned a case-specific field-move family.");
+assert.match(game, /mc-clue-token-drag[\s\S]*?draggable="true"[\s\S]*?MathCourt\.dropClueToken/, "The number-token field move must support drag-and-drop.");
+assert.match(game, /mc-clue-accessible-note[\s\S]*?position selectors below/, "Drag-and-drop must have a keyboard/touch-friendly selector alternative.");
 assert.match(game, /function renderClueMove\(item\)[\s\S]*?mc-clue-adventure/,
   "The new-clue stage must render a playable investigation.");
 for (const type of [
@@ -61,7 +63,7 @@ for (const type of [
 ]) {
   assert.ok(game.includes(type), "Missing hands-on clue mechanic: " + type);
 }
-for (const action of ["submitClueMove", "chooseClueValue", "setClueValue", "markClueChanged", "toggleClueCell"]) {
+for (const action of ["submitClueMove", "chooseClueValue", "setClueValue", "markClueChanged", "startClueDrag", "dropClueToken", "toggleClueCell"]) {
   assert.ok(api.has(action), "Field-move control is not exported: " + action);
 }
 assert.match(game, /state\.phase===3&&!state\.clueSolved/,
