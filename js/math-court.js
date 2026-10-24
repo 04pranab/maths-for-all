@@ -996,7 +996,7 @@
     ];
     let controls="";
     if(g.type===0){
-      controls='<div class="mc-clue-token-row">'+g.values.map((v,i)=>'<label class="mc-clue-token"><span>Position '+(i+1)+'</span><select id="mc-clue-order-'+i+'" onchange="MathCourt.markClueChanged()">'+g.values.map(x=>'<option value="'+x+'" '+((state.clueOrder?state.clueOrder[i]:v)===x?'selected':'')+'>'+x+'</option>').join("")+'</select></label>').join("")+'</div>';
+      controls='<div class="mc-clue-token-pool" role="group" aria-label="Drag number tokens into order">'+g.values.map(v=>'<button type="button" class="mc-clue-token-drag" draggable="true" ondragstart="MathCourt.startClueDrag('+v+',event)" aria-label="Drag number token '+v+'">'+v+'</button>').join("")+'</div><div class="mc-clue-token-slots">'+g.values.map((v,i)=>'<div class="mc-clue-token-slot" ondragover="event.preventDefault()" ondrop="MathCourt.dropClueToken('+i+',event)"><span>Position '+(i+1)+'</span><strong>'+(state.clueOrder?state.clueOrder[i]:v)+'</strong></div>').join("")+'</div><p class="mc-clue-accessible-note">Drag tokens into place, or use the position selectors below.</p><div class="mc-clue-token-row">'+g.values.map((v,i)=>'<label class="mc-clue-token"><span>Position '+(i+1)+'</span><select id="mc-clue-order-'+i+'" onchange="MathCourt.markClueChanged()">'+g.values.map(x=>'<option value="'+x+'" '+((state.clueOrder?state.clueOrder[i]:v)===x?'selected':'')+'>'+x+'</option>').join("")+'</select></label>').join("")+'</div>';
     } else if(g.type===1){
       controls='<div class="mc-clue-bars">'+g.bars.map((v,i)=>'<button type="button" class="mc-clue-bar-choice '+(state.clueValue===i?"is-selected":"") +'" aria-pressed="'+(state.clueValue===i)+'" onclick="MathCourt.chooseClueValue('+i+')"><span class="mc-clue-bar" style="height:'+(24+Math.min(100,v/maxBar*80))+'px"></span><strong>Record '+String.fromCharCode(65+i)+'</strong><small>'+v+' units</small></button>').join("")+'</div>';
     } else if(g.type===2){
@@ -1017,6 +1017,21 @@
       controls='<label class="mc-clue-equation" for="mc-clue-equation-input">'+g.values[0]+' + '+g.values[1]+' = <input id="mc-clue-equation-input" type="number" oninput="MathCourt.markClueChanged()" value="'+(state.clueValue==null?"":state.clueValue)+'" inputmode="numeric"/></label>';
     }
     return '<section class="mc-clue-adventure '+(state.clueSolved?"is-solved":"")+'"><div class="mc-clue-adventure-head"><span>NEW CLUE · FIELD MOVE '+String(g.type+1).padStart(2,"0")+'</span><h3>'+titles[g.type]+'</h3><p>'+esc(item.twist||item.evidence)+'</p><p class="mc-clue-adventure-instruction">'+intros[g.type]+'</p></div>'+controls+'<div class="mc-clue-adventure-foot"><button type="button" class="mc-button mc-button-primary" onclick="MathCourt.submitClueMove()">'+(state.clueSolved?"Clue verified ✓":"Check this clue")+'</button><span aria-live="polite">'+(state.clueSolved?"The clue is now part of your evidence.": "Try, inspect the result, and adjust your model.")+'</span></div></section>';
+  }
+  function startClueDrag(value,event) {
+    if(!event||!event.dataTransfer)return;
+    event.dataTransfer.setData("text/plain",String(value));
+    event.dataTransfer.effectAllowed="move";
+  }
+  function dropClueToken(position,event) {
+    if(!event||!event.dataTransfer)return;
+    event.preventDefault();
+    const value=Number(event.dataTransfer.getData("text/plain")),item=data().getCase(state.caseId),g=clueMoveSpec(item);
+    if(!Number.isInteger(position)||position<0||position>2||!g.values.includes(value))return;
+    const order=state.clueOrder?state.clueOrder.slice():g.values.slice(),from=order.indexOf(value);
+    if(from<0)return;
+    const displaced=order[position];order[position]=value;order[from]=displaced;
+    state.clueOrder=order;state.clueSolved=false;refreshCaseKeepingScroll();
   }
   function markClueChanged() {
     state.clueSolved=false;
@@ -1144,5 +1159,5 @@
     if(!window.confirm("Reset Math Court case progress on this device? This cannot be undone."))return;
     state.completed.clear();state.session=null;state.docketChapterId=1;state.feedback="";persist();renderDocket();
   }
-  root.MathCourt={open,openCase,resume,goDocket,back,chooseChapter,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,submitClueMove,chooseClueValue,setClueValue,markClueChanged,toggleClueCell,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
+  root.MathCourt={open,openCase,resume,goDocket,back,chooseChapter,advance,chooseEvidence,answerInvestigation,answerChallenge,answerCross,selectVerdict,showHint,previous,reviewStage,resetProgress,submitClueMove,chooseClueValue,setClueValue,markClueChanged,startClueDrag,dropClueToken,toggleClueCell,setVisualMode,focusVisual,startAnswerDrag,dropAnswer,chooseLabSlot,chooseLabNumber,chooseLabOperator,chooseLabOperator2,toggleThirdOperand,calculateLab,setPatternRule,submitPatternPrediction,checkPlayGoal,selectDataRecord,setFraction,toggleShapeCell,shapeStats,setLabTimeline,toggleDataZoom,setDataZoom:toggleDataZoom,setRuleInput,setRuleType,adjustShare,extendRoute,resetRoute,adjustAllocation,resetShape:function(){if(!state.lab.cells.length)return;state.lab.cells=[];markLabPlay();refreshCaseKeepingScroll();}};
 })(window);
