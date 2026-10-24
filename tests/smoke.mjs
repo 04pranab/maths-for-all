@@ -407,7 +407,7 @@ async function main() {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     const storageKey = "mfa_math_court_v1";
     const originalProgress = localStorage.getItem(storageKey);
-    const originalConfirm = window.confirm;
+    const originalConfirmDescriptor = Object.getOwnPropertyDescriptor(window,"confirm");
     const tested = [];
     const buildSession = caseId => ({
       caseId, phase:3, seenClaim:true, seenEvidence:true,
@@ -473,7 +473,7 @@ async function main() {
       assert(document.querySelector(".mc-clue-adventure-foot .mc-button").textContent==="Clue verified ✓","Verified field-move progress was not restored on resume.");
       MathCourt.openCase(1);
       assert(document.getElementById("mc-stage-count").textContent==="1 / 7"&&document.querySelector("#mc-stage-content .mc-story-hook"),"Replaying a completed case should start at its story stage.");
-      MathCourt.open(); window.confirm=()=>true;
+      MathCourt.open(); Object.defineProperty(window,"confirm",{value:()=>true,configurable:true,writable:true});
       const resetButton=document.querySelector("#mc-docket .mc-reset-link");
       assert(resetButton,"The reset-progress control is missing from the case map.");
       resetButton.click();
