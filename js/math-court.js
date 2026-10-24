@@ -1033,6 +1033,18 @@
     const displaced=order[position];order[position]=value;order[from]=displaced;
     state.clueOrder=order;state.clueSolved=false;refreshCaseKeepingScroll();
   }
+  function invalidateClueDisplay() {
+    const card=document.querySelector(".mc-clue-adventure");
+    if(!card)return;
+    card.classList.remove("is-solved");
+    const button=card.querySelector(".mc-clue-adventure-foot .mc-button");
+    if(button)button.textContent="Check this clue";
+    const note=card.querySelector(".mc-clue-adventure-foot span");
+    if(note)note.textContent="Try, inspect the result, and adjust your model.";
+    if(state.clueOrder){
+      card.querySelectorAll(".mc-clue-token-slot strong").forEach((node,i)=>{if(state.clueOrder[i]!==undefined)node.textContent=String(state.clueOrder[i]);});
+    }
+  }
   function markClueChanged() {
     state.clueSolved=false;
     const selects=[0,1,2].map(i=>$("mc-clue-order-"+i));
@@ -1040,9 +1052,9 @@
     const numerator=$("mc-clue-numerator"),equation=$("mc-clue-equation-input");
     if(numerator)state.clueValue=numerator.value===""?null:Number(numerator.value);
     if(equation)state.clueValue=equation.value===""?null:Number(equation.value);
-    syncSession();
+    invalidateClueDisplay();syncSession();
   }
-  function setClueValue(value) { state.clueValue=Number(value); state.clueSolved=false; syncSession(); }
+  function setClueValue(value) { state.clueValue=Number(value); state.clueSolved=false; invalidateClueDisplay(); syncSession(); }
   function chooseClueValue(value) { state.clueValue=Number(value); state.clueSolved=false; refreshCaseKeepingScroll(); }
   function toggleClueCell(index) {
     if(!Number.isInteger(index)||index<0||index>8)return;
