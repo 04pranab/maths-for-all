@@ -407,6 +407,7 @@ async function main() {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     const storageKey = "mfa_math_court_v1";
     const originalProgress = localStorage.getItem(storageKey);
+    const originalConfirm = window.confirm;
     const tested = [];
     const buildSession = caseId => ({
       caseId, phase:3, seenClaim:true, seenEvidence:true,
@@ -466,8 +467,21 @@ async function main() {
           "A verified field move did not unlock the next stage for case "+id);
         tested.push(type);
       }
-      return {ok:true,fieldMoveFamilies:tested.length,types:tested,allRequiredToAdvance:true};
+      MathCourt.open(); MathCourt.resume();
+      assert(document.getElementById("mc-stage-name").textContent==="Cross-examination","Saved case did not resume at its last stage.");
+      MathCourt.reviewStage(3);
+      assert(document.querySelector(".mc-clue-adventure-foot .mc-button").textContent==="Clue verified ✓","Verified field-move progress was not restored on resume.");
+      MathCourt.openCase(1);
+      assert(document.getElementById("mc-stage-name").textContent==="Story","Replaying a completed case should start at its story stage.");
+      MathCourt.open(); window.confirm=()=>true;
+      const resetButton=document.querySelector("#mc-docket .mc-reset-link");
+      assert(resetButton,"The reset-progress control is missing from the case map.");
+      resetButton.click();
+      const resetState=JSON.parse(localStorage.getItem(storageKey));
+      assert(resetState.completed.length===0&&resetState.session===null,"Reset progress did not clear saved completions and the active session.");
+      return {ok:true,fieldMoveFamilies:tested.length,types:tested,allRequiredToAdvance:true,resume:true,replay:true,reset:true};
     } finally {
+      window.confirm=originalConfirm;
       if(originalProgress===null)localStorage.removeItem(storageKey);
       else localStorage.setItem(storageKey,originalProgress);
     }
