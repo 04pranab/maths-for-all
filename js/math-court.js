@@ -964,16 +964,16 @@
   }
 
   function clueMoveSpec(item) {
-    const type=(item.id-1)%10, n=item.id;
-    const values=[3+(n%7),5+((n*3)%9),2+((n*5)%8)];
+    const type=(item.id-1)%10, n=item.id, source=visualNumbers(item);
+    const values=[source[0]??(3+(n%7)),source[1]??(5+((n*3)%9)),source[2]??(2+((n*5)%8))];
     const sorted=[...values].sort((a,b)=>a-b);
-    const numerator=1+(n%4),denominator=numerator+1+(n%4);
-    const minutes=15+((n*7)%13)*5;
-    const bars=[4+(n%6),2+((n*3)%8),5+((n*5)%7)];
-    const rule=(n%3);
-    const input=2+(n%6);
+    const numerator=1+(Math.abs(values[0])%4),denominator=numerator+1+(Math.abs(values[1])%4);
+    const minutes=15+(Math.abs(values[0])%13)*5;
+    const bars=values.map(v=>Math.abs(v));
+    const rule=(Math.abs(values[0])%3);
+    const input=2+(Math.abs(values[1])%6);
     const outputs=[input+3,2*input+1,input*input];
-    return {type,values,sorted,numerator,denominator,minutes,bars,rule,input,outputs,target:values[(n+type)%3],area:3+(n%4),share:2+(n%5),route:n%2,equation:values[0]+values[1]};
+    return {type,values,sorted,numerator,denominator,minutes,bars,rule,input,outputs,target:values[(n+type)%3],area:3+(Math.abs(values[2])%4),share:2+(Math.abs(values[0])%5),route:1,equation:values[0]+values[1]};
   }
   function renderClueMove(item) {
     const g=clueMoveSpec(item), titles=[
@@ -985,12 +985,12 @@
       "Move from the smallest record to the largest. The order helps reveal which entry should be checked first.",
       "Compare the displayed records rather than guessing from the story. Select the taller bar.",
       "Build the fraction named in the new clue. Count equal parts and shaded parts separately.",
-      "Tap squares to make the footprint described by the new clue. Every selected square counts.",
-      "Set the elapsed time on the timeline and compare the arrival with the new schedule.",
+      "Tap exactly the requested number of squares to model the footprint.",
+      "Set the timeline to the target duration shown below.",
       "Read the values and select the record with the largest measurement.",
-      "Test the machine rule against its input. Only one rule produces the recorded output.",
-      "Move the resource slider to match the amount requested by the new clue.",
-      "Choose a connected route that follows the marked roads from the starting point to the destination.",
+      "For the shown input, select the machine rule that produces the target output.",
+      "Allocate the exact number of tokens requested by the clue.",
+      "Compare the two connected routes and choose the shorter journey.",
       "Use the two recorded quantities to balance the equation."
     ];
     let controls="";
@@ -999,19 +999,19 @@
     } else if(g.type===1){
       controls='<div class="mc-clue-bars">'+g.bars.map((v,i)=>'<button type="button" class="mc-clue-bar-choice" onclick="MathCourt.chooseClueValue('+i+')"><span class="mc-clue-bar" style="height:'+(24+v*9)+'px"></span><strong>Record '+String.fromCharCode(65+i)+'</strong><small>'+v+' units</small></button>').join("")+'</div>';
     } else if(g.type===2){
-      controls='<div class="mc-clue-fraction"><label>Shaded parts <input id="mc-clue-numerator" type="number" min="0" max="12" value="'+(state.clueValue==null?0:state.clueValue)+'"/></label><span>of</span><strong>'+g.denominator+' equal parts</strong></div>';
+      controls='<div class="mc-workshop-target"><small>TARGET FRACTION</small><strong>'+g.numerator+'/'+g.denominator+'</strong><span>of one whole</span></div><div class="mc-clue-fraction"><label>Shaded parts <input id="mc-clue-numerator" type="number" min="0" max="12" value="'+(state.clueValue==null?0:state.clueValue)+'"/></label><span>of</span><strong>'+g.denominator+' equal parts</strong></div>';
     } else if(g.type===3){
-      controls='<div class="mc-clue-shape-grid" role="group" aria-label="Nine-square footprint">'+Array.from({length:9},(_,i)=>'<button type="button" class="mc-clue-shape-cell '+(state.clueCells.includes(i)?"is-filled":"")+'" aria-pressed="'+state.clueCells.includes(i)+'" aria-label="Footprint square '+(i+1)+'" onclick="MathCourt.toggleClueCell('+i+')"></button>').join("")+'</div><p class="mc-clue-count">'+state.clueCells.length+' of '+g.area+' squares selected</p>';
+      controls='<div class="mc-workshop-target"><small>FOOTPRINT AREA</small><strong>'+g.area+' squares</strong><span>Use a connected group of squares.</span></div><div class="mc-clue-shape-grid" role="group" aria-label="Nine-square footprint">'+Array.from({length:9},(_,i)=>'<button type="button" class="mc-clue-shape-cell '+(state.clueCells.includes(i)?"is-filled":"")+'" aria-pressed="'+state.clueCells.includes(i)+'" aria-label="Footprint square '+(i+1)+'" onclick="MathCourt.toggleClueCell('+i+')"></button>').join("")+'</div><p class="mc-clue-count">'+state.clueCells.length+' of '+g.area+' squares selected</p>';
     } else if(g.type===4){
-      controls='<label class="mc-clue-range-label" for="mc-clue-minutes">Elapsed time <strong id="mc-clue-minutes-label">'+(state.clueValue==null?0:state.clueValue)+' minutes</strong></label><input id="mc-clue-minutes" type="range" min="0" max="120" step="5" value="'+(state.clueValue==null?0:state.clueValue)+'" oninput="document.getElementById(\\'mc-clue-minutes-label\\').textContent=this.value+\\' minutes\\';MathCourt.setClueValue(this.value)"/>';
+      controls='<div class="mc-workshop-target"><small>TARGET DURATION</small><strong>'+g.minutes+' minutes</strong><span>Match the elapsed time.</span></div><label class="mc-clue-range-label" for="mc-clue-minutes">Elapsed time <strong id="mc-clue-minutes-label">'+(state.clueValue==null?0:state.clueValue)+' minutes</strong></label><input id="mc-clue-minutes" type="range" min="0" max="120" step="5" value="'+(state.clueValue==null?0:state.clueValue)+'" oninput="document.getElementById(\\'mc-clue-minutes-label\\').textContent=this.value+\\' minutes\\';MathCourt.setClueValue(this.value)"/>';
     } else if(g.type===5){
       controls='<div class="mc-clue-bars">'+g.bars.map((v,i)=>'<button type="button" class="mc-clue-bar-choice" onclick="MathCourt.chooseClueValue('+i+')"><span class="mc-clue-bar" style="height:'+(24+v*9)+'px"></span><strong>Sample '+String.fromCharCode(65+i)+'</strong><small>'+v+'</small></button>').join("")+'</div>';
     } else if(g.type===6){
-      controls='<div class="mc-clue-rule-tiles">'+g.outputs.map((v,i)=>'<button type="button" class="mc-op-tile '+(state.clueValue===i?"is-selected":"")+'" aria-pressed="'+(state.clueValue===i)+'" onclick="MathCourt.chooseClueValue('+i+')">'+(["Add 3","Double + 1","Square"][i])+'<small>'+g.input+' → '+v+'</small></button>').join("")+'</div>';
+      controls='<div class="mc-workshop-target"><small>MACHINE TARGET</small><strong>Input '+g.input+' → Output '+g.outputs[g.rule]+'</strong><span>Test the candidate rules.</span></div><div class="mc-clue-rule-tiles">'+g.outputs.map((v,i)=>'<button type="button" class="mc-op-tile '+(state.clueValue===i?"is-selected":"")+'" aria-pressed="'+(state.clueValue===i)+'" onclick="MathCourt.chooseClueValue('+i+')">'+(["Add 3","Double + 1","Square"][i])+'<small>'+g.input+' → '+v+'</small></button>').join("")+'</div>';
     } else if(g.type===7){
-      controls='<label class="mc-clue-range-label" for="mc-clue-share">Resource tokens <strong id="mc-clue-share-label">'+(state.clueValue==null?0:state.clueValue)+'</strong></label><input id="mc-clue-share" type="range" min="0" max="12" step="1" value="'+(state.clueValue==null?0:state.clueValue)+'" oninput="document.getElementById(\\'mc-clue-share-label\\').textContent=this.value;MathCourt.setClueValue(this.value)"/>';
+      controls='<div class="mc-workshop-target"><small>RESOURCE TARGET</small><strong>'+g.share+' tokens</strong><span>Set the allocation to the requested amount.</span></div><label class="mc-clue-range-label" for="mc-clue-share">Resource tokens <strong id="mc-clue-share-label">'+(state.clueValue==null?0:state.clueValue)+'</strong></label><input id="mc-clue-share" type="range" min="0" max="12" step="1" value="'+(state.clueValue==null?0:state.clueValue)+'" oninput="document.getElementById(\\'mc-clue-share-label\\').textContent=this.value;MathCourt.setClueValue(this.value)"/>';
     } else if(g.type===8){
-      controls='<div class="mc-clue-route-choices"><button type="button" class="mc-button mc-button-secondary" onclick="MathCourt.chooseClueValue(0)">A → B → C <small>4 + 5 units</small></button><button type="button" class="mc-button mc-button-secondary" onclick="MathCourt.chooseClueValue(1)">A → D → E → C <small>2 + 3 + 2 units</small></button></div>';
+      controls='<div class="mc-workshop-target"><small>ROUTE CHALLENGE</small><strong>Choose the shortest connected route</strong><span>Compare 9 units with 7 units.</span></div><div class="mc-clue-route-choices"><button type="button" class="mc-button mc-button-secondary" onclick="MathCourt.chooseClueValue(0)">A → B → C <small>4 + 5 = 9 units</small></button><button type="button" class="mc-button mc-button-secondary" onclick="MathCourt.chooseClueValue(1)">A → D → E → C <small>2 + 3 + 2 = 7 units</small></button></div>';
     } else {
       controls='<label class="mc-clue-equation" for="mc-clue-equation-input">'+g.values[0]+' + '+g.values[1]+' = <input id="mc-clue-equation-input" type="number" value="'+(state.clueValue==null?"":state.clueValue)+'" inputmode="numeric"/></label>';
     }
