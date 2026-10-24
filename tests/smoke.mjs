@@ -472,7 +472,7 @@ async function main() {
       MathCourt.reviewStage(3);
       assert(document.querySelector(".mc-clue-adventure-foot .mc-button").textContent==="Clue verified ✓","Verified field-move progress was not restored on resume.");
       MathCourt.openCase(1);
-      assert(document.getElementById("mc-stage-name").textContent==="Story","Replaying a completed case should start at its story stage.");
+      assert(document.getElementById("mc-stage-count").textContent==="1 / 7"&&document.querySelector("#mc-stage-content .mc-story-hook"),"Replaying a completed case should start at its story stage.");
       MathCourt.open(); window.confirm=()=>true;
       const resetButton=document.querySelector("#mc-docket .mc-reset-link");
       assert(resetButton,"The reset-progress control is missing from the case map.");
