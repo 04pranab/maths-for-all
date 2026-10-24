@@ -968,6 +968,7 @@
     const type=(item.id-1)%10, n=item.id, storyNumbers=[...String(item.twist||"").matchAll(/-?\d[\d,]*(?:\.\d+)?/g)].map(m=>Number(m[0].replace(/,/g,""))).filter(Number.isFinite), source=[...new Set([...storyNumbers,...visualNumbers(item)])];
     while(source.length<3){const fallback=[3,5,8,13][source.length]+n;if(!source.includes(fallback))source.push(fallback);else source.push(fallback+source.length+1);}
     const values=source.slice(0,3);
+    const sorted=[...values].sort((a,b)=>a-b);
     const numerator=1+(Math.abs(values[0])%4),denominator=numerator+1+(Math.abs(values[1])%4);
     const minutes=15+(Math.abs(values[0])%13)*5;
     const bars=values.map(v=>Math.abs(v));
