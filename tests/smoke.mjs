@@ -386,7 +386,7 @@ async function main() {
     'MathCourt.dropAnswer("challenge",{preventDefault:()=>{},dataTransfer:{getData:k=>task2Data[k]||""}});' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Second workshop goal complete"), "The linked challenge did not provide positive mathematical feedback.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "New evidence", "The twist stage is missing.");' +
-    'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
+    'const clueValues=[...document.querySelector("#mc-clue-order-0").options].map(option=>Number(option.value)).sort((a,b)=>a-b); document.getElementById("mc-clue-order-0").value=String(clueValues[0]); document.getElementById("mc-clue-order-1").value=String(clueValues[1]); document.getElementById("mc-clue-order-2").value=String(clueValues[2]); MathCourt.submitClueMove(); assert(document.getElementById("mc-feedback").textContent.includes("New clue verified"), "The hands-on new-clue move did not accept the correctly ordered number tokens."); MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Cross-examination", "The cross-examination stage is missing.");' +
     'const correctCrossIndex = (0 - (1 % 3) + 3) % 3; MathCourt.answerCross(correctCrossIndex);' +
     'assert(document.getElementById("mc-feedback").textContent.includes("Excellent question"), "The cross-examination skill check did not accept the keyed strategy.");' +
     'MathCourt.advance(); assert(document.getElementById("mc-stage-name").textContent === "Verdict", "The verdict stage is missing.");' +
@@ -403,6 +403,89 @@ async function main() {
     'return { ok: true, cases: 100, chapters: 10, linkedTasksPerCase: 2, stagesCompleted: 7, progressSaved: true };' +
   '})()');
 
+  const mathCourtFieldMovesResult = await evaluate(`(async () => {
+    const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    const storageKey = "mfa_math_court_v1";
+    const originalProgress = localStorage.getItem(storageKey);
+    const originalConfirmDescriptor = Object.getOwnPropertyDescriptor(window,"confirm");
+    const tested = [];
+    const buildSession = caseId => ({
+      caseId, phase:3, seenClaim:true, seenEvidence:true,
+      investigationSolved:true, challengeSolved:true, crossSolved:false,
+      clueSolved:false, clueCells:[], clueValue:null, clueOrder:null,
+      verdictChosen:null, visualMode:"model", visualFocus:0,
+      lab:{playCount:1,challengeBaseline:0,goalSolved:false}
+    });
+    try {
+      for (let id = 11; id <= 20; id++) {
+        localStorage.setItem(storageKey, JSON.stringify({completed:[1],session:buildSession(id)}));
+        MathCourt.open();
+        MathCourt.resume();
+        const type=(id-1)%10;
+        if(type===0) {
+          const selects=[0,1,2].map(i=>document.getElementById("mc-clue-order-"+i));
+          const values=[...selects[0].options].map(option=>Number(option.value)).sort((a,b)=>a-b);
+          selects.forEach((select,i)=>{select.value=String(values[i]);select.dispatchEvent(new Event("change",{bubbles:true}));});
+        } else if(type===1||type===5) {
+          const buttons=[...document.querySelectorAll(".mc-clue-bar-choice")];
+          const index=buttons.reduce((best,button,i)=>Number(button.querySelector("small").textContent)>Number(buttons[best].querySelector("small").textContent)?i:best,0);
+          buttons[index].click();
+        } else if(type===2) {
+          const target=document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.split("/");
+          const input=document.getElementById("mc-clue-numerator");
+          input.value=target[0];input.dispatchEvent(new Event("input",{bubbles:true}));
+        } else if(type===3) {
+          const shapeTarget=document.querySelector("#mc-stage-content .mc-workshop-target strong"); assert(shapeTarget,"Missing footprint target node for case "+id); const shapeMatch=shapeTarget.textContent.match(/\\d+/); assert(shapeMatch,"Missing numeric footprint target for case "+id+": "+shapeTarget.textContent); const area=Number(shapeMatch[0]);
+          for(let i=0;i<area;i++)document.querySelectorAll(".mc-clue-shape-cell")[i].click();
+        } else if(type===4) {
+          const target=Number(document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.match(/\\d+/)[0]);
+          const input=document.getElementById("mc-clue-minutes");
+          input.value=String(target);input.dispatchEvent(new Event("input",{bubbles:true}));
+        } else if(type===6) {
+          const machineTarget=document.querySelector("#mc-stage-content .mc-workshop-target strong"); assert(machineTarget,"Missing machine target node for case "+id); const machineMatch=machineTarget.textContent.match(/Output\\s+(\\d+)/); assert(machineMatch,"Missing machine output target for case "+id+": "+machineTarget.textContent); const target=Number(machineMatch[1]);
+          const button=[...document.querySelectorAll(".mc-clue-rule-tiles button")].find(node=>node.querySelector("small").textContent.includes("→ "+target));
+          assert(button,"No rule-machine control matched the target output for case "+id);button.click();
+        } else if(type===7) {
+          const target=Number(document.querySelector("#mc-stage-content .mc-workshop-target strong").textContent.match(/\\d+/)[0]);
+          const input=document.getElementById("mc-clue-share");
+          input.value=String(target);input.dispatchEvent(new Event("input",{bubbles:true}));
+        } else if(type===8) {
+          const buttons=[...document.querySelectorAll(".mc-clue-route-choices button")];
+          const shortest=buttons.find(button=>button.textContent.includes("7 units"));
+          assert(shortest,"No shorter-route choice was rendered for case "+id);shortest.click();
+        } else if(type===9) {
+          const label=document.querySelector(".mc-clue-equation");
+          const nums=label.textContent.match(/-?\\d+(?:\\.\\d+)?/g).map(Number);
+          const input=document.getElementById("mc-clue-equation-input");
+          input.value=String(nums[0]+nums[1]);input.dispatchEvent(new Event("input",{bubbles:true}));
+        }
+        MathCourt.submitClueMove();
+        assert(document.getElementById("mc-feedback").textContent.includes("New clue verified"),
+          "Field-move family "+type+" failed its correct browser interaction in case "+id+": "+document.getElementById("mc-feedback").textContent);
+        MathCourt.advance();
+        assert(document.getElementById("mc-stage-name").textContent==="Cross-examination",
+          "A verified field move did not unlock the next stage for case "+id);
+        tested.push(type);
+      }
+      MathCourt.open(); MathCourt.resume();
+      assert(document.getElementById("mc-stage-name").textContent==="Cross-examination","Saved case did not resume at its last stage.");
+      MathCourt.reviewStage(3);
+      assert(document.querySelector(".mc-clue-adventure-foot .mc-button").textContent==="Clue verified ✓","Verified field-move progress was not restored on resume.");
+      MathCourt.openCase(1);
+      assert(document.getElementById("mc-stage-count").textContent==="1 / 7"&&document.querySelector("#mc-stage-content .mc-story-hook"),"Replaying a completed case should start at its story stage.");
+      MathCourt.open(); Object.defineProperty(window,"confirm",{value:()=>true,configurable:true,writable:true});
+      const resetButton=document.querySelector("#mc-docket .mc-reset-link");
+      assert(resetButton,"The reset-progress control is missing from the case map.");
+      MathCourt.resetProgress();
+      const resetState=JSON.parse(localStorage.getItem(storageKey));
+      assert(resetState.completed.length===0&&resetState.session===null,"Reset progress did not clear saved completions and the active session.");
+      return {ok:true,fieldMoveFamilies:tested.length,types:tested,allRequiredToAdvance:true,resume:true,replay:true,reset:true};
+    } finally {
+      if(originalConfirmDescriptor)Object.defineProperty(window,"confirm",originalConfirmDescriptor);
+      if(originalProgress===null)localStorage.removeItem(storageKey);
+      else localStorage.setItem(storageKey,originalProgress);
+    }
+  })()`);
   const numberMazeResult = await evaluate(`(async () => {
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     const waitForComputedStyle = async (element, property, expected, label) => {
