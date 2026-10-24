@@ -5,7 +5,7 @@ const game = readFileSync(new URL("../js/math-court.js", import.meta.url), "utf8
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const css = readFileSync(new URL("../css/math-court.css", import.meta.url), "utf8");
 
-const exportMatch = game.match(/root\\.MathCourt=\\{([\\s\\S]*?)\\};\\s*\\}\\)\\(window\\);/);
+const exportMatch = game.match(/root\.MathCourt=\{([\s\S]*?)\};\s*\}\)\(window\););
 assert.ok(exportMatch, "MathCourt must publish its public interaction API.");
 const api = new Set(
   [...exportMatch[1].matchAll(/(?:^|,)\s*([A-Za-z_$][\w$]*)\s*(?=,|:)/g)]
