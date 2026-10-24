@@ -66,7 +66,7 @@ for (const action of ["submitClueMove", "chooseClueValue", "setClueValue", "mark
 }
 assert.match(game, /state\.phase===3&&!state\.clueSolved/,
   "The new clue must be verified before the case can progress.");
-assert.match(game, /clueSolved:state\.clueSolved[\s\S]*?clueValue:state\.clueValue/,
+assert.match(game, /clueSolved:state\.clueSolved[\s\S]*?clueOrder:state\.clueOrder/,
   "Field-move progress must be included in saved sessions.");
 assert.match(game, /state\.clueSolved=saved\?Boolean\(saved\.clueSolved\):false/,
   "Resuming a case must restore field-move completion.");
