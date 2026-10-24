@@ -1053,14 +1053,14 @@
       const values=[0,1,2].map(i=>Number($("mc-clue-order-"+i)?.value));
       ok=values.join(",")===g.sorted.join(",");
     } else if(g.type===1){ok=state.clueValue===g.bars.indexOf(Math.max(...g.bars));}
-    else if(g.type===2){ok=Number($("mc-clue-numerator")?.value)===g.numerator;}
+    else if(g.type===2){state.clueValue=Number($("mc-clue-numerator")?.value);ok=state.clueValue===g.numerator;}
     else if(g.type===3){ok=state.clueCells.length===g.area&&clueShapeIsConnected(state.clueCells);}
     else if(g.type===4){ok=Number(state.clueValue)===g.minutes;}
     else if(g.type===5){ok=state.clueValue===g.bars.indexOf(Math.max(...g.bars));}
     else if(g.type===6){ok=state.clueValue===g.rule;}
     else if(g.type===7){ok=Number(state.clueValue)===g.share;}
     else if(g.type===8){ok=state.clueValue===g.route;}
-    else {ok=Number($("mc-clue-equation-input")?.value)===g.equation;}
+    else {state.clueValue=Number($("mc-clue-equation-input")?.value);ok=state.clueValue===g.equation;}
     state.clueSolved=ok;
     if(ok){setFeedback("✨ New clue verified. You used a different mathematical move to update the investigation.","success");}
     else{setFeedback("Not quite yet. Re-read the clue, inspect the model, and try another move.","hint");}
