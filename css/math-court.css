@@ -2702,3 +2702,10 @@
   #screen-math-court .mc-clue-adventure-foot .mc-button { width:100%; }
   #screen-math-court .mc-clue-bar-choice { min-width:78px; }
 }
+
+#screen-math-court .mc-clue-bar-choice.is-selected,
+#screen-math-court .mc-clue-route-choices .is-selected {
+  border-color:#267b70;
+  background:#edf7f1;
+  box-shadow:0 0 0 2px #c7e1d4;
+}
