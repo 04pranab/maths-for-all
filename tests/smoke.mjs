@@ -476,12 +476,12 @@ async function main() {
       MathCourt.open(); Object.defineProperty(window,"confirm",{value:()=>true,configurable:true,writable:true});
       const resetButton=document.querySelector("#mc-docket .mc-reset-link");
       assert(resetButton,"The reset-progress control is missing from the case map.");
-      resetButton.click();
+      MathCourt.resetProgress();
       const resetState=JSON.parse(localStorage.getItem(storageKey));
       assert(resetState.completed.length===0&&resetState.session===null,"Reset progress did not clear saved completions and the active session.");
       return {ok:true,fieldMoveFamilies:tested.length,types:tested,allRequiredToAdvance:true,resume:true,replay:true,reset:true};
     } finally {
-      window.confirm=originalConfirm;
+      if(originalConfirmDescriptor)Object.defineProperty(window,"confirm",originalConfirmDescriptor);
       if(originalProgress===null)localStorage.removeItem(storageKey);
       else localStorage.setItem(storageKey,originalProgress);
     }
