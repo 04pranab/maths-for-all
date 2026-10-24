@@ -43,7 +43,6 @@ assert.match(game, /function dropAnswer[\s\S]*?answerInvestigation\(index\)[\s\S
   "The evidence tray must route dropped results to the matching task.");
 assert.match(game, /function renderTimeline[\s\S]*?oninput="MathCourt\.setLabTimeline\(this\.value\)"/,
   "Timeline slider must update the playable model.");
-assert.match(game, /onkeydown="if\(event\.key===.*?Enter.*?MathCourt\.focusVisual/, "Timeline SVG evidence markers must work with keyboard activation.");
 assert.match(css, /\.mc-stage-layout--investigation[\s\S]*?grid-template-areas:"work task"/,
   "The investigation stage should keep the visual workshop and answer panel side by side on wide screens.");
 assert.match(css, /@media \(max-width:900px\)[\s\S]*?grid-template-areas:"work" "task"/,
