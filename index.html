@@ -141,7 +141,7 @@
 
     <div class="menu-section-heading">
       <h2>Pick your next adventure</h2>
-      <p>Ten playful ways to count, build, solve, and explore.</p>
+      <p>Playful ways to count, solve, create, and explore.</p>
     </div>
 
     <div class="menu-grid">
@@ -204,7 +204,8 @@
         <div class="card-desc">Trace the numbered route and fill every open square. Fresh validated puzzles keep coming.</div>
         <div class="card-tag">Solo · Unlimited puzzles · Untimed</div>
       </button>
-      <button class="menu-card card-math-court" style="--tile-accent:#694c83;--tile-wash:#f3eef8" onclick="MathCourt.open()">
+      <!-- Math Court is shelved for now. Its implementation is retained for possible future review. -->
+      <button class="menu-card card-math-court" style="--tile-accent:#694c83;--tile-wash:#f3eef8" onclick="MathCourt.open()" hidden aria-hidden="true" tabindex="-1">
         <div class="card-badge-icon" aria-hidden="true">⚖️</div>
         <div class="card-title">Math Court</div>
         <div class="card-desc">Test mathematical claims, uncover twists and deliver a reasoned verdict.</div>
