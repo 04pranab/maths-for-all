@@ -965,13 +965,16 @@ async function main() {
       'previousSlabOrder = order;' +
     '}' +
     'let previousSlabSignature = "";' +
+    'let previousSlabTarget = null;' +
     'for (let i=0;i<120;i++) {' +
       'SlabMath.newRound();' +
       'const target = Number(document.getElementById("slab-basket-number").textContent);' +
       'const values = [...document.querySelectorAll("#slab-tray .slab-tile")].map(el => Number(el.textContent));' +
       'assert(target >= 36 && target <= 97, "Slab Maths generated a target outside the mathematically constructible range: " + target);' +
+      'assert(target !== previousSlabTarget, "Slab Maths repeated the immediately previous target.");' +
       'const signature = target + ":" + values.slice().sort((a,b)=>a-b).join(",");' +
       'assert(signature !== previousSlabSignature, "Slab Maths repeated the same target and tile multiset immediately.");' +
+      'previousSlabTarget = target;' +
       'previousSlabSignature = signature;' +
     '}' +
     'const shapeStats = { levels: 0, pieces: 0, shapeTypes: new Set() };' +
