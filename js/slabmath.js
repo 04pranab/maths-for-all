@@ -125,11 +125,21 @@ const SlabMath = (function () {
   let lastValueOrder = '';
 
   function pickDiverseTarget(tier) {
-    let t = tier.targetMin;
-    for (let i = 0; i < 40; i++) {
-      t = Utils.randInt(tier.targetMin, tier.targetMax);
-      if (!recentTargets.includes(t)) break;
-    }
+    const targets = Array.from(
+      { length: tier.targetMax - tier.targetMin + 1 },
+      (_, i) => tier.targetMin + i
+    );
+    const previousTarget = recentTargets.length
+      ? recentTargets[recentTargets.length - 1]
+      : null;
+
+    // Prefer targets not used recently, but always exclude the immediately
+    // previous target when the tier has more than one possible value.
+    const notPrevious = targets.filter(value => value !== previousTarget);
+    const fresh = notPrevious.filter(value => !recentTargets.includes(value));
+    const pool = fresh.length ? fresh : (notPrevious.length ? notPrevious : targets);
+    const t = pool[Utils.randInt(0, pool.length - 1)];
+
     recentTargets.push(t);
     if (recentTargets.length > 10) recentTargets.shift();
     return t;
