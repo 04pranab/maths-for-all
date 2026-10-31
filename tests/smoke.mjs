@@ -965,13 +965,16 @@ async function main() {
       'previousSlabOrder = order;' +
     '}' +
     'let previousSlabSignature = "";' +
+    'let previousSlabTarget = null;' +
     'for (let i=0;i<120;i++) {' +
       'SlabMath.newRound();' +
       'const target = Number(document.getElementById("slab-basket-number").textContent);' +
       'const values = [...document.querySelectorAll("#slab-tray .slab-tile")].map(el => Number(el.textContent));' +
       'assert(target >= 36 && target <= 97, "Slab Maths generated a target outside the mathematically constructible range: " + target);' +
+      'assert(target !== previousSlabTarget, "Slab Maths repeated the immediately previous target.");' +
       'const signature = target + ":" + values.slice().sort((a,b)=>a-b).join(",");' +
       'assert(signature !== previousSlabSignature, "Slab Maths repeated the same target and tile multiset immediately.");' +
+      'previousSlabTarget = target;' +
       'previousSlabSignature = signature;' +
     '}' +
     'const shapeStats = { levels: 0, pieces: 0, shapeTypes: new Set() };' +
@@ -1217,19 +1220,20 @@ async function main() {
       'if (innerWidth > 560) assert(isVisible(heroIllustration), "The homepage illustration should be visible when there is room for it.");' +
       'else assert(!isVisible(heroIllustration), "The homepage illustration should step aside on narrow screens.");' +
       'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
-      'assert(gameCards.length === 10, "The visible game menu should contain ten current game cards, not " + gameCards.length + ".");' +
+      'assert(gameCards.length === 9, "The visible game menu should contain nine active game cards, not " + gameCards.length + ".");' +
       'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
       'const themedAccents = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-accent").trim());' +
       'const themedWashes = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-wash").trim());' +
-      'assert(themedAccents.every(Boolean) && new Set(themedAccents).size === 10, "Every visible home game should have its own distinct theme colour.");' +
-      'assert(themedWashes.every(Boolean) && new Set(themedWashes).size === 10, "Every visible home game should have its own calm background wash.");' +
+      'assert(themedAccents.every(Boolean) && new Set(themedAccents).size === 9, "Every visible home game should have its own distinct theme colour.");' +
+      'assert(themedWashes.every(Boolean) && new Set(themedWashes).size === 9, "Every visible home game should have its own calm background wash.");' +
       'const expectedColumns = innerWidth >= 1101 ? 3 : innerWidth >= 421 ? 2 : 1;' +
       'const symmetricRowWidths = gameCards.slice(0, expectedColumns).map(card => card.getBoundingClientRect().width);' +
       'assert(Math.max(...symmetricRowWidths) - Math.min(...symmetricRowWidths) < 2, "Home game cards should have matching widths within each row.");' +
       'assert(innerWidth < 1101 || new Set(gameCards.map(card => Math.round(card.getBoundingClientRect().width))).size >= 3, "Wide screens should mix card sizes instead of presenting a rigid dashboard grid.");' +
       'const oversizedCards = gameCards.filter(card => card.getBoundingClientRect().height > 240).map(card => ({ title: (card.querySelector(".card-title")?.innerText || "").trim(), height: Math.round(card.getBoundingClientRect().height), width: Math.round(card.getBoundingClientRect().width) }));' +
       'assert(oversizedCards.length === 0, "Home game cards should stay compact at " + innerWidth + "px: " + JSON.stringify(oversizedCards));' +
-      'if (innerWidth >= 1101) { const mazeRect=document.querySelector("#screen-menu .card-number-maze").getBoundingClientRect(); const courtRect=document.querySelector("#screen-menu .card-math-court").getBoundingClientRect(); assert(Math.abs(mazeRect.top-courtRect.top)<4 && mazeRect.left<courtRect.left, "Math Court should sit immediately beside Number Maze in the same desktop row."); }' +
+      'assert(document.querySelector("#screen-menu .card-math-court").hidden, "Math Court must remain shelved from the learner-facing menu.");' +
+      'assert(document.querySelector("#screen-menu .card-probability").hidden, "Probability Machine must remain shelved from the learner-facing menu.");' +
       'const themePairs = [["card-quiz","screen-quiz"],["card-race","screen-race"],["card-sudoku","screen-sudoku"],["card-shape","screen-shape"],["card-slab","screen-slab"],["card-architect","screen-architect"],["card-fraction","screen-fraction-bakery"],["card-little-shop","screen-little-shop"],["card-number-maze","screen-number-maze"],["card-math-court","screen-math-court"]];' +
       'assert(themePairs.every(([cardClass, screenId]) => { const card = document.querySelector("#screen-menu ." + cardClass); const screen = document.getElementById(screenId); const cardStyle = card && getComputedStyle(card); const screenStyle = screen && getComputedStyle(screen); return cardStyle && screenStyle && cardStyle.getPropertyValue("--tile-accent").trim() === screenStyle.getPropertyValue("--game-accent").trim() && cardStyle.getPropertyValue("--tile-wash").trim() === screenStyle.getPropertyValue("--game-wash").trim(); }), "Each game screen must use the same accent and wash as its matching menu card.");' +
       'const themedSurfaces = [["screen-quiz","#screen-quiz .game-topbar"],["screen-race","#screen-race .game-topbar"],["screen-sudoku","#screen-sudoku .game-topbar"],["screen-shape","#screen-shape .game-topbar"],["screen-slab","#screen-slab .game-topbar"],["screen-architect","#screen-architect .game-topbar"],["screen-fraction-bakery","#screen-fraction-bakery .fb-head"],["screen-little-shop","#screen-little-shop .ls-primary"],["screen-number-maze","#screen-number-maze .nm-action.primary"],["screen-math-court","#screen-math-court .mc-button-primary"]];' +
