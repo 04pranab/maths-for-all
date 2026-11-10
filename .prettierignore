@@ -1,0 +1,9 @@
+# Generated and dependency-managed files
+node_modules/
+coverage/
+dist/
+package-lock.json
+
+# Keep release artifacts and binary assets out of formatting
+*.min.js
+*.min.css
