@@ -1289,7 +1289,7 @@ async function main() {
      rather than synthetic KeyboardEvents so native button/form behaviour
      is exercised as a learner would experience it. */
   const keyboardAudit = { littleShop: false, shapeFitting: false, shapeArchitect: false, racingEnter: false, escapeGames: [] };
-  await evaluate('ControlsOverlay.close(); ResearchConsent.set("yes"); ResearchConsent.close(); Game.startLittleShop();');
+  await evaluate('ControlsOverlay.close(); ResearchConsent.set("yes"); ResearchConsent.close(); window.__keyboardOriginalRandom = Math.random; Math.random = () => 0.1; Game.startLittleShop();');
   const initialShopFocus = await evaluate('document.activeElement?.id === "little-shop-title"');
   if (!initialShopFocus) throw new Error("Little Shop did not move keyboard focus into the game on launch.");
   const requestedItems = await evaluate("LittleShop.getState().customer.items");
@@ -1314,7 +1314,9 @@ async function main() {
   await focusSelector("#ls-checkout-start");
   await pressKey("Enter", "Enter", 13);
   const payment = await evaluate("LittleShop.getState()");
+  await evaluate("Math.random = window.__keyboardOriginalRandom; delete window.__keyboardOriginalRandom;");
   if (payment.phase !== "payment") throw new Error("Little Shop keyboard Enter did not open checkout.");
+  if (payment.settlementKind !== "short") throw new Error("Little Shop keyboard test did not create the expected short-payment checkout.");
   const due = Math.abs(payment.billTotalPaise - payment.paymentPaise);
   const answer = (due / 100).toFixed(2);
   if (payment.billTotalPaise === payment.paymentPaise) {
