@@ -888,7 +888,7 @@ const ShapePuzzle = (function () {
         e.preventDefault();
         rotateSelected();
       }
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && selectedPiece >= 0) {
         e.preventDefault();
         clearSelection();
       }
