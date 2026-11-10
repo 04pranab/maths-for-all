@@ -1,0 +1,194 @@
+/* Math Racing theme overrides. Shared layout primitives remain in css/style.css. */
+
+#screen-race {
+--game-accent: #704b89;
+  --game-wash: #f0e5fa;
+  --game-border: #d8c4e8;
+  --game-ink: #4e3760;
+}
+
+#screen-race .game-topbar {
+gap: 9px;
+  min-height: 56px;
+  padding: 9px clamp(12px, 2.2vw, 22px);
+  border-bottom: 3px solid var(--game-border);
+  background: var(--game-accent);
+  color: #ffffff;
+}
+
+#screen-race .topbar-title {
+font-size: calc(clamp(1rem, 1.35vw, 1.2rem) * var(--font-scale, 1));
+  line-height: 1.25;
+  text-align: left;
+}
+
+#screen-race .btn-back,
+#screen-race .btn-help {
+min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  background: rgba(255, 255, 255, 0.13);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+#screen-race .score-box {
+padding: 6px 11px;
+  border: 1px solid var(--game-border);
+  border-radius: 10px;
+  background: var(--game-wash);
+  color: var(--game-ink);
+  font-size: 0.86rem;
+}
+
+#screen-race .setup-card,
+#screen-race .leaderboard,
+#screen-race .result-card {
+border: 1px solid var(--game-border);
+  border-radius: 17px;
+  background: linear-gradient(135deg, var(--game-wash), #ffffff 76%);
+  box-shadow: 0 3px 12px rgba(37, 48, 39, 0.055);
+}
+
+#screen-race .setup-card h3,
+#screen-race .leaderboard h3 {
+color: var(--game-ink);
+  font-size: 1.32rem;
+}
+
+#screen-race .setup-desc {
+line-height: 1.45;
+}
+
+#screen-race .level-guide {
+border-color: var(--game-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+#screen-race .btn-diff {
+min-width: 0;
+  min-height: 76px;
+  padding: 13px 14px;
+  border: 1px solid var(--game-border);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--game-ink);
+  box-shadow: 0 2px 0 var(--game-border);
+  font-size: calc(1rem * var(--font-scale, 1));
+  line-height: 1.4;
+}
+
+#screen-race .btn-diff:hover {
+border-color: var(--game-accent);
+  background: var(--game-wash);
+  transform: translateY(-1px);
+}
+
+#screen-race .btn-diff.active-diff {
+border-color: var(--game-accent);
+  background: var(--game-wash);
+  box-shadow: inset 0 0 0 1px var(--game-accent);
+}
+
+#screen-race .play-panel {
+max-width: 760px;
+  padding: 16px 18px 28px;
+}
+
+#screen-race .diff-badge {
+background: var(--game-wash);
+  border: 1px solid var(--game-border);
+  color: var(--game-ink);
+}
+
+#screen-race .question-card {
+margin-bottom: 14px;
+  padding: 24px 18px;
+  border: 1px solid var(--game-border);
+  border-left: 5px solid var(--game-accent);
+  border-radius: 15px;
+  background: linear-gradient(130deg, var(--game-wash), #ffffff 88%);
+  box-shadow: 0 3px 0 rgba(45, 55, 45, 0.04);
+}
+
+#screen-race .answer-input:focus {
+border-color: var(--game-accent);
+  outline: 3px solid var(--game-wash);
+  outline-offset: 1px;
+}
+
+#screen-race .btn-submit,
+#screen-race .btn-start-race {
+min-height: 44px;
+  border: 1px solid var(--game-accent);
+  border-radius: 11px;
+  background: var(--game-accent);
+  color: #ffffff;
+  box-shadow: 0 2px 0 var(--game-border);
+}
+
+#screen-race .btn-submit:hover,
+#screen-race .btn-start-race:hover {
+filter: brightness(0.95);
+}
+
+#screen-race .btn-change-diff,
+#screen-race .btn-clear {
+border: 1px solid var(--game-border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--game-ink);
+}
+
+#screen-race .race-progress-fill {
+background: var(--game-accent);
+}
+
+#screen-race .btn-timer.active {
+border-color: var(--game-accent);
+  background: var(--game-wash);
+  color: var(--game-ink);
+  box-shadow: inset 0 0 0 1px var(--game-accent);
+}
+
+#screen-race :focus-visible {
+outline-color: var(--game-accent);
+}
+
+@media (max-width: 560px) {
+#screen-race .game-topbar {
+padding: 9px 10px;
+    gap: 7px;
+}
+
+#screen-race .topbar-title {
+text-align: center;
+    font-size: calc(0.95rem * var(--font-scale, 1));
+}
+
+#screen-race .play-panel {
+margin-top: 12px;
+    padding: 12px 10px 20px;
+}
+
+#screen-race .btn-diff {
+padding: 10px 8px;
+    font-size: calc(0.9rem * var(--font-scale, 1));
+}
+}
+
+@media (prefers-reduced-motion: reduce) {
+#screen-race * {
+scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}
+}
+
+#screen-race {
+--game-accent: #7045a5;
+  --game-wash: #f0e7ff;
+  --game-border: #d9c8ef;
+  --game-ink: #4d3277;
+}
