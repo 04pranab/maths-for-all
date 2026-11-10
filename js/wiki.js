@@ -5,6 +5,8 @@
   const detail = document.getElementById("game-detail");
   const close = document.getElementById("game-detail-close");
 
+  const GAME_ROUTES = { arithmetic: "arithmetic", racing: "math-racing", sudoku: "sudoku", "shape-fitting": "shape-fitting", slab: "slab-maths", architect: "shape-architect", bakery: "fraction-bakery", shop: "little-shop", "number-maze": "number-maze" };
+
   const games = {
     arithmetic: {
       title: "🧮 Arithmetic Quiz",
@@ -147,6 +149,8 @@
     document.getElementById("game-detail-how").textContent = game.how;
     document.getElementById("game-detail-prompt").textContent = game.prompt;
     document.getElementById("game-detail-note").textContent = game.note;
+    const gameLink = document.getElementById("game-detail-link");
+    if (gameLink) gameLink.href = "index.html#" + GAME_ROUTES[button.dataset.game];
 
     const skills = document.getElementById("game-detail-skills");
     skills.replaceChildren(

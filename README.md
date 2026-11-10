@@ -117,6 +117,10 @@ The initial mandatory research-consent prompt remains non-dismissible with Escap
 
 Visible focus states and keyboard controls are retained across the application.
 
+## Game links and browser navigation
+
+Each playable game has a stable hash URL, such as `index.html#little-shop`. Opening a game updates the address bar, and refreshing that address reopens the same game. Browser Back and Forward navigate between previously opened games and the menu. The Wiki game guide links directly to each game. Unknown or malformed hashes safely return to the menu.
+
 ## Privacy by design
 
 Research collection is **opt-in**.
