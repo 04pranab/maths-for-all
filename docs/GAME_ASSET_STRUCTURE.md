@@ -46,6 +46,13 @@ When a game asset is consolidated or renamed, update `index.html`, its tests, an
 - **Arrow keys:** reserved for game boards and spatial controls where the game documents them (Sudoku, Shape Fitting, Number Maze, Shape Architect, and Slab Maths). They must not steal arrow keys while the learner is typing.
 - **Shape Fitting:** tray pieces are keyboard buttons; Enter/Space selects a piece and moves focus to the board. Arrow keys move the board cursor; Enter/Space places the selected piece; R rotates and Escape clears the selection.
 - **Shape Architect:** focus the build canvas and press Enter/Space to cycle through pieces; arrow keys move the selected piece; R rotates and Escape deselects.
+- **Arithmetic Quiz:** Enter submits the focused answer field.
+- **Math Racing:** Enter submits the focused answer field and calls the racing game’s own submit routine.
+- **Sudoku:** number keys 1–9 enter a value, arrow keys move between cells, and Backspace/Delete/0 clear the selected cell.
+- **Slab Maths:** number keys 1–9 select an available slab, Enter uses the selected slab, and Escape clears its selection.
+- **Number Maze:** arrow keys move the board focus; Backspace/Delete undo the last path step.
+- **Fraction Bakery:** Enter advances after a challenge is solved; Escape leaves the bakery.
+- **Probability Machine and other button-driven screens:** use native Tab, Enter and Space behaviour; Escape closes the current game or overlay.
 - **Little Shop:** Tab reaches each product and basket control; Enter/Space activates them; Enter submits the money answer; Escape preserves typed text on first press and leaves the game on the next press.
 
 The browser smoke test uses real Chrome DevTools keyboard input to verify a keyboard-only Little Shop sale, Math Racing's Enter submission, and Escape exit from every game. Update this contract and its tests whenever a game's key map changes.
