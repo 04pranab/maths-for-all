@@ -537,13 +537,13 @@ It is finished when the experience works.
 - **Shape Architect:** 100-level geometry builder; implemented and hardened.
 - **Fraction Bakery:** 100 levels across eight stages; automated mathematical and responsive-layout checks are present. Supervised learner/educator acceptance remains pending.
 - **Little Shop:** open-ended fruit-counter cashier activity; order matching, underpayment, exact payment, overpayment and change-return paths are implemented. Supervised learner/educator acceptance remains pending.
-- **Number Maze:** seeded procedural path puzzles, three difficulty bands, guided starters, Explore, Daily Challenge, Challenge Climb, replay codes and a bounded uniqueness check are on `main`. Physical and assistive-technology evaluation remains pending.
+- **Number Maze:** seeded procedural path puzzles, three difficulty bands, guided starters, Explore, Daily Challenge, Challenge Climb, replay codes and a bounded uniqueness check are on `main`. Physical and assistive-technology evaluation remains pending. Leaving the game returns to its setup menu; re-entry starts from that menu rather than restoring an unfinished path.
 - **Probability Machine:** 84 levels across seven stages remain in the codebase, but its menu card is hidden.
 - **Math Court:** shelved and hidden from the learner menu at the project owner's direction. Its code and tests are retained, but it is not an active game.
 - **Authentication:** learner-facing account controls remain disabled. Backend code and PostgreSQL migrations exist, but production deployment is not claimed.
 - **Research:** collection is opt-in by design and gated in code; no live research deployment is claimed.
 
-The latest recorded `main` Tests and Pages deployment workflows both passed on 31 October 2026. This is the latest run visible during the 10 November review, not a fresh run performed today.
+The `main` Tests workflow and GitHub Pages build/deployment workflow both passed on 10 November 2026. These automated checks establish a green software baseline; they do not replace supervised learner/educator review or physical assistive-technology testing.
 
 The next priority is supervised review of Fraction Bakery and Little Shop, physical and assistive-technology testing of Number Maze, and maintaining a green CI baseline.
 
