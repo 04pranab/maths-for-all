@@ -506,6 +506,12 @@ const FractionBakery = (() => {
       timeMs: Date.now() - state.startedAt,
     });
     render();
+    window.CompletionOverlay?.show({
+      title: "Bakery order complete!",
+      message: "You solved Level " + state.level + ". The next order is ready when you are.",
+      actionLabel: "Next order",
+      onContinue: next,
+    });
   }
   function wrong(message) {
     const f = el("fb-feedback");
