@@ -35,3 +35,15 @@ Shared files are intentional. Do not duplicate navigation, accessibility, analyt
 ## Regression rule
 
 When a game asset is consolidated or renamed, update `index.html`, its tests, and this map in the same change. Remove the old asset only after all runtime and test references have moved. Run the full GitHub Actions Tests workflow and Pages deployment against the exact proposed commit before merging.
+
+
+## Keyboard interaction contract
+
+- **Tab / Shift+Tab:** move through native buttons, links, and form controls in reading order. Focus indicators remain visible.
+- **Enter:** activate the focused button or submit the focused form. Arithmetic Quiz and Math Racing submit their answer fields with Enter; each game must call its own submit function.
+- **Space:** activate focused native buttons. Custom interactive controls must provide equivalent Enter and Space behaviour.
+- **Escape:** dismiss an open overlay first. Otherwise a game may clear its current selection; if no local action consumes Escape, return to the game menu. When a text field is focused, Escape blurs it without deleting the learner's typed answer; a second Escape exits.
+- **Arrow keys:** reserved for game boards and spatial controls where the game documents them (Sudoku, Number Maze, Shape Architect, and Slab Maths). They must not steal arrow keys while the learner is typing.
+- **Little Shop:** Tab reaches each product and basket control; Enter/Space activates them; Enter submits the money answer; Escape preserves typed text on first press and leaves the game on the next press.
+
+The browser smoke test uses real Chrome DevTools keyboard input to verify a keyboard-only Little Shop sale, Math Racing's Enter submission, and Escape exit from every game. Update this contract and its tests whenever a game's key map changes.
