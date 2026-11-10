@@ -1064,6 +1064,12 @@ const ShapeArchitect = (() => {
       hints: state.hints,
     });
     renderLevels();
+    window.CompletionOverlay?.show({
+      title: "Picture complete!",
+      message: "You built " + state.data.name + " and completed Level " + (state.level + 1) + ".",
+      actionLabel: "Next picture",
+      onContinue: next,
+    });
   }
   function next() {
     load((state.level + 1) % 100);
