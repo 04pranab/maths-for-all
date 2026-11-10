@@ -306,6 +306,7 @@ const ShapePuzzle = (function () {
   let boardState = []; // NxN grid: 0 = empty, pieceId (1-based) = filled
   let pieces = []; // array of piece objects for current level
   let selectedPiece = -1; // index into pieces[], -1 = nothing selected
+  let keyboardCell = { row: 0, col: 0 };
   let gridN = 4;
   let cellPx = 44; // pixel size of each board cell (set by renderBoard)
   let timerInterval = null;
@@ -367,6 +368,7 @@ const ShapePuzzle = (function () {
     const ld = LEVEL_DATA[idx];
     gridN = ld.grid;
     selectedPiece = -1;
+    keyboardCell = { row: 0, col: 0 };
 
     /* Empty NxN board */
     boardState = Array.from({ length: gridN }, () => new Array(gridN).fill(0));
@@ -455,6 +457,8 @@ const ShapePuzzle = (function () {
     const boardEl = document.getElementById("shape-board");
     if (!boardEl) return;
     boardEl.innerHTML = "";
+    boardEl.setAttribute("role", "grid");
+    boardEl.setAttribute("aria-label", "Shape Fitting board. Use arrow keys to move between squares and Enter or Space to place the selected shape.");
 
     /* Calculate cell size to fill the left panel */
     const available = Math.min(window.innerWidth * 0.56, window.innerHeight - 170, 560);
@@ -470,6 +474,26 @@ const ShapePuzzle = (function () {
         cell.style.height = cellPx + "px";
         cell.dataset.row = r;
         cell.dataset.col = c;
+        cell.setAttribute("role", "gridcell");
+        cell.tabIndex = r === keyboardCell.row && c === keyboardCell.col ? 0 : -1;
+        const occupiedPiece = boardState[r][c];
+        cell.setAttribute("aria-label", "Row " + (r + 1) + ", column " + (c + 1) + (occupiedPiece ? ", occupied" : ", empty"));
+        cell.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+            event.preventDefault();
+            keyboardCell = {
+              row: Math.max(0, Math.min(gridN - 1, r + (event.key === "ArrowDown" ? 1 : event.key === "ArrowUp" ? -1 : 0))),
+              col: Math.max(0, Math.min(gridN - 1, c + (event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0))),
+            };
+            renderBoard();
+            getBoardCellEl(keyboardCell.row, keyboardCell.col)?.focus();
+            return;
+          }
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            if (selectedPiece >= 0) handleBoardClick(r, c);
+          }
+        });
 
         /* Paint filled cells */
         const pid = boardState[r][c];
@@ -485,7 +509,10 @@ const ShapePuzzle = (function () {
         cell.addEventListener("mouseleave", clearGhost);
 
         /* Click → place selected piece */
-        cell.addEventListener("click", () => handleBoardClick(r, c));
+        cell.addEventListener("click", () => {
+          keyboardCell = { row: r, col: c };
+          handleBoardClick(r, c);
+        });
 
         /* Touch: treat touchstart as a click for tablets */
         cell.addEventListener(
@@ -514,8 +541,13 @@ const ShapePuzzle = (function () {
     tray.innerHTML = "";
 
     pieces.forEach((piece, idx) => {
-      const el = document.createElement("div");
+      const el = document.createElement("button");
+      el.type = "button";
       el.className = "shape-piece";
+      el.dataset.pieceIndex = String(idx);
+      el.setAttribute("aria-pressed", idx === selectedPiece ? "true" : "false");
+      el.setAttribute("aria-label", piece.name + (piece.placed ? ", already placed" : idx === selectedPiece ? ", selected" : ", select shape"));
+      el.disabled = piece.placed;
 
       if (piece.placed) el.classList.add("placed-out");
       if (idx === selectedPiece) el.classList.add("selected");
@@ -586,6 +618,8 @@ const ShapePuzzle = (function () {
     clearGhost();
     clearHint();
     renderShapes();
+    if (selectedPiece >= 0) getBoardCellEl(keyboardCell.row, keyboardCell.col)?.focus();
+    else document.querySelector('#shape-tray [data-piece-index="' + idx + '"]')?.focus();
   }
 
   /* ════════════════════════════════════════════════════════════
@@ -674,6 +708,7 @@ const ShapePuzzle = (function () {
     /* Rebuild board to paint the new cells, then tray to grey out the piece */
     renderBoard();
     renderShapes();
+    getBoardCellEl(keyboardCell.row, keyboardCell.col)?.focus();
 
     /* Check win */
     checkPuzzleSolved();
@@ -853,7 +888,7 @@ const ShapePuzzle = (function () {
         e.preventDefault();
         rotateSelected();
       }
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && selectedPiece >= 0) {
         e.preventDefault();
         clearSelection();
       }

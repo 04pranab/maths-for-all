@@ -266,3 +266,10 @@ const Racing = (function () {
 })();
 
 window.Racing = Racing;
+
+const raceAnswerInput = document.getElementById("race-input");
+raceAnswerInput?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" || event.isComposing) return;
+  event.preventDefault();
+  Racing.submit();
+});

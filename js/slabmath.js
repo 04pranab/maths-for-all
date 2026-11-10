@@ -519,7 +519,7 @@ const SlabMath = (function () {
         return;
       }
 
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && selectedSlabId) {
         e.preventDefault();
         clearSelection();
       }

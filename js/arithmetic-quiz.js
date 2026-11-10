@@ -273,14 +273,7 @@ const Quiz = (function () {
         }
       });
 
-    const raceInput = document.getElementById("race-input");
-    if (raceInput)
-      raceInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          submit();
-        }
-      });
+
   });
 
   return {

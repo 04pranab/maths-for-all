@@ -80,6 +80,33 @@ async function evaluate(expression) {
   return result.result?.value;
 }
 
+async function pressKey(key, code, windowsVirtualKeyCode, modifiers = 0) {
+  await cdp("Input.dispatchKeyEvent", {
+    type: "keyDown",
+    key,
+    code,
+    windowsVirtualKeyCode,
+    modifiers,
+  });
+  await cdp("Input.dispatchKeyEvent", {
+    type: "keyUp",
+    key,
+    code,
+    windowsVirtualKeyCode,
+    modifiers,
+  });
+}
+
+async function focusSelector(selector) {
+  return evaluate(
+    "(() => { const node = document.querySelector(" +
+      JSON.stringify(selector) +
+      "); if (!node) throw new Error('Keyboard test could not find ' + " +
+      JSON.stringify(selector) +
+      "); node.focus(); return document.activeElement === node; })()",
+  );
+}
+
 async function main() {
   server = spawn(process.execPath, ["server/index.mjs"], {
     cwd: root,
@@ -1256,6 +1283,148 @@ async function main() {
   if (littleShopResponsiveResults.length !== 3)
     throw new Error("Little Shop responsive audit did not complete.");
 
+
+  /* Real keyboard events: Little Shop checkout, Math Racing submit, and
+     Escape navigation across every game. These use Chrome's input domain
+     rather than synthetic KeyboardEvents so native button/form behaviour
+     is exercised as a learner would experience it. */
+  const keyboardAudit = { littleShop: false, shapeFitting: false, shapeArchitect: false, racingEnter: false, escapeGames: [] };
+  await evaluate('ControlsOverlay.close(); ResearchConsent.set("yes"); ResearchConsent.close(); window.__keyboardOriginalRandom = Math.random; Math.random = () => 0.1; Game.startLittleShop();');
+  const initialShopFocus = await evaluate('document.activeElement?.id === "little-shop-title"');
+  if (!initialShopFocus) throw new Error("Little Shop did not move keyboard focus into the game on launch.");
+  const requestedItems = await evaluate("LittleShop.getState().customer.items");
+  let spaceKeyChecked = false;
+  for (const line of requestedItems) {
+    const selector = '#ls-catalogue [data-item="' + line.id + '"]';
+    await focusSelector(selector);
+    for (let count = 0; count < line.quantity; count++) {
+      if (!spaceKeyChecked) {
+        await pressKey(" ", "Space", 32);
+        spaceKeyChecked = true;
+      } else {
+        await pressKey("Enter", "Enter", 13);
+      }
+      const focusRestored = await evaluate('document.activeElement?.dataset.item === ' + JSON.stringify(line.id));
+      if (!focusRestored) throw new Error("Little Shop lost keyboard focus after adding " + line.id + ".");
+    }
+  }
+  if (!spaceKeyChecked) throw new Error("Little Shop keyboard test did not exercise Space activation.");
+  const basketReady = await evaluate('!document.getElementById("ls-checkout-start").disabled');
+  if (!basketReady) throw new Error("Little Shop keyboard Enter did not add the requested products to the basket.");
+  await focusSelector("#ls-checkout-start");
+  await pressKey("Enter", "Enter", 13);
+  const payment = await evaluate("LittleShop.getState()");
+  await evaluate("Math.random = window.__keyboardOriginalRandom; delete window.__keyboardOriginalRandom;");
+  if (payment.phase !== "payment") throw new Error("Little Shop keyboard Enter did not open checkout.");
+  if (payment.settlementKind !== "short") throw new Error("Little Shop keyboard test did not create the expected short-payment checkout.");
+  const due = Math.abs(payment.billTotalPaise - payment.paymentPaise);
+  const answer = (due / 100).toFixed(2);
+  if (payment.billTotalPaise === payment.paymentPaise) {
+    await focusSelector('#ls-payment-action [data-ls-action="finish-sale"]');
+    await pressKey("Enter", "Enter", 13);
+  } else if (payment.paymentPaise < payment.billTotalPaise) {
+    await focusSelector('#ls-payment-action [data-ls-action="ask-more"]');
+    await pressKey("Enter", "Enter", 13);
+    await focusSelector("#ls-money-answer");
+    await cdp("Input.insertText", { text: answer });
+    await pressKey("Enter", "Enter", 13);
+    const ready = await evaluate('LittleShop.getState().phase === "ready"');
+    if (!ready) throw new Error("Little Shop Enter did not submit the additional-payment answer.");
+    await focusSelector('#ls-payment-action [data-ls-action="finish-sale"]');
+    await pressKey("Enter", "Enter", 13);
+  } else {
+    await focusSelector("#ls-money-answer");
+    await cdp("Input.insertText", { text: answer });
+    const beforeEscape = await evaluate('({value:document.getElementById("ls-money-answer")?.value,focus:document.activeElement?.id,overlays:[...document.querySelectorAll(".modal-overlay:not(.hidden)")].map(node=>node.id)})');
+    if (beforeEscape.value !== answer || beforeEscape.focus !== "ls-money-answer") throw new Error("Little Shop money field did not accept keyboard text before Escape: " + JSON.stringify(beforeEscape));
+    await pressKey("Escape", "Escape", 27);
+    const afterEscape = await evaluate('({value:document.getElementById("ls-money-answer")?.value,focus:document.activeElement?.id,screen:document.querySelector(".screen.active")?.id,overlays:[...document.querySelectorAll(".modal-overlay:not(.hidden)")].map(node=>node.id)})');
+    const preserved = afterEscape.value === answer && afterEscape.screen === "screen-little-shop" && afterEscape.focus !== "ls-money-answer";
+    if (!preserved) throw new Error("Little Shop Escape should blur the money field without discarding typed input: " + JSON.stringify({beforeEscape,afterEscape}));
+    await focusSelector("#ls-money-answer");
+    await pressKey("Enter", "Enter", 13);
+    const changePhase = await evaluate('LittleShop.getState().phase === "change-drawer"');
+    if (!changePhase) throw new Error("Little Shop Enter did not submit the change answer.");
+    let remaining = due;
+    const denominations = await evaluate('[...document.querySelectorAll("#ls-change-denominations [data-value]")].map(node => Number(node.dataset.value)).sort((a,b)=>b-a)');
+    for (const value of denominations) {
+      while (remaining >= value) {
+        await focusSelector('#ls-change-denominations [data-value="' + value + '"]:not(:disabled)');
+        await pressKey("Enter", "Enter", 13);
+        remaining -= value;
+      }
+    }
+    if (remaining !== 0) throw new Error("Little Shop keyboard change test could not make the exact amount.");
+    await focusSelector('#ls-cash-drawer [data-ls-action="finish-sale"]');
+    await pressKey("Enter", "Enter", 13);
+  }
+  const saleDone = await evaluate('LittleShop.getState().phase === "done"');
+  if (!saleDone) throw new Error("Little Shop keyboard-only sale did not complete.");
+  keyboardAudit.littleShop = true;
+  await pressKey("Escape", "Escape", 27);
+  await pressKey("Escape", "Escape", 27);
+  const shopExited = await evaluate('document.getElementById("screen-menu").classList.contains("active")');
+  if (!shopExited) throw new Error("Escape did not return from Little Shop to the games menu.");
+
+  await evaluate("Game.startShapePuzzle(); ShapePuzzle.loadLevel(0);");
+  await focusSelector('#shape-tray [data-piece-index="0"]');
+  await pressKey(" ", "Space", 32);
+  const shapeBoardFocus = await evaluate('document.activeElement?.matches("#shape-board .sp-cell")');
+  if (!shapeBoardFocus) throw new Error("Shape Fitting Space did not select a tray piece and move focus to the board.");
+  await pressKey("ArrowRight", "ArrowRight", 39);
+  const shapeArrowMove = await evaluate('document.activeElement?.dataset.col === "1"');
+  if (!shapeArrowMove) throw new Error("Shape Fitting arrow-key navigation did not move the board focus.");
+  await pressKey("Escape", "Escape", 27);
+  await pressKey("Escape", "Escape", 27);
+  const shapeExited = await evaluate('document.getElementById("screen-menu").classList.contains("active")');
+  if (!shapeExited) throw new Error("Shape Fitting Escape did not clear selection and then exit.");
+  keyboardAudit.shapeFitting = true;
+
+  await evaluate("Game.startShapeArchitect(); ShapeArchitect.load(0);");
+  await focusSelector("#architect-build-canvas");
+  await pressKey("Enter", "Enter", 13);
+  const architectSelected = await evaluate('document.getElementById("architect-message")?.textContent.includes("selected.")');
+  if (!architectSelected) throw new Error("Shape Architect Enter did not select a piece on the focused build canvas.");
+  await pressKey("r", "KeyR", 82);
+  await pressKey("ArrowRight", "ArrowRight", 39);
+  await pressKey("Escape", "Escape", 27);
+  await pressKey("Escape", "Escape", 27);
+  const architectExited = await evaluate('document.getElementById("screen-menu").classList.contains("active")');
+  if (!architectExited) throw new Error("Shape Architect Escape did not deselect and then exit.");
+  keyboardAudit.shapeArchitect = true;
+
+  await evaluate("Game.startRacing(); Racing.start(); document.getElementById('race-input').value = '99999999'; document.getElementById('race-input').focus();");
+  await pressKey("Enter", "Enter", 13);
+  const raceEnter = await evaluate('document.getElementById("race-feedback")?.textContent.includes("Not quite")');
+  if (!raceEnter) throw new Error("Math Racing Enter did not submit through Racing.submit().");
+  keyboardAudit.racingEnter = true;
+  await evaluate("Game.goHome();");
+
+  const escapeLaunchers = [
+    ["Arithmetic Quiz", "Game.startArithmetic()"],
+    ["Math Racing", "Game.startRacing()"],
+    ["Sudoku Challenge", "Game.startSudoku()"],
+    ["Shape Fitting", "Game.startShapePuzzle()"],
+    ["Slab Maths", "Game.startSlabMath()"],
+    ["Shape Architect", "Game.startShapeArchitect()"],
+    ["Fraction Bakery", "FractionBakery.open()"],
+    ["Little Shop", "Game.startLittleShop()"],
+    ["Number Maze", "Game.startNumberMaze()"],
+    ["Probability Machine", "ProbabilityCarnival.open()"],
+    ["Math Court", "MathCourt.open(); MathCourt.openCase(1)"],
+  ];
+  for (const [name, launch] of escapeLaunchers) {
+    await evaluate("Game.goHome(); " + launch + "; ControlsOverlay.close(); ResearchConsent.close();");
+    await sleep(20);
+    await pressKey("Escape", "Escape", 27);
+    await pressKey("Escape", "Escape", 27);
+    const returned = await evaluate('document.getElementById("screen-menu").classList.contains("active")');
+    if (!returned) throw new Error("Escape did not return from " + name + " after local selection handling.");
+    keyboardAudit.escapeGames.push(name);
+  }
+  if (keyboardAudit.escapeGames.length !== 11)
+    throw new Error("Escape coverage did not include every game screen.");
+
   const interfaceAuditResults = [];
   const interactionViewports = [
     { width: 320, height: 640, mobile: true },
@@ -1715,6 +1884,7 @@ async function main() {
         fractionBakery: fractionResult,
         fractionBakeryResponsive: fractionResponsiveResults,
         littleShopResponsive: littleShopResponsiveResults,
+        keyboard: keyboardAudit,
         interfaceAudit: interfaceAuditResults,
         keyboardFocus: keyboardFocusAudit,
         wikiResponsive: wikiResponsiveResults,

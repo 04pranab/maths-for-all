@@ -671,32 +671,3 @@ document.addEventListener("keydown", (event) => {
     first.focus();
   }
 });
-
-document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape" || document.querySelector(".modal-overlay:not(.hidden)")) return;
-  if (typeof Navigation !== "undefined") {
-    const menu = document.getElementById("nav-links");
-    if (menu && menu.classList.contains("open")) {
-      Navigation.closeMenu();
-      return;
-    }
-  }
-
-  const screen = document.querySelector(".screen.active");
-  if (!screen || screen.id === "screen-menu") return;
-
-  if (screen.id === "screen-shape" && typeof ShapePuzzle !== "undefined") {
-    if (typeof ShapePuzzle.clearSelection === "function" && ShapePuzzle.clearSelection()) return;
-  }
-
-  if (screen.id === "screen-sudoku" && typeof Sudoku !== "undefined") {
-    if (typeof Sudoku.clearSelection === "function" && Sudoku.clearSelection()) return;
-  }
-
-  if (screen.id === "screen-slab" && typeof SlabMath !== "undefined") {
-    if (typeof SlabMath.clearSelection === "function" && SlabMath.clearSelection()) return;
-  }
-
-  /* Escape without an overlay is intentionally a no-op. It must never
-     navigate away from the current game. */
-});

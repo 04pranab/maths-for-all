@@ -894,6 +894,14 @@ const ShapeArchitect = (() => {
         " selected. Drag it into place, or use the arrow keys to move it.",
     );
   }
+  function clearSelection() {
+    if (state.selected === null) return false;
+    state.selected = null;
+    updatePlaced();
+    draw();
+    announce("Piece deselected.");
+    return true;
+  }
   function pushHistory() {
     state.history.push(state.pieces.map((p) => ({ x: p.x, y: p.y, rotation: p.rotation })));
     if (state.history.length > 30) state.history.shift();
@@ -1073,16 +1081,21 @@ const ShapeArchitect = (() => {
       isTypingTarget(e.target)
     )
       return;
+    if ((e.key === "Enter" || e.key === " ") && e.target?.id === "architect-build-canvas") {
+      e.preventDefault();
+      if (state.pieces.length) {
+        const start = state.selected === null ? -1 : state.selected;
+        select((start + 1) % state.pieces.length);
+      }
+      return;
+    }
     if (e.key.toLowerCase() === "r") {
       e.preventDefault();
       rotateSelected();
       return;
     }
     if (e.key === "Escape") {
-      state.selected = null;
-      updatePlaced();
-      draw();
-      announce("Piece deselected.");
+      if (clearSelection()) e.preventDefault();
       return;
     }
     if (state.selected === null) return;
@@ -1123,6 +1136,7 @@ const ShapeArchitect = (() => {
     next,
     backToLevels,
     rotateSelected,
+    clearSelection,
     undo,
     hint,
     getLevels: () => ShapeArchitectLevels.getAll(),

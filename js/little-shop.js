@@ -472,7 +472,7 @@ function renderPayment() {
           ". Work out how much change to return.";
       if (action)
         action.innerHTML =
-          '<form class="ls-money-form" data-ls-form="change"><label for="ls-money-answer">How much change will you return?</label><div class="ls-money-input-row"><span>₹</span><input id="ls-money-answer" name="amount" inputmode="decimal" autocomplete="off" placeholder="Your answer" required><button type="submit" class="ls-primary">Check change</button></div></form>';
+          '<form class="ls-money-form" data-ls-form="change"><label for="ls-money-answer">How much change will you return?</label><div class="ls-money-input-row"><span>₹</span><input id="ls-money-answer" name="amount" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" spellcheck="false" aria-describedby="ls-checkout-feedback" placeholder="Your answer" required><button type="submit" class="ls-primary">Check change</button></div></form>';
     }
   } else if (phase === "ready") {
     if (prompt)
@@ -560,6 +560,10 @@ function makeBill() {
   renderPayment();
   setStatus("The basket is billed. Check the money the customer handed over.");
   byId("ls-payment-prompt")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  const nextControl =
+    byId("ls-money-answer") ||
+    byId("ls-payment-action")?.querySelector("button");
+  nextControl?.focus({ preventScroll: true });
 }
 
 function finishSale() {
@@ -613,6 +617,7 @@ function handleSubmit(event) {
     if (feedback)
       feedback.textContent =
         "Correct. You ask for " + formatMoney(answer) + " more, and the customer pays it.";
+    byId("ls-payment-action")?.querySelector("button")?.focus();
     return;
   }
   if (settlement.kind === "change") {
@@ -630,7 +635,22 @@ function handleSubmit(event) {
     renderPayment();
     if (feedback)
       feedback.textContent = "Correct! Now count out the change using the notes and coins.";
+    byId("ls-change-denominations")?.querySelector("button:not(:disabled)")?.focus();
   }
+}
+
+function handleKeydown(event) {
+  const screen = byId("screen-little-shop");
+  if (!screen || !screen.contains(event.target) || event.isComposing) return;
+  if (event.key === "Enter" && event.target.matches('input[name="amount"]')) {
+    event.preventDefault();
+    if (!event.repeat) event.target.form?.requestSubmit();
+    return;
+  }
+  const button = event.target.closest("button");
+  if (!button || (event.key !== "Enter" && event.key !== " ")) return;
+  event.preventDefault();
+  if (!event.repeat) button.click();
 }
 
 function handleClick(event) {
@@ -638,7 +658,10 @@ function handleClick(event) {
   if (!button || !byId("screen-little-shop")?.contains(button)) return;
   const action = button.dataset.lsAction;
   if (action === "next-customer") {
-    if (phase === "done") startNewCustomer(true);
+    if (phase === "done") {
+      startNewCustomer(true);
+      byId("ls-catalogue")?.querySelector(".ls-add:not(:disabled)")?.focus();
+    }
     return;
   }
   if (action === "bill-customer") {
@@ -649,7 +672,7 @@ function handleClick(event) {
     const actionRoot = byId("ls-payment-action");
     if (actionRoot)
       actionRoot.innerHTML =
-        '<form class="ls-money-form" data-ls-form="more"><label for="ls-money-answer">How much more should the customer pay?</label><div class="ls-money-input-row"><span>₹</span><input id="ls-money-answer" name="amount" inputmode="decimal" autocomplete="off" placeholder="Your answer" required><button type="submit" class="ls-primary">Ask for this amount</button></div></form>';
+        '<form class="ls-money-form" data-ls-form="more"><label for="ls-money-answer">How much more should the customer pay?</label><div class="ls-money-input-row"><span>₹</span><input id="ls-money-answer" name="amount" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" spellcheck="false" aria-describedby="ls-checkout-feedback" placeholder="Your answer" required><button type="submit" class="ls-primary">Ask for this amount</button></div></form>';
     byId("ls-money-answer")?.focus();
     return;
   }
@@ -664,18 +687,25 @@ function handleClick(event) {
       return;
     changePieces.push(value);
     renderChangeDrawer();
+    const sameDenomination = byId("ls-change-denominations")?.querySelector(
+      '[data-value="' + value + '"]:not(:disabled)',
+    );
+    const nextDenomination = byId("ls-change-denominations")?.querySelector("button:not(:disabled)");
+    (sameDenomination || nextDenomination || byId("ls-cash-drawer")?.querySelector('[data-ls-action="finish-sale"]:not(:disabled)'))?.focus();
     return;
   }
   if (action === "undo-change") {
     if (phase !== "change-drawer") return;
     changePieces.pop();
     renderChangeDrawer();
+    byId("ls-change-denominations")?.querySelector("button:not(:disabled)")?.focus();
     return;
   }
   if (action === "clear-change") {
     if (phase !== "change-drawer") return;
     changePieces = [];
     renderChangeDrawer();
+    byId("ls-change-denominations")?.querySelector("button:not(:disabled)")?.focus();
     return;
   }
   if (action === "clear-basket") {
@@ -683,6 +713,7 @@ function handleClick(event) {
     basket.clear();
     renderBasket();
     setStatus("Basket emptied. Add the fruits the customer asked for.");
+    byId("ls-catalogue")?.querySelector(".ls-add:not(:disabled)")?.focus();
     return;
   }
   if (phase !== "shopping") return;
@@ -708,6 +739,14 @@ function handleClick(event) {
       return;
   }
   renderBasket();
+  if (action === "add") {
+    byId("ls-catalogue")?.querySelector('[data-item="' + id + '"][data-ls-action="add"]')?.focus();
+  } else {
+    const row = byId("ls-basket")?.querySelector('[data-basket-item="' + id + '"]');
+    const sameAction = row?.querySelector('[data-ls-action="' + action + '"]');
+    const fallback = row?.querySelector("button") || byId("ls-basket")?.querySelector(".ls-basket-line button");
+    (sameAction || fallback || byId("ls-catalogue")?.querySelector(".ls-add:not(:disabled)"))?.focus();
+  }
 }
 
 function init() {
@@ -716,10 +755,12 @@ function init() {
   active = true;
   customerNumber = 1;
   byId("screen-little-shop")?.addEventListener("click", handleClick, { signal: controller.signal });
+  byId("screen-little-shop")?.addEventListener("keydown", handleKeydown, { signal: controller.signal });
   byId("screen-little-shop")?.addEventListener("submit", handleSubmit, {
     signal: controller.signal,
   });
   startNewCustomer(false);
+  byId("little-shop-title")?.focus({ preventScroll: true });
 }
 
 function stop() {

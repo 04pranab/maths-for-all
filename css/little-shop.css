@@ -992,3 +992,20 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+#screen-little-shop .ls-keyboard-help {
+  grid-column: 1 / -1;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0.35rem 0 0;
+  color: var(--muted, #52616b);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+#screen-little-shop :focus-visible {
+  outline: 3px solid var(--focus, #2458c6);
+  outline-offset: 3px;
+}
