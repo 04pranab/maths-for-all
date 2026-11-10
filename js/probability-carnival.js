@@ -706,6 +706,7 @@ window.ProbabilityCarnival = (() => {
   }
 
   function open() {
+    if (typeof Game !== "undefined") Game.setRoute("probability-machine");
     document.getElementById("screen-menu")?.classList.remove("active");
     const screen = $("screen-probability-carnival");
     screen?.classList.add("active");
@@ -714,6 +715,7 @@ window.ProbabilityCarnival = (() => {
   }
 
   function close() {
+    if (typeof Game !== "undefined") { Game.goHome(); return; }
     const screen = $("screen-probability-carnival");
     screen?.classList.remove("active");
     if (screen) screen.hidden = true;
