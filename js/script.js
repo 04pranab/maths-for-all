@@ -644,33 +644,51 @@ const CompletionOverlay = (() => {
     action.focus({ preventScroll: true });
   }
 
-  function close(restoreFocus = true) {
+  function restoreFocus(target) {
+    if (target && target.isConnected && target.getClientRects().length && !target.disabled) {
+      target.focus({ preventScroll: true });
+      return;
+    }
+    const fallback = document.querySelector(".screen.active button:not([disabled]), .screen.active a[href], .screen.active [tabindex='0']");
+    fallback?.focus({ preventScroll: true });
+  }
+
+  function close(restore = true) {
     const overlay = document.getElementById("game-completion-overlay");
     if (!overlay || overlay.hidden) return;
+    const target = previousFocus;
     overlay.hidden = true;
     document.body.classList.remove("completion-overlay-open");
     continueAction = null;
-    if (restoreFocus && previousFocus && typeof previousFocus.focus === "function") {
-      previousFocus.focus({ preventScroll: true });
-    }
     previousFocus = null;
+    if (restore) restoreFocus(target);
   }
 
   function continueGame() {
     const action = continueAction;
+    const target = previousFocus;
     close(false);
     if (action) action();
-    else if (previousFocus && typeof previousFocus.focus === "function") {
-      previousFocus.focus({ preventScroll: true });
-    }
-    previousFocus = null;
+    else restoreFocus(target);
   }
 
   document.addEventListener("keydown", (event) => {
     const overlay = document.getElementById("game-completion-overlay");
-    if (event.key === "Escape" && overlay && !overlay.hidden) {
+    if (!overlay || overlay.hidden) return;
+    if (event.key === "Escape") {
       event.preventDefault();
       close();
+      return;
+    }
+    if (event.key === "Tab") {
+      const controls = [...overlay.querySelectorAll("button:not([disabled])")];
+      if (!controls.length) return;
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault(); last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault(); first.focus();
+      }
     }
   });
 
