@@ -1288,7 +1288,7 @@ async function main() {
      Escape navigation across every game. These use Chrome's input domain
      rather than synthetic KeyboardEvents so native button/form behaviour
      is exercised as a learner would experience it. */
-  const keyboardAudit = { littleShop: false, racingEnter: false, escapeGames: [] };
+  const keyboardAudit = { littleShop: false, shapeFitting: false, shapeArchitect: false, racingEnter: false, escapeGames: [] };
   await evaluate('ControlsOverlay.close(); ResearchConsent.set("yes"); ResearchConsent.close(); Game.startLittleShop();');
   const initialShopFocus = await evaluate('document.activeElement?.id === "little-shop-title"');
   if (!initialShopFocus) throw new Error("Little Shop did not move keyboard focus into the game on launch.");
@@ -1363,6 +1363,33 @@ async function main() {
   await pressKey("Escape", "Escape", 27);
   const shopExited = await evaluate('document.getElementById("screen-menu").classList.contains("active")');
   if (!shopExited) throw new Error("Escape did not return from Little Shop to the games menu.");
+
+  await evaluate("Game.startShapePuzzle(); ShapePuzzle.loadLevel(0);");
+  await focusSelector('#shape-tray [data-piece-index="0"]');
+  await pressKey(" ", "Space", 32);
+  const shapeBoardFocus = await evaluate('document.activeElement?.matches("#shape-board .sp-cell")');
+  if (!shapeBoardFocus) throw new Error("Shape Fitting Space did not select a tray piece and move focus to the board.");
+  await pressKey("ArrowRight", "ArrowRight", 39);
+  const shapeArrowMove = await evaluate('document.activeElement?.dataset.col === "1"');
+  if (!shapeArrowMove) throw new Error("Shape Fitting arrow-key navigation did not move the board focus.");
+  await pressKey("Escape", "Escape", 27);
+  await pressKey("Escape", "Escape", 27);
+  const shapeExited = await evaluate('document.getElementById("screen-menu").classList.contains("active")');
+  if (!shapeExited) throw new Error("Shape Fitting Escape did not clear selection and then exit.");
+  keyboardAudit.shapeFitting = true;
+
+  await evaluate("Game.startShapeArchitect(); ShapeArchitect.load(0);");
+  await focusSelector("#architect-build-canvas");
+  await pressKey("Enter", "Enter", 13);
+  const architectSelected = await evaluate('document.getElementById("architect-message")?.textContent.includes("selected.")');
+  if (!architectSelected) throw new Error("Shape Architect Enter did not select a piece on the focused build canvas.");
+  await pressKey("r", "KeyR", 82);
+  await pressKey("ArrowRight", "ArrowRight", 39);
+  await pressKey("Escape", "Escape", 27);
+  await pressKey("Escape", "Escape", 27);
+  const architectExited = await evaluate('document.getElementById("screen-menu").classList.contains("active")');
+  if (!architectExited) throw new Error("Shape Architect Escape did not deselect and then exit.");
+  keyboardAudit.shapeArchitect = true;
 
   await evaluate("Game.startRacing(); Racing.start(); document.getElementById('race-input').value = 'not-a-number'; document.getElementById('race-input').focus();");
   await pressKey("Enter", "Enter", 13);
