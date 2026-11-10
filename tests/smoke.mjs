@@ -1293,13 +1293,20 @@ async function main() {
   const initialShopFocus = await evaluate('document.activeElement?.id === "little-shop-title"');
   if (!initialShopFocus) throw new Error("Little Shop did not move keyboard focus into the game on launch.");
   const requestedItems = await evaluate("LittleShop.getState().customer.items");
+  let spaceKeyChecked = false;
   for (const line of requestedItems) {
     for (let count = 0; count < line.quantity; count++) {
       const selector = '#ls-catalogue [data-item="' + line.id + '"]';
       await focusSelector(selector);
-      await pressKey("Enter", "Enter", 13);
+      if (!spaceKeyChecked) {
+        await pressKey(" ", "Space", 32);
+        spaceKeyChecked = true;
+      } else {
+        await pressKey("Enter", "Enter", 13);
+      }
     }
   }
+  if (!spaceKeyChecked) throw new Error("Little Shop keyboard test did not exercise Space activation.");
   const basketReady = await evaluate('!document.getElementById("ls-checkout-start").disabled');
   if (!basketReady) throw new Error("Little Shop keyboard Enter did not add the requested products to the basket.");
   await focusSelector("#ls-checkout-start");
