@@ -1391,7 +1391,7 @@ async function main() {
   if (!architectExited) throw new Error("Shape Architect Escape did not deselect and then exit.");
   keyboardAudit.shapeArchitect = true;
 
-  await evaluate("Game.startRacing(); Racing.start(); document.getElementById('race-input').value = 'not-a-number'; document.getElementById('race-input').focus();");
+  await evaluate("Game.startRacing(); Racing.start(); document.getElementById('race-input').value = '99999999'; document.getElementById('race-input').focus();");
   await pressKey("Enter", "Enter", 13);
   const raceEnter = await evaluate('document.getElementById("race-feedback")?.textContent.includes("Not quite")');
   if (!raceEnter) throw new Error("Math Racing Enter did not submit through Racing.submit().");
