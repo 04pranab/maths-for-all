@@ -1073,6 +1073,14 @@ const ShapeArchitect = (() => {
       isTypingTarget(e.target)
     )
       return;
+    if ((e.key === "Enter" || e.key === " ") && e.target?.id === "architect-build-canvas") {
+      e.preventDefault();
+      if (state.pieces.length) {
+        const start = state.selected === null ? -1 : state.selected;
+        select((start + 1) % state.pieces.length);
+      }
+      return;
+    }
     if (e.key.toLowerCase() === "r") {
       e.preventDefault();
       rotateSelected();
