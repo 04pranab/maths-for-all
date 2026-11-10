@@ -33,6 +33,7 @@ Little Shop is a small, open-ended fruit-shop counter. A customer asks for items
 ## Verification contract
 
 ### Pure logic tests
+
 - Validate all catalogue items and unique IDs.
 - Generate 1,000 reproducible customer orders; each order has two to four distinct fruit items and valid quantities.
 - Verify order totals, exact basket matching, and the short/exact/change classification.
@@ -40,6 +41,7 @@ Little Shop is a small, open-ended fruit-shop counter. A customer asks for items
 - Use integer paise and reject malformed money input.
 
 ### Browser end-to-end tests
+
 - Open Little Shop repeatedly and confirm the level UI is absent.
 - Fill a requested order and verify billing stays unavailable until the basket matches exactly.
 - Exercise underpayment, wrong shortfall then correct shortfall, exact payment, overpayment, wrong change then correct change, note/coin return, sale completion, and next-customer reset.
@@ -47,6 +49,7 @@ Little Shop is a small, open-ended fruit-shop counter. A customer asks for items
 - Run the complete repository CI, including existing auth, PostgreSQL and research-gateway checks.
 
 ### Physical review
+
 Automation verifies arithmetic and state transitions, not whether a child understands the wording or finds the interaction comfortable. Before calling the game accepted, conduct supervised formative review with appropriate permission and learner assent. Record anonymous observations, allow breaks and stopping, and do not claim learning effectiveness from a small usability pilot.
 
 ## Definition of done

@@ -12,7 +12,7 @@ At its heart, Maths for All is not merely a software project. It is our small of
 
 ### Bhagawan Sri Sathya Sai Baba: the spiritual inspiration
 
-Bhagawan’s teachings give this work its spiritual direction. His emphasis on *Educare* invites us to think of education as drawing out the knowledge, wisdom and human values latent within a learner, not merely delivering information. The ideal that “the end of education is character” reminds us that learning should nurture kindness, honesty, responsibility, patience and a willingness to serve.
+Bhagawan’s teachings give this work its spiritual direction. His emphasis on _Educare_ invites us to think of education as drawing out the knowledge, wisdom and human values latent within a learner, not merely delivering information. The ideal that “the end of education is character” reminds us that learning should nurture kindness, honesty, responsibility, patience and a willingness to serve.
 
 We offer this effort at His Lotus Feet with humility. We do not claim to speak on Bhagawan’s behalf, nor do we claim that He or any institution has approved this particular work.
 
@@ -39,7 +39,6 @@ This offering is independent. We do not claim that SSSVV or the Sri Sathya Sai C
 - [Sri Sathya Sai Central Trust: selected messages and quotations](https://www.srisathyasai.org/pages/sai-his-messages-quotes.html)
 
 ---
-
 
 ## 1. Why Maths for All exists
 

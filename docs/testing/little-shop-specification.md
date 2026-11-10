@@ -42,18 +42,18 @@ This is a game specification, not a claim that playing it will produce learning 
 
 The 100-level plan uses ten stages. Exact prices and task instances are data; stage rules define the mathematics.
 
-| Levels | Stage | Required task family | Constraints |
-|---|---|---|---|
-| 1–10 | Read the Shelf | Compare two or three item prices; select cheaper, dearer, or equal | Whole rupees; no timer; labels visibly tied to items |
-| 11–20 | One-Item Checkout | Match an item to its exact price or select an exact payment amount | Small whole-rupee values; choices distinct |
-| 21–30 | Basket Basics | Add two item prices and select or enter the total | Whole rupees; all totals bounded and displayed clearly |
-| 31–40 | Budget Basket | Determine whether a specified basket fits a budget and how much remains when it does | Include fit and does-not-fit examples; no negative remaining amount |
-| 41–50 | Make the Amount | Select a valid combination of displayed denominations to reach an exact target | Accept every valid combination; do not require one arbitrary combination |
-| 51–60 | Change Counter | Find change after a payment | Payment is never below total unless the task explicitly asks whether payment is enough |
-| 61–70 | More in the Basket | Calculate totals for multiple items and quantities | Quantities are positive integers with clear increment/decrement controls |
-| 71–80 | Spend Thoughtfully | Satisfy a stated shopping goal while staying within a budget | Validate constraints; support multiple valid baskets if the prompt allows them |
-| 81–90 | Rupees and Paise | Add or compare mixed rupee/paise values | Optional curriculum extension if the owner/educator decides it is not suitable for the intended group |
-| 91–100 | Shopkeeper's Challenge | Combine basket, budget, payment and change reasoning | Multi-step tasks must reveal each necessary value; no speed pressure |
+| Levels | Stage                  | Required task family                                                                 | Constraints                                                                                           |
+| ------ | ---------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| 1–10   | Read the Shelf         | Compare two or three item prices; select cheaper, dearer, or equal                   | Whole rupees; no timer; labels visibly tied to items                                                  |
+| 11–20  | One-Item Checkout      | Match an item to its exact price or select an exact payment amount                   | Small whole-rupee values; choices distinct                                                            |
+| 21–30  | Basket Basics          | Add two item prices and select or enter the total                                    | Whole rupees; all totals bounded and displayed clearly                                                |
+| 31–40  | Budget Basket          | Determine whether a specified basket fits a budget and how much remains when it does | Include fit and does-not-fit examples; no negative remaining amount                                   |
+| 41–50  | Make the Amount        | Select a valid combination of displayed denominations to reach an exact target       | Accept every valid combination; do not require one arbitrary combination                              |
+| 51–60  | Change Counter         | Find change after a payment                                                          | Payment is never below total unless the task explicitly asks whether payment is enough                |
+| 61–70  | More in the Basket     | Calculate totals for multiple items and quantities                                   | Quantities are positive integers with clear increment/decrement controls                              |
+| 71–80  | Spend Thoughtfully     | Satisfy a stated shopping goal while staying within a budget                         | Validate constraints; support multiple valid baskets if the prompt allows them                        |
+| 81–90  | Rupees and Paise       | Add or compare mixed rupee/paise values                                              | Optional curriculum extension if the owner/educator decides it is not suitable for the intended group |
+| 91–100 | Shopkeeper's Challenge | Combine basket, budget, payment and change reasoning                                 | Multi-step tasks must reveal each necessary value; no speed pressure                                  |
 
 ## Task data schema
 
@@ -104,6 +104,7 @@ Validate task data before rendering. Unknown task types, missing required fields
 ## Testing contract
 
 ### Pure arithmetic tests
+
 - zero and smallest supported values;
 - whole rupees and paise formatting;
 - sum of empty/non-empty lists as explicitly defined;
@@ -113,6 +114,7 @@ Validate task data before rendering. Unknown task types, missing required fields
 - invalid values, overflow and unsupported denomination combinations.
 
 ### Task-generation tests
+
 - all 100 levels map to an approved stage and task type;
 - every task has one intended answer or a correct multi-answer validator;
 - distractors are distinct and not accidentally correct;
@@ -121,6 +123,7 @@ Validate task data before rendering. Unknown task types, missing required fields
 - difficulty and task types follow the stage contract.
 
 ### Browser and accessibility tests
+
 - menu open/close and repeated navigation;
 - basket state and totals stay consistent after rapid actions;
 - keyboard-only and pointer interaction for every essential flow;

@@ -137,7 +137,6 @@
   }
 }
 
-
 /* Issue #62: enlarge key visual elements for children with visual-accessibility needs. */
 #screen-sudoku .play-panel {
   width: min(916px, calc(100vw - 32px));

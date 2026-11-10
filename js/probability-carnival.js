@@ -15,10 +15,12 @@ window.ProbabilityCarnival = (() => {
     busy: false,
     session: 0,
     score: readNumber("score"),
-    streak: readNumber("streak")
+    streak: readNumber("streak"),
   };
 
-  function $(id) { return document.getElementById(id); }
+  function $(id) {
+    return document.getElementById(id);
+  }
 
   function readNumber(key) {
     try {
@@ -38,7 +40,9 @@ window.ProbabilityCarnival = (() => {
     try {
       const value = JSON.parse(localStorage.getItem(STORAGE_KEY + "_" + key));
       return new Set(Array.isArray(value) ? value : []);
-    } catch { return new Set(); }
+    } catch {
+      return new Set();
+    }
   }
 
   function saveProgress() {
@@ -69,7 +73,7 @@ window.ProbabilityCarnival = (() => {
   }
 
   function selectLevel(id) {
-    const level = levels.find(item => item.id === Number(id));
+    const level = levels.find((item) => item.id === Number(id));
     if (!level) return;
     state.level = level.id;
     state.stage = level.stage;
@@ -79,7 +83,7 @@ window.ProbabilityCarnival = (() => {
   }
 
   function resetLevel(render = true) {
-    const level = levels.find(item => item.id === state.level);
+    const level = levels.find((item) => item.id === state.level);
     state.selected = null;
     state.builtTokens = [];
     state.experimentResults = [];
@@ -89,7 +93,7 @@ window.ProbabilityCarnival = (() => {
     state.busy = false;
     state.session += 1;
     if (level?.type === "build") {
-      state.builtTokens = Array.from({ length: 12 }, (_, i) => i < 6 ? "sun" : "moon");
+      state.builtTokens = Array.from({ length: 12 }, (_, i) => (i < 6 ? "sun" : "moon"));
     }
     if (render) renderLevel();
   }
@@ -102,9 +106,15 @@ window.ProbabilityCarnival = (() => {
     for (let id = first; id <= first + 11; id += 1) {
       const button = document.createElement("button");
       button.type = "button";
-      button.className = "pc-level-button" + (id === state.level ? " is-current" : "") + (state.completed.has(id) ? " is-complete" : "");
+      button.className =
+        "pc-level-button" +
+        (id === state.level ? " is-current" : "") +
+        (state.completed.has(id) ? " is-complete" : "");
       button.textContent = String(id);
-      button.setAttribute("aria-label", "Level " + id + (state.completed.has(id) ? ", complete" : ""));
+      button.setAttribute(
+        "aria-label",
+        "Level " + id + (state.completed.has(id) ? ", complete" : ""),
+      );
       button.setAttribute("aria-pressed", id === state.level ? "true" : "false");
       button.addEventListener("click", () => selectLevel(id));
       grid.appendChild(button);
@@ -113,26 +123,30 @@ window.ProbabilityCarnival = (() => {
     $("pc-level-range").textContent = stage.range;
     $("pc-stage-badge").textContent = String(state.stage);
     $("pc-stage-note").textContent = stage.note;
-    document.querySelectorAll("[data-stage]").forEach(button => {
+    document.querySelectorAll("[data-stage]").forEach((button) => {
       button.classList.toggle("is-active", Number(button.dataset.stage) === state.stage);
     });
   }
 
   function renderLevel() {
-    const level = levels.find(item => item.id === state.level);
+    const level = levels.find((item) => item.id === state.level);
     if (!level) return;
     const stage = stages[level.stage - 1];
     $("pc-level-number").textContent = String(level.id);
-    $("pc-level-range").textContent = "LEVEL " + String(level.id).padStart(2, "0") + " / " + String(levels.length).padStart(2, "0");
+    $("pc-level-range").textContent =
+      "LEVEL " + String(level.id).padStart(2, "0") + " / " + String(levels.length).padStart(2, "0");
     $("pc-machine-stage").textContent = "Stage " + level.stage + " · " + stage.name;
-    $("pc-system-state").textContent = state.completed.has(level.id) ? "DISCOVERY SAVED" : "SYSTEM ONLINE";
+    $("pc-system-state").textContent = state.completed.has(level.id)
+      ? "DISCOVERY SAVED"
+      : "SYSTEM ONLINE";
     $("pc-level-title").textContent = level.title;
     $("pc-level-prompt").textContent = level.prompt;
     const scene = $("pc-scene");
     const choices = $("pc-choice-area");
     scene.innerHTML = "";
     choices.innerHTML = "";
-    scene.className = "pc-scene pc-scene-" + level.type + " pc-scene-variant-" + (((level.id - 1) % 6) + 1);
+    scene.className =
+      "pc-scene pc-scene-" + level.type + " pc-scene-variant-" + (((level.id - 1) % 6) + 1);
     $("pc-next").disabled = !state.completed.has(level.id) || level.id === levels.length;
     const playPanel = document.querySelector(".pc-play-panel");
     if (playPanel) {
@@ -142,13 +156,22 @@ window.ProbabilityCarnival = (() => {
     }
     const machinePanel = document.createElement("div");
     machinePanel.className = "pc-machine-panel";
-    machinePanel.innerHTML = '<div class="pc-machine-lights"><i class="pc-machine-light"></i><i class="pc-machine-light"></i><i class="pc-machine-light"></i></div><div class="pc-machine-label">PROBABILITY ENGINE // UNIT ' + String(level.id).padStart(2, "0") + '</div><span class="pc-machine-stage">STAGE ' + String(level.stage) + ' · READY</span><span class="pc-machine-level">LEVEL ' + String(level.id).padStart(2, "0") + ' / ' + String(levels.length).padStart(2, "0") + '</span>';
+    machinePanel.innerHTML =
+      '<div class="pc-machine-lights"><i class="pc-machine-light"></i><i class="pc-machine-light"></i><i class="pc-machine-light"></i></div><div class="pc-machine-label">PROBABILITY ENGINE // UNIT ' +
+      String(level.id).padStart(2, "0") +
+      '</div><span class="pc-machine-stage">STAGE ' +
+      String(level.stage) +
+      ' · READY</span><span class="pc-machine-level">LEVEL ' +
+      String(level.id).padStart(2, "0") +
+      " / " +
+      String(levels.length).padStart(2, "0") +
+      "</span>";
     scene.appendChild(machinePanel);
     feedback(
       state.completed.has(level.id)
         ? "⭐ Discovery collected. Replay it or move to the next level."
         : "Your move.",
-      "neutral"
+      "neutral",
     );
     if (level.type === "intuition") renderIntuition(level, scene, choices);
     if (level.type === "compare") renderCompare(level, scene, choices);
@@ -168,7 +191,9 @@ window.ProbabilityCarnival = (() => {
     button.textContent = label;
     button.addEventListener("click", () => {
       state.selected = value;
-      container.querySelectorAll(".pc-choice").forEach(item => item.classList.toggle("is-selected", item === button));
+      container
+        .querySelectorAll(".pc-choice")
+        .forEach((item) => item.classList.toggle("is-selected", item === button));
     });
     container.appendChild(button);
     return button;
@@ -196,7 +221,7 @@ window.ProbabilityCarnival = (() => {
       7: { sun: 8, moon: 0 },
       8: { sun: 8, moon: 1 },
       9: { sun: 1, moon: 8 },
-      10: { sun: 5, moon: 5 }
+      10: { sun: 5, moon: 5 },
     };
     return scenarios[level.id] || { sun: 4, moon: 4 };
   }
@@ -206,18 +231,32 @@ window.ProbabilityCarnival = (() => {
     const wheel = document.createElement("div");
     wheel.className = "pc-arcade-intuition";
     wheel.innerHTML =
-      '<div class="pc-wheel-wrap"><div class="pc-pointer"></div><div class="pc-wheel" style="--sun:' + counts.sun + ';--moon:' + counts.moon + '"><span>☀</span><span>☾</span></div><div class="pc-wheel-label">PROBABILITY DIAL</div></div>' +
-      '<div class="pc-arcade-copy"><strong>' + level.scenario + '</strong><span>' + level.outcome + '</span><div class="pc-probability-legend"><span>☀ Sun: ' + counts.sun + '</span><span>☾ Moon: ' + counts.moon + '</span></div><small>Make your prediction, then activate the machine.</small></div>';
+      '<div class="pc-wheel-wrap"><div class="pc-pointer"></div><div class="pc-wheel" style="--sun:' +
+      counts.sun +
+      ";--moon:" +
+      counts.moon +
+      '"><span>☀</span><span>☾</span></div><div class="pc-wheel-label">PROBABILITY DIAL</div></div>' +
+      '<div class="pc-arcade-copy"><strong>' +
+      level.scenario +
+      "</strong><span>" +
+      level.outcome +
+      '</span><div class="pc-probability-legend"><span>☀ Sun: ' +
+      counts.sun +
+      "</span><span>☾ Moon: " +
+      counts.moon +
+      "</span></div><small>Make your prediction, then activate the machine.</small></div>";
     scene.appendChild(wheel);
-    level.choices.forEach(choice => addChoice(choices, choice, choice));
+    level.choices.forEach((choice) => addChoice(choices, choice, choice));
     actionButton(choices, "⚙ Activate machine", () => spinIntuition(level), "pc-main-action");
   }
 
   function spinIntuition(level) {
     if (!state.selected || state.busy) {
       feedback(
-        state.busy ? "The machine is running..." : "Choose your prediction first, then pull the lever.",
-        "notice"
+        state.busy
+          ? "The machine is running..."
+          : "Choose your prediction first, then pull the lever.",
+        "notice",
       );
       return;
     }
@@ -234,10 +273,16 @@ window.ProbabilityCarnival = (() => {
       state.revealed = true;
       state.busy = false;
       if (state.selected === level.answer) {
-        complete(level.id, "⚡ Good prediction. The machine produced evidence that fits your idea.");
+        complete(
+          level.id,
+          "⚡ Good prediction. The machine produced evidence that fits your idea.",
+        );
       } else {
         if (action) action.disabled = false;
-        feedback("The machine surprised you. That is useful evidence. Reconsider the chance and try again.", "notice");
+        feedback(
+          "The machine surprised you. That is useful evidence. Reconsider the chance and try again.",
+          "notice",
+        );
       }
     }, 480);
   }
@@ -246,12 +291,20 @@ window.ProbabilityCarnival = (() => {
     const card = document.createElement("button");
     card.type = "button";
     card.className = "pc-machine-card" + (clickable ? " pc-machine-choice" : "");
-    const sun = tokens[0], moon = tokens[1];
+    const sun = tokens[0],
+      moon = tokens[1];
     card.dataset.machine = label;
-    card.innerHTML = '<h3>' + label + '</h3><div class="pc-token-row">' +
+    card.innerHTML =
+      "<h3>" +
+      label +
+      '</h3><div class="pc-token-row">' +
       '<span class="pc-token sun">☀️</span>'.repeat(Math.min(sun, 9)) +
       '<span class="pc-token moon">🌙</span>'.repeat(Math.min(moon, 9)) +
-      '</div><p>' + sun + ' Sun · ' + moon + ' Moon</p>';
+      "</div><p>" +
+      sun +
+      " Sun · " +
+      moon +
+      " Moon</p>";
     return card;
   }
 
@@ -260,12 +313,20 @@ window.ProbabilityCarnival = (() => {
     row.className = "pc-machine-pair";
     const a = machineCard(level.machineA, "Machine A", true);
     const b = machineCard(level.machineB, "Machine B", true);
-    [a,b].forEach(card => card.addEventListener("click", () => {
-      state.selected = card.dataset.machine === "Machine A" ? "A" : "B";
-      row.querySelectorAll(".pc-machine-choice").forEach(item => item.classList.toggle("is-selected", item === card));
-      choices.querySelectorAll(".pc-choice").forEach(item => item.classList.toggle("is-selected", item.dataset.value === state.selected));
-    }));
-    row.append(a,b);
+    [a, b].forEach((card) =>
+      card.addEventListener("click", () => {
+        state.selected = card.dataset.machine === "Machine A" ? "A" : "B";
+        row
+          .querySelectorAll(".pc-machine-choice")
+          .forEach((item) => item.classList.toggle("is-selected", item === card));
+        choices
+          .querySelectorAll(".pc-choice")
+          .forEach((item) =>
+            item.classList.toggle("is-selected", item.dataset.value === state.selected),
+          );
+      }),
+    );
+    row.append(a, b);
     scene.appendChild(row);
     addChoice(choices, "A", "A has the greater chance");
     addChoice(choices, "equal", "They have equal chances");
@@ -276,7 +337,12 @@ window.ProbabilityCarnival = (() => {
   function renderBuild(level, scene, choices) {
     const target = document.createElement("div");
     target.className = "pc-build-target";
-    target.innerHTML = '<strong>Build ' + level.sun + ':' + level.moon + '</strong><span>Tap a token to flip it.</span>';
+    target.innerHTML =
+      "<strong>Build " +
+      level.sun +
+      ":" +
+      level.moon +
+      "</strong><span>Tap a token to flip it.</span>";
     scene.appendChild(target);
     const slots = document.createElement("div");
     slots.className = "pc-build-slots";
@@ -294,30 +360,47 @@ window.ProbabilityCarnival = (() => {
       slots.appendChild(button);
     });
     scene.appendChild(slots);
-    const sun = state.builtTokens.filter(x => x === "sun").length;
+    const sun = state.builtTokens.filter((x) => x === "sun").length;
     const moon = state.builtTokens.length - sun;
     const meter = document.createElement("div");
     meter.className = "pc-build-meter";
-    meter.innerHTML = '<span>☀ ' + sun + '</span><div><i style="width:' + (sun / 12 * 100) + '%"></i></div><span>☾ ' + moon + '</span>';
+    meter.innerHTML =
+      "<span>☀ " +
+      sun +
+      '</span><div><i style="width:' +
+      (sun / 12) * 100 +
+      '%"></i></div><span>☾ ' +
+      moon +
+      "</span>";
     scene.appendChild(meter);
     actionButton(choices, "🔧 Test my machine", () => check(level), "pc-main-action");
-    actionButton(choices, "🔀 Shuffle the tokens", () => {
-      state.builtTokens.sort(() => Math.random() - 0.5);
-      renderLevel();
-      feedback("Fresh arrangement. The ratio stays the same until you flip a token.", "neutral");
-    }, "pc-secondary-action");
+    actionButton(
+      choices,
+      "🔀 Shuffle the tokens",
+      () => {
+        state.builtTokens.sort(() => Math.random() - 0.5);
+        renderLevel();
+        feedback("Fresh arrangement. The ratio stays the same until you flip a token.", "neutral");
+      },
+      "pc-secondary-action",
+    );
   }
 
   function renderExperiment(level, scene, choices) {
     const total = level.trials;
-    const sun = state.experimentResults.filter(x => x === "sun").length;
+    const sun = state.experimentResults.filter((x) => x === "sun").length;
     const moon = state.experimentResults.length - sun;
     const track = document.createElement("div");
     track.className = "pc-experiment-board";
-    track.innerHTML = '<div class="pc-machine-mini"><span>☀ ☀ ☀ ☾</span><strong>3 : 1</strong><small>Pull to test it</small></div><div class="pc-result-track" aria-label="Experiment results"></div><div class="pc-experiment-count">' + state.experimentResults.length + '/' + total + '</div>';
+    track.innerHTML =
+      '<div class="pc-machine-mini"><span>☀ ☀ ☀ ☾</span><strong>3 : 1</strong><small>Pull to test it</small></div><div class="pc-result-track" aria-label="Experiment results"></div><div class="pc-experiment-count">' +
+      state.experimentResults.length +
+      "/" +
+      total +
+      "</div>";
     scene.appendChild(track);
     const dots = track.querySelector(".pc-result-track");
-    state.experimentResults.forEach(result => {
+    state.experimentResults.forEach((result) => {
       const dot = document.createElement("span");
       dot.className = "pc-result-dot " + result;
       dot.textContent = result === "sun" ? "☀" : "☾";
@@ -325,18 +408,25 @@ window.ProbabilityCarnival = (() => {
     });
     const stat = document.createElement("div");
     stat.className = "pc-experiment-stats";
-    stat.innerHTML = '<span>☀ ' + sun + '</span><span>☾ ' + moon + '</span>';
+    stat.innerHTML = "<span>☀ " + sun + "</span><span>☾ " + moon + "</span>";
     scene.appendChild(stat);
     addChoice(choices, "sun", "☀ Predict Sun will lead");
     addChoice(choices, "moon", "☾ Predict Moon will lead");
-    actionButton(choices, "⚙ Run " + total + " times", () => runExperiment(level), "pc-main-action");
+    actionButton(
+      choices,
+      "⚙ Run " + total + " times",
+      () => runExperiment(level),
+      "pc-main-action",
+    );
   }
 
   function runExperiment(level) {
     if (!state.selected || state.busy) {
       feedback(
-        state.busy ? "The machine is already running..." : "Make your prediction before pulling the lever.",
-        "notice"
+        state.busy
+          ? "The machine is already running..."
+          : "Make your prediction before pulling the lever.",
+        "notice",
       );
       return;
     }
@@ -353,22 +443,37 @@ window.ProbabilityCarnival = (() => {
     const runs = [
       [Math.max(0, expected - 1), trials - Math.max(0, expected - 1)],
       [Math.min(trials, expected + 1), Math.max(0, trials - Math.min(trials, expected + 1))],
-      [surprisingSun, Math.max(0, trials - surprisingSun)]
+      [surprisingSun, Math.max(0, trials - surprisingSun)],
     ];
     const card = document.createElement("div");
     card.className = "pc-sample-board";
-    card.innerHTML = '<strong>Three mystery runs from the same 3:1 machine</strong><small>Tap the run that looks most surprising for only ' + trials + ' trials.</small>';
+    card.innerHTML =
+      "<strong>Three mystery runs from the same 3:1 machine</strong><small>Tap the run that looks most surprising for only " +
+      trials +
+      " trials.</small>";
     const runRow = document.createElement("div");
     runRow.className = "pc-sample-runs";
-    runs.forEach((run,index) => {
+    runs.forEach((run, index) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "pc-sample-run";
       button.dataset.value = String(index);
-      button.innerHTML = '<b>Run ' + (index + 1) + '</b><span>' + "☀ ".repeat(run[0]) + "☾ ".repeat(run[1]) + '</span><small>' + run[0] + ' Sun · ' + run[1] + ' Moon</small>';
+      button.innerHTML =
+        "<b>Run " +
+        (index + 1) +
+        "</b><span>" +
+        "☀ ".repeat(run[0]) +
+        "☾ ".repeat(run[1]) +
+        "</span><small>" +
+        run[0] +
+        " Sun · " +
+        run[1] +
+        " Moon</small>";
       button.addEventListener("click", () => {
         state.randomRun = index;
-        runRow.querySelectorAll(".pc-sample-run").forEach(item => item.classList.toggle("is-selected", item === button));
+        runRow
+          .querySelectorAll(".pc-sample-run")
+          .forEach((item) => item.classList.toggle("is-selected", item === button));
       });
       runRow.appendChild(button);
     });
@@ -377,7 +482,12 @@ window.ProbabilityCarnival = (() => {
     addChoice(choices, "close", "This is close to the expected pattern");
     addChoice(choices, "surprising", "This is a surprising short run");
     addChoice(choices, "guaranteed", "The exact ratio is guaranteed");
-    actionButton(choices, "🔦 Reveal the evidence", () => checkRandomness(level, runs), "pc-main-action");
+    actionButton(
+      choices,
+      "🔦 Reveal the evidence",
+      () => checkRandomness(level, runs),
+      "pc-main-action",
+    );
   }
 
   function checkRandomness(level, runs) {
@@ -388,15 +498,26 @@ window.ProbabilityCarnival = (() => {
     const choice = document.querySelector("#pc-choice-area .pc-choice.is-selected")?.dataset.value;
     const run = runs[Number(state.randomRun)];
     const ratioGap = Math.abs(run[0] / Math.max(1, level.trials) - 0.75);
-    const answer = ratioGap >= 0.30 ? "surprising" : "close";
-    if (choice === answer) complete(level.id, "🔦 Nice detective eye. Random runs can wobble around the theoretical chance.");
-    else feedback("Look at the counts again. A short run can wander quite far from 3:1 without changing the machine.", "notice");
+    const answer = ratioGap >= 0.3 ? "surprising" : "close";
+    if (choice === answer)
+      complete(
+        level.id,
+        "🔦 Nice detective eye. Random runs can wobble around the theoretical chance.",
+      );
+    else
+      feedback(
+        "Look at the counts again. A short run can wander quite far from 3:1 without changing the machine.",
+        "notice",
+      );
   }
 
   function renderDice(level, scene, choices) {
     const board = document.createElement("div");
     board.className = "pc-dice-lab";
-    board.innerHTML = '<div class="pc-dice-machine"><span class="pc-dice-label">DICE LAB · NO STAKES</span><div class="pc-dice-row"></div><small>Rolls are experiments. There are no bets, prizes, or rewards for the roll.</small></div><div class="pc-dice-lesson">' + level.lesson + '</div>';
+    board.innerHTML =
+      '<div class="pc-dice-machine"><span class="pc-dice-label">DICE LAB · NO STAKES</span><div class="pc-dice-row"></div><small>Rolls are experiments. There are no bets, prizes, or rewards for the roll.</small></div><div class="pc-dice-lesson">' +
+      level.lesson +
+      "</div>";
     const diceRow = board.querySelector(".pc-dice-row");
     for (let index = 0; index < level.dice; index += 1) {
       const die = document.createElement("div");
@@ -406,13 +527,23 @@ window.ProbabilityCarnival = (() => {
       diceRow.appendChild(die);
     }
     scene.appendChild(board);
-    level.choices.forEach(choice => addChoice(choices, choice, choice));
-    actionButton(choices, "🎲 Roll to test the idea", () => rollDice(level, diceRow), "pc-main-action");
+    level.choices.forEach((choice) => addChoice(choices, choice, choice));
+    actionButton(
+      choices,
+      "🎲 Roll to test the idea",
+      () => rollDice(level, diceRow),
+      "pc-main-action",
+    );
   }
 
   function rollDice(level, diceRow) {
     if (!state.selected || state.busy) {
-      feedback(state.busy ? "The dice are rolling..." : "Choose your prediction first, then run the experiment.", "notice");
+      feedback(
+        state.busy
+          ? "The dice are rolling..."
+          : "Choose your prediction first, then run the experiment.",
+        "notice",
+      );
       return;
     }
     state.busy = true;
@@ -430,7 +561,10 @@ window.ProbabilityCarnival = (() => {
       if (session !== state.session) return;
       state.busy = false;
       if (state.selected === level.answer) {
-        complete(level.id, "🎲 Prediction checked. The roll is evidence, not a guarantee. " + level.lesson);
+        complete(
+          level.id,
+          "🎲 Prediction checked. The roll is evidence, not a guarantee. " + level.lesson,
+        );
       } else {
         state.streak = 0;
         saveProgress();
@@ -445,32 +579,49 @@ window.ProbabilityCarnival = (() => {
     const clueCount = state.clues.length;
     const card = document.createElement("div");
     card.className = "pc-detective-card pc-vault";
-    card.innerHTML = '<span class="pc-vault-icon">🔐</span><div><strong>' + (clueCount ? "Evidence board: " + clueCount + " clues" : "A locked machine is humming...") + '</strong><p>' +
-      (clueCount ? "☀ Sun: " + clueCountOf("sun") + ' · ☾ Moon: ' + clueCountOf("moon") : "Collect the clues, then open the case.") + '</p></div>';
+    card.innerHTML =
+      '<span class="pc-vault-icon">🔐</span><div><strong>' +
+      (clueCount ? "Evidence board: " + clueCount + " clues" : "A locked machine is humming...") +
+      "</strong><p>" +
+      (clueCount
+        ? "☀ Sun: " + clueCountOf("sun") + " · ☾ Moon: " + clueCountOf("moon")
+        : "Collect the clues, then open the case.") +
+      "</p></div>";
     scene.appendChild(card);
     const evidence = document.createElement("div");
     evidence.className = "pc-evidence-strip";
-    state.clues.slice(0,12).forEach(result => {
+    state.clues.slice(0, 12).forEach((result) => {
       const chip = document.createElement("span");
       chip.textContent = result === "sun" ? "☀" : "☾";
       chip.className = result;
       evidence.appendChild(chip);
     });
     scene.appendChild(evidence);
-    actionButton(choices, clueCount < 12 ? "🔎 Collect 12 clues" : "🗝️ Open the case", () => {
-      if (clueCount < 12) {
-        state.clues = library.drawMany(library.createBag(level.hiddenSun, level.hiddenMoon), 12);
-        renderLevel();
-        feedback("Evidence collected. Now inspect the pattern and make your call.", "neutral");
-      } else {
-        check(level);
-      }
-    }, "pc-main-action");
-    level.choices.forEach(choice => addChoice(choices, choice, choice === "Fair" ? "⚖ Fair" : choice === "Mostly Sun" ? "☀ Mostly Sun" : "☾ Mostly Moon"));
+    actionButton(
+      choices,
+      clueCount < 12 ? "🔎 Collect 12 clues" : "🗝️ Open the case",
+      () => {
+        if (clueCount < 12) {
+          state.clues = library.drawMany(library.createBag(level.hiddenSun, level.hiddenMoon), 12);
+          renderLevel();
+          feedback("Evidence collected. Now inspect the pattern and make your call.", "neutral");
+        } else {
+          check(level);
+        }
+      },
+      "pc-main-action",
+    );
+    level.choices.forEach((choice) =>
+      addChoice(
+        choices,
+        choice,
+        choice === "Fair" ? "⚖ Fair" : choice === "Mostly Sun" ? "☀ Mostly Sun" : "☾ Mostly Moon",
+      ),
+    );
   }
 
   function clueCountOf(value) {
-    return state.clues.filter(x => x === value).length;
+    return state.clues.filter((x) => x === value).length;
   }
 
   function complete(id, message) {
@@ -488,7 +639,9 @@ window.ProbabilityCarnival = (() => {
     setText("pc-system-state", "DISCOVERY SAVED");
     const next = $("pc-next");
     if (next) next.disabled = !state.completed.has(id) || id === levels.length;
-    document.querySelectorAll("#pc-choice-area button").forEach(button => { button.disabled = false; });
+    document.querySelectorAll("#pc-choice-area button").forEach((button) => {
+      button.disabled = false;
+    });
     feedback(message + (firstTime ? " +10 discovery points!" : ""), "success");
     document.querySelector(".pc-play-panel")?.classList.remove("pc-celebrate");
     void document.querySelector(".pc-play-panel")?.offsetWidth;
@@ -496,12 +649,13 @@ window.ProbabilityCarnival = (() => {
   }
 
   function check(levelOverride) {
-    const level = levelOverride || levels.find(item => item.id === state.level);
+    const level = levelOverride || levels.find((item) => item.id === state.level);
     if (!level) return;
     if (level.type === "build") {
-      const sun = state.builtTokens.filter(x => x === "sun").length;
+      const sun = state.builtTokens.filter((x) => x === "sun").length;
       const moon = state.builtTokens.length - sun;
-      if (sun * level.moon === moon * level.sun) complete(level.id, "🔧 Machine tuned! The token ratio is right.");
+      if (sun * level.moon === moon * level.sun)
+        complete(level.id, "🔧 Machine tuned! The token ratio is right.");
       else {
         state.streak = 0;
         saveProgress();
@@ -514,11 +668,15 @@ window.ProbabilityCarnival = (() => {
         feedback("Choose a machine or answer below before launching.", "notice");
         return;
       }
-      if (state.selected === level.answer) complete(level.id, "⚙ Machine run complete. You chose from the machine's design.");
+      if (state.selected === level.answer)
+        complete(level.id, "⚙ Machine run complete. You chose from the machine's design.");
       else {
         state.streak = 0;
         saveProgress();
-        feedback("The launch missed the best choice. Inspect the token counts and try again.", "notice");
+        feedback(
+          "The launch missed the best choice. Inspect the token counts and try again.",
+          "notice",
+        );
       }
       return;
     }
@@ -527,11 +685,15 @@ window.ProbabilityCarnival = (() => {
         feedback("Collect all twelve clues before opening the case.", "notice");
         return;
       }
-      if (state.selected === level.answer) complete(level.id, "🕵️ Case solved. Your evidence matched the hidden machine.");
+      if (state.selected === level.answer)
+        complete(level.id, "🕵️ Case solved. Your evidence matched the hidden machine.");
       else {
         state.streak = 0;
         saveProgress();
-        feedback("The evidence is still telling you something else. Recount the clues and try again.", "notice");
+        feedback(
+          "The evidence is still telling you something else. Recount the clues and try again.",
+          "notice",
+        );
       }
       return;
     }
@@ -539,7 +701,8 @@ window.ProbabilityCarnival = (() => {
       feedback("Choose an answer first.", "notice");
       return;
     }
-    if (state.selected === level.answer) complete(level.id, "Correct. You found the probability pattern.");
+    if (state.selected === level.answer)
+      complete(level.id, "Correct. You found the probability pattern.");
     else {
       state.streak = 0;
       saveProgress();
@@ -564,10 +727,17 @@ window.ProbabilityCarnival = (() => {
     selectLevel(state.level + 1);
   }
 
-  function showWorld() { selectLevel(state.level); }
+  function showWorld() {
+    selectLevel(state.level);
+  }
 
   function openStory(id) {
-    const map = { "curious-machine": 1, "machine-builder": 21, "mystery-tent": 51, "fairness-workshop": 56 };
+    const map = {
+      "curious-machine": 1,
+      "machine-builder": 21,
+      "mystery-tent": 51,
+      "fairness-workshop": 56,
+    };
     selectLevel(map[id] || 1);
   }
 

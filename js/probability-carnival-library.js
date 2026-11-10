@@ -2,7 +2,7 @@ window.ProbabilityCarnivalLibrary = (() => {
   function createBag(sunCount = 3, moonCount = 1) {
     return [
       ...Array.from({ length: sunCount }, () => "sun"),
-      ...Array.from({ length: moonCount }, () => "moon")
+      ...Array.from({ length: moonCount }, () => "moon"),
     ];
   }
 
@@ -30,7 +30,7 @@ window.ProbabilityCarnivalLibrary = (() => {
         total[result] = (total[result] || 0) + 1;
         return total;
       },
-      { sun: 0, moon: 0 }
+      { sun: 0, moon: 0 },
     );
   }
 
@@ -47,7 +47,7 @@ window.ProbabilityCarnivalLibrary = (() => {
       return 0;
     }
 
-    return tokens.filter(token => token === result).length / tokens.length;
+    return tokens.filter((token) => token === result).length / tokens.length;
   }
 
   return {
@@ -56,6 +56,6 @@ window.ProbabilityCarnivalLibrary = (() => {
     drawMany,
     counts,
     dominant,
-    probability
+    probability,
   };
 })();

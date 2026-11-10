@@ -8,18 +8,18 @@ const ShapeArchitectGrid = (() => {
   }
 
   function render(board, mask, placements, getCells) {
-    board.innerHTML = '';
+    board.innerHTML = "";
     const fragment = document.createDocumentFragment();
     for (let r = 0; r < SIZE; r++) {
       for (let c = 0; c < SIZE; c++) {
-        const el = document.createElement('div');
-        el.className = 'architect-cell ' + (mask[r][c] === '#' ? 'target' : 'empty');
+        const el = document.createElement("div");
+        el.className = "architect-cell " + (mask[r][c] === "#" ? "target" : "empty");
         el.dataset.r = r;
         el.dataset.c = c;
-        if (mask[r][c] === '#') {
+        if (mask[r][c] === "#") {
           el.tabIndex = 0;
-          el.setAttribute('role', 'gridcell');
-          el.setAttribute('aria-label', 'Picture square ' + (r + 1) + ', ' + (c + 1));
+          el.setAttribute("role", "gridcell");
+          el.setAttribute("aria-label", "Picture square " + (r + 1) + ", " + (c + 1));
         }
         fragment.appendChild(el);
       }
@@ -32,15 +32,15 @@ const ShapeArchitectGrid = (() => {
     for (const [rr, cc] of getCells(id, placement.rot)) {
       const el = cell(board, placement.r + rr, placement.c + cc);
       if (el) {
-        el.classList.add(preview ? 'preview' : 'filled');
+        el.classList.add(preview ? "preview" : "filled");
         if (!preview) el.dataset.piece = String(id + 1);
       }
     }
   }
 
   function clearPreview(board) {
-    board?.querySelectorAll('.architect-cell.preview').forEach(el => {
-      el.classList.remove('preview', 'preview-invalid');
+    board?.querySelectorAll(".architect-cell.preview").forEach((el) => {
+      el.classList.remove("preview", "preview-invalid");
     });
   }
 
@@ -49,8 +49,8 @@ const ShapeArchitectGrid = (() => {
     for (const [r, c] of cells) {
       const el = cell(board, r, c);
       if (el && r >= 0 && c >= 0 && r < SIZE && c < SIZE) {
-        el.classList.add('preview');
-        el.classList.toggle('preview-invalid', !valid);
+        el.classList.add("preview");
+        el.classList.toggle("preview-invalid", !valid);
       }
     }
   }
@@ -60,33 +60,44 @@ const ShapeArchitectGrid = (() => {
     const size = rect.width / SIZE;
     return [
       Math.max(0, Math.min(SIZE - 1, Math.floor((event.clientY - rect.top) / size))),
-      Math.max(0, Math.min(SIZE - 1, Math.floor((event.clientX - rect.left) / size)))
+      Math.max(0, Math.min(SIZE - 1, Math.floor((event.clientX - rect.left) / size))),
     ];
   }
 
   function createDragGhost(cells, rot, id) {
-    const ghost = document.createElement('div');
-    ghost.className = 'architect-drag-ghost';
-    ghost.setAttribute('aria-hidden', 'true');
+    const ghost = document.createElement("div");
+    ghost.className = "architect-drag-ghost";
+    ghost.setAttribute("aria-hidden", "true");
     const oriented = cells(rot);
     const bounds = ShapeArchitectLibrary.bounds(oriented);
-    ghost.style.setProperty('--rows', bounds.rows);
-    ghost.style.setProperty('--cols', bounds.cols);
-    ghost.innerHTML = oriented.map(([r, c]) =>
-      '<i style="grid-row:' + (r + 1) + ';grid-column:' + (c + 1) + '"></i>'
-    ).join('');
+    ghost.style.setProperty("--rows", bounds.rows);
+    ghost.style.setProperty("--cols", bounds.cols);
+    ghost.innerHTML = oriented
+      .map(([r, c]) => '<i style="grid-row:' + (r + 1) + ";grid-column:" + (c + 1) + '"></i>')
+      .join("");
     ghost.dataset.piece = String(id + 1);
     document.body.appendChild(ghost);
     return ghost;
   }
 
   function moveDragGhost(ghost, x, y) {
-    if (ghost) ghost.style.transform = 'translate3d(' + (x + 14) + 'px,' + (y + 14) + 'px,0)';
+    if (ghost) ghost.style.transform = "translate3d(" + (x + 14) + "px," + (y + 14) + "px,0)";
   }
 
   function removeDragGhost(ghost) {
     ghost?.remove();
   }
 
-  return {SIZE, cell, render, paintPlacement, clearPreview, paintPreview, pointerCell, createDragGhost, moveDragGhost, removeDragGhost};
+  return {
+    SIZE,
+    cell,
+    render,
+    paintPlacement,
+    clearPreview,
+    paintPreview,
+    pointerCell,
+    createDragGhost,
+    moveDragGhost,
+    removeDragGhost,
+  };
 })();

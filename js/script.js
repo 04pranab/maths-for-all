@@ -8,8 +8,14 @@
    ============================================================= */
 
 /* ---------- Shared DOM helpers (used by every module) ---------- */
-function show(id) { const el = document.getElementById(id); if (el) el.classList.remove('hidden'); }
-function hide(id) { const el = document.getElementById(id); if (el) el.classList.add('hidden'); }
+function show(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove("hidden");
+}
+function hide(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add("hidden");
+}
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -20,8 +26,12 @@ function shuffle(arr) {
 }
 
 const Utils = (function () {
-  function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-  function pick(arr) { return arr[randInt(0, arr.length - 1)]; }
+  function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  function pick(arr) {
+    return arr[randInt(0, arr.length - 1)];
+  }
 
   /* Small deterministic PRNG (mulberry32), used so generated content
      (like the 100 Shape Fitting levels) is the SAME every time you
@@ -29,13 +39,16 @@ const Utils = (function () {
   function mulberry32(seed) {
     let a = seed >>> 0;
     return function () {
-      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      a |= 0;
+      a = (a + 0x6d2b79f5) | 0;
       let t = Math.imul(a ^ (a >>> 15), 1 | a);
       t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
   }
-  function seededRandInt(rng, min, max) { return Math.floor(rng() * (max - min + 1)) + min; }
+  function seededRandInt(rng, min, max) {
+    return Math.floor(rng() * (max - min + 1)) + min;
+  }
   function seededShuffle(arr, rng) {
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) {
@@ -45,12 +58,15 @@ const Utils = (function () {
     return a;
   }
   function escapeHtml(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   return { randInt, pick, mulberry32, seededRandInt, seededShuffle, escapeHtml };
 })();
-
 
 /* =============================================================
    ACCESSIBILITY
@@ -58,7 +74,7 @@ const Utils = (function () {
    Settings persist per device via localStorage.
    ============================================================= */
 const Accessibility = (function () {
-  const KEY = 'mfa_a11y_v1';
+  const KEY = "mfa_a11y_v1";
   const SCALES = [1, 1.15, 1.3, 1.5];
   let idx = 0;
 
@@ -69,25 +85,32 @@ const Accessibility = (function () {
         const data = JSON.parse(raw);
         idx = Math.min(SCALES.length - 1, Math.max(0, data.idx || 0));
       }
-    } catch (e) { /* ignore corrupt storage */ }
+    } catch (e) {
+      /* ignore corrupt storage */
+    }
   }
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify({ idx })); } catch (e) {}
+    try {
+      localStorage.setItem(KEY, JSON.stringify({ idx }));
+    } catch (e) {}
   }
   function apply() {
-    document.documentElement.style.setProperty('--font-scale', SCALES[idx]);
+    document.documentElement.style.setProperty("--font-scale", SCALES[idx]);
   }
   function changeFont(dir) {
     idx = Math.min(SCALES.length - 1, Math.max(0, idx + dir));
-    save(); apply();
+    save();
+    apply();
   }
-  function init() { load(); apply(); }
+  function init() {
+    load();
+    apply();
+  }
 
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener("DOMContentLoaded", init);
 
   return { changeFont };
 })();
-
 
 /* =============================================================
    CONTROLS OVERLAY
@@ -95,119 +118,134 @@ const Accessibility = (function () {
    learner enters a game, with a manual "?" re-open button too.
    ============================================================= */
 const ControlsOverlay = (function () {
-  const SEEN_KEY = 'mfa_controls_seen_v1';
+  const SEEN_KEY = "mfa_controls_seen_v1";
   let seen = {};
 
   const CONTENT = {
     quiz: {
-      icon: '🧮', title: 'How to play: Arithmetic Quiz',
+      icon: "🧮",
+      title: "How to play: Arithmetic Quiz",
       bullets: [
-        'Pick a level: Starter, Growing, or Champion.',
-        'Read the question, then type your answer in the box.',
-        'Press Submit or Enter to check it.',
-        'Every question is new — take your time, there is no clock.',
+        "Pick a level: Starter, Growing, or Champion.",
+        "Read the question, then type your answer in the box.",
+        "Press Submit or Enter to check it.",
+        "Every question is new — take your time, there is no clock.",
       ],
     },
     race: {
-      icon: '🏁', title: 'How to play: Math Racing',
+      icon: "🏁",
+      title: "How to play: Math Racing",
       bullets: [
-        'Choose a timer length and a level, then press Start Race.',
-        'Type each answer and press Enter or Go — you move straight to the next question.',
-        'Try to answer as many as you can before the time runs out.',
-        'Every answer lets you continue — points are never taken away.',
+        "Choose a timer length and a level, then press Start Race.",
+        "Type each answer and press Enter or Go — you move straight to the next question.",
+        "Try to answer as many as you can before the time runs out.",
+        "Every answer lets you continue — points are never taken away.",
       ],
     },
     sudoku: {
-      icon: '🔢', title: 'How to play: Sudoku Challenge',
+      icon: "🔢",
+      title: "How to play: Sudoku Challenge",
       bullets: [
-        'Tap an empty square, then use the keypad or laptop number keys 1–9.',
-        'Every row, every column, and every 3×3 box must have the numbers 1 to 9, with no repeats.',
-        'Use Arrow keys to move, Backspace/Delete to erase, and Hint if you are stuck.',
-        'If you are stuck, ask a teacher or friend to help you reason through the next move.',
+        "Tap an empty square, then use the keypad or laptop number keys 1–9.",
+        "Every row, every column, and every 3×3 box must have the numbers 1 to 9, with no repeats.",
+        "Use Arrow keys to move, Backspace/Delete to erase, and Hint if you are stuck.",
+        "If you are stuck, ask a teacher or friend to help you reason through the next move.",
       ],
     },
     shape: {
-      icon: '🔷', title: 'How to play: Shape Fitting',
+      icon: "🔷",
+      title: "How to play: Shape Fitting",
       bullets: [
-        'Tap a shape in the panel on the right — it will glow gold.',
-        'Tap a square on the board to place it there.',
-        'Tap Rotate or press R to turn the shape; Esc deselects it.',
-        'Fill every square on the board to win the level — Hint is there if you need it.',
+        "Tap a shape in the panel on the right — it will glow gold.",
+        "Tap a square on the board to place it there.",
+        "Tap Rotate or press R to turn the shape; Esc deselects it.",
+        "Fill every square on the board to win the level — Hint is there if you need it.",
       ],
     },
     probability: {
-      icon: '🎪', title: 'How to play: Probability Carnival',
+      icon: "🎪",
+      title: "How to play: Probability Carnival",
       bullets: [
-        'Choose a tent and start with a prediction.',
-        'Run the experiment and watch the evidence grow.',
-        'A surprising result can become another clue. Use it to explore.',
-        'Build, compare, and reason about chance. There is no betting or reward for risk.',
-        'Use the reflection and discovery cards to connect the experiment to the idea.'
+        "Choose a tent and start with a prediction.",
+        "Run the experiment and watch the evidence grow.",
+        "A surprising result can become another clue. Use it to explore.",
+        "Build, compare, and reason about chance. There is no betting or reward for risk.",
+        "Use the reflection and discovery cards to connect the experiment to the idea.",
       ],
     },
     fraction: {
-      icon: '🥐', title: 'How to play: Fraction Bakery',
+      icon: "🥐",
+      title: "How to play: Fraction Bakery",
       bullets: [
-        'Every order is generated from a valid fraction, so every challenge has a real solution.',
-        'Tap equal dish pieces to build the requested fraction, or choose the matching recipe.',
-        'Later orders ask you to compare fractions, find equivalent fractions, and mix like-denominator recipes.',
-        'Check how many equal parts make the whole, then try again.',
-        'The timer is only a gentle record. There is no penalty for taking your time.'
+        "Every order is generated from a valid fraction, so every challenge has a real solution.",
+        "Tap equal dish pieces to build the requested fraction, or choose the matching recipe.",
+        "Later orders ask you to compare fractions, find equivalent fractions, and mix like-denominator recipes.",
+        "Check how many equal parts make the whole, then try again.",
+        "The timer is only a gentle record. There is no penalty for taking your time.",
       ],
     },
     architect: {
-      icon: '🏗️', title: 'How to play: Shape Architect',
+      icon: "🏗️",
+      title: "How to play: Shape Architect",
       bullets: [
-        'Choose an unlocked picture. Every picture has a real solution.',
-        'Drag pieces onto the highlighted picture. The pieces must cover the picture exactly.',
-        'Extra pieces are included on purpose. Look carefully before choosing.',
-        'Rotate a piece with R or the Rotate button. Undo lets you experiment safely.',
-        'The clock measures your time, but speed is not the goal. Notice how shapes fit.'
+        "Choose an unlocked picture. Every picture has a real solution.",
+        "Drag pieces onto the highlighted picture. The pieces must cover the picture exactly.",
+        "Extra pieces are included on purpose. Look carefully before choosing.",
+        "Rotate a piece with R or the Rotate button. Undo lets you experiment safely.",
+        "The clock measures your time, but speed is not the goal. Notice how shapes fit.",
       ],
     },
     numberMaze: {
-      icon: '🧩', title: 'How to play: Number Maze',
+      icon: "🧩",
+      title: "How to play: Number Maze",
       bullets: [
-        'Begin at checkpoint 1, then connect each numbered checkpoint in ascending order.',
-        'Move one square horizontally or vertically at a time. Walls cannot be crossed.',
-        'Fill every open square exactly once without revisiting a square, and reach the final checkpoint last.',
-        'Use Undo, Reset path, or Hint whenever you need them. There is no clock and no penalty for experimenting.',
-        'Start with Guided Starters, explore fresh boards, repeat the shared Daily Challenge, or try the Challenge Climb.',
-        'Copy or load a puzzle code to replay the same board or share it with someone else.',
+        "Begin at checkpoint 1, then connect each numbered checkpoint in ascending order.",
+        "Move one square horizontally or vertically at a time. Walls cannot be crossed.",
+        "Fill every open square exactly once without revisiting a square, and reach the final checkpoint last.",
+        "Use Undo, Reset path, or Hint whenever you need them. There is no clock and no penalty for experimenting.",
+        "Start with Guided Starters, explore fresh boards, repeat the shared Daily Challenge, or try the Challenge Climb.",
+        "Copy or load a puzzle code to replay the same board or share it with someone else.",
       ],
     },
     slab: {
-      icon: '🧺', title: 'How to play: Slab Maths',
+      icon: "🧺",
+      title: "How to play: Slab Maths",
       bullets: [
-        'The basket shows a number. Your job is to bring it down to zero.',
-        'Drag a number slab into the basket — or tap a slab, then tap the basket.',
-        'Each slab you use is subtracted from the basket and disappears.',
-        'There is more than one way to win each round — some slabs are extra, just for you to think about.',
-        'Press 1–9 to select a slab by position, Enter to use it, or Esc to deselect.',
+        "The basket shows a number. Your job is to bring it down to zero.",
+        "Drag a number slab into the basket — or tap a slab, then tap the basket.",
+        "Each slab you use is subtracted from the basket and disappears.",
+        "There is more than one way to win each round — some slabs are extra, just for you to think about.",
+        "Press 1–9 to select a slab by position, Enter to use it, or Esc to deselect.",
       ],
     },
   };
 
   function loadSeen() {
-    try { seen = JSON.parse(localStorage.getItem(SEEN_KEY)) || {}; } catch (e) { seen = {}; }
+    try {
+      seen = JSON.parse(localStorage.getItem(SEEN_KEY)) || {};
+    } catch (e) {
+      seen = {};
+    }
   }
   function saveSeen() {
-    try { localStorage.setItem(SEEN_KEY, JSON.stringify(seen)); } catch (e) {}
+    try {
+      localStorage.setItem(SEEN_KEY, JSON.stringify(seen));
+    } catch (e) {}
   }
 
   function render(key) {
     const cfg = CONTENT[key];
     if (!cfg) return null;
-    document.getElementById('controls-icon').textContent = cfg.icon;
-    document.getElementById('controls-title').textContent = cfg.title;
-    const list = document.getElementById('controls-list');
-    list.innerHTML = '';
-    cfg.bullets.forEach(b => {
-      const li = document.createElement('li');
+    document.getElementById("controls-icon").textContent = cfg.icon;
+    document.getElementById("controls-title").textContent = cfg.title;
+    const list = document.getElementById("controls-list");
+    list.innerHTML = "";
+    cfg.bullets.forEach((b) => {
+      const li = document.createElement("li");
       li.innerHTML = `<span class="bullet-icon">👉</span><span>${Utils.escapeHtml(b)}</span>`;
       list.appendChild(li);
     });
-    document.getElementById('controls-remember-checkbox').checked = false;
+    document.getElementById("controls-remember-checkbox").checked = false;
     return cfg;
   }
 
@@ -218,29 +256,31 @@ const ControlsOverlay = (function () {
     if (seen[key]) return;
     activeKey = key;
     render(key);
-    show('controls-overlay');
+    show("controls-overlay");
   }
   function forceShow(key) {
     if (!CONTENT[key]) return;
     activeKey = key;
     render(key);
-    show('controls-overlay');
+    show("controls-overlay");
   }
   function close() {
-    hide('controls-overlay');
+    hide("controls-overlay");
   }
 
   function dismiss() {
-    const remember = document.getElementById('controls-remember-checkbox').checked;
-    if (remember && activeKey) { seen[activeKey] = true; saveSeen(); }
+    const remember = document.getElementById("controls-remember-checkbox").checked;
+    if (remember && activeKey) {
+      seen[activeKey] = true;
+      saveSeen();
+    }
     close();
   }
 
-  document.addEventListener('DOMContentLoaded', loadSeen);
+  document.addEventListener("DOMContentLoaded", loadSeen);
 
   return { maybeShow, forceShow, dismiss, close };
 })();
-
 
 /* =============================================================
    ANALYTICS
@@ -250,24 +290,24 @@ const ControlsOverlay = (function () {
    ============================================================= */
 const Analytics = (function () {
   const LABELS = {
-    quiz: 'Arithmetic Quiz',
-    race: 'Math Racing',
-    sudoku: 'Sudoku',
-    shape: 'Shape Fitting',
-    slab: 'Slab Maths',
-    architect: 'Shape Architect',
-    probability_carnival: 'Probability Carnival',
-    fraction_bakery: 'Fraction Bakery',
-    number_maze: 'Number Maze'
+    quiz: "Arithmetic Quiz",
+    race: "Math Racing",
+    sudoku: "Sudoku",
+    shape: "Shape Fitting",
+    slab: "Slab Maths",
+    architect: "Shape Architect",
+    probability_carnival: "Probability Carnival",
+    fraction_bakery: "Fraction Bakery",
+    number_maze: "Number Maze",
   };
 
   function events() {
-    if (typeof ResearchEventGateway === 'undefined') return [];
+    if (typeof ResearchEventGateway === "undefined") return [];
     return ResearchEventGateway.read();
   }
 
   function log(category, action, detail) {
-    if (typeof ResearchEventGateway === 'undefined') return false;
+    if (typeof ResearchEventGateway === "undefined") return false;
     return ResearchEventGateway.record(category, action, detail || {});
   }
 
@@ -275,26 +315,30 @@ const Analytics = (function () {
     const list = events();
     const byCategory = {};
 
-    list.forEach(e => {
-      const c = byCategory[e.category] || (byCategory[e.category] = {
-        attempts: 0,
-        correct: 0,
-        totalMs: 0,
-        timedCount: 0
-      });
+    list.forEach((e) => {
+      const c =
+        byCategory[e.category] ||
+        (byCategory[e.category] = {
+          attempts: 0,
+          correct: 0,
+          totalMs: 0,
+          timedCount: 0,
+        });
 
-      if (e.action === 'answer') {
+      if (e.action === "answer") {
         c.attempts++;
         if (e.detail && e.detail.correct) c.correct++;
-        if (e.detail && typeof e.detail.timeMs === 'number') {
+        if (e.detail && typeof e.detail.timeMs === "number") {
           c.totalMs += e.detail.timeMs;
           c.timedCount++;
         }
       }
 
-      if (e.action === 'round_complete' ||
-          e.action === 'level_complete' ||
-          e.action === 'puzzle_solved') {
+      if (
+        e.action === "round_complete" ||
+        e.action === "level_complete" ||
+        e.action === "puzzle_solved"
+      ) {
         c.attempts++;
         c.correct++;
       }
@@ -306,7 +350,7 @@ const Analytics = (function () {
   function download(filename, content, mime) {
     const blob = new Blob([content], { type: mime });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
@@ -318,132 +362,203 @@ const Analytics = (function () {
   function exportJSON() {
     const list = events();
     if (!list.length) return;
-    download('math-for-all-progress.json', JSON.stringify(list, null, 2), 'application/json');
+    download("math-for-all-progress.json", JSON.stringify(list, null, 2), "application/json");
   }
 
   function exportCSV() {
     const list = events();
     if (!list.length) return;
 
-    const rows = [['timestamp_iso', 'category', 'action', 'correct', 'time_ms', 'extra']];
-    list.forEach(e => {
+    const rows = [["timestamp_iso", "category", "action", "correct", "time_ms", "extra"]];
+    list.forEach((e) => {
       rows.push([
         new Date(e.ts).toISOString(),
         e.category,
         e.action,
-        e.detail && ('correct' in e.detail) ? e.detail.correct : '',
-        e.detail && ('timeMs' in e.detail) ? e.detail.timeMs : '',
-        JSON.stringify(e.detail || {})
+        e.detail && "correct" in e.detail ? e.detail.correct : "",
+        e.detail && "timeMs" in e.detail ? e.detail.timeMs : "",
+        JSON.stringify(e.detail || {}),
       ]);
     });
 
     const csv = rows
-      .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(','))
-      .join('\\n');
+      .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","))
+      .join("\\n");
 
-    download('math-for-all-progress.csv', csv, 'text/csv');
+    download("math-for-all-progress.csv", csv, "text/csv");
   }
 
   function clearAll() {
-    if (!confirm('Clear all progress data stored on this device? This cannot be undone.')) return;
-    if (typeof ResearchEventGateway !== 'undefined') ResearchEventGateway.clear();
+    if (!confirm("Clear all progress data stored on this device? This cannot be undone.")) return;
+    if (typeof ResearchEventGateway !== "undefined") ResearchEventGateway.clear();
     Progress.render();
   }
 
   return { log, summary, exportJSON, exportCSV, clearAll };
 })();
 
-
 /* =============================================================
    PROGRESS DASHBOARD (modal UI over Analytics data)
    ============================================================= */
 const Progress = (function () {
-  const LABELS = { quiz: 'Arithmetic Quiz', race: 'Math Racing', sudoku: 'Sudoku', shape: 'Shape Fitting', slab: 'Slab Maths', architect: 'Shape Architect', probability_carnival: 'Probability Machine', fraction_bakery: 'Fraction Bakery' };
+  const LABELS = {
+    quiz: "Arithmetic Quiz",
+    race: "Math Racing",
+    sudoku: "Sudoku",
+    shape: "Shape Fitting",
+    slab: "Slab Maths",
+    architect: "Shape Architect",
+    probability_carnival: "Probability Machine",
+    fraction_bakery: "Fraction Bakery",
+  };
 
   function render() {
     const s = Analytics.summary();
-    const grid = document.getElementById('progress-grid');
-    const totalAttempts = Object.values(s.byCategory).reduce((a,c) => a + c.attempts, 0);
-    const totalCorrect  = Object.values(s.byCategory).reduce((a,c) => a + c.correct, 0);
-    const acc = totalAttempts ? Math.round((totalCorrect/totalAttempts)*100) : 0;
+    const grid = document.getElementById("progress-grid");
+    const totalAttempts = Object.values(s.byCategory).reduce((a, c) => a + c.attempts, 0);
+    const totalCorrect = Object.values(s.byCategory).reduce((a, c) => a + c.correct, 0);
+    const acc = totalAttempts ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
     grid.innerHTML = `
       <div class="progress-stat"><span class="stat-num">${totalAttempts}</span><span class="stat-label">Questions tried</span></div>
       <div class="progress-stat"><span class="stat-num">${acc}%</span><span class="stat-label">Overall accuracy</span></div>
       <div class="progress-stat"><span class="stat-num">${s.totalEvents}</span><span class="stat-label">Activities logged</span></div>
     `;
-    const body = document.getElementById('progress-table-body');
+    const body = document.getElementById("progress-table-body");
     const keys = Object.keys(s.byCategory);
     if (keys.length === 0) {
       body.innerHTML = '<tr><td colspan="3">No activity yet — go play something!</td></tr>';
     } else {
-      body.innerHTML = keys.map(k => {
-        const c = s.byCategory[k];
-        const a = c.attempts ? Math.round((c.correct/c.attempts)*100) + '%' : '—';
-        return `<tr><td>${LABELS[k] || k}</td><td>${c.attempts}</td><td>${a}</td></tr>`;
-      }).join('');
+      body.innerHTML = keys
+        .map((k) => {
+          const c = s.byCategory[k];
+          const a = c.attempts ? Math.round((c.correct / c.attempts) * 100) + "%" : "—";
+          return `<tr><td>${LABELS[k] || k}</td><td>${c.attempts}</td><td>${a}</td></tr>`;
+        })
+        .join("");
     }
   }
-  function open() { render(); show('progress-modal'); }
-  function close() { hide('progress-modal'); }
+  function open() {
+    render();
+    show("progress-modal");
+  }
+  function close() {
+    hide("progress-modal");
+  }
 
   return { open, close, render };
 })();
-
 
 /* =============================================================
    GAME – top-level screen manager
    ============================================================= */
 const Game = (function () {
   const SCREENS = {
-    menu:   'screen-menu',
-    quiz:   'screen-quiz',
-    race:   'screen-race',
-    sudoku: 'screen-sudoku',
-    shape:  'screen-shape',
-    slab:   'screen-slab',
-    architect: 'screen-architect',
-    fraction: 'screen-fraction-bakery',
-    shop: 'screen-little-shop',
-    numberMaze: 'screen-number-maze',
+    menu: "screen-menu",
+    quiz: "screen-quiz",
+    race: "screen-race",
+    sudoku: "screen-sudoku",
+    shape: "screen-shape",
+    slab: "screen-slab",
+    architect: "screen-architect",
+    fraction: "screen-fraction-bakery",
+    shop: "screen-little-shop",
+    numberMaze: "screen-number-maze",
   };
 
   function stopBackgroundGames() {
-    if (window.Quiz && typeof Quiz.stop === 'function') Quiz.stop();
-    if (window.Racing && typeof Racing.stop === 'function') Racing.stop();
-    if (window.ShapePuzzle && typeof ShapePuzzle.stop === 'function') ShapePuzzle.stop();
-    if (window.SlabMath && typeof SlabMath.stop === 'function') SlabMath.stop();
-    if (window.ShapeArchitect && typeof ShapeArchitect.stop === 'function') ShapeArchitect.stop();
-    if (window.FractionBakery && typeof FractionBakery.stop === 'function') FractionBakery.stop();
-    if (window.LittleShop && typeof window.LittleShop.stop === 'function') window.LittleShop.stop();
-    if (window.NumberMaze && typeof window.NumberMaze.stop === 'function') window.NumberMaze.stop();
+    if (window.Quiz && typeof Quiz.stop === "function") Quiz.stop();
+    if (window.Racing && typeof Racing.stop === "function") Racing.stop();
+    if (window.ShapePuzzle && typeof ShapePuzzle.stop === "function") ShapePuzzle.stop();
+    if (window.SlabMath && typeof SlabMath.stop === "function") SlabMath.stop();
+    if (window.ShapeArchitect && typeof ShapeArchitect.stop === "function") ShapeArchitect.stop();
+    if (window.FractionBakery && typeof FractionBakery.stop === "function") FractionBakery.stop();
+    if (window.LittleShop && typeof window.LittleShop.stop === "function") window.LittleShop.stop();
+    if (window.NumberMaze && typeof window.NumberMaze.stop === "function") window.NumberMaze.stop();
   }
 
   function showScreen(name) {
     stopBackgroundGames();
-    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll(".screen").forEach((el) => el.classList.remove("active"));
     const target = document.getElementById(SCREENS[name]);
-    if (target) target.classList.add('active');
+    if (target) target.classList.add("active");
     window.scrollTo(0, 0);
   }
 
   function goHome() {
-    Analytics.log('nav', 'go_home', {});
-    showScreen('menu');
-    const probabilityScreen = document.getElementById('screen-probability-carnival');
+    Analytics.log("nav", "go_home", {});
+    showScreen("menu");
+    const probabilityScreen = document.getElementById("screen-probability-carnival");
     if (probabilityScreen) probabilityScreen.hidden = true;
   }
 
-  function startArithmetic() { Analytics.log('quiz','open',{}); showScreen('quiz'); Quiz.init(); ControlsOverlay.maybeShow('quiz'); }
-  function startRacing()     { Analytics.log('race','open',{}); showScreen('race'); Racing.init(); ControlsOverlay.maybeShow('race'); }
-  function startSudoku()     { Analytics.log('sudoku','open',{}); showScreen('sudoku'); Sudoku.init(); ControlsOverlay.maybeShow('sudoku'); }
-  function startShapePuzzle(){ Analytics.log('shape','open',{}); showScreen('shape'); ShapePuzzle.init(); ControlsOverlay.maybeShow('shape'); }
-  function startSlabMath()   { Analytics.log('slab','open',{}); showScreen('slab'); SlabMath.init(); ControlsOverlay.maybeShow('slab'); }
-  function startShapeArchitect(){ Analytics.log('shape_architect','open',{}); showScreen('architect'); ShapeArchitect.init(); ControlsOverlay.maybeShow('architect'); }
-  function startFractionBakery(){ Analytics.log('fraction_bakery','open',{}); showScreen('fraction'); const screen=document.getElementById('screen-fraction-bakery'); if(screen) screen.hidden=false; FractionBakery.init(); ControlsOverlay.maybeShow('fraction'); }
-  function startLittleShop(){ showScreen('shop'); window.LittleShop.init(); }
-  function startNumberMaze(){ Analytics.log('number_maze','open',{}); showScreen('numberMaze'); NumberMaze.init(); document.getElementById('number-maze-title')?.focus({ preventScroll: true }); ControlsOverlay.maybeShow('numberMaze'); }
+  function startArithmetic() {
+    Analytics.log("quiz", "open", {});
+    showScreen("quiz");
+    Quiz.init();
+    ControlsOverlay.maybeShow("quiz");
+  }
+  function startRacing() {
+    Analytics.log("race", "open", {});
+    showScreen("race");
+    Racing.init();
+    ControlsOverlay.maybeShow("race");
+  }
+  function startSudoku() {
+    Analytics.log("sudoku", "open", {});
+    showScreen("sudoku");
+    Sudoku.init();
+    ControlsOverlay.maybeShow("sudoku");
+  }
+  function startShapePuzzle() {
+    Analytics.log("shape", "open", {});
+    showScreen("shape");
+    ShapePuzzle.init();
+    ControlsOverlay.maybeShow("shape");
+  }
+  function startSlabMath() {
+    Analytics.log("slab", "open", {});
+    showScreen("slab");
+    SlabMath.init();
+    ControlsOverlay.maybeShow("slab");
+  }
+  function startShapeArchitect() {
+    Analytics.log("shape_architect", "open", {});
+    showScreen("architect");
+    ShapeArchitect.init();
+    ControlsOverlay.maybeShow("architect");
+  }
+  function startFractionBakery() {
+    Analytics.log("fraction_bakery", "open", {});
+    showScreen("fraction");
+    const screen = document.getElementById("screen-fraction-bakery");
+    if (screen) screen.hidden = false;
+    FractionBakery.init();
+    ControlsOverlay.maybeShow("fraction");
+  }
+  function startLittleShop() {
+    showScreen("shop");
+    window.LittleShop.init();
+  }
+  function startNumberMaze() {
+    Analytics.log("number_maze", "open", {});
+    showScreen("numberMaze");
+    NumberMaze.init();
+    document.getElementById("number-maze-title")?.focus({ preventScroll: true });
+    ControlsOverlay.maybeShow("numberMaze");
+  }
 
-  return { goHome, startArithmetic, startRacing, startSudoku, startShapePuzzle, startSlabMath, startShapeArchitect, startFractionBakery, startLittleShop, startNumberMaze };
+  return {
+    goHome,
+    startArithmetic,
+    startRacing,
+    startSudoku,
+    startShapePuzzle,
+    startSlabMath,
+    startShapeArchitect,
+    startFractionBakery,
+    startLittleShop,
+    startNumberMaze,
+  };
 })();
 
 /* =============================================================
@@ -452,52 +567,58 @@ const Game = (function () {
    consume keystrokes while the learner is typing in a text field.
    ============================================================= */
 function isTypingTarget(target) {
-  return !!target && (
-    target.matches('input, textarea, select') ||
-    target.isContentEditable
-  );
+  return !!target && (target.matches("input, textarea, select") || target.isContentEditable);
 }
 
 function activeGameScreen() {
-  return document.querySelector('.screen.active');
+  return document.querySelector(".screen.active");
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('Math For All – ready. गणित सबके लिए');
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Math For All – ready. गणित सबके लिए");
 });
-
 
 /* ---------- Overlay Escape handling ----------
    Escape dismisses only an open overlay. It must never change the
    active game or navigate home. If no overlay is open, game-specific
    keyboard handlers may use Escape for their own local action. */
-document.addEventListener('keydown', (event) => {
-  if (event.key !== 'Escape') return;
+document.addEventListener(
+  "keydown",
+  (event) => {
+    if (event.key !== "Escape") return;
 
-  const overlays = [
-    'controls-overlay',
-    'progress-modal',
-    'research-consent-modal',
-    'auth-modal',
-    'account-profile-modal',
-    'dare-modal',
-    'pin-modal'
-  ];
+    const overlays = [
+      "controls-overlay",
+      "progress-modal",
+      "research-consent-modal",
+      "auth-modal",
+      "account-profile-modal",
+      "dare-modal",
+      "pin-modal",
+    ];
 
-  for (const id of overlays) {
-    const overlay = document.getElementById(id);
-    if (overlay && !overlay.classList.contains('hidden')) {
-      event.preventDefault();
-      event.stopPropagation();
+    for (const id of overlays) {
+      const overlay = document.getElementById(id);
+      if (overlay && !overlay.classList.contains("hidden")) {
+        event.preventDefault();
+        event.stopPropagation();
 
-      if (id === 'controls-overlay') ControlsOverlay.close();
-      else if (id === 'progress-modal') Progress.close();
-      else if (id === 'auth-modal' && window.Auth?.close) Auth.close();
-      else if (id === 'account-profile-modal') overlay.classList.add('hidden');
-      else if (id === 'research-consent-modal' && typeof ResearchConsent !== 'undefined' && ResearchConsent.get() === null) return;
-      else if (id === 'research-consent-modal' && typeof ResearchConsent !== 'undefined') ResearchConsent.close();
-      else overlay.classList.add('hidden');
-      return;
+        if (id === "controls-overlay") ControlsOverlay.close();
+        else if (id === "progress-modal") Progress.close();
+        else if (id === "auth-modal" && window.Auth?.close) Auth.close();
+        else if (id === "account-profile-modal") overlay.classList.add("hidden");
+        else if (
+          id === "research-consent-modal" &&
+          typeof ResearchConsent !== "undefined" &&
+          ResearchConsent.get() === null
+        )
+          return;
+        else if (id === "research-consent-modal" && typeof ResearchConsent !== "undefined")
+          ResearchConsent.close();
+        else overlay.classList.add("hidden");
+        return;
+      }
     }
-  }
-}, true);
+  },
+  true,
+);

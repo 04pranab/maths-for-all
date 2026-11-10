@@ -19,14 +19,14 @@ A user must be shown a clear research-data explanation and must actively choose 
 
 ## What we may collect after explicit Yes
 
-| Category | Examples |
-|---|---|
-| Game/module | arithmetic quiz, racing, Sudoku, shape fitting, Slab Maths |
-| Event type | game opened, answer submitted, hint requested, explanation requested, retry, completion |
-| Learning state | difficulty level, correct/incorrect result, attempt count |
-| Timing | time spent on an answer or game event |
-| Game progress | question/round/level completion |
-| Technical event timestamp | time at which the research event occurred |
+| Category                  | Examples                                                                                |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| Game/module               | arithmetic quiz, racing, Sudoku, shape fitting, Slab Maths                              |
+| Event type                | game opened, answer submitted, hint requested, explanation requested, retry, completion |
+| Learning state            | difficulty level, correct/incorrect result, attempt count                               |
+| Timing                    | time spent on an answer or game event                                                   |
+| Game progress             | question/round/level completion                                                         |
+| Technical event timestamp | time at which the research event occurred                                               |
 
 The exact fields must remain tied to documented research questions. Future fields require a review of this policy and the consent wording.
 
@@ -65,7 +65,6 @@ The consent UI must use plain language and provide two clearly available choices
 ## Implementation requirement
 
 No game module may write research events directly to localStorage, a future database API, or a future telemetry API. All research writes must pass through the consent-aware research event gateway.
-
 
 ## Gateway enforcement
 

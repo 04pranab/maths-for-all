@@ -172,18 +172,23 @@ Small animations are added deliberately during game design and fine-tuning rathe
 ## 7. Release line
 
 ### v2.0.0
+
 Stable educational reference.
 
 ### v2.0.3
+
 Physical-testing baseline with Sudoku readability hardening.
 
 ### v2.0.4
+
 Geometry and physical-learning hardening, including the completed Shape Architect implementation and deployment-cache correction.
 
 ### v2.5.0
+
 Deferred production authentication milestone.
 
 ### v3.0.0
+
 Planned research-enabled milestone after authentication.
 
 ---
@@ -235,8 +240,6 @@ The feature branch `feat/number-maze-unlimited-boards` implements the next game 
 - **Validation:** each returned board is checked for a complete route and exactly one solution. Tests cover multiple seeds per difficulty, adjacency, coverage, deterministic generation, checkpoint order and uniqueness. Browser regression coverage includes launch, instructions, controls, daily reproducibility and responsive screens.
 - The uniqueness guarantee applies to each accepted puzzle independently. It does not guarantee that no two future random seeds can ever produce an identical board.
 - The implementation is merged to `main`. Physical-device testing, screen-reader/assistive-technology review, and feedback from learners and educators remain separate acceptance steps.
-
-
 
 ## 11. Menu and project status (10 November 2026)
 

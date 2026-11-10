@@ -11,20 +11,46 @@
    ============================================================= */
 
 const QuestionBank = (function () {
+  const NAMES = [
+    "Riya",
+    "Arjun",
+    "Meera",
+    "Kabir",
+    "Anaya",
+    "Dev",
+    "Zara",
+    "Ishaan",
+    "Priya",
+    "Sam",
+  ];
+  const ITEM_EMOJI = {
+    marbles: "🔵",
+    mangoes: "🥭",
+    pencils: "✏️",
+    stickers: "⭐",
+    laddoos: "🟠",
+    books: "📚",
+    flowers: "🌸",
+    coins: "🪙",
+    balloons: "🎈",
+    cookies: "🍪",
+  };
+  const ITEMS = Object.keys(ITEM_EMOJI);
+  const COUNT_EMOJI = ["🍎", "⭐", "🐝", "🌸", "🎈", "🟢", "🍬", "🐠"];
 
-  const NAMES  = ['Riya','Arjun','Meera','Kabir','Anaya','Dev','Zara','Ishaan','Priya','Sam'];
-  const ITEM_EMOJI = { marbles:'🔵', mangoes:'🥭', pencils:'✏️', stickers:'⭐', laddoos:'🟠', books:'📚', flowers:'🌸', coins:'🪙', balloons:'🎈', cookies:'🍪' };
-  const ITEMS  = Object.keys(ITEM_EMOJI);
-  const COUNT_EMOJI = ['🍎','⭐','🐝','🌸','🎈','🟢','🍬','🐠'];
-
-  function name() { return Utils.pick(NAMES); }
-  function item() { return Utils.pick(ITEMS); }
+  function name() {
+    return Utils.pick(NAMES);
+  }
+  function item() {
+    return Utils.pick(ITEMS);
+  }
 
   /* Several playful phrasings per operation so the SAME sum can show
      up looking different each time — keeps drilling from feeling
      like drilling. */
   function addText(a, b) {
-    const it = item(), emoji = ITEM_EMOJI[it];
+    const it = item(),
+      emoji = ITEM_EMOJI[it];
     return Utils.pick([
       `${a} + ${b} = ?`,
       `🎉 ${a} + ${b} = ?`,
@@ -33,7 +59,8 @@ const QuestionBank = (function () {
     ]);
   }
   function subText(a, b) {
-    const it = item(), emoji = ITEM_EMOJI[it];
+    const it = item(),
+      emoji = ITEM_EMOJI[it];
     return Utils.pick([
       `${a} − ${b} = ?`,
       `${emoji} You had ${a} ${it} and shared ${b} away.\nHow many ${it} are left?`,
@@ -58,55 +85,81 @@ const QuestionBank = (function () {
   function easyCounting() {
     const emoji = Utils.pick(COUNT_EMOJI);
     const n = Utils.randInt(1, 40);
-    return { text: `${emoji.repeat(n)}\nHow many are there? 🤔`, answer: n,
-      spoken: `Count the pictures. How many are there?` };
+    return {
+      text: `${emoji.repeat(n)}\nHow many are there? 🤔`,
+      answer: n,
+      spoken: `Count the pictures. How many are there?`,
+    };
   }
   function easyCompare() {
-    let a = Utils.randInt(1, 30), b = Utils.randInt(1, 30);
+    let a = Utils.randInt(1, 30),
+      b = Utils.randInt(1, 30);
     while (a === b) b = Utils.randInt(1, 50);
     return { text: `🔍 Which number is BIGGER: ${a} or ${b}?`, answer: Math.max(a, b) };
   }
   function easyAdd() {
-    const a = Utils.randInt(1, 50), b = Utils.randInt(1, 40);
+    const a = Utils.randInt(1, 50),
+      b = Utils.randInt(1, 40);
     return { text: addText(a, b), answer: a + b };
   }
   function easySub() {
-    let a = Utils.randInt(2, 60), b = Utils.randInt(1, a);
+    let a = Utils.randInt(2, 60),
+      b = Utils.randInt(1, a);
     return { text: subText(a, b), answer: a - b };
   }
   function easyMissing() {
-    const a = Utils.randInt(1, 50), b = Utils.randInt(1, 40);
-    return { text: `🕵️ Mystery number! ${a} + ❓ = ${a + b}`, answer: b,
-      spoken: `${a} plus what number equals ${a + b}?` };
+    const a = Utils.randInt(1, 50),
+      b = Utils.randInt(1, 40);
+    return {
+      text: `🕵️ Mystery number! ${a} + ❓ = ${a + b}`,
+      answer: b,
+      spoken: `${a} plus what number equals ${a + b}?`,
+    };
   }
   const EASY_GENS = [easyCounting, easyCompare, easyAdd, easySub, easyMissing];
 
   /* ---------------- MEDIUM: Class 2 & 3 ---------------- */
   function medAdd() {
-    const a = Utils.randInt(10, 120), b = Utils.randInt(10, 120);
+    const a = Utils.randInt(10, 120),
+      b = Utils.randInt(10, 120);
     return { text: addText(a, b), answer: a + b };
   }
   function medSub() {
-    let a = Utils.randInt(20, 150), b = Utils.randInt(1, a);
+    let a = Utils.randInt(20, 150),
+      b = Utils.randInt(1, a);
     return { text: subText(a, b), answer: a - b };
   }
   function medMult() {
-    const a = Utils.randInt(2, 12), b = Utils.randInt(1, 12);
+    const a = Utils.randInt(2, 12),
+      b = Utils.randInt(1, 12);
     return { text: multText(a, b), answer: a * b };
   }
   function medDiv() {
-    const b = Utils.randInt(2, 12), ans = Utils.randInt(2, 12);
+    const b = Utils.randInt(2, 12),
+      ans = Utils.randInt(2, 12);
     return { text: divText(b * ans, b), answer: ans };
   }
   function medWordAdd() {
-    const n = name(), it = item(), emoji = ITEM_EMOJI[it];
-    const a = Utils.randInt(10, 40), b = Utils.randInt(5, 30);
-    return { text: `${emoji} ${n} has ${a} ${it}. A friend gives ${n} ${b} more.\nHow many ${it} does ${n} have now?`, answer: a + b };
+    const n = name(),
+      it = item(),
+      emoji = ITEM_EMOJI[it];
+    const a = Utils.randInt(10, 40),
+      b = Utils.randInt(5, 30);
+    return {
+      text: `${emoji} ${n} has ${a} ${it}. A friend gives ${n} ${b} more.\nHow many ${it} does ${n} have now?`,
+      answer: a + b,
+    };
   }
   function medWordSub() {
-    const n = name(), it = item(), emoji = ITEM_EMOJI[it];
-    const a = Utils.randInt(30, 90), b = Utils.randInt(5, a - 1);
-    return { text: `${emoji} ${n} has ${a} ${it} and gives away ${b}.\nHow many ${it} are left?`, answer: a - b };
+    const n = name(),
+      it = item(),
+      emoji = ITEM_EMOJI[it];
+    const a = Utils.randInt(30, 90),
+      b = Utils.randInt(5, a - 1);
+    return {
+      text: `${emoji} ${n} has ${a} ${it} and gives away ${b}.\nHow many ${it} are left?`,
+      answer: a - b,
+    };
   }
   const MEDIUM_GENS = [medAdd, medSub, medMult, medDiv, medWordAdd, medWordSub];
 
@@ -114,48 +167,100 @@ const QuestionBank = (function () {
      Champion is deliberately word-problem heavy. The child must
      understand the situation before choosing an operation. */
   function hardWordTwoStep() {
-    const n = name(), it = item(), emoji = ITEM_EMOJI[it];
-    const a = Utils.randInt(80, 200), b = Utils.randInt(10, 40), c = Utils.randInt(10, 40);
+    const n = name(),
+      it = item(),
+      emoji = ITEM_EMOJI[it];
+    const a = Utils.randInt(80, 200),
+      b = Utils.randInt(10, 40),
+      c = Utils.randInt(10, 40);
     const safeC = Math.min(c, Math.max(1, a - b - 1));
-    return { text: `${emoji} A shop had ${a} ${it}. ${b} were sold in the morning and ${safeC} in the evening.\nHow many ${it} are left?`, answer: a - b - safeC,
-      hint: `Start with the total. What should you take away first?`, explanation: `First subtract the morning sales: ${a} − ${b} = ${a - b}. Then subtract the evening sales: ${a - b} − ${safeC} = ${a - b - safeC}.` };
+    return {
+      text: `${emoji} A shop had ${a} ${it}. ${b} were sold in the morning and ${safeC} in the evening.\nHow many ${it} are left?`,
+      answer: a - b - safeC,
+      hint: `Start with the total. What should you take away first?`,
+      explanation: `First subtract the morning sales: ${a} − ${b} = ${a - b}. Then subtract the evening sales: ${a - b} − ${safeC} = ${a - b - safeC}.`,
+    };
   }
   function hardWordMult() {
-    const n = name(), it = item(), emoji = ITEM_EMOJI[it];
-    const groups = Utils.randInt(3, 15), each = Utils.randInt(4, 20);
-    return { text: `${emoji} ${n} packs ${groups} boxes. Each box has ${each} ${it}.\nHow many ${it} are there altogether?`, answer: groups * each,
-      hint: `There are equal groups. Which operation combines equal groups?`, explanation: `${groups} groups of ${each}: ${groups} × ${each} = ${groups * each}.` };
+    const n = name(),
+      it = item(),
+      emoji = ITEM_EMOJI[it];
+    const groups = Utils.randInt(3, 15),
+      each = Utils.randInt(4, 20);
+    return {
+      text: `${emoji} ${n} packs ${groups} boxes. Each box has ${each} ${it}.\nHow many ${it} are there altogether?`,
+      answer: groups * each,
+      hint: `There are equal groups. Which operation combines equal groups?`,
+      explanation: `${groups} groups of ${each}: ${groups} × ${each} = ${groups * each}.`,
+    };
   }
   function hardWordDiv() {
-    const n = name(), it = item(), emoji = ITEM_EMOJI[it];
-    const each = Utils.randInt(4, 20), groups = Utils.randInt(3, 12), total = each * groups;
-    return { text: `${emoji} ${n} has ${total} ${it} and shares them equally among ${groups} children.\nHow many does each child get?`, answer: each,
-      hint: `The total is being shared equally. What operation finds one equal share?`, explanation: `${total} ÷ ${groups} = ${each}. Each child gets ${each}.` };
+    const n = name(),
+      it = item(),
+      emoji = ITEM_EMOJI[it];
+    const each = Utils.randInt(4, 20),
+      groups = Utils.randInt(3, 12),
+      total = each * groups;
+    return {
+      text: `${emoji} ${n} has ${total} ${it} and shares them equally among ${groups} children.\nHow many does each child get?`,
+      answer: each,
+      hint: `The total is being shared equally. What operation finds one equal share?`,
+      explanation: `${total} ÷ ${groups} = ${each}. Each child gets ${each}.`,
+    };
   }
   function hardWordComparison() {
-    const it = item(), emoji = ITEM_EMOJI[it];
-    const a = Utils.randInt(30, 150), extra = Utils.randInt(5, 60), b = a + extra;
-    return { text: `${emoji} A library has ${a} ${it}. Another library has ${extra} more.\nHow many ${it} does the second library have?`, answer: b,
-      hint: `“${extra} more” means the second library has more than ${a}. Which operation fits?`, explanation: `${a} + ${extra} = ${b}.` };
+    const it = item(),
+      emoji = ITEM_EMOJI[it];
+    const a = Utils.randInt(30, 150),
+      extra = Utils.randInt(5, 60),
+      b = a + extra;
+    return {
+      text: `${emoji} A library has ${a} ${it}. Another library has ${extra} more.\nHow many ${it} does the second library have?`,
+      answer: b,
+      hint: `“${extra} more” means the second library has more than ${a}. Which operation fits?`,
+      explanation: `${a} + ${extra} = ${b}.`,
+    };
   }
   function hardWordMoney() {
     const n = name();
-    const price = Utils.randInt(5, 50), count = Utils.randInt(2, 12);
-    return { text: `🪙 ${n} buys ${count} notebooks at ₹${price} each.\nHow many rupees does ${n} spend?`, answer: price * count,
-      hint: `The price is the same for every notebook. How many equal groups of ₹${price} are there?`, explanation: `${count} × ₹${price} = ₹${price * count}.` };
+    const price = Utils.randInt(5, 50),
+      count = Utils.randInt(2, 12);
+    return {
+      text: `🪙 ${n} buys ${count} notebooks at ₹${price} each.\nHow many rupees does ${n} spend?`,
+      answer: price * count,
+      hint: `The price is the same for every notebook. How many equal groups of ₹${price} are there?`,
+      explanation: `${count} × ₹${price} = ₹${price * count}.`,
+    };
   }
   function hardWordFraction() {
     const it = item();
     const total = Utils.randInt(2, 30) * 4;
-    return { text: `🍕 A class has ${total} ${it}. One quarter of them are put on a table.\nHow many ${it} are on the table?`, answer: total / 4,
-      hint: `One quarter means divide the whole amount into 4 equal parts.`, explanation: `${total} ÷ 4 = ${total / 4}.` };
+    return {
+      text: `🍕 A class has ${total} ${it}. One quarter of them are put on a table.\nHow many ${it} are on the table?`,
+      answer: total / 4,
+      hint: `One quarter means divide the whole amount into 4 equal parts.`,
+      explanation: `${total} ÷ 4 = ${total / 4}.`,
+    };
   }
   function hardWordPerimeter() {
-    const l = Utils.randInt(5, 30), w = Utils.randInt(3, 20);
-    return { text: `📏 A rectangular garden is ${l} m long and ${w} m wide. A child walks all the way around it.\nHow many metres does the child walk?`, answer: 2 * (l + w),
-      hint: `Walking all the way around means finding the perimeter. Add all four sides.`, explanation: `Two lengths and two widths: ${l} + ${w} + ${l} + ${w} = ${2 * (l + w)} m.` };
+    const l = Utils.randInt(5, 30),
+      w = Utils.randInt(3, 20);
+    return {
+      text: `📏 A rectangular garden is ${l} m long and ${w} m wide. A child walks all the way around it.\nHow many metres does the child walk?`,
+      answer: 2 * (l + w),
+      hint: `Walking all the way around means finding the perimeter. Add all four sides.`,
+      explanation: `Two lengths and two widths: ${l} + ${w} + ${l} + ${w} = ${2 * (l + w)} m.`,
+    };
   }
-  const HARD_GENS = [hardWordTwoStep, hardWordMult, hardWordDiv, hardWordComparison, hardWordMoney, hardWordFraction, hardWordPerimeter];
+  const HARD_GENS = [
+    hardWordTwoStep,
+    hardWordMult,
+    hardWordDiv,
+    hardWordComparison,
+    hardWordMoney,
+    hardWordFraction,
+    hardWordPerimeter,
+  ];
 
   const TIER_GENS = { easy: EASY_GENS, medium: MEDIUM_GENS, hard: HARD_GENS };
   // A displayed number may occur twice, but never three times in the
@@ -187,13 +292,13 @@ const QuestionBank = (function () {
 
   function remember(level, q) {
     usedAnswers[level].set(q.answer, (usedAnswers[level].get(q.answer) || 0) + 1);
-    extractNumbers(q.text).forEach(n => {
+    extractNumbers(q.text).forEach((n) => {
       numberCounts[level].set(n, (numberCounts[level].get(n) || 0) + 1);
     });
   }
 
   function generate(difficulty) {
-    const level = TIER_GENS[difficulty] ? difficulty : 'easy';
+    const level = TIER_GENS[difficulty] ? difficulty : "easy";
     const gens = TIER_GENS[level];
 
     // Search aggressively for a question whose every numeric value is new.
@@ -201,9 +306,12 @@ const QuestionBank = (function () {
     for (let tries = 0; tries < 500; tries++) {
       const candidate = Utils.pick(gens)();
       const nums = extractNumbers(candidate.text);
-      if (nums.every(n => Number.isInteger(n) && n >= 1 && n <= MAX_NUMBER) &&
-          canUseQuestion(level, candidate)) {
-        if (!candidate.spoken) candidate.spoken = candidate.text.replace(/\n/g, '. ').replace(/❓/g, 'what number');
+      if (
+        nums.every((n) => Number.isInteger(n) && n >= 1 && n <= MAX_NUMBER) &&
+        canUseQuestion(level, candidate)
+      ) {
+        if (!candidate.spoken)
+          candidate.spoken = candidate.text.replace(/\n/g, ". ").replace(/❓/g, "what number");
         remember(level, candidate);
         return candidate;
       }
@@ -219,36 +327,41 @@ const QuestionBank = (function () {
   return { generate };
 })();
 
-
 /* =============================================================
    ENCOURAGING FEEDBACK — never harsh, never a red "WRONG"
    ============================================================= */
 const Encourage = (function () {
   const CORRECT = [
-    '✅ Correct! Wonderful work!',
-    '✅ Yes! You\'ve got it!',
-    '✅ Nicely done!',
-    '✅ That\'s right — great thinking!',
-    '✅ Super! On to the next one.',
+    "✅ Correct! Wonderful work!",
+    "✅ Yes! You've got it!",
+    "✅ Nicely done!",
+    "✅ That's right — great thinking!",
+    "✅ Super! On to the next one.",
   ];
   const TRY_AGAIN = [
-    '🙂 Not quite yet. Take another look and think about what the question is asking.',
-    '🌱 Good attempt. You can try the same question again.',
-    '💭 Close thinking. Pause, reread the problem, and choose your next step.',
-    '💪 Keep working on it. Your first answer does not have to be your final answer.',
+    "🙂 Not quite yet. Take another look and think about what the question is asking.",
+    "🌱 Good attempt. You can try the same question again.",
+    "💭 Close thinking. Pause, reread the problem, and choose your next step.",
+    "💪 Keep working on it. Your first answer does not have to be your final answer.",
   ];
-  function correct() { return Utils.pick(CORRECT); }
-  function tryAgain() { return Utils.pick(TRY_AGAIN); }
+  function correct() {
+    return Utils.pick(CORRECT);
+  }
+  function tryAgain() {
+    return Utils.pick(TRY_AGAIN);
+  }
   return { correct, tryAgain };
 })();
-
 
 /* =============================================================
    SECTION – ARITHMETIC QUIZ
    ============================================================= */
 const Quiz = (function () {
-  let difficulty = 'easy';
-  let score = 0, correctCount = 0, wrongCount = 0, questionNum = 0;
+  let difficulty = "easy";
+  let score = 0,
+    correctCount = 0,
+    wrongCount = 0,
+    questionNum = 0;
   let currentAnswer = 0;
   let currentQuestion = null;
   let attemptCount = 0;
@@ -258,7 +371,7 @@ const Quiz = (function () {
   let currentMasteryValue = null;
   let advanceTimeout = null;
 
-  const DIFF_LABEL = { easy: 'Starter', medium: 'Growing', hard: 'Champion' };
+  const DIFF_LABEL = { easy: "Starter", medium: "Growing", hard: "Champion" };
 
   function init() {
     score = correctCount = wrongCount = questionNum = 0;
@@ -266,9 +379,9 @@ const Quiz = (function () {
     questionResolved = false;
     currentMasteryValue = null;
     updateMasteryDisplay();
-    show('quiz-difficulty-panel');
-    hide('quiz-play-panel');
-    hide('quiz-feedback');
+    show("quiz-difficulty-panel");
+    hide("quiz-play-panel");
+    hide("quiz-feedback");
     updateScoreDisplay();
   }
 
@@ -276,17 +389,17 @@ const Quiz = (function () {
     recordMasteryResult();
     masteryHistory = [];
     difficulty = level;
-    document.getElementById('quiz-diff-badge').textContent = DIFF_LABEL[level] || level;
-    hide('quiz-difficulty-panel');
-    show('quiz-play-panel');
-    hide('quiz-feedback');
+    document.getElementById("quiz-diff-badge").textContent = DIFF_LABEL[level] || level;
+    hide("quiz-difficulty-panel");
+    show("quiz-play-panel");
+    hide("quiz-feedback");
     nextQuestion();
   }
 
   function changeDifficulty() {
-    show('quiz-difficulty-panel');
-    hide('quiz-play-panel');
-    hide('quiz-feedback');
+    show("quiz-difficulty-panel");
+    hide("quiz-play-panel");
+    hide("quiz-feedback");
   }
 
   function nextQuestion() {
@@ -299,12 +412,12 @@ const Quiz = (function () {
     currentMasteryValue = null;
 
     questionNum++;
-    document.getElementById('quiz-q-number').textContent = questionNum;
-    document.getElementById('quiz-question').textContent = currentQuestion.text;
+    document.getElementById("quiz-q-number").textContent = questionNum;
+    document.getElementById("quiz-question").textContent = currentQuestion.text;
 
-    const inp = document.getElementById('quiz-input');
-    inp.value = '';
-    hide('quiz-feedback');
+    const inp = document.getElementById("quiz-input");
+    inp.value = "";
+    hide("quiz-feedback");
     renderQuizActions();
     inp.focus();
 
@@ -315,63 +428,67 @@ const Quiz = (function () {
     if (!currentQuestion) return;
     attemptCount = 0;
     questionResolved = false;
-    document.getElementById('quiz-question').textContent = currentQuestion.text;
-    document.getElementById('quiz-input').value = '';
-    hide('quiz-feedback');
+    document.getElementById("quiz-question").textContent = currentQuestion.text;
+    document.getElementById("quiz-input").value = "";
+    hide("quiz-feedback");
     renderQuizActions();
-    document.getElementById('quiz-input').focus();
+    document.getElementById("quiz-input").focus();
     questionStartedAt = performance.now();
   }
 
   function retryQuestion() {
     if (!currentQuestion) return;
-    hide('quiz-feedback');
-    document.getElementById('quiz-input').value = '';
+    hide("quiz-feedback");
+    document.getElementById("quiz-input").value = "";
     renderQuizActions();
-    document.getElementById('quiz-input').focus();
+    document.getElementById("quiz-input").focus();
   }
 
   function showHint() {
     if (!currentQuestion) return;
-    const hint = currentQuestion.hint || 'Reread the question slowly. What information do you know, and what are you trying to find?';
-    showFeedback(`💡 Hint: ${hint}`, 'hint');
+    const hint =
+      currentQuestion.hint ||
+      "Reread the question slowly. What information do you know, and what are you trying to find?";
+    showFeedback(`💡 Hint: ${hint}`, "hint");
     renderQuizActions();
   }
 
   function showExplanation() {
     if (!currentQuestion) return;
-    const explanation = currentQuestion.explanation || `Try identifying the operation first, then calculate carefully. The answer is ${currentAnswer}.`;
-    showFeedback(`🧠 Let’s think it through: ${explanation}`, 'explanation');
+    const explanation =
+      currentQuestion.explanation ||
+      `Try identifying the operation first, then calculate carefully. The answer is ${currentAnswer}.`;
+    showFeedback(`🧠 Let’s think it through: ${explanation}`, "explanation");
     renderQuizActions(true);
   }
 
   function renderQuizActions(revealAnswer = false) {
-    const el = document.getElementById('quiz-actions');
+    const el = document.getElementById("quiz-actions");
     if (!el) return;
     el.innerHTML = `
       <button class="quiz-action secondary" onclick="Quiz.retry()">🔁 Try This Again</button>
       <button class="quiz-action secondary" onclick="Quiz.replay()">↺ Replay Question</button>
       <button class="quiz-action secondary" onclick="Quiz.hint()">💡 Give Me a Hint</button>
-      ${revealAnswer ? '' : '<button class="quiz-action secondary" onclick="Quiz.explain()">🧠 Show Me How</button>'}
+      ${revealAnswer ? "" : '<button class="quiz-action secondary" onclick="Quiz.explain()">🧠 Show Me How</button>'}
       <button class="quiz-action primary" onclick="Quiz.next()">➡ Next Question</button>
     `;
   }
 
   function showFeedback(msg, type) {
-    const el = document.getElementById('quiz-feedback');
+    const el = document.getElementById("quiz-feedback");
     el.textContent = msg;
     el.className = `feedback ${type}`;
-    show('quiz-feedback');
+    show("quiz-feedback");
   }
 
   function updateScoreDisplay() {
-    const scoreEl = document.getElementById('quiz-score');
+    const scoreEl = document.getElementById("quiz-score");
     if (scoreEl) scoreEl.textContent = score;
-    const correctEl = document.getElementById('quiz-correct');
+    const correctEl = document.getElementById("quiz-correct");
     if (correctEl) correctEl.textContent = correctCount;
-    const wrongEl = document.getElementById('quiz-wrong');
+    const wrongEl = document.getElementById("quiz-wrong");
     if (wrongEl) wrongEl.textContent = wrongCount;
-    const totalEl = document.getElementById('quiz-total');
+    const totalEl = document.getElementById("quiz-total");
     if (totalEl) totalEl.textContent = correctCount + wrongCount;
     updateMasteryDisplay();
   }
@@ -385,11 +502,11 @@ const Quiz = (function () {
     }
     currentMasteryValue = null;
     if (masteryHistory.length > 10) masteryHistory.shift();
-    Analytics.log('quiz', 'mastery', {
+    Analytics.log("quiz", "mastery", {
       difficulty,
       value: masteryHistory[masteryHistory.length - 1],
       attempts: attemptCount,
-      resolved: questionResolved
+      resolved: questionResolved,
     });
     updateMasteryDisplay();
   }
@@ -403,36 +520,37 @@ const Quiz = (function () {
 
   function updateMasteryDisplay() {
     const value = getMastery();
-    const fill = document.getElementById('quiz-mastery-fill');
-    const label = document.getElementById('quiz-mastery-label');
-    const note = document.getElementById('quiz-mastery-note');
+    const fill = document.getElementById("quiz-mastery-fill");
+    const label = document.getElementById("quiz-mastery-label");
+    const note = document.getElementById("quiz-mastery-note");
     if (!fill || !label || !note) return;
 
-    fill.style.width = value + '%';
-    const top = document.getElementById('quiz-mastery-top');
-    if (top) top.textContent = value + '%';
+    fill.style.width = value + "%";
+    const top = document.getElementById("quiz-mastery-top");
+    if (top) top.textContent = value + "%";
 
     if (value >= 85) {
-      label.textContent = 'Strong';
-      note.textContent = 'You are solving these confidently. Keep checking your reasoning!';
+      label.textContent = "Strong";
+      note.textContent = "You are solving these confidently. Keep checking your reasoning!";
     } else if (value >= 65) {
-      label.textContent = 'Growing';
-      note.textContent = 'Nice progress. A few more thoughtful attempts can strengthen this skill.';
+      label.textContent = "Growing";
+      note.textContent = "Nice progress. A few more thoughtful attempts can strengthen this skill.";
     } else if (value > 0) {
-      label.textContent = 'Building';
-      note.textContent = 'Keep practising. Hints and retries are part of learning.';
+      label.textContent = "Building";
+      note.textContent = "Keep practising. Hints and retries are part of learning.";
     } else {
-      label.textContent = 'Starting';
-      note.textContent = 'Try a few questions first. Mastery grows through understanding, not speed.';
+      label.textContent = "Starting";
+      note.textContent =
+        "Try a few questions first. Mastery grows through understanding, not speed.";
     }
   }
 
   function submit() {
     if (!currentQuestion || questionResolved) return;
-    const input = document.getElementById('quiz-input');
-    const raw = input ? input.value.trim() : '';
+    const input = document.getElementById("quiz-input");
+    const raw = input ? input.value.trim() : "";
     if (!raw) {
-      showFeedback('Type an answer first, then press Submit.', 'hint');
+      showFeedback("Type an answer first, then press Submit.", "hint");
       return;
     }
 
@@ -446,14 +564,14 @@ const Quiz = (function () {
       score += 10;
       questionResolved = true;
       currentMasteryValue = attemptCount === 1 ? 1 : 0.75;
-      showFeedback(Encourage.correct(), 'correct');
+      showFeedback(Encourage.correct(), "correct");
     } else {
       wrongCount++;
       currentMasteryValue = 0;
-      showFeedback(Encourage.tryAgain(), 'wrong');
+      showFeedback(Encourage.tryAgain(), "wrong");
     }
 
-    Analytics.log('quiz', 'answer', {
+    Analytics.log("quiz", "answer", {
       difficulty,
       correct,
       timeMs,
@@ -474,12 +592,18 @@ const Quiz = (function () {
   }
 
   function next() {
-    if (advanceTimeout) { clearTimeout(advanceTimeout); advanceTimeout = null; }
+    if (advanceTimeout) {
+      clearTimeout(advanceTimeout);
+      advanceTimeout = null;
+    }
     nextQuestion();
   }
 
   function stop() {
-    if (advanceTimeout) { clearTimeout(advanceTimeout); advanceTimeout = null; }
+    if (advanceTimeout) {
+      clearTimeout(advanceTimeout);
+      advanceTimeout = null;
+    }
     questionResolved = true;
   }
 
@@ -495,96 +619,125 @@ const Quiz = (function () {
     showExplanation();
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const quizInput = document.getElementById('quiz-input');
-    if (quizInput) quizInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        submit();
-      }
-    });
+  document.addEventListener("DOMContentLoaded", () => {
+    const quizInput = document.getElementById("quiz-input");
+    if (quizInput)
+      quizInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submit();
+        }
+      });
 
-    const raceInput = document.getElementById('race-input');
-    if (raceInput) raceInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        submit();
-      }
-    });
+    const raceInput = document.getElementById("race-input");
+    if (raceInput)
+      raceInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submit();
+        }
+      });
   });
 
-  return { init, setDifficulty, changeDifficulty, submit, next, retry, hint, explain, replay: replayQuestion, stop };
+  return {
+    init,
+    setDifficulty,
+    changeDifficulty,
+    submit,
+    next,
+    retry,
+    hint,
+    explain,
+    replay: replayQuestion,
+    stop,
+  };
 })();
-
 
 /* =============================================================
    SECTION – MATH RACING
    ============================================================= */
 const Racing = (function () {
-  let selectedTimer = 30, difficulty = 'easy', playerName = '';
-  let timeLeft = 30, timerInterval = null;
-  let score = 0, correctCount = 0, wrongCount = 0;
-  let currentAnswer = 0, totalDuration = 30, questionStartedAt = 0;
+  let selectedTimer = 30,
+    difficulty = "easy",
+    playerName = "";
+  let timeLeft = 30,
+    timerInterval = null;
+  let score = 0,
+    correctCount = 0,
+    wrongCount = 0;
+  let currentAnswer = 0,
+    totalDuration = 30,
+    questionStartedAt = 0;
   let raceActive = false;
   let questionLocked = false;
   let nextQuestionTimeout = null;
   let raceGeneration = 0;
   let leaderboard = [];
-  const LEADERBOARD_KEY = 'mfa_race_leaderboard_v1';
+  const LEADERBOARD_KEY = "mfa_race_leaderboard_v1";
 
   function init() {
     stop();
-    show('race-setup-panel'); hide('race-play-panel'); hide('race-result-panel');
-    loadLeaderboard(); renderLeaderboard(); setTimer(30); setDifficulty('easy');
+    show("race-setup-panel");
+    hide("race-play-panel");
+    hide("race-result-panel");
+    loadLeaderboard();
+    renderLeaderboard();
+    setTimer(30);
+    setDifficulty("easy");
   }
   function setTimer(seconds) {
     selectedTimer = seconds;
-    ['30','60','90'].forEach(t => {
-      const el = document.getElementById('timer-' + t);
-      if (el) el.classList.toggle('active', t === String(seconds));
+    ["30", "60", "90"].forEach((t) => {
+      const el = document.getElementById("timer-" + t);
+      if (el) el.classList.toggle("active", t === String(seconds));
     });
   }
   function setDifficulty(level) {
     difficulty = level;
-    ['easy','medium','hard'].forEach(d => {
-      const el = document.getElementById('race-' + d);
-      if (el) el.classList.toggle('active-diff', d === level);
+    ["easy", "medium", "hard"].forEach((d) => {
+      const el = document.getElementById("race-" + d);
+      if (el) el.classList.toggle("active-diff", d === level);
     });
   }
   function start() {
     stop();
     raceGeneration++;
-    const nameInput = document.getElementById('race-player-name');
-    playerName = (nameInput && nameInput.value.trim()) || 'Student';
+    const nameInput = document.getElementById("race-player-name");
+    playerName = (nameInput && nameInput.value.trim()) || "Student";
     if (timerInterval) clearInterval(timerInterval);
     score = correctCount = wrongCount = 0;
     timeLeft = totalDuration = selectedTimer;
     raceActive = true;
     questionLocked = false;
-    document.getElementById('race-player-display').textContent = playerName;
-    document.getElementById('race-live-score').textContent = '0';
-    document.getElementById('race-top-score').textContent = '0';
+    document.getElementById("race-player-display").textContent = playerName;
+    document.getElementById("race-live-score").textContent = "0";
+    document.getElementById("race-top-score").textContent = "0";
     updateTimerDisplay();
-    hide('race-setup-panel'); hide('race-result-panel'); show('race-play-panel');
-    hide('race-feedback');
-    const timerEl = document.getElementById('race-timer');
-    if (timerEl) timerEl.className = 'hud-timer';
-    const fill = document.getElementById('race-progress-fill');
-    if (fill) fill.style.width = '100%';
-    Analytics.log('race', 'start', { difficulty, timer: selectedTimer });
+    hide("race-setup-panel");
+    hide("race-result-panel");
+    show("race-play-panel");
+    hide("race-feedback");
+    const timerEl = document.getElementById("race-timer");
+    if (timerEl) timerEl.className = "hud-timer";
+    const fill = document.getElementById("race-progress-fill");
+    if (fill) fill.style.width = "100%";
+    Analytics.log("race", "start", { difficulty, timer: selectedTimer });
     nextQuestion();
     timerInterval = setInterval(tick, 1000);
   }
   function tick() {
-    timeLeft--; updateTimerDisplay();
-    const fill = document.getElementById('race-progress-fill');
-    if (fill) fill.style.width = Math.max(0, (timeLeft / totalDuration) * 100) + '%';
-    const timerEl = document.getElementById('race-timer');
-    if (timerEl) timerEl.className = timeLeft <= 5 ? 'hud-timer danger' : timeLeft <= 10 ? 'hud-timer warning' : 'hud-timer';
+    timeLeft--;
+    updateTimerDisplay();
+    const fill = document.getElementById("race-progress-fill");
+    if (fill) fill.style.width = Math.max(0, (timeLeft / totalDuration) * 100) + "%";
+    const timerEl = document.getElementById("race-timer");
+    if (timerEl)
+      timerEl.className =
+        timeLeft <= 5 ? "hud-timer danger" : timeLeft <= 10 ? "hud-timer warning" : "hud-timer";
     if (timeLeft <= 0) endRace();
   }
   function updateTimerDisplay() {
-    const el = document.getElementById('race-timer');
+    const el = document.getElementById("race-timer");
     if (el) el.textContent = Math.max(0, timeLeft);
   }
   function nextQuestion() {
@@ -592,24 +745,40 @@ const Racing = (function () {
     questionLocked = false;
     const q = QuestionBank.generate(difficulty);
     currentAnswer = q.answer;
-    const questionEl = document.getElementById('race-question');
-    const inputEl = document.getElementById('race-input');
+    const questionEl = document.getElementById("race-question");
+    const inputEl = document.getElementById("race-input");
     if (questionEl) questionEl.textContent = q.text;
-    if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+    if (inputEl) {
+      inputEl.value = "";
+      inputEl.focus();
+    }
     questionStartedAt = performance.now();
   }
   function submit() {
     if (!raceActive || timeLeft <= 0 || questionLocked) return;
     questionLocked = true;
-    const inputEl = document.getElementById('race-input');
-    const rawVal = inputEl ? inputEl.value.trim() : '';
-    if (!rawVal) { showRaceFeedback('Type an answer before you press Go!', 'wrong'); return; }
+    const inputEl = document.getElementById("race-input");
+    const rawVal = inputEl ? inputEl.value.trim() : "";
+    if (!rawVal) {
+      showRaceFeedback("Type an answer before you press Go!", "wrong");
+      return;
+    }
     const isCorrect = parseFloat(rawVal) === currentAnswer;
-    if (isCorrect) { correctCount++; score += 10; showRaceFeedback('✅ Correct! Keep going!', 'correct'); }
-    else { wrongCount++; showRaceFeedback('🙂 Not quite. Keep racing and try the next one!', 'wrong'); }
-    Analytics.log('race', 'answer', { difficulty, correct: isCorrect, timeMs: Math.round(performance.now() - questionStartedAt) });
-    const live = document.getElementById('race-live-score');
-    const top = document.getElementById('race-top-score');
+    if (isCorrect) {
+      correctCount++;
+      score += 10;
+      showRaceFeedback("✅ Correct! Keep going!", "correct");
+    } else {
+      wrongCount++;
+      showRaceFeedback("🙂 Not quite. Keep racing and try the next one!", "wrong");
+    }
+    Analytics.log("race", "answer", {
+      difficulty,
+      correct: isCorrect,
+      timeMs: Math.round(performance.now() - questionStartedAt),
+    });
+    const live = document.getElementById("race-live-score");
+    const top = document.getElementById("race-top-score");
     if (live) live.textContent = score;
     if (top) top.textContent = score;
     if (nextQuestionTimeout) clearTimeout(nextQuestionTimeout);
@@ -620,54 +789,136 @@ const Racing = (function () {
     }, 180);
   }
   function showRaceFeedback(msg, type) {
-    const el = document.getElementById('race-feedback');
+    const el = document.getElementById("race-feedback");
     if (!el) return;
-    el.textContent = msg; el.className = 'feedback ' + type; show('race-feedback');
+    el.textContent = msg;
+    el.className = "feedback " + type;
+    show("race-feedback");
   }
   function endRace() {
     raceGeneration++;
-    if (nextQuestionTimeout) { clearTimeout(nextQuestionTimeout); nextQuestionTimeout = null; }
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    if (nextQuestionTimeout) {
+      clearTimeout(nextQuestionTimeout);
+      nextQuestionTimeout = null;
+    }
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
     raceActive = false;
     questionLocked = true;
-    timeLeft = 0; updateTimerDisplay();
+    timeLeft = 0;
+    updateTimerDisplay();
     const total = correctCount + wrongCount;
-    const accuracy = total ? Math.round(correctCount / total * 100) : 0;
-    Analytics.log('race', 'round_complete', { difficulty, timer: totalDuration, correct: correctCount, wrong: wrongCount, score });
-    leaderboard.push({ name: playerName || 'Student', score, correct: correctCount, accuracy, timer: totalDuration, ts: Date.now() });
-    leaderboard.sort((a, b) => b.score - a.score); leaderboard = leaderboard.slice(0, 10);
-    saveLeaderboard(); renderLeaderboard();
-    const set = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
-    set('result-player-name', playerName || 'Student'); set('result-final-score', score);
-    set('result-correct', correctCount); set('result-wrong', wrongCount); set('result-accuracy', accuracy + '%');
-    set('result-message', accuracy >= 80 ? 'Fantastic focus!' : accuracy >= 60 ? 'Good work! Keep practising.' : 'Every question is practice. Keep going!');
-    hide('race-play-panel'); show('race-result-panel');
+    const accuracy = total ? Math.round((correctCount / total) * 100) : 0;
+    Analytics.log("race", "round_complete", {
+      difficulty,
+      timer: totalDuration,
+      correct: correctCount,
+      wrong: wrongCount,
+      score,
+    });
+    leaderboard.push({
+      name: playerName || "Student",
+      score,
+      correct: correctCount,
+      accuracy,
+      timer: totalDuration,
+      ts: Date.now(),
+    });
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, 10);
+    saveLeaderboard();
+    renderLeaderboard();
+    const set = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+    set("result-player-name", playerName || "Student");
+    set("result-final-score", score);
+    set("result-correct", correctCount);
+    set("result-wrong", wrongCount);
+    set("result-accuracy", accuracy + "%");
+    set(
+      "result-message",
+      accuracy >= 80
+        ? "Fantastic focus!"
+        : accuracy >= 60
+          ? "Good work! Keep practising."
+          : "Every question is practice. Keep going!",
+    );
+    hide("race-play-panel");
+    show("race-result-panel");
   }
   function loadLeaderboard() {
-    try { leaderboard = JSON.parse(localStorage.getItem(LEADERBOARD_KEY)) || []; } catch (e) { leaderboard = []; }
+    try {
+      leaderboard = JSON.parse(localStorage.getItem(LEADERBOARD_KEY)) || [];
+    } catch (e) {
+      leaderboard = [];
+    }
   }
   function saveLeaderboard() {
-    try { localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(leaderboard)); } catch (e) {}
+    try {
+      localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(leaderboard));
+    } catch (e) {}
   }
   function renderLeaderboard() {
     loadLeaderboard();
-    const el = document.getElementById('leaderboard-list');
+    const el = document.getElementById("leaderboard-list");
     if (!el) return;
-    if (!leaderboard.length) { el.innerHTML = '<p class="leaderboard-empty">No scores yet — be the first!</p>'; return; }
-    el.innerHTML = leaderboard.map((entry, index) =>
-      '<div class="leaderboard-row"><span>#' + (index + 1) + ' ' + String(entry.name).replace(/[<>&"']/g, '') + '</span><strong>' + entry.score + '</strong></div>'
-    ).join('');
+    if (!leaderboard.length) {
+      el.innerHTML = '<p class="leaderboard-empty">No scores yet — be the first!</p>';
+      return;
+    }
+    el.innerHTML = leaderboard
+      .map(
+        (entry, index) =>
+          '<div class="leaderboard-row"><span>#' +
+          (index + 1) +
+          " " +
+          String(entry.name).replace(/[<>&"']/g, "") +
+          "</span><strong>" +
+          entry.score +
+          "</strong></div>",
+      )
+      .join("");
   }
-  function clearLeaderboard() { leaderboard = []; saveLeaderboard(); renderLeaderboard(); }
+  function clearLeaderboard() {
+    leaderboard = [];
+    saveLeaderboard();
+    renderLeaderboard();
+  }
   function stop() {
     raceGeneration++;
     raceActive = false;
     questionLocked = true;
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-    if (nextQuestionTimeout) { clearTimeout(nextQuestionTimeout); nextQuestionTimeout = null; }
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    if (nextQuestionTimeout) {
+      clearTimeout(nextQuestionTimeout);
+      nextQuestionTimeout = null;
+    }
   }
-  function back() { stop(); hide('race-play-panel'); hide('race-result-panel'); show('race-setup-panel'); }
-  return { init, setTimer, setDifficulty, start, submit, back, backToSetup: back, playAgain: start, stop, clearLeaderboard };
+  function back() {
+    stop();
+    hide("race-play-panel");
+    hide("race-result-panel");
+    show("race-setup-panel");
+  }
+  return {
+    init,
+    setTimer,
+    setDifficulty,
+    start,
+    submit,
+    back,
+    backToSetup: back,
+    playAgain: start,
+    stop,
+    clearLeaderboard,
+  };
 })();
 
 // =============================================================

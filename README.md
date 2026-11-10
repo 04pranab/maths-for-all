@@ -89,7 +89,6 @@ The current `main` implementation includes:
 
 “Unlimited” means the learner can keep asking for new generated puzzles rather than exhausting a fixed level list. Puzzle seeds are finite machine values, so this should be understood as effectively endless replay, not a mathematical claim that every possible board is guaranteed unique forever. The latest recorded CI run for `main` passed on 31 October 2026. Physical-device, assistive-technology and learner/educator evaluation are still separate acceptance steps.
 
-
 ## Little Shop
 
 Little Shop is an open-ended fruit-counter activity. Learners assemble customer orders, check the bill, handle underpayment or exact payment, calculate change for overpayment, and serve the next customer. Currency calculations use integer paise internally; the activity uses simulated money and has no real payment flow. Automated cashier and layout checks exist, but supervised learner/educator review remains pending.
@@ -125,6 +124,7 @@ Research collection is **opt-in**.
 Logging in or creating an account is not research consent. The application must receive an explicit Yes before research events can be recorded.
 
 If a learner chooses No:
+
 - research events are blocked;
 - locally stored research events are removed;
 - normal educational gameplay continues;
@@ -151,6 +151,7 @@ Open `http://localhost:8000`.
 ## Testing
 
 The repository includes a headless Chromium smoke/stress suite covering:
+
 - JavaScript syntax;
 - required DOM nodes;
 - static-resource availability;
