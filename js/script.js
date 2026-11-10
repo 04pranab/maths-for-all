@@ -578,10 +578,9 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("Math For All – ready. गणित सबके लिए");
 });
 
-/* ---------- Overlay Escape handling ----------
-   Escape dismisses only an open overlay. It must never change the
-   active game or navigate home. If no overlay is open, game-specific
-   keyboard handlers may use Escape for their own local action. */
+/* ---------- Shared Escape handling ----------
+   Overlays close first; then local selections clear; otherwise Escape
+   returns to the menu. Text fields blur without losing their contents. */
 document.addEventListener(
   "keydown",
   (event) => {
