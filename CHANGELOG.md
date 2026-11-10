@@ -2,13 +2,20 @@
 
 ## Unreleased
 
-### Number Maze · procedural puzzle generation (unreleased)
+### Project status correction
+- Number Maze is now on `main`; the earlier feature-branch-only status is obsolete.
+- Math Court is shelved and hidden from the learner menu. Its implementation and tests remain in the repository.
+- Probability Machine remains implemented but hidden from the learner menu.
+- Fraction Bakery and Little Shop are implemented; supervised learner/educator acceptance remains pending.
+
+
+### Number Maze · procedural puzzle generation (merged to main)
 - Added a solver-checked path puzzle that combines ordered checkpoints with the requirement to fill every open square exactly once.
 - Added seeded generation for Gentle, Steady and Stretch boards, a bounded uniqueness check and a verified constrained fallback.
 - Added three fixed guided starter boards, Explore, Daily Challenge and Challenge Climb; untimed attempts, mouse/touch tracing, keyboard arrow controls, undo, reset, hints, clear progress feedback and on-device progress. Daily replay does not inflate the solve count.
 - Added copyable, difficulty-aware puzzle codes that regenerate the exact board and reject malformed input.
 - Added generator invariant tests, game-navigation/help checks, responsive browser audit coverage, and the Number Maze entry in the Wiki game map.
-- Automated checks are being run on the feature branch. Physical-device, assistive-technology and learner/educator evaluation remain separate review steps.
+- The implementation is present on `main` and appears in the learner menu. Physical-device, assistive-technology and learner/educator evaluation remain separate review steps.
 
 ### UI consistency and pre-next-game stabilization
 - Added a final-loaded interaction stylesheet so inline links use the site's indigo palette, visited links do not turn browser-purple, article links stay underlined at rest, navigation remains navigation-like, and keyboard focus is clearly visible.
