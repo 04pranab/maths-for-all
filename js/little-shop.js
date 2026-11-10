@@ -639,6 +639,20 @@ function handleSubmit(event) {
   }
 }
 
+function handleKeydown(event) {
+  const screen = byId("screen-little-shop");
+  if (!screen || !screen.contains(event.target) || event.isComposing) return;
+  if (event.key === "Enter" && event.target.matches('input[name="amount"]')) {
+    event.preventDefault();
+    if (!event.repeat) event.target.form?.requestSubmit();
+    return;
+  }
+  const button = event.target.closest("button");
+  if (!button || (event.key !== "Enter" && event.key !== " ")) return;
+  event.preventDefault();
+  if (!event.repeat) button.click();
+}
+
 function handleClick(event) {
   const button = event.target.closest("[data-ls-action]");
   if (!button || !byId("screen-little-shop")?.contains(button)) return;
@@ -725,6 +739,7 @@ function init() {
   active = true;
   customerNumber = 1;
   byId("screen-little-shop")?.addEventListener("click", handleClick, { signal: controller.signal });
+  byId("screen-little-shop")?.addEventListener("keydown", handleKeydown, { signal: controller.signal });
   byId("screen-little-shop")?.addEventListener("submit", handleSubmit, {
     signal: controller.signal,
   });
