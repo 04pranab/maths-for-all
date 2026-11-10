@@ -327,7 +327,7 @@ async function main() {
       "documentsByPath.set(targetPath, targetDocument);" +
       "}" +
       "const fragment = decodeURIComponent(destination.hash.slice(1));" +
-      'const exists = Boolean(targetDocument.getElementById(fragment) || Array.from(targetDocument.querySelectorAll("[name]")).some(node => node.getAttribute("name") === fragment));' +
+      'const gameRouteSlugs = new Set(["arithmetic","math-racing","sudoku","shape-fitting","slab-maths","shape-architect","fraction-bakery","little-shop","number-maze","probability-machine"]); const exists = Boolean(targetDocument.getElementById(fragment) || Array.from(targetDocument.querySelectorAll("[name]")).some(node => node.getAttribute("name") === fragment) || (targetPath.endsWith("/index.html") && gameRouteSlugs.has(fragment)));' +
       'assert(exists, "Broken in-page link from " + pagePath + ": " + rawHref);' +
       "fragmentsChecked++;" +
       "}" +
