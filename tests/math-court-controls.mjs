@@ -65,7 +65,7 @@ assert.match(
 );
 assert.match(
   game,
-  /function renderAnswerTiles[\s\S]*?onclick="MathCourt\.'\+action\+'\(/,
+  /function renderAnswerTiles[\s\S]*?onclick="MathCourt\.'\s*\+\s*action\s*\+\s*"\(/,
   "Answer tiles must retain click/tap selection as a non-drag alternative.",
 );
 assert.match(
@@ -85,7 +85,7 @@ assert.match(
 );
 assert.match(
   css,
-  /@media \(max-width:900px\)[\s\S]*?grid-template-areas:\s*"work"\s*"task"/,
+  /@media\s*\(max-width:\s*900px\)[\s\S]*?grid-template-areas:\s*"work"\s*"task"/,
   "The investigation stage must stack cleanly on narrower screens.",
 );
 assert.match(
