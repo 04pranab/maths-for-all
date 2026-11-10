@@ -265,4 +265,13 @@ const Racing = (function () {
   };
 })();
 
+document.addEventListener("DOMContentLoaded", () => {
+  const raceInput = document.getElementById("race-input");
+  raceInput?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || event.isComposing) return;
+    event.preventDefault();
+    Racing.submit();
+  });
+});
+
 window.Racing = Racing;
