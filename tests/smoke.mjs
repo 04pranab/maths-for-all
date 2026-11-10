@@ -1295,15 +1295,17 @@ async function main() {
   const requestedItems = await evaluate("LittleShop.getState().customer.items");
   let spaceKeyChecked = false;
   for (const line of requestedItems) {
+    const selector = '#ls-catalogue [data-item="' + line.id + '"]';
+    await focusSelector(selector);
     for (let count = 0; count < line.quantity; count++) {
-      const selector = '#ls-catalogue [data-item="' + line.id + '"]';
-      await focusSelector(selector);
       if (!spaceKeyChecked) {
         await pressKey(" ", "Space", 32);
         spaceKeyChecked = true;
       } else {
         await pressKey("Enter", "Enter", 13);
       }
+      const focusRestored = await evaluate('document.activeElement?.dataset.item === ' + JSON.stringify(line.id));
+      if (!focusRestored) throw new Error("Little Shop lost keyboard focus after adding " + line.id + ".");
     }
   }
   if (!spaceKeyChecked) throw new Error("Little Shop keyboard test did not exercise Space activation.");
