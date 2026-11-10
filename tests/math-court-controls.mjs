@@ -80,12 +80,12 @@ assert.match(
 );
 assert.match(
   css,
-  /\.mc-stage-layout--investigation[\s\S]*?grid-template-areas:\\s*"work task"/,
+  /\.mc-stage-layout--investigation[\s\S]*?grid-template-areas:\s*"work task"/,
   "The investigation stage should keep the visual workshop and answer panel side by side on wide screens.",
 );
 assert.match(
   css,
-  /@media \(max-width:900px\)[\s\S]*?grid-template-areas:\\s*"work"\\s*"task"/,
+  /@media \(max-width:900px\)[\s\S]*?grid-template-areas:\\s*"work"\s*"task"/,
   "The investigation stage must stack cleanly on narrower screens.",
 );
 assert.match(
@@ -96,7 +96,7 @@ assert.match(
 
 assert.match(
   game,
-  /function clueMoveSpec\(item\)[\s\S]*?const type=\(item\.id-1\)%10/,
+  /function clueMoveSpec\(item\)[\s\S]*?const type\s*=\s*\(item\.id\s*-\s*1\)\s*%\s*10/,
   "Every case must be assigned a case-specific field-move family.",
 );
 assert.match(
@@ -155,7 +155,7 @@ assert.match(
 );
 assert.match(
   css,
-  /\.mc-clue-shape-grid[\s\S]*?display:grid/,
+  /\.mc-clue-shape-grid[\s\S]*?display:\s*grid/,
   "The shape clue needs a real interactive grid.",
 );
 assert.match(
