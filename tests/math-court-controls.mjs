@@ -32,13 +32,13 @@ for (const dynamicAction of ["answerInvestigation", "answerChallenge"]) {
 }
 for (const chapter of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
   assert.ok(
-    game.includes("item.chapter===" + chapter),
+    new RegExp("item\\.chapter\\s*===\\s*" + chapter).test(game),
     "Chapter " + chapter + " has no chapter-specific play mechanic.",
   );
 }
 assert.match(
   game,
-  /item\.chapter===9\?renderRouteGarden\(item,task\):renderTownPlanner\(item,task\)/,
+  /item\.chapter\s*===\s*9\s*\?\s*renderRouteGarden\(item,\s*task\)\s*:\s*renderTownPlanner\(item,\s*task\)/,
   "Chapter 10 should use the Town Planner fallback.",
 );
 for (const renderer of [
@@ -140,17 +140,17 @@ for (const action of [
 }
 assert.match(
   game,
-  /state\.phase===3&&!state\.clueSolved/,
+  /state\.phase\s*===\s*3\s*&&\s*!state\.clueSolved/,
   "The new clue must be verified before the case can progress.",
 );
 assert.match(
   game,
-  /clueSolved:state\.clueSolved[\s\S]*?clueOrder:state\.clueOrder/,
+  /clueSolved:\s*state\.clueSolved[\s\S]*?clueOrder:\s*state\.clueOrder/,
   "Field-move progress must be included in saved sessions.",
 );
 assert.match(
   game,
-  /state\.clueSolved=saved\?Boolean\(saved\.clueSolved\):false/,
+  /state\.clueSolved\s*=\s*saved\s*\?\s*Boolean\(saved\.clueSolved\)\s*:\s*false/,
   "Resuming a case must restore field-move completion.",
 );
 assert.match(
