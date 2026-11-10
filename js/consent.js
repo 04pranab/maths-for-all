@@ -687,15 +687,24 @@ document.addEventListener("keydown", (event) => {
   if (!screen || screen.id === "screen-menu") return;
 
   if (screen.id === "screen-shape" && typeof ShapePuzzle !== "undefined") {
-    if (typeof ShapePuzzle.clearSelection === "function" && ShapePuzzle.clearSelection()) return;
+    if (typeof ShapePuzzle.clearSelection === "function" && ShapePuzzle.clearSelection()) {
+      event.preventDefault();
+      return;
+    }
   }
 
   if (screen.id === "screen-sudoku" && typeof Sudoku !== "undefined") {
-    if (typeof Sudoku.clearSelection === "function" && Sudoku.clearSelection()) return;
+    if (typeof Sudoku.clearSelection === "function" && Sudoku.clearSelection()) {
+      event.preventDefault();
+      return;
+    }
   }
 
   if (screen.id === "screen-slab" && typeof SlabMath !== "undefined") {
-    if (typeof SlabMath.clearSelection === "function" && SlabMath.clearSelection()) return;
+    if (typeof SlabMath.clearSelection === "function" && SlabMath.clearSelection()) {
+      event.preventDefault();
+      return;
+    }
   }
 
   /* If no overlay or local selection consumes Escape, the shared
