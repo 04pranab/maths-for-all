@@ -1056,15 +1056,17 @@ const NumberMaze = (() => {
     if (current) current.focus({ preventScroll: true });
   }
 
-  function showSetup() {
+  function showSetup(restoreFocus = true) {
     const setup = byId("nm-setup");
     const play = byId("nm-play");
     const settingsButton = byId("nm-change-settings");
     if (setup) setup.hidden = false;
     if (play) play.hidden = true;
     if (settingsButton) settingsButton.hidden = true;
-    const selectedMode = document.querySelector('#nm-setup [data-nm-mode][aria-pressed="true"]');
-    if (selectedMode) selectedMode.focus({ preventScroll: true });
+    if (restoreFocus) {
+      const selectedMode = document.querySelector('#nm-setup [data-nm-mode][aria-pressed="true"]');
+      if (selectedMode) selectedMode.focus({ preventScroll: true });
+    }
   }
 
   function init() {
@@ -1076,6 +1078,12 @@ const NumberMaze = (() => {
   function stop() {
     state.dragging = false;
     state.pointerId = null;
+    state.puzzle = null;
+    state.path = [];
+    state.hintCell = null;
+    state.hints = 0;
+    state.completed = false;
+    showSetup(false);
   }
 
   return {

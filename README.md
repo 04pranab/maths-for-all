@@ -84,10 +84,11 @@ The current `main` implementation includes:
 - three fixed guided starter boards, Explore, Daily Challenge and Challenge Climb modes; progress counts a completed daily board once per day;
 - touch/mouse path tracing, keyboard arrow navigation, undo, reset, hints, live progress feedback and an untimed retry-friendly flow;
 - on-device progress and deterministic daily puzzles;
+- leaving Number Maze returns to its setup menu; re-entering does not resume an unfinished path;
 - copyable puzzle codes that reload the exact same seeded board, with validation for malformed codes;
 - automated generator invariant tests and browser smoke/responsive coverage.
 
-“Unlimited” means the learner can keep asking for new generated puzzles rather than exhausting a fixed level list. Puzzle seeds are finite machine values, so this should be understood as effectively endless replay, not a mathematical claim that every possible board is guaranteed unique forever. The latest recorded CI run for `main` passed on 31 October 2026. Physical-device, assistive-technology and learner/educator evaluation are still separate acceptance steps.
+“Unlimited” means the learner can keep asking for new generated puzzles rather than exhausting a fixed level list. Puzzle seeds are finite machine values, so this should be understood as effectively endless replay, not a mathematical claim that every possible board is guaranteed unique forever. The latest recorded Tests and GitHub Pages deployment workflows for `main` passed on 10 November 2026. Physical-device, assistive-technology and supervised learner/educator evaluation remain separate acceptance steps.
 
 ## Little Shop
 

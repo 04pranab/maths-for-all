@@ -724,7 +724,15 @@ async function main() {
     assert(screen.querySelector("#nm-board").innerHTML === starterOne, "Guided Starter boards should cycle deterministically.");
     NumberMaze.setMode("explore");
     NumberMaze.resetPath();
+    screen.querySelector("#nm-start-game").click();
+    screen.querySelector("#nm-board .is-start").click();
+    assert(NumberMaze.getSummary().pathLength === 1, "The exit/re-entry test should begin with an in-progress path.");
     Game.goHome();
+    assert(!screen.querySelector("#nm-setup").hidden && screen.querySelector("#nm-play").hidden, "Leaving Number Maze should return its internal view to the setup menu.");
+    Game.startNumberMaze();
+    assert(screen.classList.contains("active"), "Number Maze should reopen after returning to the menu.");
+    assert(!screen.querySelector("#nm-setup").hidden && screen.querySelector("#nm-play").hidden, "Re-entering Number Maze must show the setup menu, not resume the previous board.");
+    assert(NumberMaze.getSummary().pathLength === 0, "Re-entering Number Maze must not restore an unfinished path.");
     return { ok: true };
   })()`);
   if (!numberMazeResult || !numberMazeResult.ok)
