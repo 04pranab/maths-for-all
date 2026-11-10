@@ -193,6 +193,11 @@ const Racing = (function () {
     );
     hide("race-play-panel");
     show("race-result-panel");
+    window.CompletionOverlay?.show({
+      title: "Race complete!",
+      message: "Your race is finished. Your score and accuracy are ready to review.",
+      actionLabel: "View results",
+    });
   }
   function loadLeaderboard() {
     try {
