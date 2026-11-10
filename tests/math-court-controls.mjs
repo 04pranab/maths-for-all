@@ -80,17 +80,17 @@ assert.match(
 );
 assert.match(
   css,
-  /\.mc-stage-layout--investigation[\s\S]*?grid-template-areas:"work task"/,
+  /\.mc-stage-layout--investigation[\s\S]*?grid-template-areas:\\s*"work task"/,
   "The investigation stage should keep the visual workshop and answer panel side by side on wide screens.",
 );
 assert.match(
   css,
-  /@media \(max-width:900px\)[\s\S]*?grid-template-areas:"work" "task"/,
+  /@media \(max-width:900px\)[\s\S]*?grid-template-areas:\\s*"work"\\s*"task"/,
   "The investigation stage must stack cleanly on narrower screens.",
 );
 assert.match(
   css,
-  /\.mc-svg-pick:focus-visible[\s\S]*?outline:3px solid/,
+  /\.mc-svg-pick:focus-visible[\s\S]*?outline:\\s*3px solid/,
   "Keyboard focus must remain visible on SVG evidence controls.",
 );
 
