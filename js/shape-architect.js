@@ -1087,11 +1087,13 @@ const ShapeArchitect = (() => {
       return;
     }
     if (e.key === "Escape") {
-      e.preventDefault();
-      state.selected = null;
-      updatePlaced();
-      draw();
-      announce("Piece deselected.");
+      if (state.selected !== null) {
+        e.preventDefault();
+        state.selected = null;
+        updatePlaced();
+        draw();
+        announce("Piece deselected.");
+      }
       return;
     }
     if (state.selected === null) return;
