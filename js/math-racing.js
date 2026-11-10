@@ -267,9 +267,9 @@ const Racing = (function () {
 
 window.Racing = Racing;
 
-document.addEventListener("keydown", (event) => {
+const raceAnswerInput = document.getElementById("race-input");
+raceAnswerInput?.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" || event.isComposing) return;
-  if (!event.target?.matches?.("#race-input")) return;
   event.preventDefault();
   Racing.submit();
 });
