@@ -465,6 +465,59 @@ const Game = (function () {
     numberMaze: "screen-number-maze",
   };
 
+  const ROUTE_SLUGS = {
+    menu: null, quiz: "arithmetic", race: "math-racing", sudoku: "sudoku",
+    shape: "shape-fitting", slab: "slab-maths", architect: "shape-architect",
+    fraction: "fraction-bakery", shop: "little-shop", numberMaze: "number-maze",
+  };
+  const ROUTE_STARTERS = {
+    arithmetic: startArithmetic, "math-racing": startRacing, sudoku: startSudoku,
+    "shape-fitting": startShapePuzzle, "slab-maths": startSlabMath,
+    "shape-architect": startShapeArchitect, "fraction-bakery": startFractionBakery,
+    "little-shop": startLittleShop, "number-maze": startNumberMaze,
+  };
+  let restoringHistory = false;
+  let lastAppliedUrl = null;
+
+  function writeRoute(slug, replace = false) {
+    const nextUrl = window.location.pathname + window.location.search + (slug ? "#" + slug : "");
+    const currentUrl = window.location.pathname + window.location.search + window.location.hash;
+    if (nextUrl === currentUrl) { lastAppliedUrl = window.location.href; return; }
+    if (restoringHistory) return;
+    window.history[replace ? "replaceState" : "pushState"]({ gameRoute: slug || "menu" }, "", nextUrl);
+    lastAppliedUrl = window.location.href;
+  }
+
+  function restoreRoute() {
+    if (lastAppliedUrl === window.location.href) return;
+    let slug = "";
+    try { slug = decodeURIComponent(window.location.hash.slice(1)).trim().toLowerCase(); }
+    catch { slug = ""; }
+    restoringHistory = true;
+    try {
+      if (!slug) {
+        showScreen("menu");
+        const probabilityScreen = document.getElementById("screen-probability-carnival");
+        if (probabilityScreen) probabilityScreen.hidden = true;
+      } else if (slug === "probability-machine") {
+        if (window.ProbabilityCarnival) window.ProbabilityCarnival.open();
+      } else if (ROUTE_STARTERS[slug]) {
+        ROUTE_STARTERS[slug]();
+      } else {
+        window.history.replaceState({}, "", window.location.pathname + window.location.search);
+        showScreen("menu");
+        const probabilityScreen = document.getElementById("screen-probability-carnival");
+        if (probabilityScreen) probabilityScreen.hidden = true;
+      }
+    } finally {
+      restoringHistory = false;
+      lastAppliedUrl = window.location.href;
+    }
+  }
+
+  window.addEventListener("popstate", restoreRoute);
+  window.addEventListener("hashchange", restoreRoute);
+
   function stopBackgroundGames() {
     if (window.Quiz && typeof Quiz.stop === "function") Quiz.stop();
     if (window.Racing && typeof Racing.stop === "function") Racing.stop();
@@ -477,6 +530,7 @@ const Game = (function () {
   }
 
   function showScreen(name) {
+    writeRoute(ROUTE_SLUGS[name] ?? null);
     stopBackgroundGames();
     document.querySelectorAll(".screen").forEach((el) => el.classList.remove("active"));
     const target = document.getElementById(SCREENS[name]);
@@ -547,8 +601,11 @@ const Game = (function () {
     ControlsOverlay.maybeShow("numberMaze");
   }
 
+  document.addEventListener("DOMContentLoaded", restoreRoute);
+
   return {
     goHome,
+    setRoute: (slug) => writeRoute(slug),
     startArithmetic,
     startRacing,
     startSudoku,
