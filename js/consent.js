@@ -677,6 +677,7 @@ document.addEventListener("keydown", (event) => {
   if (typeof Navigation !== "undefined") {
     const menu = document.getElementById("nav-links");
     if (menu && menu.classList.contains("open")) {
+      event.preventDefault();
       Navigation.closeMenu();
       return;
     }
@@ -697,6 +698,6 @@ document.addEventListener("keydown", (event) => {
     if (typeof SlabMath.clearSelection === "function" && SlabMath.clearSelection()) return;
   }
 
-  /* Escape without an overlay is intentionally a no-op. It must never
-     navigate away from the current game. */
+  /* If no overlay or local selection consumes Escape, the shared
+     keyboard handler in script.js returns the learner to the game menu. */
 });
