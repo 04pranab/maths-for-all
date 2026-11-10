@@ -606,7 +606,14 @@ async function main() {
     ControlsOverlay.close();
     Game.goHome();
     Game.startNumberMaze();
-    assert(document.getElementById("game-completion-overlay"), "Shared completion overlay should exist for all active games.");
+    const completionOverlay = document.getElementById("game-completion-overlay");
+    assert(completionOverlay && typeof CompletionOverlay?.show === "function", "Shared completion overlay should exist for all active games.");
+    window.__completionOverlayTest = false;
+    CompletionOverlay.show({ title: "Test completion", message: "Checking the shared dialog.", actionLabel: "Continue", onContinue: () => { window.__completionOverlayTest = true; } });
+    assert(!completionOverlay.hidden && document.getElementById("game-completion-title").textContent === "Test completion", "Completion overlay should display its supplied title.");
+    document.getElementById("game-completion-continue").click();
+    assert(completionOverlay.hidden && window.__completionOverlayTest, "Completion overlay Continue should close the dialog and run its action.");
+    delete window.__completionOverlayTest;
     const screen = document.getElementById("screen-number-maze");
     assert(screen.classList.contains("active"), "Number Maze did not open.");
     assert(!screen.querySelector("#nm-setup").hidden, "Number Maze should open on its difficulty and mode menu.");
