@@ -522,6 +522,12 @@ const Sudoku = (function () {
     else if (allCorrect) {
       showMessage("🎉 Congratulations! Puzzle solved correctly!", "success");
       Analytics.log("sudoku", "puzzle_solved", { difficulty });
+      window.CompletionOverlay?.show({
+        title: "Sudoku complete!",
+        message: "Every row, column, and 3×3 box is correct. You solved the puzzle!",
+        actionLabel: "New puzzle",
+        onContinue: newPuzzle,
+      });
     } else
       showMessage(
         "A few answers need another look — they are highlighted. You can do it!",
@@ -692,6 +698,12 @@ const Sudoku = (function () {
       refreshCellHighlights();
       showMessage("✅ Solution revealed by teacher! Try a new puzzle?", "success");
       Analytics.log("sudoku", "solved_by_teacher", { difficulty });
+      window.CompletionOverlay?.show({
+        title: "Solution revealed",
+        message: "The completed solution is now visible. Explore a fresh puzzle whenever you are ready.",
+        actionLabel: "New puzzle",
+        onContinue: newPuzzle,
+      });
     }, totalDelay);
   }
 

@@ -579,7 +579,12 @@ function finishSale() {
   renderBasket();
   renderPayment();
   setStatus("Sale complete. The counter is ready for the next customer.");
-  byId("ls-sale-complete")?.querySelector('[data-ls-action="next-customer"]')?.focus();
+  window.CompletionOverlay?.show({
+    title: "Sale complete!",
+    message: "Customer " + customerNumber + " has been served. The next customer is ready when you are.",
+    actionLabel: "Next customer",
+    onContinue: () => byId("ls-sale-complete")?.querySelector('[data-ls-action="next-customer"]')?.click(),
+  });
 }
 
 function handleSubmit(event) {

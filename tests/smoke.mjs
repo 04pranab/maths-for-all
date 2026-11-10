@@ -606,6 +606,14 @@ async function main() {
     ControlsOverlay.close();
     Game.goHome();
     Game.startNumberMaze();
+    const completionOverlay = document.getElementById("game-completion-overlay");
+    assert(completionOverlay && typeof CompletionOverlay?.show === "function", "Shared completion overlay should exist for all active games.");
+    window.__completionOverlayTest = false;
+    CompletionOverlay.show({ title: "Test completion", message: "Checking the shared dialog.", actionLabel: "Continue", onContinue: () => { window.__completionOverlayTest = true; } });
+    assert(!completionOverlay.hidden && document.getElementById("game-completion-title").textContent === "Test completion", "Completion overlay should display its supplied title.");
+    document.getElementById("game-completion-continue").click();
+    assert(completionOverlay.hidden && window.__completionOverlayTest, "Completion overlay Continue should close the dialog and run its action.");
+    delete window.__completionOverlayTest;
     const screen = document.getElementById("screen-number-maze");
     assert(screen.classList.contains("active"), "Number Maze did not open.");
     assert(!screen.querySelector("#nm-setup").hidden, "Number Maze should open on its difficulty and mode menu.");
@@ -731,8 +739,14 @@ async function main() {
     assert(!screen.querySelector("#nm-setup").hidden && screen.querySelector("#nm-play").hidden, "Leaving Number Maze should return its internal view to the setup menu.");
     Game.startNumberMaze();
     assert(screen.classList.contains("active"), "Number Maze should reopen after returning to the menu.");
-    assert(!screen.querySelector("#nm-setup").hidden && screen.querySelector("#nm-play").hidden, "Re-entering Number Maze must show the setup menu, not resume the previous board.");
+    assert(!screen.querySelector("#nm-setup").hidden && screen.querySelector("#nm-play").hidden, "Every fresh Number Maze entry must expose the setup menu.");
     assert(NumberMaze.getSummary().pathLength === 0, "Re-entering Number Maze must not restore an unfinished path.");
+    screen.querySelector("#nm-start-game").click();
+    screen.querySelector("#nm-board .is-start").click();
+    Game.goHome();
+    Game.startNumberMaze();
+    assert(!screen.querySelector("#nm-setup").hidden && screen.querySelector("#nm-play").hidden, "Repeated Number Maze visits must always return to setup, even after a new board has started.");
+    assert(NumberMaze.getSummary().pathLength === 0, "Repeated visits must discard the previous in-progress route.");
     return { ok: true };
   })()`);
   if (!numberMazeResult || !numberMazeResult.ok)

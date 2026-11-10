@@ -5064,3 +5064,40 @@ body {
     font-size: 1.05rem;
   }
 }
+
+
+/* Shared, accessible completion overlay for every active learner game. */
+.game-completion-overlay[hidden] { display: none !important; }
+.game-completion-overlay { position: fixed; inset: 0; z-index: 10000; }
+.game-completion-backdrop {
+  box-sizing: border-box; display: grid; place-items: center; width: 100%;
+  min-height: 100%; padding: clamp(16px, 4vw, 36px);
+  background: rgba(29, 37, 32, .58); backdrop-filter: blur(5px);
+}
+.game-completion-dialog {
+  box-sizing: border-box; width: min(100%, 540px); padding: clamp(25px, 5vw, 42px);
+  border: 2px solid #d6e6d1; border-radius: 26px; background: #fffefa; color: #293d31;
+  box-shadow: 0 24px 80px rgba(20, 35, 24, .25); text-align: center;
+  animation: completion-arrive .24s ease-out both;
+}
+.game-completion-confetti { margin-bottom: 8px; color: #a06a25; font-size: 2rem; letter-spacing: .35em; }
+.game-completion-eyebrow { margin: 0 0 9px; color: #52765a; font-size: .76rem; font-weight: 850; letter-spacing: .14em; }
+.game-completion-dialog h2 { margin: 0; color: #345b3e; font-size: clamp(1.7rem, 5vw, 2.25rem); line-height: 1.18; }
+.game-completion-dialog > p:not(.game-completion-eyebrow) {
+  max-width: 42ch; margin: 13px auto 0; color: #46584b; font-size: 1.05rem; line-height: 1.6;
+}
+.game-completion-actions { display: grid; gap: 10px; margin-top: 25px; }
+.game-completion-actions button {
+  min-height: 50px; padding: 12px 20px; border-radius: 14px; font: inherit; font-weight: 800; cursor: pointer;
+}
+.game-completion-primary { border: 2px solid #386c45; background: #386c45; color: #fff; }
+.game-completion-secondary { border: 1px solid #d5dfd4; background: #f5f7f1; color: #435648; }
+.game-completion-actions button:focus-visible { outline: 3px solid #9a6ac4; outline-offset: 3px; }
+body.completion-overlay-open { overflow: hidden; }
+@keyframes completion-arrive { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .game-completion-dialog { animation: none; } }
+@media (forced-colors: active) {
+  .game-completion-dialog { border: 2px solid CanvasText; background: Canvas; color: CanvasText; }
+  .game-completion-dialog h2, .game-completion-dialog > p:not(.game-completion-eyebrow) { color: CanvasText; }
+  .game-completion-primary, .game-completion-secondary { border: 1px solid ButtonText; background: ButtonFace; color: ButtonText; }
+}

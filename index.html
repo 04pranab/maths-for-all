@@ -9,7 +9,7 @@
       name="description"
       content="A free, offline-friendly math arcade built for inclusive classrooms — big text, gentle colors, read-aloud support, and games that never punish a wrong answer."
     />
-        <link rel="stylesheet" href="css/style.css?v=20261110-keyboard-1" />
+        <link rel="stylesheet" href="css/style.css?v=20261110-completion-overlay-1" />
     <link rel="stylesheet" href="css/sudoku.css?v=20261110-game-assets-2" />
     <link rel="stylesheet" href="css/shape-fitting.css?v=20261110-game-assets-2" />
     <link rel="stylesheet" href="css/slabmath.css?v=20261110-game-assets-2" />
@@ -1142,25 +1142,40 @@
     <div id="drag-ghost" class="hidden"></div>
 
     <!-- Scripts — order matters: shared helpers first -->
+    <section id="game-completion-overlay" class="game-completion-overlay" hidden>
+      <div class="game-completion-backdrop" onclick="if (event.target === this) CompletionOverlay.close()">
+        <div class="game-completion-dialog" role="dialog" aria-modal="true" aria-labelledby="game-completion-title" aria-describedby="game-completion-message">
+          <div class="game-completion-confetti" aria-hidden="true">✦ ✧ ✦</div>
+          <p class="game-completion-eyebrow">A MOMENT TO CELEBRATE</p>
+          <h2 id="game-completion-title">Level complete!</h2>
+          <p id="game-completion-message">You finished this challenge. Take a moment to enjoy your progress.</p>
+          <div class="game-completion-actions">
+            <button id="game-completion-continue" class="game-completion-primary" type="button" onclick="CompletionOverlay.continue()">Continue</button>
+            <button class="game-completion-secondary" type="button" onclick="CompletionOverlay.close()">Stay on this level</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <script src="js/research-gateway.js?v=20260926-1"></script>
     <script src="js/probability-carnival.js?v=20261110-game-routes-1"></script>
     
     
     
-    <script src="js/script.js?v=20261110-game-routes-1"></script>
+    <script src="js/script.js?v=20261110-completion-overlay-1"></script>
     <script src="js/question-bank.js?v=20261110-single-file-1"></script>
-    <script src="js/arithmetic-quiz.js?v=20261110-keyboard-1"></script>
-    <script src="js/math-racing.js?v=20261110-keyboard-1"></script>
-    <script src="js/sudoku.js?v=20260924-2"></script>
-    <script src="js/shapes.js?v=20261110-keyboard-2"></script>
-    <script src="js/slabmath.js?v=20261110-keyboard-1"></script>
-    <script src="js/shape-architect.js?v=20261110-keyboard-4"></script>
+    <script src="js/arithmetic-quiz.js?v=20261110-completion-overlay-1"></script>
+    <script src="js/math-racing.js?v=20261110-completion-overlay-1"></script>
+    <script src="js/sudoku.js?v=20261110-completion-overlay-1"></script>
+    <script src="js/shapes.js?v=20261110-completion-overlay-1"></script>
+    <script src="js/slabmath.js?v=20261110-completion-overlay-1"></script>
+    <script src="js/shape-architect.js?v=20261110-completion-overlay-1"></script>
     
     
     
     
-    <script src="js/fraction-bakery.js?v=20261008-4"></script>
-    <script src="js/number-maze.js?v=20261110-single-file-1"></script>
+    <script src="js/fraction-bakery.js?v=20261110-completion-overlay-1"></script>
+    <script src="js/number-maze.js?v=20261110-reset-completion-1"></script>
     
     <script src="js/math-court.js?v=20261110-single-file-1"></script>
     
@@ -1604,7 +1619,7 @@
       </div>
     </section>
 
-    <script type="module" src="js/little-shop.js?v=20261110-keyboard-1"></script>
+    <script type="module" src="js/little-shop.js?v=20261110-completion-overlay-1"></script>
     <script src="js/consent.js?v=20261110-keyboard-3"></script>
     <script>
       /* Prototype compatibility shim. Production authentication remains disabled. */
