@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 
-await import("../js/number-maze-engine.js");
+await import("../js/number-maze.js");
 const engine = globalThis.NumberMazeEngine;
 assert.ok(engine, "Number Maze engine should load in Node.");
 assert.deepEqual(Object.keys(engine.DIFFICULTIES), ["gentle", "steady", "stretch"]);

@@ -1,12 +1,202 @@
-import { formatMoney, parseMoney, totalBasket } from "./little-shop-money.mjs";
-import {
-  CATALOGUE,
-  chooseCustomerPayment,
-  createCustomerOrder,
-  getSettlement,
-  orderMatches,
-} from "./little-shop-catalogue.mjs";
+/* Little Shop: one browser asset with independently testable pure helpers. */
 
+const MAX = Number.MAX_SAFE_INTEGER;
+
+function assertNonNegativePaise(value, label = "amount") {
+  if (!Number.isSafeInteger(value) || value < 0) {
+    throw new TypeError(label + " must be a non-negative safe integer number of paise.");
+  }
+  return value;
+}
+
+function assertQuantity(value) {
+  if (!Number.isSafeInteger(value) || value < 1) {
+    throw new TypeError("quantity must be a positive safe integer.");
+  }
+  return value;
+}
+
+function parseMoney(input) {
+  if (typeof input !== "string") throw new TypeError("Money input must be a string.");
+  const value = input.trim();
+  const match = value.match(/^(?:₹\s*)?(\d+|\d{1,3}(?:,\d{3})+)(?:\.(\d{1,2}))?$/);
+  if (!match)
+    throw new TypeError("Enter a valid non-negative amount with at most two decimal places.");
+  const rupees = Number(match[1].replaceAll(",", ""));
+  const paise = Number((match[2] || "").padEnd(2, "0") || "0");
+  const amount = rupees * 100 + paise;
+  if (!Number.isSafeInteger(amount) || amount < 0 || amount > MAX) {
+    throw new RangeError("Money amount is outside the supported range.");
+  }
+  return amount;
+}
+
+function formatMoney(amountPaise) {
+  assertNonNegativePaise(amountPaise);
+  const rupees = Math.floor(amountPaise / 100);
+  const paise = amountPaise % 100;
+  return paise === 0 ? "₹" + rupees : "₹" + rupees + "." + String(paise).padStart(2, "0");
+}
+
+function addMoney(amounts) {
+  if (!Array.isArray(amounts)) throw new TypeError("Amounts must be provided as an array.");
+  return amounts.reduce((sum, value) => {
+    assertNonNegativePaise(value);
+    const result = sum + value;
+    if (!Number.isSafeInteger(result))
+      throw new RangeError("Money total exceeds the supported range.");
+    return result;
+  }, 0);
+}
+
+function multiplyMoney(pricePaise, quantity) {
+  assertNonNegativePaise(pricePaise, "price");
+  assertQuantity(quantity);
+  const result = pricePaise * quantity;
+  if (!Number.isSafeInteger(result))
+    throw new RangeError("Line total exceeds the supported range.");
+  return result;
+}
+
+function totalBasket(lines) {
+  if (!Array.isArray(lines)) throw new TypeError("Basket lines must be an array.");
+  return addMoney(
+    lines.map((line) => {
+      if (!line || typeof line !== "object")
+        throw new TypeError("Each basket line must be an object.");
+      return multiplyMoney(line.pricePaise, line.quantity);
+    }),
+  );
+}
+
+function withinBudget(totalPaise, budgetPaise) {
+  assertNonNegativePaise(totalPaise, "total");
+  assertNonNegativePaise(budgetPaise, "budget");
+  return totalPaise <= budgetPaise;
+}
+
+function changeDue(totalPaise, paymentPaise) {
+  assertNonNegativePaise(totalPaise, "total");
+  assertNonNegativePaise(paymentPaise, "payment");
+  if (paymentPaise < totalPaise) throw new RangeError("Payment is not enough to cover the total.");
+  return paymentPaise - totalPaise;
+}
+
+function compareMoney(firstPaise, secondPaise) {
+  assertNonNegativePaise(firstPaise, "first amount");
+  assertNonNegativePaise(secondPaise, "second amount");
+  return firstPaise < secondPaise ? -1 : firstPaise > secondPaise ? 1 : 0;
+}
+
+
+/* Catalogue and deterministic customer/payment logic. */
+const CATALOGUE = [
+  { id: "apple", name: "Apple", icon: "🍎", unit: "each", pricePaise: 800 },
+  { id: "banana", name: "Banana", icon: "🍌", unit: "each", pricePaise: 600 },
+  { id: "orange", name: "Orange", icon: "🍊", unit: "each", pricePaise: 700 },
+  { id: "mango", name: "Mango", icon: "🥭", unit: "each", pricePaise: 1500 },
+  { id: "grapes", name: "Grapes", icon: "🍇", unit: "bunch", pricePaise: 2500 },
+  { id: "watermelon", name: "Watermelon", icon: "🍉", unit: "each", pricePaise: 4000 },
+  { id: "papaya", name: "Papaya", icon: "🧡", unit: "each", pricePaise: 3000 },
+  { id: "pineapple", name: "Pineapple", icon: "🍍", unit: "each", pricePaise: 3500 },
+  { id: "guava", name: "Guava", icon: "🟢", unit: "each", pricePaise: 500 },
+  { id: "pomegranate", name: "Pomegranate", icon: "🔴", unit: "each", pricePaise: 1800 },
+  { id: "pear", name: "Pear", icon: "🍐", unit: "each", pricePaise: 1200 },
+  { id: "chikoo", name: "Chikoo", icon: "🟤", unit: "each", pricePaise: 500 },
+  { id: "coconut", name: "Coconut", icon: "🥥", unit: "each", pricePaise: 2500 },
+  { id: "lemon", name: "Lemon", icon: "🍋", unit: "each", pricePaise: 300 },
+  { id: "strawberry", name: "Strawberries", icon: "🍓", unit: "punnet", pricePaise: 4500 },
+  { id: "kiwi", name: "Kiwi", icon: "🥝", unit: "each", pricePaise: 2000 },
+  { id: "sweet-lime", name: "Sweet lime", icon: "🍋", unit: "each", pricePaise: 800 },
+  { id: "muskmelon", name: "Muskmelon", icon: "🍈", unit: "each", pricePaise: 2800 },
+  { id: "jackfruit", name: "Jackfruit", icon: "🌳", unit: "portion", pricePaise: 2000 },
+  { id: "dragon-fruit", name: "Dragon fruit", icon: "🐉", unit: "each", pricePaise: 5000 },
+  { id: "plum", name: "Plum", icon: "🟣", unit: "each", pricePaise: 900 },
+  { id: "peach", name: "Peach", icon: "🍑", unit: "each", pricePaise: 1400 },
+];
+
+const CUSTOMER_NAMES = [
+  "A customer",
+  "A neighbour",
+  "A parent",
+  "A friend",
+  "A traveller",
+  "A regular",
+];
+
+function randomIndex(random, length) {
+  return Math.min(length - 1, Math.max(0, Math.floor(random() * length)));
+}
+
+function createCustomerOrder(random = Math.random) {
+  const available = [...CATALOGUE];
+  const count = 2 + randomIndex(random, 3);
+  const order = [];
+  for (let index = 0; index < count; index++) {
+    const item = available.splice(randomIndex(random, available.length), 1)[0];
+    order.push({ id: item.id, quantity: 1 + randomIndex(random, 3) });
+  }
+  const customerIndex = randomIndex(random, CUSTOMER_NAMES.length);
+  return {
+    name: CUSTOMER_NAMES[customerIndex],
+    items: order,
+    numberOfLines: order.length,
+  };
+}
+
+function orderTotalPaise(order, catalogue = CATALOGUE) {
+  const byId = new Map(catalogue.map((item) => [item.id, item]));
+  return order.reduce((total, line) => {
+    const item = byId.get(line.id);
+    if (!item || !Number.isSafeInteger(line.quantity) || line.quantity < 1) {
+      throw new TypeError("Customer order contains an invalid item or quantity.");
+    }
+    const lineTotal = item.pricePaise * line.quantity;
+    if (!Number.isSafeInteger(lineTotal) || !Number.isSafeInteger(total + lineTotal)) {
+      throw new RangeError("Customer order total is outside the supported range.");
+    }
+    return total + lineTotal;
+  }, 0);
+}
+
+function orderMatches(order, basket) {
+  if (!Array.isArray(order) || !(basket instanceof Map)) return false;
+  if (basket.size !== order.length) return false;
+  return order.every((line) => basket.get(line.id) === line.quantity);
+}
+
+function chooseCustomerPayment(totalPaise, random = Math.random) {
+  if (!Number.isSafeInteger(totalPaise) || totalPaise < 100) {
+    throw new TypeError("Customer bill must be at least one rupee.");
+  }
+  const roll = random();
+  if (roll < 1 / 3) {
+    const maxShortRupees = Math.max(1, Math.min(20, Math.floor(totalPaise / 100) - 1));
+    const shortBy = (1 + randomIndex(random, maxShortRupees)) * 100;
+    return { kind: "short", paidPaise: totalPaise - shortBy };
+  }
+  if (roll < 2 / 3) return { kind: "exact", paidPaise: totalPaise };
+  let paidPaise = Math.ceil(totalPaise / 5000) * 5000;
+  if (paidPaise === totalPaise) paidPaise += 5000;
+  return { kind: "change", paidPaise };
+}
+
+function getSettlement(totalPaise, paidPaise) {
+  if (
+    !Number.isSafeInteger(totalPaise) ||
+    totalPaise < 0 ||
+    !Number.isSafeInteger(paidPaise) ||
+    paidPaise < 0
+  ) {
+    throw new TypeError("Bill and payment must be non-negative amounts in paise.");
+  }
+  if (paidPaise < totalPaise) return { kind: "short", amountPaise: totalPaise - paidPaise };
+  if (paidPaise > totalPaise) return { kind: "change", amountPaise: paidPaise - totalPaise };
+  return { kind: "exact", amountPaise: 0 };
+}
+
+
+/* Browser interaction layer. */
 const itemsById = new Map(CATALOGUE.map((item) => [item.id, item]));
 const DENOMINATIONS = [5000, 2000, 1000, 500, 200, 100];
 const basket = new Map();
@@ -560,10 +750,13 @@ function getState() {
   };
 }
 
-window.LittleShop = {
+if (typeof window !== "undefined") window.LittleShop = {
   init,
   stop,
   isActive,
   getCatalogue: () => CATALOGUE.map((item) => ({ ...item })),
   getState,
 };
+
+
+export { addMoney, changeDue, compareMoney, formatMoney, multiplyMoney, parseMoney, totalBasket, withinBudget, CATALOGUE, chooseCustomerPayment, createCustomerOrder, getSettlement, orderMatches, orderTotalPaise };

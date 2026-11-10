@@ -9,17 +9,20 @@
       name="description"
       content="A free, offline-friendly math arcade built for inclusive classrooms — big text, gentle colors, read-aloud support, and games that never punish a wrong answer."
     />
-    <link rel="stylesheet" href="css/style.css?v=20261022-symbol-mark" />
-    <link rel="stylesheet" href="css/sudoku-comfort.css?v=20261005-1" />
-    <link rel="stylesheet" href="css/slabmath.css" />
-    <link rel="stylesheet" href="css/shape-architect.css" />
-    <link rel="stylesheet" href="css/probability-carnival.css?v=20261007-7" />
-    <link rel="stylesheet" href="css/fraction-bakery.css?v=20261018-1" />
-    <link rel="stylesheet" href="css/little-shop.css?v=20261019-1" />
-    <link rel="stylesheet" href="css/number-maze.css?v=20261019-7" />
-    <link rel="stylesheet" href="css/interactions.css?v=20261018-1" />
-    <link rel="stylesheet" href="css/game-themes.css?v=20261022-visual-court-1" />
-    <link rel="stylesheet" href="css/math-court.css?v=20261024-field-moves-1" />
+      <link rel="stylesheet" href="css/style.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/game-themes.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/arithmetic-quiz.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/math-racing.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/sudoku.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/shape-fitting.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/slabmath.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/shape-architect.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/probability-carnival.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/fraction-bakery.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/little-shop.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/number-maze.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/math-court.css?v=20261110-game-assets-1" />
+    <link rel="stylesheet" href="css/interactions.css?v=20261110-game-assets-1" />
   </head>
   <body>
     <header class="site-header">
@@ -1140,25 +1143,27 @@
 
     <!-- Scripts — order matters: shared helpers first -->
     <script src="js/research-gateway.js?v=20260926-1"></script>
-    <script src="js/probability-carnival-library.js?v=20261007-2"></script>
-    <script src="js/probability-carnival-stories.js?v=20261007-4"></script>
-    <script src="js/probability-carnival-canvas.js?v=20261007-5"></script>
-    <script src="js/probability-carnival.js?v=20261007-5"></script>
+    <script src="js/probability-carnival.js?v=20261110-single-file-1"></script>
+    
+    
+    
     <script src="js/script.js?v=20261019-4"></script>
-    <script src="js/questions.js?v=20261018-2"></script>
+    <script src="js/question-bank.js?v=20261110-single-file-1"></script>
+    <script src="js/arithmetic-quiz.js?v=20261110-single-file-1"></script>
+    <script src="js/math-racing.js?v=20261110-single-file-1"></script>
     <script src="js/sudoku.js?v=20260924-2"></script>
     <script src="js/shapes.js?v=20260924-2"></script>
     <script src="js/slabmath.js?v=20260924-2"></script>
-    <script src="js/shape-architect-library.js?v=20261006-5"></script>
-    <script src="js/shape-architect-canvas.js?v=20261006-5"></script>
-    <script src="js/shape-architect-solver.js?v=20261006-4"></script>
-    <script src="js/shape-architect-levels.js?v=20261006-5"></script>
-    <script src="js/shape-architect.js?v=20261006-5"></script>
+    <script src="js/shape-architect.js?v=20261110-single-file-1"></script>
+    
+    
+    
+    
     <script src="js/fraction-bakery.js?v=20261008-4"></script>
-    <script src="js/number-maze-engine.js?v=20261018-2"></script>
-    <script src="js/number-maze.js?v=20261019-2"></script>
-    <script src="js/math-court-data.js?v=20261023-soul-play-2"></script>
-    <script src="js/math-court.js?v=20261024-field-moves-1"></script>
+    <script src="js/number-maze.js?v=20261110-single-file-1"></script>
+    
+    <script src="js/math-court.js?v=20261110-single-file-1"></script>
+    
     <section id="screen-little-shop" class="screen" aria-labelledby="little-shop-title">
       <div class="ls-shell">
         <header class="ls-header">
@@ -1598,7 +1603,7 @@
       </div>
     </section>
 
-    <script type="module" src="js/little-shop.js?v=20261017-2"></script>
+    <script type="module" src="js/little-shop.js?v=20261110-single-file-1"></script>
     <script src="js/consent.js?v=20261001-1"></script>
     <script>
       /* Prototype compatibility shim. Production authentication remains disabled. */

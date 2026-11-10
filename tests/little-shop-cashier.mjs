@@ -1,13 +1,16 @@
 import assert from "node:assert/strict";
 import {
   CATALOGUE,
+  changeDue,
   chooseCustomerPayment,
   createCustomerOrder,
+  formatMoney,
   getSettlement,
   orderMatches,
   orderTotalPaise,
-} from "../js/little-shop-catalogue.mjs";
-import { changeDue, formatMoney, parseMoney, totalBasket } from "../js/little-shop-money.mjs";
+  parseMoney,
+  totalBasket,
+} from "../js/little-shop.js";
 
 assert.equal(CATALOGUE.length, 22);
 assert.equal(new Set(CATALOGUE.map((item) => item.id)).size, CATALOGUE.length);

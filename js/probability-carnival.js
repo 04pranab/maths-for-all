@@ -1,3 +1,655 @@
+/* ===== Bundled from js/probability-carnival-library.js ===== */
+window.ProbabilityCarnivalLibrary = (() => {
+  function createBag(sunCount = 3, moonCount = 1) {
+    return [
+      ...Array.from({ length: sunCount }, () => "sun"),
+      ...Array.from({ length: moonCount }, () => "moon"),
+    ];
+  }
+
+  function draw(bag) {
+    if (!Array.isArray(bag) || bag.length === 0) {
+      throw new Error("A probability machine needs at least one token.");
+    }
+
+    return bag[Math.floor(Math.random() * bag.length)];
+  }
+
+  function drawMany(bag, count) {
+    const results = [];
+
+    for (let i = 0; i < count; i += 1) {
+      results.push(draw(bag));
+    }
+
+    return results;
+  }
+
+  function counts(results) {
+    return results.reduce(
+      (total, result) => {
+        total[result] = (total[result] || 0) + 1;
+        return total;
+      },
+      { sun: 0, moon: 0 },
+    );
+  }
+
+  function dominant(count) {
+    if (count.sun === count.moon) {
+      return "equal";
+    }
+
+    return count.sun > count.moon ? "sun" : "moon";
+  }
+
+  function probability(tokens, result) {
+    if (!tokens.length) {
+      return 0;
+    }
+
+    return tokens.filter((token) => token === result).length / tokens.length;
+  }
+
+  return {
+    createBag,
+    draw,
+    drawMany,
+    counts,
+    dominant,
+    probability,
+  };
+})();
+
+;
+
+/* ===== Bundled from js/probability-carnival-stories.js ===== */
+window.ProbabilityCarnivalStories = (() => {
+  const stages = [
+    {
+      number: 1,
+      name: "Probability intuition",
+      range: "Levels 1–12",
+      note: "Learn the language of chance by making quick predictions.",
+      objective:
+        "Decide whether an outcome is impossible, certain, likely, unlikely, or equally likely.",
+    },
+    {
+      number: 2,
+      name: "Compare",
+      range: "Levels 13–24",
+      note: "Put two chances side by side and decide which is greater, smaller, or equal.",
+      objective: "Compare chances before the machine gives you an answer.",
+    },
+    {
+      number: 3,
+      name: "Build",
+      range: "Levels 25–36",
+      note: "Build machines with simple ratios and make the requested chance.",
+      objective: "Change the token mix to construct a probability machine.",
+    },
+    {
+      number: 4,
+      name: "Experiment",
+      range: "Levels 37–48",
+      note: "Run trials, collect results, and compare what happened.",
+      objective:
+        "Use experimental results as evidence rather than expecting every run to match perfectly.",
+    },
+    {
+      number: 5,
+      name: "Randomness",
+      range: "Levels 49–60",
+      note: "Investigate short runs, longer runs, theoretical probability, and sample size.",
+      objective:
+        "Explain why random results can wobble and why more trials often give a clearer picture.",
+    },
+    {
+      number: 6,
+      name: "Probability Detective",
+      range: "Levels 61–72",
+      note: "Use clues to uncover hidden machines and identify fair or unfair designs.",
+      objective: "Infer a hidden configuration from evidence and explain your reasoning.",
+    },
+    {
+      number: 7,
+      name: "Dice Lab",
+      range: "Levels 73–84",
+      note: "Explore fair dice, two-dice sums, repeated rolls, and independent events with no betting or prizes.",
+      objective:
+        "Use sample spaces, equally likely outcomes, and repeated experiments to reason about chance.",
+    },
+  ];
+  const intuitionScenarios = [
+    ["A sealed machine has no Moon tokens.", "Moon appears.", "impossible"],
+    ["A machine has only Sun tokens.", "Moon appears.", "impossible"],
+    ["A bag has 7 blue tokens and 1 red token.", "Red appears.", "unlikely"],
+    ["A bag has 1 blue token and 7 red tokens.", "Red appears.", "likely"],
+    ["A bag has 4 blue tokens and 4 red tokens.", "Blue appears.", "equally likely"],
+    ["A machine has only Moon tokens.", "Moon appears.", "certain"],
+    ["A machine has only Sun tokens.", "Sun appears.", "certain"],
+    ["A machine has 8 Sun tokens and 1 Moon token.", "Moon appears.", "unlikely"],
+    ["A machine has 1 Sun token and 8 Moon tokens.", "Moon appears.", "likely"],
+    ["A machine has 5 Sun tokens and 5 Moon tokens.", "Sun appears.", "equally likely"],
+    ["A machine has 2 Sun tokens and 6 Moon tokens.", "Sun appears.", "unlikely"],
+    ["A machine has 6 Sun tokens and 2 Moon tokens.", "Sun appears.", "likely"],
+  ];
+  const comparePairs = [
+    [[3, 1], [1, 3], "sun"],
+    [[1, 3], [3, 1], "moon"],
+    [[2, 2], [2, 2], "equal"],
+    [[4, 2], [2, 4], "sun"],
+    [[2, 4], [4, 2], "moon"],
+    [[3, 3], [1, 1], "equal"],
+    [[5, 1], [3, 3], "sun"],
+    [[1, 5], [3, 3], "moon"],
+    [[2, 2], [1, 3], "sun"],
+    [[1, 3], [2, 2], "moon"],
+    [[6, 2], [3, 3], "sun"],
+    [[3, 3], [2, 6], "moon"],
+  ];
+  const buildTargets = [
+    [1, 1, "equal"],
+    [2, 1, "sun"],
+    [3, 1, "sun"],
+    [1, 3, "moon"],
+    [2, 2, "equal"],
+    [3, 1, "sun"],
+    [1, 2, "moon"],
+    [3, 3, "equal"],
+    [1, 3, "moon"],
+    [3, 1, "sun"],
+    [2, 1, "sun"],
+    [1, 2, "moon"],
+  ];
+  const experimentTrials = [5, 10, 20, 5, 10, 20, 5, 10, 20, 20, 10, 20];
+  const randomnessSamples = [
+    [5, "short"],
+    [20, "long"],
+    [5, "short"],
+    [20, "long"],
+    [10, "medium"],
+    [20, "long"],
+    [5, "short"],
+    [20, "long"],
+    [10, "medium"],
+    [20, "long"],
+    [10, "medium"],
+    [5, "short"],
+  ];
+  const mysteryConfigs = [
+    [4, 4, "fair"],
+    [6, 2, "sun"],
+    [2, 6, "moon"],
+    [5, 3, "sun"],
+    [3, 5, "moon"],
+    [4, 4, "fair"],
+    [7, 1, "sun"],
+    [1, 7, "moon"],
+    [4, 4, "fair"],
+    [6, 2, "sun"],
+    [5, 3, "sun"],
+    [3, 5, "moon"],
+  ];
+  const diceLevels = [
+    {
+      title: "Fair die: one face",
+      prompt:
+        "A fair six-sided die is rolled once. Is rolling a 1 more likely, rolling a 6 more likely, or are they equally likely?",
+      choices: ["Rolling a 1", "Rolling a 6", "They are equally likely"],
+      answer: "They are equally likely",
+      dice: 1,
+      lesson: "Every face on a fair die has the same chance.",
+    },
+    {
+      title: "Even or odd?",
+      prompt:
+        "A fair six-sided die is rolled once. Is an even result more likely, an odd result more likely, or are they equally likely?",
+      choices: ["Even", "Odd", "They are equally likely"],
+      answer: "They are equally likely",
+      dice: 1,
+      lesson: "Three faces are even and three are odd.",
+    },
+    {
+      title: "Four faces or two?",
+      prompt: "On a fair die, which is more likely: rolling 1, 2, 3, or 4, or rolling 5 or 6?",
+      choices: ["1–4", "5–6", "They are equally likely"],
+      answer: "1–4",
+      dice: 1,
+      lesson: "Four equally likely faces beat two equally likely faces.",
+    },
+    {
+      title: "Two dice: find 7",
+      prompt: "Two fair dice are rolled. Which total is more likely: a sum of 7 or a sum of 2?",
+      choices: ["Sum 7", "Sum 2", "They are equally likely"],
+      answer: "Sum 7",
+      dice: 2,
+      lesson: "There are six ways to make 7, but only one way to make 2.",
+    },
+    {
+      title: "Two dice: 8 or 12?",
+      prompt: "Two fair dice are rolled. Which total is more likely: a sum of 8 or a sum of 12?",
+      choices: ["Sum 8", "Sum 12", "They are equally likely"],
+      answer: "Sum 8",
+      dice: 2,
+      lesson: "Several pairs make 8; only 6+6 makes 12.",
+    },
+    {
+      title: "Even totals",
+      prompt:
+        "Two fair dice are rolled. Is an even total more likely, an odd total more likely, or are they equally likely?",
+      choices: ["Even total", "Odd total", "They are equally likely"],
+      answer: "They are equally likely",
+      dice: 2,
+      lesson: "The 36 equally likely ordered pairs split evenly by total parity.",
+    },
+    {
+      title: "Big totals",
+      prompt:
+        "Two fair dice are rolled. Which is more likely: a total of 10 or more, or a total below 10?",
+      choices: ["10 or more", "Below 10", "They are equally likely"],
+      answer: "Below 10",
+      dice: 2,
+      lesson: "The sample space contains many more totals below 10.",
+    },
+    {
+      title: "One six or two sixes?",
+      prompt:
+        "Two fair dice are rolled. Which event is more likely: at least one die shows 6, or both dice show 6?",
+      choices: ["At least one 6", "Two sixes", "They are equally likely"],
+      answer: "At least one 6",
+      dice: 2,
+      lesson: "An event can have many successful outcomes even when each roll is fair.",
+    },
+    {
+      title: "Twelve rolls",
+      prompt: "A fair die is rolled 12 times. Must every face appear exactly twice?",
+      choices: ["Yes, exactly twice", "No, not guaranteed", "Only if the first roll is a 6"],
+      answer: "No, not guaranteed",
+      dice: 1,
+      lesson: "Probability describes chance, not a promise about a short run.",
+    },
+    {
+      title: "The next roll",
+      prompt:
+        "A fair die has not shown 6 for several rolls. On the next roll, is 6 now more likely than the other faces?",
+      choices: ["Yes, 6 is due", "No, all faces are still equally likely", "Only if we roll twice"],
+      answer: "No, all faces are still equally likely",
+      dice: 1,
+      lesson: "Past independent rolls do not change the probability of the next fair roll.",
+    },
+    {
+      title: "Three dice: 3 or 4?",
+      prompt: "Three fair dice are rolled. Which total is more likely: 3 or 4?",
+      choices: ["Sum 3", "Sum 4", "They are equally likely"],
+      answer: "Sum 4",
+      dice: 3,
+      lesson: "Three dice can make 4 in three ordered ways, but only one way makes 3.",
+    },
+    {
+      title: "Same or different?",
+      prompt:
+        "Two fair dice are rolled. Which event is more likely: both dice match, or the dice show different numbers?",
+      choices: ["Same number", "Different numbers", "They are equally likely"],
+      answer: "Different numbers",
+      dice: 2,
+      lesson: "There are 6 matching pairs and 30 different-number pairs.",
+    },
+  ];
+  function buildLevels() {
+    const levels = [];
+    intuitionScenarios.forEach((item, index) =>
+      levels.push({
+        id: index + 1,
+        stage: 1,
+        type: "intuition",
+        title: "Chance check",
+        prompt: item[0] + " What do you think about: " + item[1],
+        scenario: item[0],
+        outcome: item[1],
+        choices: ["impossible", "unlikely", "equally likely", "likely", "certain"],
+        answer: item[2],
+      }),
+    );
+    comparePairs.forEach((item, index) =>
+      levels.push({
+        id: 13 + index,
+        stage: 2,
+        type: "compare",
+        title: "Which chance wins?",
+        prompt:
+          "Compare the two machines. Choose which gives Sun the greater chance, Moon the greater chance, or whether they are equal.",
+        machineA: item[0],
+        machineB: item[1],
+        choices: ["A", "equal", "B"],
+        answer: item[2] === "equal" ? "equal" : item[2] === "sun" ? "A" : "B",
+      }),
+    );
+    buildTargets.forEach((item, index) =>
+      levels.push({
+        id: 25 + index,
+        stage: 3,
+        type: "build",
+        title: "Build " + item[0] + ":" + item[1],
+        prompt:
+          "Build a machine with " +
+          item[0] +
+          " Sun token" +
+          (item[0] === 1 ? "" : "s") +
+          " and " +
+          item[1] +
+          " Moon token" +
+          (item[1] === 1 ? "" : "s") +
+          ".",
+        sun: item[0],
+        moon: item[1],
+        answer: item[2],
+      }),
+    );
+    experimentTrials.forEach((trials, index) =>
+      levels.push({
+        id: 37 + index,
+        stage: 4,
+        type: "experiment",
+        title: "Run " + trials + " trials",
+        prompt: "Predict which result will be more common, then run exactly " + trials + " trials.",
+        trials,
+        bag: ["sun", "sun", "sun", "moon"],
+        answer: "sun",
+      }),
+    );
+    randomnessSamples.forEach((item, index) =>
+      levels.push({
+        id: 49 + index,
+        stage: 5,
+        type: "randomness",
+        title: "What does the sample tell us?",
+        prompt:
+          "A 3:1 machine is tested. Choose the best explanation for a " +
+          item[1] +
+          " run of " +
+          item[0] +
+          " trials.",
+        trials: item[0],
+        sampleKind: item[1],
+        choices: [
+          "Random results can vary from the exact theoretical ratio.",
+          "A short run proves the machine has changed.",
+          "Theoretical probability guarantees every run exactly.",
+        ],
+        answer: "Random results can vary from the exact theoretical ratio.",
+      }),
+    );
+    mysteryConfigs.forEach((config, index) =>
+      levels.push({
+        id: 61 + index,
+        stage: 6,
+        type: "detective",
+        title: "Crack the mystery",
+        prompt: "The machine is hidden. Collect clues, then identify the hidden design.",
+        hiddenSun: config[0],
+        hiddenMoon: config[1],
+        hiddenKind: config[2],
+        choices: ["Mostly Sun", "Fair", "Mostly Moon"],
+        answer: config[2] === "sun" ? "Mostly Sun" : config[2] === "moon" ? "Mostly Moon" : "Fair",
+      }),
+    );
+    diceLevels.forEach((item, index) =>
+      levels.push({
+        id: 73 + index,
+        stage: 7,
+        type: "dice",
+        title: item.title,
+        prompt: item.prompt,
+        choices: item.choices,
+        answer: item.answer,
+        dice: item.dice,
+        lesson: item.lesson,
+      }),
+    );
+    return levels;
+  }
+  return { stages, levels: buildLevels() };
+})();
+
+;
+
+/* ===== Bundled from js/probability-carnival-canvas.js ===== */
+window.ProbabilityCarnivalCanvas = (() => {
+  const TOKENS = {
+    sun: { label: "☀", color: "#e39a2d", light: "#fff0c8" },
+    moon: { label: "☾", color: "#74658d", light: "#eee9f7" },
+  };
+
+  function setup(canvas) {
+    const ctx = canvas.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(1, rect.width);
+    const height = Math.max(1, rect.height);
+
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+
+    return { ctx, width, height };
+  }
+
+  function roundedRect(ctx, x, y, width, height, radius) {
+    const r = Math.max(0, Math.min(radius, Math.abs(width) / 2, Math.abs(height) / 2));
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + width, y, x + width, y + height, r);
+    ctx.arcTo(x + width, y + height, x, y + height, r);
+    ctx.arcTo(x, y + height, x, y, r);
+    ctx.arcTo(x, y, x + width, y, r);
+    ctx.closePath();
+  }
+
+  function drawAwning(ctx, centerX, topY, width) {
+    const segment = width / 7;
+
+    for (let index = 0; index < 7; index += 1) {
+      ctx.fillStyle = index % 2 === 0 ? "#765a72" : "#f4b942";
+      ctx.beginPath();
+      ctx.moveTo(centerX - width / 2 + index * segment, topY);
+      ctx.lineTo(centerX - width / 2 + (index + 1) * segment, topY);
+      ctx.lineTo(centerX - width / 2 + (index + 1) * segment - 8, topY + 24);
+      ctx.quadraticCurveTo(
+        centerX - width / 2 + (index + 0.5) * segment,
+        topY + 34,
+        centerX - width / 2 + index * segment + 8,
+        topY + 24,
+      );
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+
+  function drawToken(ctx, x, y, token, radius) {
+    const item = TOKENS[token];
+
+    ctx.fillStyle = item.light;
+    ctx.beginPath();
+    ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = item.color;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#fffdf8";
+    ctx.font = "800 " + Math.round(radius * 1.15) + "px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(item.label, x, y + 1);
+  }
+
+  function drawMachine(ctx, width, height, tokens, result) {
+    const centerX = width / 2;
+    const machineWidth = Math.max(260, Math.min(width * 0.78, 430));
+    const machineHeight = Math.max(170, Math.min(height * 0.68, 250));
+    const machineX = centerX - machineWidth / 2;
+    const machineY = height * 0.18;
+
+    drawAwning(ctx, centerX, machineY - 20, machineWidth * 0.86);
+
+    ctx.fillStyle = "#fffdf8";
+    ctx.strokeStyle = "#263238";
+    ctx.lineWidth = 5;
+    roundedRect(ctx, machineX, machineY + 5, machineWidth, machineHeight, 24);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#263238";
+    ctx.font = "900 14px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("PROBABILITY ENGINE", centerX, machineY + 35);
+
+    const chamberX = machineX + 24;
+    const chamberY = machineY + 52;
+    const chamberWidth = machineWidth - 48;
+    const chamberHeight = machineHeight - 86;
+
+    ctx.fillStyle = "#edf5e9";
+    ctx.strokeStyle = "#b9ccbf";
+    ctx.lineWidth = 3;
+    roundedRect(ctx, chamberX, chamberY, chamberWidth, chamberHeight, 18);
+    ctx.fill();
+    ctx.stroke();
+
+    const maxVisible = Math.min(tokens.length, 12);
+    const columns = maxVisible <= 6 ? maxVisible : 6;
+    const rows = Math.ceil(maxVisible / columns);
+    const gapX = chamberWidth / (columns + 1);
+    const gapY = chamberHeight / (rows + 1);
+    const radius = Math.min(20, gapX * 0.27, gapY * 0.27);
+
+    for (let index = 0; index < maxVisible; index += 1) {
+      const column = index % columns;
+      const row = Math.floor(index / columns);
+      drawToken(
+        ctx,
+        chamberX + gapX * (column + 1),
+        chamberY + gapY * (row + 1),
+        tokens[index],
+        radius,
+      );
+    }
+
+    const chuteY = machineY + machineHeight - 14;
+
+    ctx.fillStyle = "#263238";
+    roundedRect(ctx, centerX - 36, chuteY, 72, 42, 10);
+    ctx.fill();
+
+    if (result) {
+      drawToken(ctx, centerX, chuteY + 21, result, 17);
+
+      ctx.fillStyle = TOKENS[result].color;
+      ctx.font = "900 22px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(result === "sun" ? "SUN!" : "MOON!", centerX, height * 0.91);
+    } else {
+      ctx.fillStyle = "#56666b";
+      ctx.font = "800 15px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Choose your move, then spin the machine!", centerX, height * 0.91);
+    }
+  }
+
+  function drawBars(ctx, width, height, values, labels) {
+    const max = Math.max(1, ...values);
+    const baseY = height - 42;
+    const barWidth = Math.min(120, width / (values.length * 2.2));
+    const gap = barWidth * 0.55;
+    const totalWidth = values.length * barWidth + (values.length - 1) * gap;
+    let x = (width - totalWidth) / 2;
+
+    values.forEach((value, index) => {
+      const barHeight = (height - 110) * (value / max);
+
+      ctx.fillStyle = index === 0 ? TOKENS.sun.color : TOKENS.moon.color;
+      roundedRect(ctx, x, baseY - barHeight, barWidth, Math.max(8, barHeight), 10);
+      ctx.fill();
+
+      ctx.fillStyle = "#263238";
+      ctx.font = "800 15px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(labels[index], x + barWidth / 2, baseY + 24);
+      ctx.fillText(String(value), x + barWidth / 2, baseY - barHeight - 10);
+
+      x += barWidth + gap;
+    });
+  }
+
+  function render(canvas, scene = {}) {
+    const { ctx, width, height } = setup(canvas);
+    const tokens = scene.tokens || ["sun", "sun", "sun", "moon"];
+
+    ctx.fillStyle = "#fffaf0";
+    ctx.fillRect(0, 0, width, height);
+
+    if (scene.kind === "bars") {
+      drawBars(ctx, width, height, scene.values || [0, 0], scene.labels || ["Sun", "Moon"]);
+      return;
+    }
+
+    drawMachine(ctx, width, height, tokens, scene.result || null);
+
+    if (scene.highlight) {
+      ctx.strokeStyle = "#f4b942";
+      ctx.lineWidth = 5;
+      ctx.setLineDash([8, 7]);
+      ctx.beginPath();
+      ctx.arc(width / 2, height * 0.5, Math.min(width, height) * 0.39, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  function animateResult(canvas, tokens, result, onComplete) {
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    const duration = reduced ? 0 : 520;
+
+    if (!duration) {
+      render(canvas, { tokens, result });
+      onComplete?.();
+      return;
+    }
+
+    const start = performance.now();
+
+    function frame(now) {
+      const progress = Math.min(1, (now - start) / duration);
+
+      render(canvas, {
+        tokens,
+        result: progress > 0.58 ? result : null,
+        highlight: progress < 0.68,
+      });
+
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        onComplete?.();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  return {
+    render,
+    animateResult,
+  };
+})();
+
+;
+
+/* ===== Bundled from js/probability-carnival.js ===== */
 window.ProbabilityCarnival = (() => {
   const { stages, levels } = window.ProbabilityCarnivalStories;
   const library = window.ProbabilityCarnivalLibrary;

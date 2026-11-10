@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
-import "../js/math-court-data.js";
+globalThis.window = globalThis;
+await import("../js/math-court.js");
+delete globalThis.window;
 
 const data = globalThis.MathCourtData;
 assert.ok(data, "MathCourtData must expose the case catalogue.");

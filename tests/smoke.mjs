@@ -1666,7 +1666,7 @@ async function main() {
         'assert(style.color!=="rgb(0, 0, 238)" && style.color!=="rgb(85, 26, 139)", "Wiki link uses a browser-default blue or purple colour.");' +
         "}" +
         'const cardButtons=Array.from(document.querySelectorAll(".game-choice"));' +
-        'assert(cardButtons.length===10, "Wiki should expose all ten currently listed games.");' +
+        'const expectedGames=["arithmetic","racing","sudoku","shape-fitting","slab","architect","bakery","shop","number-maze"]; assert(cardButtons.length===expectedGames.length, "Wiki should expose all nine active learner games."); assert(expectedGames.every(game=>cardButtons.some(card=>card.dataset.game===game)), "Wiki game map is missing an active game."); assert(!cardButtons.some(card=>card.dataset.game==="math-court"), "Shelved Math Court must not appear as an active game.");' +
         'for (const card of cardButtons) { card.click(); const detail=document.getElementById("game-detail"); assert(detail&&!detail.hidden,"Selecting "+card.dataset.game+" did not reveal game details."); assert(document.getElementById("game-detail-title").textContent.trim().length>0,"Game detail title is empty."); assert(card.getAttribute("aria-expanded")==="true","Selected game card did not expose expanded state."); assert(cardButtons.filter(other=>other.getAttribute("aria-expanded")==="true").length===1,"Game guide has more than one selected card."); }' +
         'document.getElementById("game-detail-close").click();' +
         'assert(document.getElementById("game-detail").hidden,"Close did not hide game details.");' +

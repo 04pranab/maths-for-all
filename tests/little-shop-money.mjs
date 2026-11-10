@@ -8,7 +8,7 @@ import {
   parseMoney,
   totalBasket,
   withinBudget,
-} from "../js/little-shop-money.mjs";
+} from "../js/little-shop.js";
 
 assert.equal(parseMoney("0"), 0);
 assert.equal(parseMoney("₹12"), 1200);
