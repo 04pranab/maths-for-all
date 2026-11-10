@@ -622,3 +622,28 @@ document.addEventListener(
   },
   true,
 );
+
+
+/* ---------- Consistent Escape fallback for every game ----------
+   Escape first dismisses an overlay (handled above) or a game-local
+   selection (handled by that game). If neither consumes it, Escape
+   returns to the game menu. While editing a field, it only blurs the
+   field so typed work is not discarded; a second Escape leaves the game.
+   Native buttons and forms retain their browser Enter/Space behaviour.
+   ---------------------------------------------------------------- */
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || event.defaultPrevented) return;
+  const screen = activeGameScreen();
+  if (!screen || screen.id === "screen-menu") return;
+  if (isTypingTarget(event.target)) {
+    event.preventDefault();
+    event.target.blur();
+    return;
+  }
+  event.preventDefault();
+  if (screen.id === "screen-probability-carnival" && window.ProbabilityCarnival?.close) {
+    window.ProbabilityCarnival.close();
+    return;
+  }
+  Game.goHome();
+});
