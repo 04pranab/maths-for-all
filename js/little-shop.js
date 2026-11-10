@@ -672,7 +672,7 @@ function handleClick(event) {
     const actionRoot = byId("ls-payment-action");
     if (actionRoot)
       actionRoot.innerHTML =
-        '<form class="ls-money-form" data-ls-form="more"><label for="ls-money-answer">How much more should the customer pay?</label><div class="ls-money-input-row"><span>₹</span><input id="ls-money-answer" name="amount" inputmode="decimal" autocomplete="off" placeholder="Your answer" required><button type="submit" class="ls-primary">Ask for this amount</button></div></form>';
+        '<form class="ls-money-form" data-ls-form="more"><label for="ls-money-answer">How much more should the customer pay?</label><div class="ls-money-input-row"><span>₹</span><input id="ls-money-answer" name="amount" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" spellcheck="false" aria-describedby="ls-checkout-feedback" placeholder="Your answer" required><button type="submit" class="ls-primary">Ask for this amount</button></div></form>';
     byId("ls-money-answer")?.focus();
     return;
   }
@@ -687,18 +687,25 @@ function handleClick(event) {
       return;
     changePieces.push(value);
     renderChangeDrawer();
+    const sameDenomination = byId("ls-change-denominations")?.querySelector(
+      '[data-value="' + value + '"]:not(:disabled)',
+    );
+    const nextDenomination = byId("ls-change-denominations")?.querySelector("button:not(:disabled)");
+    (sameDenomination || nextDenomination || byId("ls-cash-drawer")?.querySelector('[data-ls-action="finish-sale"]:not(:disabled)'))?.focus();
     return;
   }
   if (action === "undo-change") {
     if (phase !== "change-drawer") return;
     changePieces.pop();
     renderChangeDrawer();
+    byId("ls-change-denominations")?.querySelector("button:not(:disabled)")?.focus();
     return;
   }
   if (action === "clear-change") {
     if (phase !== "change-drawer") return;
     changePieces = [];
     renderChangeDrawer();
+    byId("ls-change-denominations")?.querySelector("button:not(:disabled)")?.focus();
     return;
   }
   if (action === "clear-basket") {
@@ -706,6 +713,7 @@ function handleClick(event) {
     basket.clear();
     renderBasket();
     setStatus("Basket emptied. Add the fruits the customer asked for.");
+    byId("ls-catalogue")?.querySelector(".ls-add:not(:disabled)")?.focus();
     return;
   }
   if (phase !== "shopping") return;
@@ -731,6 +739,14 @@ function handleClick(event) {
       return;
   }
   renderBasket();
+  if (action === "add") {
+    byId("ls-catalogue")?.querySelector('[data-item="' + id + '"][data-ls-action="add"]')?.focus();
+  } else {
+    const row = byId("ls-basket")?.querySelector('[data-basket-item="' + id + '"]');
+    const sameAction = row?.querySelector('[data-ls-action="' + action + '"]');
+    const fallback = row?.querySelector("button") || byId("ls-basket")?.querySelector(".ls-basket-line button");
+    (sameAction || fallback || byId("ls-catalogue")?.querySelector(".ls-add:not(:disabled)"))?.focus();
+  }
 }
 
 function init() {
