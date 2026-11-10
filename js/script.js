@@ -602,7 +602,6 @@ document.addEventListener(
       if (overlay && !overlay.classList.contains("hidden")) {
         event.preventDefault();
         event.stopPropagation();
-
         if (id === "controls-overlay") ControlsOverlay.close();
         else if (id === "progress-modal") Progress.close();
         else if (id === "auth-modal" && window.Auth?.close) Auth.close();
@@ -619,30 +618,37 @@ document.addEventListener(
         return;
       }
     }
+
+    const menu = document.getElementById("nav-links");
+    if (menu?.classList.contains("open") && typeof Navigation !== "undefined") {
+      event.preventDefault();
+      event.stopPropagation();
+      Navigation.closeMenu();
+      return;
+    }
+
+    const screen = activeGameScreen();
+    if (!screen || screen.id === "screen-menu") return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (isTypingTarget(event.target)) {
+      event.target.blur();
+      return;
+    }
+    if (screen.id === "screen-shape" && window.ShapePuzzle?.clearSelection?.()) return;
+    if (screen.id === "screen-sudoku" && window.Sudoku?.clearSelection?.()) return;
+    if (screen.id === "screen-slab" && window.SlabMath?.clearSelection?.()) return;
+    if (screen.id === "screen-architect" && window.ShapeArchitect?.clearSelection?.()) return;
+    if (screen.id === "screen-fraction-bakery" && window.FractionBakery?.close) {
+      window.FractionBakery.close();
+      return;
+    }
+    if (screen.id === "screen-probability-carnival" && window.ProbabilityCarnival?.close) {
+      window.ProbabilityCarnival.close();
+      return;
+    }
+    Game.goHome();
   },
   true,
 );
-
-
-/* ---------- Consistent Escape fallback for every game ----------
-   Escape first dismisses an overlay (handled above) or a game-local
-   selection (handled by that game). If neither consumes it, Escape
-   returns to the game menu. While editing a field, it only blurs the
-   field so typed work is not discarded; a second Escape leaves the game.
-   Native buttons and forms retain their browser Enter/Space behaviour.
-   ---------------------------------------------------------------- */
-document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape") return;
-  if (isTypingTarget(event.target)) {
-    event.preventDefault();
-    event.target.blur();
-    return;
-  }
-  // Let the active game's own Escape handler clear a selection first.
-  queueMicrotask(() => {
-    if (event.defaultPrevented) return;
-    const screen = activeGameScreen();
-    if (!screen || screen.id === "screen-menu") return;
-    Game.goHome();
-  });
-});
