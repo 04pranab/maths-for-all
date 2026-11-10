@@ -492,7 +492,7 @@ const Game = (function () {
     if (lastAppliedUrl === window.location.href) return;
     let slug = "";
     try { slug = decodeURIComponent(window.location.hash.slice(1)).trim().toLowerCase(); }
-    catch { slug = ""; }
+    catch { slug = "__invalid__"; }
     restoringHistory = true;
     try {
       if (!slug) {
