@@ -2000,6 +2000,9 @@ button {
 }
 
 .shape-piece {
+  font: inherit;
+  color: inherit;
+  text-align: center;
   cursor: pointer;
   padding: 10px 7px;
   border: 2px solid var(--border-strong);
