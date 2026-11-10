@@ -783,6 +783,12 @@ const ShapePuzzle = (function () {
 
     Analytics.log("shape", "level_complete", { level: currentLevel + 1, seconds: elapsedSeconds });
     show("shape-complete");
+    window.CompletionOverlay?.show({
+      title: "Shape level complete!",
+      message: "Every piece has found its place. You completed Level " + (currentLevel + 1) + ".",
+      actionLabel: currentLevel < LEVEL_DATA.length - 1 ? "Next level" : "Back to levels",
+      onContinue: currentLevel < LEVEL_DATA.length - 1 ? nextLevel : backToLevels,
+    });
     return true;
   }
 
