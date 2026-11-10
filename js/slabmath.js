@@ -437,6 +437,12 @@ const SlabMath = (function () {
     Analytics.log("slab", "round_complete", { round: roundNum, hintsUsed: 5 - hintsLeft });
     document.getElementById("slab-complete-text").textContent = `Round ${roundNum} complete`;
     show("slab-complete");
+    window.CompletionOverlay?.show({
+      title: "Round complete!",
+      message: "You brought the basket to zero. Round " + roundNum + " is complete.",
+      actionLabel: "Next round",
+      onContinue: nextRound,
+    });
   }
 
   function handleStuck() {
