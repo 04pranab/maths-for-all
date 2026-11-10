@@ -1333,9 +1333,12 @@ async function main() {
   } else {
     await focusSelector("#ls-money-answer");
     await cdp("Input.insertText", { text: answer });
+    const beforeEscape = await evaluate('({value:document.getElementById("ls-money-answer")?.value,focus:document.activeElement?.id,overlays:[...document.querySelectorAll(".modal-overlay:not(.hidden)")].map(node=>node.id)})');
+    if (beforeEscape.value !== answer || beforeEscape.focus !== "ls-money-answer") throw new Error("Little Shop money field did not accept keyboard text before Escape: " + JSON.stringify(beforeEscape));
     await pressKey("Escape", "Escape", 27);
-    const preserved = await evaluate('document.getElementById("ls-money-answer")?.value === ' + JSON.stringify(answer) + ' && document.getElementById("screen-little-shop").classList.contains("active") && document.activeElement.id !== "ls-money-answer"');
-    if (!preserved) throw new Error("Little Shop Escape should blur the money field without discarding typed input.");
+    const afterEscape = await evaluate('({value:document.getElementById("ls-money-answer")?.value,focus:document.activeElement?.id,screen:document.querySelector(".screen.active")?.id,overlays:[...document.querySelectorAll(".modal-overlay:not(.hidden)")].map(node=>node.id)})');
+    const preserved = afterEscape.value === answer && afterEscape.screen === "screen-little-shop" && afterEscape.focus !== "ls-money-answer";
+    if (!preserved) throw new Error("Little Shop Escape should blur the money field without discarding typed input: " + JSON.stringify({beforeEscape,afterEscape}));
     await focusSelector("#ls-money-answer");
     await pressKey("Enter", "Enter", 13);
     const changePhase = await evaluate('LittleShop.getState().phase === "change-drawer"');
