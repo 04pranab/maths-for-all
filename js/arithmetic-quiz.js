@@ -227,11 +227,16 @@ const Quiz = (function () {
     renderQuizActions(questionResolved);
 
     if (correct) {
-      if (advanceTimeout) clearTimeout(advanceTimeout);
-      advanceTimeout = setTimeout(() => {
+      if (advanceTimeout) {
+        clearTimeout(advanceTimeout);
         advanceTimeout = null;
-        if (questionResolved) nextQuestion();
-      }, 500);
+      }
+      window.CompletionOverlay?.show({
+        title: "Question complete!",
+        message: "That answer is correct. Take a breath, then move on to the next question.",
+        actionLabel: "Next question",
+        onContinue: nextQuestion,
+      });
     }
   }
 
