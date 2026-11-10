@@ -751,6 +751,12 @@ const NumberMaze = (() => {
         hints: state.hints,
       });
     }
+    window.CompletionOverlay?.show({
+      title: "Maze complete!",
+      message: "You filled every open square and reached each checkpoint in order. Brilliantly reasoned.",
+      actionLabel: "Next puzzle",
+      onContinue: newPuzzle,
+    });
   }
 
   function chooseCell(cell, restoreFocus) {
@@ -1071,8 +1077,17 @@ const NumberMaze = (() => {
 
   function init() {
     bindOnce();
-    if (!state.puzzle) newPuzzle();
-    else render(false);
+    // Every entry is a fresh visit to the setup menu. Never revive an
+    // unfinished board from the previous visit, including hash navigation.
+    state.puzzle = null;
+    state.path = [];
+    state.hintCell = null;
+    state.hints = 0;
+    state.completed = false;
+    state.dragging = false;
+    state.pointerId = null;
+    newPuzzle();
+    showSetup(false);
   }
 
   function stop() {
