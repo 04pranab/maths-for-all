@@ -7,3 +7,6 @@ package-lock.json
 # Keep release artifacts and binary assets out of formatting
 *.min.js
 *.min.css
+
+# Workflow files require the dedicated workflow permission to be rewritten by Actions.
+.github/workflows/**
