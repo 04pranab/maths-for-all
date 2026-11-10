@@ -1823,6 +1823,8 @@ async function main() {
   await waitFor(async () => await evaluate('document.readyState === "complete" && location.hash === "#little-shop" && document.querySelector(".screen.active")?.id === "screen-little-shop"'));
   await cdp("Page.navigate", { url: baseUrl + "/index.html#not-a-real-game" });
   await waitFor(async () => await evaluate('document.readyState === "complete" && location.hash === "" && document.querySelector(".screen.active")?.id === "screen-menu"'));
+  await cdp("Page.navigate", { url: baseUrl + "/index.html#%E0%A4%A" });
+  await waitFor(async () => await evaluate('document.readyState === "complete" && location.hash === "" && document.querySelector(".screen.active")?.id === "screen-menu"'));
 
   await cdp("Page.navigate", { url: baseUrl + "/wiki.html" });
   await waitFor(
