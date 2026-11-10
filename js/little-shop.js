@@ -617,6 +617,7 @@ function handleSubmit(event) {
     if (feedback)
       feedback.textContent =
         "Correct. You ask for " + formatMoney(answer) + " more, and the customer pays it.";
+    byId("ls-payment-action")?.querySelector("button")?.focus();
     return;
   }
   if (settlement.kind === "change") {
