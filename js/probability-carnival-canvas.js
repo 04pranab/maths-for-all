@@ -1,7 +1,7 @@
 window.ProbabilityCarnivalCanvas = (() => {
   const TOKENS = {
     sun: { label: "☀", color: "#e39a2d", light: "#fff0c8" },
-    moon: { label: "☾", color: "#74658d", light: "#eee9f7" }
+    moon: { label: "☾", color: "#74658d", light: "#eee9f7" },
   };
 
   function setup(canvas) {
@@ -43,7 +43,7 @@ window.ProbabilityCarnivalCanvas = (() => {
         centerX - width / 2 + (index + 0.5) * segment,
         topY + 34,
         centerX - width / 2 + index * segment + 8,
-        topY + 24
+        topY + 24,
       );
       ctx.closePath();
       ctx.fill();
@@ -118,7 +118,7 @@ window.ProbabilityCarnivalCanvas = (() => {
         chamberX + gapX * (column + 1),
         chamberY + gapY * (row + 1),
         tokens[index],
-        radius
+        radius,
       );
     }
 
@@ -134,11 +134,7 @@ window.ProbabilityCarnivalCanvas = (() => {
       ctx.fillStyle = TOKENS[result].color;
       ctx.font = "900 22px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(
-        result === "sun" ? "SUN!" : "MOON!",
-        centerX,
-        height * 0.91
-      );
+      ctx.fillText(result === "sun" ? "SUN!" : "MOON!", centerX, height * 0.91);
     } else {
       ctx.fillStyle = "#56666b";
       ctx.font = "800 15px system-ui, sans-serif";
@@ -180,13 +176,7 @@ window.ProbabilityCarnivalCanvas = (() => {
     ctx.fillRect(0, 0, width, height);
 
     if (scene.kind === "bars") {
-      drawBars(
-        ctx,
-        width,
-        height,
-        scene.values || [0, 0],
-        scene.labels || ["Sun", "Moon"]
-      );
+      drawBars(ctx, width, height, scene.values || [0, 0], scene.labels || ["Sun", "Moon"]);
       return;
     }
 
@@ -221,7 +211,7 @@ window.ProbabilityCarnivalCanvas = (() => {
       render(canvas, {
         tokens,
         result: progress > 0.58 ? result : null,
-        highlight: progress < 0.68
+        highlight: progress < 0.68,
       });
 
       if (progress < 1) {
@@ -236,6 +226,6 @@ window.ProbabilityCarnivalCanvas = (() => {
 
   return {
     render,
-    animateResult
+    animateResult,
   };
 })();

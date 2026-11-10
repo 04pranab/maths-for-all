@@ -2,15 +2,24 @@
 
 ## Unreleased
 
-### Number Maze · procedural puzzle generation (unreleased)
+### Project status correction
+
+- Number Maze is now on `main`; the earlier feature-branch-only status is obsolete.
+- Math Court is shelved and hidden from the learner menu. Its implementation and tests remain in the repository.
+- Probability Machine remains implemented but hidden from the learner menu.
+- Fraction Bakery and Little Shop are implemented; supervised learner/educator acceptance remains pending.
+
+### Number Maze · procedural puzzle generation (merged to main)
+
 - Added a solver-checked path puzzle that combines ordered checkpoints with the requirement to fill every open square exactly once.
 - Added seeded generation for Gentle, Steady and Stretch boards, a bounded uniqueness check and a verified constrained fallback.
 - Added three fixed guided starter boards, Explore, Daily Challenge and Challenge Climb; untimed attempts, mouse/touch tracing, keyboard arrow controls, undo, reset, hints, clear progress feedback and on-device progress. Daily replay does not inflate the solve count.
 - Added copyable, difficulty-aware puzzle codes that regenerate the exact board and reject malformed input.
 - Added generator invariant tests, game-navigation/help checks, responsive browser audit coverage, and the Number Maze entry in the Wiki game map.
-- Automated checks are being run on the feature branch. Physical-device, assistive-technology and learner/educator evaluation remain separate review steps.
+- The implementation is present on `main` and appears in the learner menu. Physical-device, assistive-technology and learner/educator evaluation remain separate review steps.
 
 ### UI consistency and pre-next-game stabilization
+
 - Added a final-loaded interaction stylesheet so inline links use the site's indigo palette, visited links do not turn browser-purple, article links stay underlined at rest, navigation remains navigation-like, and keyboard focus is clearly visible.
 - Added programmatic labels to the arithmetic answer field, racing answer field and racing player-name field.
 - Reworded feedback to keep the focus on learning and exploring rather than framing an answer as a personal failure; changed the learner promise that had been flagged as potentially diminishing.
@@ -20,11 +29,13 @@
 - This remains an engineering and browser-audit milestone. Physical device, assistive-technology and learner/educator evaluation remains necessary.
 
 ### Wiki project background
+
 - Kept the project's dedication and educational inspiration on the public Wiki, with clear independence and non-endorsement language.
 - Documented SSSVV’s published guiding principle, inclusive-education approach and role as an educational reference, while clearly stating that Maths for All is independent and does not claim official affiliation, review or endorsement.
 - Added links to official Sri Sathya Sai and SSSVV source material on the public Wiki.
 
 ### Little Shop
+
 - Widened the Little Shop counter and gave large desktop screens a five-column fruit shelf, leaving room for more choices without shrinking labels. Increased fruit names, prices, order text, and feedback to child-readable sizes while keeping spacing tight and controls easy to tap. Responsive checks continue to guard against horizontal overflow and undersized controls.
 - Diversified ambiguous fruit symbols for guava, papaya and jackfruit.
 - Replaced the planned 100-level quiz and level map with an open-ended fruit-counter cashier loop.
@@ -34,6 +45,7 @@
 - Added deterministic property checks for 1,000 generated customer orders and browser coverage for all payment outcomes and three viewport sizes. Automated checks do not replace physical learner review.
 
 ### Fraction Bakery
+
 - Expanded the game from 72 to 100 levels across eight stages: Slice & Serve, Count the Order, Bigger Bite, Equal Recipe, Mix the Batter, Bake-off, Chef's Counter, and Grand Bake.
 - Added more varied challenge types, including simplification, ordering three fractions, missing-count puzzles, differences, and mixed-number conversion.
 - Preserved generated denominators where piece-counting difficulty depends on the number of equal portions.
@@ -47,11 +59,13 @@
 - Verified the audit in GitHub Actions alongside syntax, PostgreSQL connectivity, browser stress, production auth API, and research gateway checks.
 
 ### Probability Machine
+
 - Retained the 84-level implementation and non-gambling Dice Lab; the game card is temporarily hidden from the visible menu during Fraction Bakery review.
 
 ## 2.0.4 · 2026-10-06 · Geometry & Physical Learning Hardening
 
 ### Shape Architect
+
 - Added 100 deterministic freeform geometry levels based on recognizable reference pictures.
 - Added real geometric primitives including circles, squares, rectangles, triangles, trapeziums, parallelograms, diamonds, pentagons, hexagons, ovals, semicircles, and right triangles.
 - Kept all 100 levels immediately available for testing.
@@ -68,6 +82,7 @@
 - Refreshed Shape Architect runtime asset versions so the deployed level selector cannot remain hidden behind stale browser assets.
 
 ### Physical-learning hardening
+
 - Retained the enlarged 640px Sudoku board for easier physical reading.
 - Retained the separate Sudoku keypad/action column and responsive single-column fallback.
 - Preserved keyboard-friendly controls, visible focus states, and game-specific help.
@@ -76,6 +91,7 @@
 - Preserved the boundary that authentication/account controls are not represented as production authentication during physical-game testing.
 
 ### Engineering and documentation
+
 - Aligned `VERSION` and `package.json` at 2.0.4.
 - Updated the README to describe the actual current interface and Shape Architect behavior.
 - Restored an explicit AI-assisted development record for transparent project provenance.
@@ -84,6 +100,7 @@
 ## 2.0.3 · 2026-10-05
 
 ### Physical-testing hardening
+
 - Enlarged the Sudoku board from 600px to 640px on desktop.
 - Increased Sudoku number typography for easier physical reading.
 - Preserved the separate 260px keypad/action column.
@@ -95,6 +112,7 @@
 ## 2.0.2 · 2026-10-05
 
 ### Physical-testing baseline
+
 - Current stable physical-testing baseline for the educational application.
 - Authentication and account controls remain temporarily disabled during physical gameplay testing.
 - Privacy and research-data policy remains available without login.
@@ -104,6 +122,7 @@
 ## 2.0.1 · 2026-09-25
 
 ### Privacy, accessibility, security, and reliability
+
 - Kept research collection strictly opt-in and the initial consent choice non-dismissible until Yes or No.
 - Added unauthenticated access to the privacy/data policy.
 - Added modal focus handling, Escape dismissal for dismissible overlays, and keyboard focus containment.
@@ -114,6 +133,7 @@
 ## 2.0.0 · 2026-09-24
 
 ### Stable educational baseline
+
 - Arithmetic Quiz with learning-focused feedback, retries, hints, explanations, and practice mastery tracking
 - Math Racing
 - Slab Maths with slab values from 1 through 15
@@ -128,7 +148,9 @@ v2.0.0 remains the regression reference for the educational application.
 ## Future milestones
 
 ### v2.5.0
+
 Production authentication, server-side sessions, email verification, Google OAuth, protected resources, and authentication regression tests.
 
 ### v3.0.0
+
 Research database and consent-aware research infrastructure after the authenticated milestone.

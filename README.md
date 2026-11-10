@@ -10,9 +10,9 @@ Maths for All is an independent mathematics learning project inspired by inclusi
 
 **v2.0.4 · Geometry & Physical Learning Hardening**
 
-The v2.0.4 release remains the stable release line. The Number Maze implementation is under review on the feature branch: it combines ordered checkpoint path-finding with space-filling constraints, procedural generation, and a bounded solver that rejects boards unless they have exactly one valid route. Fraction Bakery physical review remains an open quality gate. Probability Machine remains implemented, but its card is temporarily hidden from the visible game menu.
+The repository's current implementation includes Number Maze on `main`, with seeded procedural boards and a bounded uniqueness check. Fraction Bakery and Little Shop are implemented but still need supervised learner/educator acceptance. Probability Machine remains in the codebase but is hidden from the visible menu. Math Court is shelved and hidden from the learner menu; its code and tests are retained, not presented as an active game.
 
-Authentication and account controls remain temporarily disabled while physical game mechanics are being tested.
+Authentication and account controls remain disabled in the learner-facing prototype. The repository contains backend authentication code and PostgreSQL migrations, but this is not a claim that production authentication is enabled or deployed.
 
 ## Features
 
@@ -23,7 +23,7 @@ Authentication and account controls remain temporarily disabled while physical g
 - 🏗️ Shape Architect with 100 validated, timed picture-building levels
 - 🥐 Fraction Bakery with 100 randomized levels across eight stages
 - 🧺 Slab Maths
-- 🧩 Number Maze with procedurally generated unique-solution path puzzles (feature branch, not yet released)
+- 🧩 Number Maze with procedurally generated unique-solution path puzzles
 - 📱 Responsive desktop and mobile layouts
 - ⌨️ Keyboard-friendly controls and visible focus states
 - ❓ Game-specific How to play instructions
@@ -72,11 +72,11 @@ The current release provides:
 
 The silhouette is a guide, not another puzzle layer. The learner still has to understand the shapes and arrange the pieces.
 
-## Number Maze (under development)
+## Number Maze
 
 Number Maze combines a numbered path puzzle with a space-filling constraint. The learner starts at checkpoint 1, visits later checkpoints in ascending order, moves only between orthogonally adjacent open squares, never revisits a square, and must fill every open square before finishing at the final checkpoint.
 
-The current feature branch includes:
+The current `main` implementation includes:
 
 - seeded procedural generation for Gentle (4×4), Steady (5×5), and Stretch (6×6) boards;
 - a bounded backtracking solver that verifies a unique solution before a puzzle is shown;
@@ -87,7 +87,15 @@ The current feature branch includes:
 - copyable puzzle codes that reload the exact same seeded board, with validation for malformed codes;
 - automated generator invariant tests and browser smoke/responsive coverage.
 
-“Unlimited” means the learner can keep asking for new generated puzzles rather than exhausting a fixed level list. Puzzle seeds are finite machine values, so this should be understood as effectively endless replay, not a mathematical claim that every possible board is guaranteed unique forever. Desktop/mobile rendering and interaction tests still need to pass in CI, and physical device, assistive-technology and learner/educator evaluation are not yet claimed.
+“Unlimited” means the learner can keep asking for new generated puzzles rather than exhausting a fixed level list. Puzzle seeds are finite machine values, so this should be understood as effectively endless replay, not a mathematical claim that every possible board is guaranteed unique forever. The latest recorded CI run for `main` passed on 31 October 2026. Physical-device, assistive-technology and learner/educator evaluation are still separate acceptance steps.
+
+## Little Shop
+
+Little Shop is an open-ended fruit-counter activity. Learners assemble customer orders, check the bill, handle underpayment or exact payment, calculate change for overpayment, and serve the next customer. Currency calculations use integer paise internally; the activity uses simulated money and has no real payment flow. Automated cashier and layout checks exist, but supervised learner/educator review remains pending.
+
+## Shelved and hidden games
+
+Probability Machine remains implemented (84 levels across seven stages) but its card is hidden from the learner menu. Math Court is shelved at the project owner's direction and hidden from the learner menu; its implementation and tests remain in the repository for possible future review. Neither should be described as an active release game.
 
 ## Current presentation
 
@@ -116,6 +124,7 @@ Research collection is **opt-in**.
 Logging in or creating an account is not research consent. The application must receive an explicit Yes before research events can be recorded.
 
 If a learner chooses No:
+
 - research events are blocked;
 - locally stored research events are removed;
 - normal educational gameplay continues;
@@ -142,6 +151,7 @@ Open `http://localhost:8000`.
 ## Testing
 
 The repository includes a headless Chromium smoke/stress suite covering:
+
 - JavaScript syntax;
 - required DOM nodes;
 - static-resource availability;

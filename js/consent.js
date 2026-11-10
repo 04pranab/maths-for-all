@@ -3,8 +3,8 @@
    Strict opt-in gate for all research-style analytics.
    ============================================================= */
 const ResearchConsent = (function () {
-  const KEY = 'mfa_research_consent_v1';
-  const ANALYTICS_KEY = 'mfa_analytics_v1';
+  const KEY = "mfa_research_consent_v1";
+  const ANALYTICS_KEY = "mfa_analytics_v1";
   let returnFocus = null;
 
   function focusFirst(selector) {
@@ -16,63 +16,66 @@ const ResearchConsent = (function () {
 
   function get() {
     const value = localStorage.getItem(KEY);
-    return value === 'yes' || value === 'no' ? value : null;
+    return value === "yes" || value === "no" ? value : null;
   }
 
   function isAllowed() {
-    return get() === 'yes';
+    return get() === "yes";
   }
 
   function purgeResearchData() {
-    if (typeof ResearchEventGateway !== 'undefined') {
+    if (typeof ResearchEventGateway !== "undefined") {
       ResearchEventGateway.clear();
       return;
     }
-    try { localStorage.removeItem(ANALYTICS_KEY); } catch (e) {}
+    try {
+      localStorage.removeItem(ANALYTICS_KEY);
+    } catch (e) {}
   }
 
   function set(value) {
-    if (value !== 'yes' && value !== 'no') return;
+    if (value !== "yes" && value !== "no") return;
     localStorage.setItem(KEY, value);
-    if (value === 'no') purgeResearchData();
+    if (value === "no") purgeResearchData();
     renderStatus();
   }
 
   function open() {
     returnFocus = document.activeElement;
     render();
-    document.getElementById('research-consent-modal').classList.remove('hidden');
-    focusFirst('#research-consent-modal');
+    document.getElementById("research-consent-modal").classList.remove("hidden");
+    focusFirst("#research-consent-modal");
   }
 
   function close() {
-    const modal = document.getElementById('research-consent-modal');
+    const modal = document.getElementById("research-consent-modal");
     if (!modal) return;
-    modal.classList.add('hidden');
-    if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+    modal.classList.add("hidden");
+    if (returnFocus && typeof returnFocus.focus === "function") returnFocus.focus();
     returnFocus = null;
   }
 
   function renderStatus() {
-    const el = document.getElementById('research-consent-status');
+    const el = document.getElementById("research-consent-status");
     if (!el) return;
     const value = get();
-    el.textContent = value === 'yes'
-      ? 'Research collection: allowed'
-      : value === 'no'
-        ? 'Research collection: off'
-        : 'Research collection: not chosen';
+    el.textContent =
+      value === "yes"
+        ? "Research collection: allowed"
+        : value === "no"
+          ? "Research collection: off"
+          : "Research collection: not chosen";
   }
 
   function render() {
     const value = get();
-    const modal = document.getElementById('research-consent-modal');
+    const modal = document.getElementById("research-consent-modal");
     if (!modal) return;
     modal.innerHTML = `
       <div class="consent-card" role="dialog" aria-modal="true" aria-labelledby="research-consent-title">
-        ${value ? '<button class="consent-close" onclick="ResearchConsent.close()" aria-label="Close research privacy dialog">×</button>' : ''}
+        ${value ? '<button class="consent-close" onclick="ResearchConsent.close()" aria-label="Close research privacy dialog">×</button>' : ""}
         <div class="consent-icon">🔐</div>
-        <h2 id="research-consent-title">${value ? 'Research data preference' : 'Your research data choice'}</h2>
+        <h2 id="research-consent-title">${value ? "Research data preference" : "Your research data choice"}</h2>
         <p class="consent-lead">Your account and your research choice are separate. We will never treat logging in as permission to collect research data.</p>
 
         <div class="consent-columns">
@@ -113,17 +116,17 @@ const ResearchConsent = (function () {
   function choose(value) {
     set(value);
     close();
-    if (window.Progress && typeof Progress.render === 'function') Progress.render();
+    if (window.Progress && typeof Progress.render === "function") Progress.render();
   }
 
   function showPolicy() {
-    window.open('docs/v3/research-data-policy.html', '_blank', 'noopener');
+    window.open("docs/v3/research-data-policy.html", "_blank", "noopener");
   }
 
   function init() {
     // Legacy v2 analytics were created before explicit research consent.
     // They are removed unless the user has explicitly opted in.
-    if (get() !== 'yes') purgeResearchData();
+    if (get() !== "yes") purgeResearchData();
     renderStatus();
     // Consent remains available from the persistent Privacy & data control.
   }
@@ -144,7 +147,7 @@ const ResearchConsent = (function () {
 //   let authReturnFocus = null;
 //   let profileReturnFocus = null;
 //   let pendingMessage = '';
-// 
+//
 //   async function request(path, options = {}) {
 //     const response = await fetch(API + path, {
 //       credentials: 'same-origin',
@@ -155,10 +158,10 @@ const ResearchConsent = (function () {
 //     if (!response.ok) throw new Error(payload.error || 'Unable to complete the request.');
 //     return payload;
 //   }
-// 
+//
 //   function account() { return currentUser; }
 //   function isLoggedIn() { return !!currentUser; }
-// 
+//
 //   function clearAuthQuery() {
 //     const url = new URL(window.location.href);
 //     url.searchParams.delete('verify');
@@ -166,14 +169,14 @@ const ResearchConsent = (function () {
 //     url.searchParams.delete('google');
 //     window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
 //   }
-// 
+//
 //   function open(mode) {
 //     authReturnFocus = document.activeElement;
 //     render(mode || 'login');
 //     document.getElementById('auth-modal').classList.remove('hidden');
 //     setTimeout(() => (document.querySelector('#auth-modal input') || document.querySelector('#auth-modal button:not(.consent-close)'))?.focus(), 0);
 //   }
-// 
+//
 //   function close() {
 //     const modal = document.getElementById('auth-modal');
 //     if (!modal) return;
@@ -181,11 +184,11 @@ const ResearchConsent = (function () {
 //     if (authReturnFocus && typeof authReturnFocus.focus === 'function') authReturnFocus.focus();
 //     authReturnFocus = null;
 //   }
-// 
+//
 //   function render(mode, message = '') {
 //     const modal = document.getElementById('auth-modal');
 //     if (!modal) return;
-// 
+//
 //     if (mode === 'reset') {
 //       modal.innerHTML = `
 //         <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
@@ -202,7 +205,7 @@ const ResearchConsent = (function () {
 //         </div>`;
 //       return;
 //     }
-// 
+//
 //     if (mode === 'reset-confirm') {
 //       modal.innerHTML = `
 //         <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
@@ -219,7 +222,7 @@ const ResearchConsent = (function () {
 //         </div>`;
 //       return;
 //     }
-// 
+//
 //     const login = mode !== 'signup';
 //     modal.innerHTML = `
 //       <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
@@ -232,7 +235,7 @@ const ResearchConsent = (function () {
 //         <h2 id="auth-title">${login ? 'Log in to Maths for All' : 'Create your Maths for All account'}</h2>
 //         <p class="consent-lead">${login ? 'Use your username and password to continue.' : 'Create your learner account with a username, email, and password.'}</p>
 //         ${message ? '<p class="consent-note"><strong>' + Utils.escapeHtml(message) + '</strong></p>' : ''}
-// 
+//
 //         <form onsubmit="return Auth.submit(event, '${login ? 'login' : 'signup'}')">
 //           ${!login ? `
 //             <label>Username<input id="auth-username" type="text" autocomplete="username" minlength="3" maxlength="30" required placeholder="Choose a username"></label>
@@ -246,12 +249,12 @@ const ResearchConsent = (function () {
 //           <p id="auth-error" class="auth-error" role="alert"></p>
 //           <button class="consent-btn primary" type="submit">${login ? 'Log in' : 'Create account'}</button>
 //         </form>
-// 
+//
 //         ${login ? `
 //           <button class="auth-link" type="button" onclick="Auth.open('reset')">Forgot password?</button>
 //           <button class="auth-link" type="button" onclick="Auth.resendVerification()">Resend verification email</button>
 //         ` : ''}
-// 
+//
 //         <div class="auth-divider"><span>or</span></div>
 //         <button class="google-auth-btn" type="button" onclick="Auth.googleSignIn()">
 //           <span class="google-mark" aria-hidden="true">G</span>
@@ -261,7 +264,7 @@ const ResearchConsent = (function () {
 //         <p class="consent-note"><strong>Privacy:</strong> account information is separate from research data. Signing in does not grant research consent.</p>
 //       </div>`;
 //   }
-// 
+//
 //   async function submit(event, mode) {
 //     event.preventDefault();
 //     const error = document.getElementById('auth-error');
@@ -269,7 +272,7 @@ const ResearchConsent = (function () {
 //     try {
 //       const identifier = document.getElementById('auth-username').value.trim();
 //       if (!identifier) throw new Error('Enter your username or email.');
-// 
+//
 //       if (mode === 'signup') {
 //         const email = document.getElementById('auth-email').value.trim();
 //         const password = document.getElementById('auth-password').value;
@@ -287,7 +290,7 @@ const ResearchConsent = (function () {
 //         setTimeout(() => document.querySelector('#auth-modal input')?.focus(), 0);
 //         return false;
 //       }
-// 
+//
 //       const password = document.getElementById('auth-password').value;
 //       const result = await request('/login', {
 //         method: 'POST',
@@ -302,7 +305,7 @@ const ResearchConsent = (function () {
 //     }
 //     return false;
 //   }
-// 
+//
 //   async function resendVerification() {
 //     const input = document.getElementById('auth-username');
 //     const error = document.getElementById('auth-error');
@@ -322,7 +325,7 @@ const ResearchConsent = (function () {
 //       error.textContent = e.message || 'Unable to resend the verification email.';
 //     }
 //   }
-// 
+//
 //   async function requestReset(event) {
 //     event.preventDefault();
 //     const error = document.getElementById('auth-error');
@@ -337,7 +340,7 @@ const ResearchConsent = (function () {
 //     }
 //     return false;
 //   }
-// 
+//
 //   async function confirmReset(event) {
 //     event.preventDefault();
 //     const error = document.getElementById('auth-error');
@@ -347,7 +350,7 @@ const ResearchConsent = (function () {
 //       error.textContent = 'The passwords do not match.';
 //       return false;
 //     }
-// 
+//
 //     const token = new URL(window.location.href).searchParams.get('reset');
 //     try {
 //       await request('/password-reset/confirm', {
@@ -362,7 +365,7 @@ const ResearchConsent = (function () {
 //     }
 //     return false;
 //   }
-// 
+//
 //   async function handleAuthLink() {
 //     const url = new URL(window.location.href);
 //     const googleResult = url.searchParams.get('google');
@@ -378,10 +381,10 @@ const ResearchConsent = (function () {
 //       open('login');
 //       return;
 //     }
-// 
+//
 //     const verifyToken = url.searchParams.get('verify');
 //     const resetToken = url.searchParams.get('reset');
-// 
+//
 //     if (verifyToken) {
 //       try {
 //         await request('/verify-email', { method: 'POST', body: JSON.stringify({ token: verifyToken }) });
@@ -394,30 +397,30 @@ const ResearchConsent = (function () {
 //       open('login');
 //       return;
 //     }
-// 
+//
 //     if (resetToken) {
 //       open('reset-confirm');
 //     }
 //   }
-// 
+//
 //   function googleSignIn() {
 //     window.location.assign('/api/auth/google/start');
 //   }
-// 
+//
 //   function renderAccountButton() {
 //     const el = document.getElementById('auth-actions');
 //     if (!el) return;
-// 
+//
 //     if (!isLoggedIn()) {
 //       el.innerHTML = `
 //         <button class="nav-policy" onclick="ResearchConsent.showPolicy()" aria-label="Privacy and research data policy">Privacy &amp; data</button>
 //         <button class="nav-login" onclick="Auth.open('login')">Log in</button>`;
 //       return;
 //     }
-// 
+//
 //     const username = currentUser.username || 'Learner';
 //     const initial = username.charAt(0).toUpperCase();
-// 
+//
 //     el.innerHTML = `
 //       <button class="nav-account-trigger" onclick="Auth.toggleAccountMenu()" aria-expanded="false" aria-controls="account-menu">
 //         <span class="nav-avatar">${initial}</span>
@@ -437,7 +440,7 @@ const ResearchConsent = (function () {
 //         <button class="account-menu-item logout" onclick="Auth.logout()">Log out</button>
 //       </div>`;
 //   }
-// 
+//
 //   function toggleAccountMenu() {
 //     const menu = document.getElementById('account-menu');
 //     const trigger = document.querySelector('.nav-account-trigger');
@@ -446,21 +449,21 @@ const ResearchConsent = (function () {
 //     menu.classList.toggle('hidden', !opening);
 //     if (trigger) trigger.setAttribute('aria-expanded', String(opening));
 //   }
-// 
+//
 //   function closeAccountMenu() {
 //     const menu = document.getElementById('account-menu');
 //     const trigger = document.querySelector('.nav-account-trigger');
 //     if (menu) menu.classList.add('hidden');
 //     if (trigger) trigger.setAttribute('aria-expanded', 'false');
 //   }
-// 
+//
 //   async function logout() {
 //     try { await request('/logout', { method: 'POST', body: '{}' }); } catch {}
 //     currentUser = null;
 //     closeAccountMenu();
 //     renderAccountButton();
 //   }
-// 
+//
 //   function openProfile() {
 //     if (!currentUser) return;
 //     profileReturnFocus = document.activeElement;
@@ -486,7 +489,7 @@ const ResearchConsent = (function () {
 //     modal.classList.remove('hidden');
 //     setTimeout(() => modal.querySelector('button')?.focus(), 0);
 //   }
-// 
+//
 //   function closeProfile() {
 //     const modal = document.getElementById('account-profile-modal');
 //     if (!modal) return;
@@ -494,7 +497,7 @@ const ResearchConsent = (function () {
 //     if (profileReturnFocus && typeof profileReturnFocus.focus === 'function') profileReturnFocus.focus();
 //     profileReturnFocus = null;
 //   }
-// 
+//
 //   async function init() {
 //     renderAccountButton();
 //     try {
@@ -504,7 +507,7 @@ const ResearchConsent = (function () {
 //       currentUser = null;
 //     }
 //     renderAccountButton();
-// 
+//
 //     const googleResult = new URL(window.location.href).searchParams.get('google');
 //     if (googleResult) {
 //       clearAuthQuery();
@@ -512,7 +515,7 @@ const ResearchConsent = (function () {
 //         pendingMessage = 'Google sign-in could not be completed. Please try again.';
 //       }
 //     }
-// 
+//
 //     if (currentUser && ResearchConsent.get() === null) ResearchConsent.open();
 //     if (!currentUser) {
 //       if (pendingMessage) {
@@ -527,39 +530,39 @@ const ResearchConsent = (function () {
 //       }
 //     }
 //   }
-// 
+//
 //   return {
 //     open, close, submit, googleSignIn, logout, isLoggedIn, init,
 //     toggleAccountMenu, closeAccountMenu, renderAccountButton,
 //     openProfile, closeProfile, account, resendVerification, requestReset, confirmReset
 //   };
 // })();
-// 
-// 
+//
+//
 
 /* =============================================================
    PRIMARY NAVIGATION
    ============================================================= */
 const Navigation = (function () {
   function closeMenu() {
-    const menu = document.getElementById('nav-links');
-    const toggle = document.getElementById('nav-menu-toggle');
-    if (menu) menu.classList.remove('open');
+    const menu = document.getElementById("nav-links");
+    const toggle = document.getElementById("nav-menu-toggle");
+    if (menu) menu.classList.remove("open");
     if (toggle) {
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Open navigation menu');
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Open navigation menu");
     }
   }
 
   function toggleMenu() {
-    const menu = document.getElementById('nav-links');
-    const toggle = document.getElementById('nav-menu-toggle');
+    const menu = document.getElementById("nav-links");
+    const toggle = document.getElementById("nav-menu-toggle");
     if (!menu) return;
-    const opening = !menu.classList.contains('open');
-    menu.classList.toggle('open', opening);
+    const opening = !menu.classList.contains("open");
+    menu.classList.toggle("open", opening);
     if (toggle) {
-      toggle.setAttribute('aria-expanded', String(opening));
-      toggle.setAttribute('aria-label', opening ? 'Close navigation menu' : 'Open navigation menu');
+      toggle.setAttribute("aria-expanded", String(opening));
+      toggle.setAttribute("aria-label", opening ? "Close navigation menu" : "Open navigation menu");
     }
   }
 
@@ -575,15 +578,15 @@ const Navigation = (function () {
 
   function howToPlay() {
     closeMenu();
-    if (typeof ControlsOverlay === 'undefined') return;
+    if (typeof ControlsOverlay === "undefined") return;
     const activeGame = {
-      'screen-quiz': 'quiz',
-      'screen-race': 'race',
-      'screen-sudoku': 'sudoku',
-      'screen-shape': 'shape',
-      'screen-slab': 'slab'
+      "screen-quiz": "quiz",
+      "screen-race": "race",
+      "screen-sudoku": "sudoku",
+      "screen-shape": "shape",
+      "screen-slab": "slab",
     };
-    const screen = document.querySelector('.screen.active');
+    const screen = document.querySelector(".screen.active");
     const key = screen ? activeGame[screen.id] : null;
     if (key) ControlsOverlay.forceShow(key);
   }
@@ -591,15 +594,14 @@ const Navigation = (function () {
   return { closeMenu, toggleMenu, home, progress, howToPlay };
 })();
 
-document.addEventListener('click', (event) => {
-  const account = document.getElementById('auth-actions');
+document.addEventListener("click", (event) => {
+  const account = document.getElementById("auth-actions");
   if (account && !account.contains(event.target)) return;
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   ResearchConsent.init();
 });
-
 
 /* =============================================================
    KEYBOARD ACCESSIBILITY
@@ -607,14 +609,14 @@ document.addEventListener('DOMContentLoaded', () => {
    remains mandatory until an explicit Yes or No choice exists.
    Tab and Shift+Tab stay inside the active modal.
    ============================================================= */
-document.addEventListener('keydown', (event) => {
-  const visible = [...document.querySelectorAll('.modal-overlay:not(.hidden)')];
+document.addEventListener("keydown", (event) => {
+  const visible = [...document.querySelectorAll(".modal-overlay:not(.hidden)")];
   const modal = visible[visible.length - 1];
 
-  if (event.key === 'Escape') {
+  if (event.key === "Escape") {
     if (!modal) return;
 
-    if (modal.id === 'research-consent-modal' && ResearchConsent.get() === null) {
+    if (modal.id === "research-consent-modal" && ResearchConsent.get() === null) {
       event.preventDefault();
       event.stopPropagation();
       return;
@@ -623,19 +625,38 @@ document.addEventListener('keydown', (event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    if (modal.id === 'auth-modal' && typeof Auth !== 'undefined' && typeof Auth.close === 'function') Auth.close();
-    else if (modal.id === 'research-consent-modal') ResearchConsent.close();
-    else if (modal.id === 'account-profile-modal' && typeof Auth !== 'undefined' && typeof Auth.closeProfile === 'function') Auth.closeProfile();
-    else if (modal.id === 'controls-overlay' && typeof ControlsOverlay !== 'undefined') ControlsOverlay.close();
-    else if (modal.id === 'progress-modal' && typeof Progress !== 'undefined' && typeof Progress.close === 'function') Progress.close();
-    else modal.classList.add('hidden');
+    if (
+      modal.id === "auth-modal" &&
+      typeof Auth !== "undefined" &&
+      typeof Auth.close === "function"
+    )
+      Auth.close();
+    else if (modal.id === "research-consent-modal") ResearchConsent.close();
+    else if (
+      modal.id === "account-profile-modal" &&
+      typeof Auth !== "undefined" &&
+      typeof Auth.closeProfile === "function"
+    )
+      Auth.closeProfile();
+    else if (modal.id === "controls-overlay" && typeof ControlsOverlay !== "undefined")
+      ControlsOverlay.close();
+    else if (
+      modal.id === "progress-modal" &&
+      typeof Progress !== "undefined" &&
+      typeof Progress.close === "function"
+    )
+      Progress.close();
+    else modal.classList.add("hidden");
     return;
   }
 
-  if (!modal || event.key !== 'Tab') return;
+  if (!modal || event.key !== "Tab") return;
 
-  const focusable = [...modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
-    .filter(el => el.offsetParent !== null);
+  const focusable = [
+    ...modal.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ].filter((el) => el.offsetParent !== null);
 
   if (!focusable.length) return;
 
@@ -651,29 +672,29 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-document.addEventListener('keydown', (event) => {
-  if (event.key !== 'Escape' || document.querySelector('.modal-overlay:not(.hidden)')) return;
-  if (typeof Navigation !== 'undefined') {
-    const menu = document.getElementById('nav-links');
-    if (menu && menu.classList.contains('open')) {
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || document.querySelector(".modal-overlay:not(.hidden)")) return;
+  if (typeof Navigation !== "undefined") {
+    const menu = document.getElementById("nav-links");
+    if (menu && menu.classList.contains("open")) {
       Navigation.closeMenu();
       return;
     }
   }
 
-  const screen = document.querySelector('.screen.active');
-  if (!screen || screen.id === 'screen-menu') return;
+  const screen = document.querySelector(".screen.active");
+  if (!screen || screen.id === "screen-menu") return;
 
-  if (screen.id === 'screen-shape' && typeof ShapePuzzle !== 'undefined') {
-    if (typeof ShapePuzzle.clearSelection === 'function' && ShapePuzzle.clearSelection()) return;
+  if (screen.id === "screen-shape" && typeof ShapePuzzle !== "undefined") {
+    if (typeof ShapePuzzle.clearSelection === "function" && ShapePuzzle.clearSelection()) return;
   }
 
-  if (screen.id === 'screen-sudoku' && typeof Sudoku !== 'undefined') {
-    if (typeof Sudoku.clearSelection === 'function' && Sudoku.clearSelection()) return;
+  if (screen.id === "screen-sudoku" && typeof Sudoku !== "undefined") {
+    if (typeof Sudoku.clearSelection === "function" && Sudoku.clearSelection()) return;
   }
 
-  if (screen.id === 'screen-slab' && typeof SlabMath !== 'undefined') {
-    if (typeof SlabMath.clearSelection === 'function' && SlabMath.clearSelection()) return;
+  if (screen.id === "screen-slab" && typeof SlabMath !== "undefined") {
+    if (typeof SlabMath.clearSelection === "function" && SlabMath.clearSelection()) return;
   }
 
   /* Escape without an overlay is intentionally a no-op. It must never

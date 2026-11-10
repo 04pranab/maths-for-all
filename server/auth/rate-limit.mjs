@@ -6,13 +6,13 @@ const RULES = {
   resendVerification: { limit: 5, windowMs: WINDOW_MS },
   passwordResetRequest: { limit: 5, windowMs: WINDOW_MS },
   passwordResetConfirm: { limit: 10, windowMs: WINDOW_MS },
-  verifyEmail: { limit: 10, windowMs: WINDOW_MS }
+  verifyEmail: { limit: 10, windowMs: WINDOW_MS },
 };
 
 const buckets = new Map();
 
 function clientAddress(req) {
-  return req.socket?.remoteAddress || 'unknown';
+  return req.socket?.remoteAddress || "unknown";
 }
 
 function cleanup(now) {
@@ -28,7 +28,7 @@ export function checkRateLimit(req, action) {
   const now = Date.now();
   cleanup(now);
 
-  const id = action + ':' + clientAddress(req);
+  const id = action + ":" + clientAddress(req);
   let bucket = buckets.get(id);
 
   if (!bucket || now - bucket.startedAt >= rule.windowMs) {
@@ -44,7 +44,7 @@ export function checkRateLimit(req, action) {
 
   return {
     allowed: false,
-    retryAfterSeconds: Math.max(1, Math.ceil((bucket.startedAt + rule.windowMs - now) / 1000))
+    retryAfterSeconds: Math.max(1, Math.ceil((bucket.startedAt + rule.windowMs - now) / 1000)),
   };
 }
 

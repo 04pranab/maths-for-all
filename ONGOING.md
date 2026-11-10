@@ -3,12 +3,12 @@
 **Repository:** `04pranab/maths-for-all`  
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
-**Current focus:** Number Maze procedural-generation implementation and CI review; Fraction Bakery physical review remains open  
+**Current focus:** stabilize the active learner-facing games; complete supervised review of Fraction Bakery and Little Shop; keep Number Maze under learner/educator evaluation  
 **Authentication:** temporarily disabled for prototype testing  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 18 October 2026
+**Last updated:** 10 November 2026
 
-**Current quality gate:** Number Maze must pass generator-invariant, JavaScript syntax, menu/help/back-navigation, responsive layout, browser smoke/stress and the repository's full GitHub Actions workflow before merge. Physical device and assistive-technology review remains separate.
+**Current quality gate:** keep the `main` branch CI green; complete physical learner/educator and assistive-technology review for active games. The latest recorded `main` Tests and Pages deployment runs both passed on 31 October 2026. Physical-device review is not implied by headless CI.
 
 ## The spirit of this work
 
@@ -124,7 +124,7 @@ The responsible-use license requires operators who enable research collection to
 
 ## 5. New game sequence
 
-The implementation sequence remains:
+The implementation history and current menu status are:
 
 1. **Shape Architect** ✅
 2. **Probability Machine** ✅
@@ -172,18 +172,23 @@ Small animations are added deliberately during game design and fine-tuning rathe
 ## 7. Release line
 
 ### v2.0.0
+
 Stable educational reference.
 
 ### v2.0.3
+
 Physical-testing baseline with Sudoku readability hardening.
 
 ### v2.0.4
+
 Geometry and physical-learning hardening, including the completed Shape Architect implementation and deployment-cache correction.
 
 ### v2.5.0
+
 Deferred production authentication milestone.
 
 ### v3.0.0
+
 Planned research-enabled milestone after authentication.
 
 ---
@@ -234,5 +239,17 @@ The feature branch `feat/number-maze-unlimited-boards` implements the next game 
 - **Replay/share:** each board displays a validated puzzle code that can be copied and loaded later to reproduce the same seeded board; loading an imported code starts a fresh Explore attempt.
 - **Validation:** each returned board is checked for a complete route and exactly one solution. Tests cover multiple seeds per difficulty, adjacency, coverage, deterministic generation, checkpoint order and uniqueness. Browser regression coverage includes launch, instructions, controls, daily reproducibility and responsive screens.
 - The uniqueness guarantee applies to each accepted puzzle independently. It does not guarantee that no two future random seeds can ever produce an identical board.
-- The feature branch must pass the full GitHub Actions workflow before merge. Physical-device testing, screen-reader/assistive-technology review, and feedback from learners and educators remain separate acceptance steps.
+- The implementation is merged to `main`. Physical-device testing, screen-reader/assistive-technology review, and feedback from learners and educators remain separate acceptance steps.
 
+## 11. Menu and project status (10 November 2026)
+
+- **Active learner menu:** Arithmetic Quiz, Math Racing, Sudoku, Shape Fitting, Shape Architect, Fraction Bakery, Slab Maths, Little Shop and Number Maze.
+- **Probability Machine:** implemented in the repository, but its learner-menu card remains hidden.
+- **Math Court:** shelved at the project owner's direction. Its code, styles, catalogue and regression tests remain in the repository, but it is not an active learner-menu game.
+- **Authentication:** learner-facing account/authentication controls remain disabled. Backend authentication modules, PostgreSQL migrations and API tests are present; deployment/production readiness must be verified separately.
+- **Research:** explicit consent and the research gateway are implemented as code and tested, but no production research programme or live collection deployment is claimed.
+- **CI:** the latest recorded `main` Tests workflow and Pages deployment both completed successfully on 31 October 2026. This is the latest recorded run visible during this review, not a claim of a fresh run on 10 November.
+
+## 12. Repository formatting status
+
+The repository's `.editorconfig` already specifies UTF-8, LF endings, a final newline, spaces and a two-space indentation baseline. That does not mean every existing CSS and JavaScript file has been reformatted. A repository-wide formatter pass and diff review are still required; do not treat a formatting policy as proof that legacy one-line declarations/functions have been expanded.
