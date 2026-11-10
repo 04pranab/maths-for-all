@@ -1289,7 +1289,7 @@ async function main() {
      rather than synthetic KeyboardEvents so native button/form behaviour
      is exercised as a learner would experience it. */
   const keyboardAudit = { littleShop: false, racingEnter: false, escapeGames: [] };
-  await evaluate('ResearchConsent.set("yes"); ResearchConsent.close(); Game.startLittleShop();');
+  await evaluate('ControlsOverlay.close(); ResearchConsent.set("yes"); ResearchConsent.close(); Game.startLittleShop();');
   const initialShopFocus = await evaluate('document.activeElement?.id === "little-shop-title"');
   if (!initialShopFocus) throw new Error("Little Shop did not move keyboard focus into the game on launch.");
   const requestedItems = await evaluate("LittleShop.getState().customer.items");
