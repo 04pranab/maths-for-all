@@ -1079,6 +1079,7 @@ const ShapeArchitect = (() => {
       return;
     }
     if (e.key === "Escape") {
+      e.preventDefault();
       state.selected = null;
       updatePlaced();
       draw();
