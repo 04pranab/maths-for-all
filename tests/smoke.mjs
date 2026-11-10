@@ -1412,7 +1412,8 @@ async function main() {
     ["Math Court", "MathCourt.open(); MathCourt.openCase(1)"],
   ];
   for (const [name, launch] of escapeLaunchers) {
-    await evaluate("Game.goHome(); " + launch + ";");
+    await evaluate("Game.goHome(); " + launch + "; ControlsOverlay.close(); ResearchConsent.close();");
+    await sleep(20);
     await pressKey("Escape", "Escape", 27);
     await pressKey("Escape", "Escape", 27);
     const returned = await evaluate('document.getElementById("screen-menu").classList.contains("active")');
