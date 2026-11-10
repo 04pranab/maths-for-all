@@ -531,6 +531,7 @@ const Game = (function () {
 
   function showScreen(name) {
     writeRoute(ROUTE_SLUGS[name] ?? null);
+    window.CompletionOverlay?.close(false);
     stopBackgroundGames();
     document.querySelectorAll(".screen").forEach((el) => el.classList.remove("active"));
     const target = document.getElementById(SCREENS[name]);
@@ -617,6 +618,65 @@ const Game = (function () {
     startNumberMaze,
   };
 })();
+
+/* =============================================================
+   SHARED GAME COMPLETION OVERLAY
+   One clear, accessible completion moment across every active game.
+   ============================================================= */
+const CompletionOverlay = (() => {
+  let continueAction = null;
+  let previousFocus = null;
+
+  function show(options = {}) {
+    const overlay = document.getElementById("game-completion-overlay");
+    if (!overlay) return;
+    const title = document.getElementById("game-completion-title");
+    const message = document.getElementById("game-completion-message");
+    const action = document.getElementById("game-completion-continue");
+    if (!title || !message || !action) return;
+    previousFocus = document.activeElement;
+    continueAction = typeof options.onContinue === "function" ? options.onContinue : null;
+    title.textContent = options.title || "Level complete!";
+    message.textContent = options.message || "You finished this challenge. Take a moment to enjoy your progress.";
+    action.textContent = options.actionLabel || "Continue";
+    overlay.hidden = false;
+    document.body.classList.add("completion-overlay-open");
+    action.focus({ preventScroll: true });
+  }
+
+  function close(restoreFocus = true) {
+    const overlay = document.getElementById("game-completion-overlay");
+    if (!overlay || overlay.hidden) return;
+    overlay.hidden = true;
+    document.body.classList.remove("completion-overlay-open");
+    continueAction = null;
+    if (restoreFocus && previousFocus && typeof previousFocus.focus === "function") {
+      previousFocus.focus({ preventScroll: true });
+    }
+    previousFocus = null;
+  }
+
+  function continueGame() {
+    const action = continueAction;
+    close(false);
+    if (action) action();
+    else if (previousFocus && typeof previousFocus.focus === "function") {
+      previousFocus.focus({ preventScroll: true });
+    }
+    previousFocus = null;
+  }
+
+  document.addEventListener("keydown", (event) => {
+    const overlay = document.getElementById("game-completion-overlay");
+    if (event.key === "Escape" && overlay && !overlay.hidden) {
+      event.preventDefault();
+      close();
+    }
+  });
+
+  return { show, close, continue: continueGame };
+})();
+window.CompletionOverlay = CompletionOverlay;
 
 /* =============================================================
    PHYSICAL PROTOTYPE KEYBOARD CONTROLS
