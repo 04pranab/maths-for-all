@@ -32,6 +32,26 @@ Arithmetic Quiz and Math Racing have separate entry files. They share `js/questi
 
 Shared files are intentional. Do not duplicate navigation, accessibility, analytics, question generation, or common visual primitives into individual games.
 
+
+## Game URLs and browser navigation
+
+Every playable screen has a stable, shareable hash route. Opening a game from the menu or using its direct URL opens the same game; refreshing keeps that game open. Browser Back and Forward move through the menu/game history.
+
+| Game | URL hash | Example |
+|---|---|---|
+| Arithmetic Quiz | `#arithmetic` | `index.html#arithmetic` |
+| Math Racing | `#math-racing` | `index.html#math-racing` |
+| Sudoku Challenge | `#sudoku` | `index.html#sudoku` |
+| Shape Fitting | `#shape-fitting` | `index.html#shape-fitting` |
+| Slab Maths | `#slab-maths` | `index.html#slab-maths` |
+| Shape Architect | `#shape-architect` | `index.html#shape-architect` |
+| Fraction Bakery | `#fraction-bakery` | `index.html#fraction-bakery` |
+| Little Shop | `#little-shop` | `index.html#little-shop` |
+| Number Maze | `#number-maze` | `index.html#number-maze` |
+| Probability Machine (hidden) | `#probability-machine` | `index.html#probability-machine` |
+
+The menu is the URL without a hash. Unknown or malformed hashes safely resolve to the menu. A route restores the game screen, not an in-progress session snapshot. The Wiki game guide links directly to each active game.
+
 ## Regression rule
 
 When a game asset is consolidated or renamed, update `index.html`, its tests, and this map in the same change. Remove the old asset only after all runtime and test references have moved. Run the full GitHub Actions Tests workflow and Pages deployment against the exact proposed commit before merging.
