@@ -26,7 +26,7 @@ Arithmetic Quiz and Math Racing have separate entry files. They share `js/questi
 - `js/question-bank.js`: shared arithmetic question generation and encouragement helpers.
 - `js/consent.js` and `js/research-gateway.js`: consent and research infrastructure.
 - `css/style.css`: global reset, application shell, and common layout primitives.
-- `css/game-themes.css`: shared menu and non-game-specific theme rules.
+- `css/game-themes.css`: shared menu styling and the common game-theme layer.
 - `css/interactions.css`: cross-site link, focus, and interaction states.
 - `css/wiki.css`: Wiki-only presentation.
 
