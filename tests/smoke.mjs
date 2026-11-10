@@ -1780,6 +1780,50 @@ async function main() {
       "})()",
   );
 
+
+  // Direct game links, refresh persistence, browser history, and invalid-route fallback.
+  const routeCases = [
+    ["arithmetic", "screen-quiz"], ["math-racing", "screen-race"],
+    ["sudoku", "screen-sudoku"], ["shape-fitting", "screen-shape"],
+    ["slab-maths", "screen-slab"], ["shape-architect", "screen-architect"],
+    ["fraction-bakery", "screen-fraction-bakery"], ["little-shop", "screen-little-shop"],
+    ["number-maze", "screen-number-maze"], ["probability-machine", "screen-probability-carnival"],
+  ];
+  for (const [slug, screenId] of routeCases) {
+    await cdp("Page.navigate", { url: baseUrl + "/index.html#" + slug });
+    await waitFor(async () => await evaluate(
+      'document.readyState === "complete" && document.querySelector(".screen.active")?.id === "' + screenId + '"'
+    ));
+    const route = await evaluate('({hash: location.hash, active: document.querySelector(".screen.active")?.id})');
+    if (route.hash !== "#" + slug || route.active !== screenId) throw new Error("Direct game URL failed: #" + slug);
+  }
+  await cdp("Page.navigate", { url: baseUrl + "/index.html" });
+  await waitFor(async () => await evaluate('document.readyState === "complete" && document.getElementById("screen-menu").classList.contains("active")'));
+  await evaluate("Game.startArithmetic()");
+  if (await evaluate('location.hash !== "#arithmetic" || document.querySelector(".screen.active")?.id !== "screen-quiz"')) throw new Error("Arithmetic route was not written.");
+  await evaluate("Game.startLittleShop()");
+  if (await evaluate('location.hash !== "#little-shop" || document.querySelector(".screen.active")?.id !== "screen-little-shop"')) throw new Error("Little Shop route was not written.");
+  let history = await cdp("Page.getNavigationHistory");
+  const previous = history.entries[history.currentIndex - 1];
+  if (!previous?.url.endsWith("#arithmetic")) throw new Error("Back entry for Arithmetic Quiz is missing.");
+  await cdp("Page.navigateToHistoryEntry", { entryId: previous.id });
+  await waitFor(async () => await evaluate('location.hash === "#arithmetic" && document.querySelector(".screen.active")?.id === "screen-quiz"'));
+  history = await cdp("Page.getNavigationHistory");
+  const next = history.entries[history.currentIndex + 1];
+  if (!next?.url.endsWith("#little-shop")) throw new Error("Forward entry for Little Shop is missing.");
+  await cdp("Page.navigateToHistoryEntry", { entryId: next.id });
+  await waitFor(async () => await evaluate('location.hash === "#little-shop" && document.querySelector(".screen.active")?.id === "screen-little-shop"'));
+  await evaluate("Game.goHome()");
+  await waitFor(async () => await evaluate('location.hash === "" && document.querySelector(".screen.active")?.id === "screen-menu"'));
+  await cdp("Page.reload");
+  await waitFor(async () => await evaluate('document.readyState === "complete" && document.querySelector(".screen.active")?.id === "screen-menu"'));
+  await cdp("Page.navigate", { url: baseUrl + "/index.html#little-shop" });
+  await waitFor(async () => await evaluate('document.readyState === "complete" && location.hash === "#little-shop" && document.querySelector(".screen.active")?.id === "screen-little-shop"'));
+  await cdp("Page.reload");
+  await waitFor(async () => await evaluate('document.readyState === "complete" && location.hash === "#little-shop" && document.querySelector(".screen.active")?.id === "screen-little-shop"'));
+  await cdp("Page.navigate", { url: baseUrl + "/index.html#not-a-real-game" });
+  await waitFor(async () => await evaluate('document.readyState === "complete" && location.hash === "" && document.querySelector(".screen.active")?.id === "screen-menu"'));
+
   await cdp("Page.navigate", { url: baseUrl + "/wiki.html" });
   await waitFor(
     async () =>
@@ -1836,7 +1880,7 @@ async function main() {
         "}" +
         'const cardButtons=Array.from(document.querySelectorAll(".game-choice"));' +
         'const expectedGames=["arithmetic","racing","sudoku","shape-fitting","slab","architect","bakery","shop","number-maze"]; assert(cardButtons.length===expectedGames.length, "Wiki should expose all nine active learner games."); assert(expectedGames.every(game=>cardButtons.some(card=>card.dataset.game===game)), "Wiki game map is missing an active game."); assert(!cardButtons.some(card=>card.dataset.game==="math-court"), "Shelved Math Court must not appear as an active game.");' +
-        'for (const card of cardButtons) { card.click(); const detail=document.getElementById("game-detail"); assert(detail&&!detail.hidden,"Selecting "+card.dataset.game+" did not reveal game details."); assert(document.getElementById("game-detail-title").textContent.trim().length>0,"Game detail title is empty."); assert(card.getAttribute("aria-expanded")==="true","Selected game card did not expose expanded state."); assert(cardButtons.filter(other=>other.getAttribute("aria-expanded")==="true").length===1,"Game guide has more than one selected card."); }' +
+        'const expectedRoutes={arithmetic:"arithmetic",racing:"math-racing",sudoku:"sudoku","shape-fitting":"shape-fitting",slab:"slab-maths",architect:"shape-architect",bakery:"fraction-bakery",shop:"little-shop","number-maze":"number-maze"}; for (const card of cardButtons) { card.click(); const detail=document.getElementById("game-detail"); assert(detail&&!detail.hidden,"Selecting "+card.dataset.game+" did not reveal game details."); assert(document.getElementById("game-detail-link").getAttribute("href")==="index.html#"+expectedRoutes[card.dataset.game],"Wiki game link is wrong for "+card.dataset.game); assert(document.getElementById("game-detail-title").textContent.trim().length>0,"Game detail title is empty."); assert(card.getAttribute("aria-expanded")==="true","Selected game card did not expose expanded state."); assert(cardButtons.filter(other=>other.getAttribute("aria-expanded")==="true").length===1,"Game guide has more than one selected card."); }' +
         'document.getElementById("game-detail-close").click();' +
         'assert(document.getElementById("game-detail").hidden,"Close did not hide game details.");' +
         'assert(cardButtons.every(card=>card.getAttribute("aria-expanded")==="false"),"Close did not reset game-card expanded states.");' +
