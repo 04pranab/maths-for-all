@@ -36,12 +36,12 @@ export class TrafficCity3D{
    for(let k=0;k<4;k++){const tx=x+(k%2?5:-5),tz=z+(k<2?-4:4);this.tree(tx,.12,tz)}
   }
   // Broad roads, raised kerbs, sidewalks and intersection.
-  this.box(this.city,58,.18,10,0,.02,0,curb,false);this.box(this.city,58,.2,8.8,0,.13,0,road,false);
+  const hCurb=this.box(this.city,58,.18,10,0,.02,0,curb,false);hCurb.userData.horizontalRoad=true;const hRoad=this.box(this.city,58,.2,8.8,0,.13,0,road,false);hRoad.userData.horizontalRoad=true;
   this.box(this.city,10,.18,46,0,.02,0,curb,false);this.box(this.city,8.8,.2,46,0,.13,0,road,false);
-  for(const z of [-5.5,5.5])this.box(this.city,58,.18,.55,0,.18,z,white,false);
+  for(const z of [-5.5,5.5]){const m=this.box(this.city,58,.18,.55,0,.18,z,white,false);m.userData.horizontalRoad=true;}
   for(const x of [-5.5,5.5])this.box(this.city,.55,.18,46,x,.18,0,white,false);
   // Dashed lane markings, short and clear around the junction.
-  for(let x=-28;x<=28;x+=4.3){if(Math.abs(x)>6)this.box(this.city,1.9,.025,.12,x,.245,0,lane,false)}
+  for(let x=-28;x<=28;x+=4.3){if(Math.abs(x)>6){const m=this.box(this.city,1.9,.025,.12,x,.245,0,lane,false);m.userData.horizontalRoad=true;}}
   for(let z=-22;z<=22;z+=4.3){if(Math.abs(z)>6)this.box(this.city,.12,.025,1.9,0,.245,z,lane,false)}
   // Stop bars and zebra crossings on all four approaches.
   for(const z of [-6.1,6.1]){this.box(this.city,8.4,.035,.22,0,.27,z,white,false);for(let x=-4.2;x<=4.2;x+=1.2)this.box(this.city,.65,.035,1.25,x,.28,z+(z<0?-1.2:1.2),white,false)}
@@ -70,10 +70,10 @@ export class TrafficCity3D{
  tree(x,y,z){const trunk=mat(0x806047),leaf1=mat(0x4f8a67),leaf2=mat(0x6da879);this.cyl(this.city,.22,.3,1.5,x,y+.75,z,trunk);for(const [dx,dy,dz,r] of [[0,2.1,0,1.15],[-.55,1.8,.1,.72],[.5,1.9,-.1,.78]]){const m=new THREE.Mesh(new THREE.IcosahedronGeometry(r,1),dx?leaf2:leaf1);m.position.set(x+dx,y+dy,z+dz);m.castShadow=true;this.city.add(m)}}
  streetLamp(x,z){const pole=mat(0x344652),light=mat(0xffe6ad,.3);this.cyl(this.city,.08,.11,3.4,x,1.7,z,pole);this.box(this.city,.85,.12,.28,x+.32,3.38,z,light)}
  buildSignals(){
-  for(const d of ["north","south","east","west"]){const g=new THREE.Group();let x=0,z=0,rot=0;if(d==="north"){x=6.6;z=-7;rot=0}else if(d==="south"){x=-6.6;z=7;rot=Math.PI}else if(d==="east"){x=7;z=6.6;rot=-Math.PI/2}else{x=-7;z=-6.6;rot=Math.PI/2}g.position.set(x,.25,z);g.rotation.y=rot;this.scene.add(g);const black=mat(0x1e303b),post=mat(0x344b56);this.cyl(g,.12,.16,2.7,0,1.35,0,post);this.box(g,.65,1.35,.42,0,2.55,0,black);const bulbs=[];for(let i=0;i<3;i++){const material=new THREE.MeshStandardMaterial({color:[COLORS.red,COLORS.amber,COLORS.green][i],emissive:0x000000,roughness:.25});const bulb=new THREE.Mesh(new THREE.SphereGeometry(.17,16,12),material);bulb.position.set(0,2.95-i*.4,.23);g.add(bulb);bulbs.push(bulb)}this.signals[d]=bulbs;this.setSignal(d,false)}
+  for(const d of ["north","south","east","west"]){const g=new THREE.Group();let x=0,z=0,rot=0;if(d==="north"){x=6.6;z=-7;rot=0}else if(d==="south"){x=-6.6;z=7;rot=Math.PI}else if(d==="east"){x=7;z=6.6;rot=-Math.PI/2}else{x=-7;z=-6.6;rot=Math.PI/2}g.position.set(x,.25,z);g.rotation.y=rot;this.scene.add(g);const black=mat(0x1e303b),post=mat(0x344b56);this.cyl(g,.12,.16,2.7,0,1.35,0,post);this.box(g,.65,1.35,.42,0,2.55,0,black);const bulbs=[];for(let i=0;i<3;i++){const material=new THREE.MeshStandardMaterial({color:[COLORS.red,COLORS.amber,COLORS.green][i],emissive:0x000000,roughness:.25});const bulb=new THREE.Mesh(new THREE.SphereGeometry(.17,16,12),material);bulb.position.set(0,2.95-i*.4,.23);g.add(bulb);bulbs.push(bulb)}this.signals[d]=bulbs;g.userData.direction=d;this.setSignal(d,false)}
  }
  setSignal(direction,green){const bulbs=this.signals[direction];if(!bulbs)return;bulbs.forEach((b,i)=>{const on=green?i===2:i===0;b.material.emissive.setHex(on?[COLORS.red,COLORS.amber,COLORS.green][i]:0x000000);b.material.emissiveIntensity=on?1.8:0;b.material.color.setHex(on?[COLORS.red,COLORS.amber,COLORS.green][i]:0x303a40)})}
- setLevel(level){this.level=level;this.city.children.forEach(o=>{if(o.userData.horizontalRoad)o.visible=level!=="easy";if(o.userData.eastWestMark)o.visible=level!=="easy"});for(const [d,b] of Object.entries(this.signals)){const active=level!=="easy"||d==="north"||d==="south";b[0].parent.visible=active}}
+ setLevel(level){this.level=level;this.city.children.forEach(o=>{if(o.userData.horizontalRoad)o.visible=level!=="easy"});for(const [d,b] of Object.entries(this.signals)){const active=level!=="easy"||d==="north"||d==="south";b[0].parent.visible=active}}
  positionFor(direction,index,kind,previousKind){
   const dims=VEHICLE[kind],prev=previousKind?VEHICLE[previousKind]:null,gap=1.05;
   const offset=6.8+(index===0?0:(prev.length+dims.length)/2+gap);
