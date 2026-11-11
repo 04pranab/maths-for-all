@@ -45,7 +45,7 @@ export class TrafficCity3D{
   for(let z=-22;z<=22;z+=4.3){if(Math.abs(z)>6)this.box(this.city,.12,.025,1.9,0,.245,z,lane,false)}
   // Stop bars and zebra crossings on all four approaches.
   for(const z of [-6.1,6.1]){this.box(this.city,8.4,.035,.22,0,.27,z,white,false);for(let x=-4.2;x<=4.2;x+=1.2)this.box(this.city,.65,.035,1.25,x,.28,z+(z<0?-1.2:1.2),white,false)}
-  for(const x of [-6.1,6.1]){this.box(this.city,.22,.035,8.4,x,.27,0,white,false);for(let z=-4.2;z<=4.2;z+=1.2)this.box(this.city,1.25,.035,.65,x+(x<0?-1.2:1.2),.28,z,white,false)}
+  for(const x of [-6.1,6.1]){const stop=this.box(this.city,.22,.035,8.4,x,.27,0,white,false);stop.userData.horizontalRoad=true;for(let z=-4.2;z<=4.2;z+=1.2){const stripe=this.box(this.city,1.25,.035,.65,x+(x<0?-1.2:1.2),.28,z,white,false);stripe.userData.horizontalRoad=true}}
   // City blocks: modern low-rise, mid-rise and civic buildings.
   this.building(-20,-15,7,5.5,7,0xd9c8a7,0x9d7054,"RESIDENTIAL");
   this.building(20,-15,7.5,6,10,0xe2bdb5,0xa46d69,"LIBRARY");
