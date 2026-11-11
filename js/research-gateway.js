@@ -7,6 +7,7 @@ const ResearchEventGateway = (() => {
   let events = null, flushing = false;
   const CATEGORIES = new Set(["quiz","race","sudoku","shape","slab","shape_architect","fraction_bakery","little_shop","number_maze","traffic-control"]);
   const ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
+  const NORMALIZE_ACTION = Object.freeze({open:"game_opened",start:"game_opened",puzzle_start:"game_opened",new_numbers:"game_opened",restart_round:"retry",stuck:"hint_requested"});
   const DETAIL_KEYS = new Set(["difficulty","correct","level","attempts","hintsUsed","mistakes","completed","durationMs","timeMs","seconds","timer"]);
   function consentAllowed() { return typeof ResearchConsent !== "undefined" && ResearchConsent.isAllowed(); }
   function load() {
@@ -28,10 +29,11 @@ const ResearchEventGateway = (() => {
     return clean;
   }
   function record(category, action, detail={}) {
-    if(!consentAllowed()||!CATEGORIES.has(category)||!ACTIONS.has(action))return false;
+    const normalizedAction=NORMALIZE_ACTION[action]||action;
+    if(!consentAllowed()||!CATEGORIES.has(category)||!ACTIONS.has(normalizedAction))return false;
     if(detail !== undefined && (detail === null || typeof detail !== "object" || Array.isArray(detail))) return false;
     const list=load();
-    list.push({category,action,detail:cleanDetail(detail)});
+    list.push({category,action:normalizedAction,detail:cleanDetail(detail)});
     if(list.length>MAX_EVENTS)list.splice(0,list.length-MAX_EVENTS);
     save();
     if(list.length>=10||action.includes("complete")||action==="puzzle_solved") flush();
