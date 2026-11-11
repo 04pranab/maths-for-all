@@ -126,3 +126,29 @@ button, [role="button"], input[type="button"], input[type="submit"] { touch-acti
     max-width: 100%;
   }
 }
+
+
+/* Standalone Traffic Control Centre shares the same responsive contract. */
+.app-shell { width: min(100%, 1600px); max-width: 100%; margin-inline: auto; padding-inline: var(--mfa-page-gutter); }
+.app-shell .game-layout { min-width: 0; grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.9fr); }
+.app-shell .city-card, .app-shell .control-column, .app-shell .planner-card { min-width: 0; max-width: 100%; }
+.app-shell .city-stage, .app-shell .city-stage-3d { width: 100%; max-width: 100%; }
+@media (max-width: 1000px) {
+  .app-shell .game-layout { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .control-column { width: 100%; }
+}
+@media (max-width: 600px) {
+  .app-shell { padding-inline: 10px; }
+  .app-shell .level-picker { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; }
+  .app-shell .level-tab { width: 100%; min-width: 0; }
+  .app-shell .city-stage-3d { min-height: 280px; height: min(62vh, 460px); }
+  .app-shell .planner-card { padding: 16px 12px; }
+  .app-shell .approach-math { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app-shell .prediction-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 360px) {
+  .app-shell .approach-math, .app-shell .prediction-row { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-height: 700px) {
+  .app-shell .city-stage-3d { min-height: 240px; height: min(58vh, 520px); }
+}
