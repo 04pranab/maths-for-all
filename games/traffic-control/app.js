@@ -1,19 +1,10 @@
 import { LEVELS } from "./missions.js?v=20261112a";
-const $ = s => document.querySelector(s), SVG="http://www.w3.org/2000/svg";
-const DIRS=["north","south","east","west"], TIMES={bike:5,car:10,truck:15}, NAMES={bike:"Bicycle",car:"Car",truck:"Truck"};
-const PALETTE=["#ef765f","#f2bd4f","#3b9ca6","#6785c7","#a17bc4","#79a87a"];
+import { TrafficCity3D } from "./city3d.js?v=20261112-3d-city";
+const $=s=>document.querySelector(s);
+const DIRS=["north","south","east","west"],TIMES={bike:5,car:10,truck:15};
+const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
 let level="easy",round=0,queues={},busy=false,runId=0,nsSeconds=30,cleared=0,score=0,cycles=0,optimalScore=0,missionStartedAt=Date.now(),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
-const svgNode=(tag,attrs={})=>{const n=document.createElementNS(SVG,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,String(v)));return n};
-const cfg=()=>LEVELS[level], mission=()=>cfg().rounds[round], dirs=()=>cfg().directions;
-function pos(d,i){const p={north:{x:630,y:265,dx:0,dy:-43,angle:180,exit:{x:630,y:900}},south:{x:570,y:555,dx:0,dy:43,angle:0,exit:{x:570,y:-100}},east:{x:785,y:430,dx:45,dy:0,angle:-90,exit:{x:-100,y:430}},west:{x:415,y:390,dx:-45,dy:0,angle:90,exit:{x:1300,y:390}}}[d];return{x:p.x+p.dx*i,y:p.y+p.dy*i,angle:p.angle,exit:p.exit}}
-function art(kind,color){
- if(kind==="bike")return '<circle class="bicycle-wheel" cx="0" cy="-22" r="10"/><circle class="bicycle-wheel" cx="0" cy="22" r="10"/><path class="bicycle-frame" d="M0 -22 14 4 0 22 -14 4Z M-14 4H14"/><circle cx="0" cy="-22" r="3" fill="#263746"/>';
- if(kind==="truck")return '<rect class="vehicle-wheel" x="-21" y="-28" width="7" height="15" rx="2"/><rect class="vehicle-wheel" x="14" y="-28" width="7" height="15" rx="2"/><rect class="vehicle-wheel" x="-21" y="15" width="7" height="15" rx="2"/><rect class="vehicle-wheel" x="14" y="15" width="7" height="15" rx="2"/><rect class="vehicle-body" x="-17" y="-35" width="34" height="43" rx="5" fill="'+color+'"/><rect class="vehicle-body" x="-17" y="10" width="34" height="29" rx="5" fill="#d5e0e5"/><rect class="vehicle-glass" x="-12" y="-28" width="24" height="15" rx="3"/><path d="M-12 18H12" stroke="#8799a4" stroke-width="3"/>';
- return '<rect class="vehicle-wheel" x="-18" y="-22" width="5" height="13" rx="2"/><rect class="vehicle-wheel" x="13" y="-22" width="5" height="13" rx="2"/><rect class="vehicle-wheel" x="-18" y="11" width="5" height="13" rx="2"/><rect class="vehicle-wheel" x="13" y="11" width="5" height="13" rx="2"/><path class="vehicle-body" d="M-11 -33Q-16 -30 -16 -18L-18 15Q-18 30 -10 32H10Q18 30 18 15L16 -18Q16 -30 11 -33Z" fill="'+color+'"/><path class="vehicle-glass" d="M-11 -23Q0 -27 11 -23L10 -9H-10Z"/><path class="vehicle-glass" d="M-10 12H10L11 23Q0 27 -11 23Z"/>';
-}
-function vehicle(d,i,kind){const p=pos(d,i),g=svgNode("g",{class:"vehicle "+kind,transform:"translate("+p.x+" "+p.y+") rotate("+p.angle+") scale(.8)","aria-label":NAMES[kind]});g.innerHTML=art(kind,PALETTE[(i+DIRS.indexOf(d)*2)%PALETTE.length]);return g}
-function animate(g,d,start,delay){const end=start.exit,duration=reduced?80:1500,begin=performance.now()+delay;function frame(t){if(t<begin){requestAnimationFrame(frame);return}const q=Math.min(1,(t-begin)/duration),e=1-Math.pow(1-q,3);g.setAttribute("transform","translate("+(start.x+(end.x-start.x)*e)+" "+(start.y+(end.y-start.y)*e)+") rotate("+start.angle+") scale(.8)");if(q<1)requestAnimationFrame(frame);else g.remove()}requestAnimationFrame(frame)}
-function setSignal(d,on){const n=$("#signal-"+d);n?.querySelectorAll(".lamp").forEach(x=>x.classList.remove("active"));n?.querySelector(on?".lamp-green":".lamp-red")?.classList.add("active")}
+const city=new TrafficCity3D($("#city3d"),{reducedMotion:reduced});
 function total(){return dirs().reduce((s,d)=>s+(queues[d]?.length||0),0)}
 function budget(){return mission().budget}
 function service(kind){return level==="hard"?TIMES[kind]:mission().serviceSeconds}
@@ -21,32 +12,65 @@ function capacity(d,seconds){let used=0,count=0;for(const v of queues[d]||[]){co
 function planAt(ns){const ew=budget()-ns,caps={};for(const d of dirs())caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew);let moved=0,points=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;points+=n*mission().waitMinutes[d]*10}return{ns,ew,caps,moved,points}}
 function bestPlan(){let best=null;for(let n=0;n<=budget();n+=cfg().step){const p=planAt(n);if(!best||p.points>best.points||(p.points===best.points&&p.moved>best.moved))best=p}return best}
 function updateQueue(){for(const d of DIRS)$("#count-"+d).textContent=queues[d]?.length||0;$("#cleared-count").textContent=cleared;$("#total-score").textContent=score;$("#cycles-used").textContent=cycles}
-function renderVehicles(){const layer=$("#vehicle-layer");layer.replaceChildren();for(const d of dirs())queues[d].forEach((v,i)=>layer.append(vehicle(d,i,v)));updateQueue()}
-function updateMath(){const m=mission();for(const d of DIRS){const active=dirs().includes(d),chip=$(".approach-math ."+d+"-chip");if(chip)chip.hidden=!active;if(active){$("#math-"+d).textContent=queues[d].length+" "+(queues[d].length===1?"vehicle":"vehicles");$("#wait-"+d).textContent=m.waitMinutes[d]+" min"}}
- $("#vehicle-budget").innerHTML=budget()+' <small>seconds</small>';$("#reserve-note").textContent=level==="hard"?"Mixed fleet: bicycle 5s · car 10s · truck 15s":level==="easy"?"One green phase serves both directions":"Split the cycle between the two roads";
- $("#planner-question").textContent=m.objective;
- const fleet=$("#fleet-legend");fleet.hidden=level!=="hard";
- const slider=$("#schedule-inputs");slider.hidden=level==="easy";
+function renderVehicles(){city.addVehicles(queues);updateQueue()}
+function setSignal(d,on){city.setSignal(d,on)}
+function updateMath(){
+ const m=mission();
+ for(const d of DIRS){const active=dirs().includes(d),chip=$(".approach-math ."+d+"-chip");if(chip)chip.hidden=!active;if(active){$("#math-"+d).textContent=queues[d].length+" "+(queues[d].length===1?"vehicle":"vehicles");$("#wait-"+d).textContent=m.waitMinutes[d]+" min"}}
+ $("#vehicle-budget").innerHTML=budget()+' <small>seconds</small>';
+ $("#reserve-note").textContent=level==="hard"?"Mixed fleet: bicycle 5s · car 10s · truck 15s":level==="easy"?"One green phase serves both directions":"Split the cycle between the two roads";
+ $("#planner-question").textContent=m.objective;$("#fleet-legend").hidden=level!=="hard";$("#schedule-inputs").hidden=level==="easy";
  const result=level==="easy"?planAt(budget()):planAt(nsSeconds);
  $("#predicted-vehicles").textContent=result.moved+" / "+total();$("#predicted-score").textContent=result.points+" pts";
  if(level!=="easy"){const ew=budget()-nsSeconds;$("#ns-seconds").max=budget();$("#ns-seconds").step=cfg().step;$("#ns-seconds").value=nsSeconds;$("#ns-output").textContent=nsSeconds+" sec";$("#ns-preview").textContent=nsSeconds+" sec";$("#ew-preview").textContent=ew+" sec";$("#ns-track").style.width=(nsSeconds/budget()*100)+"%";$("#ew-track").style.width=(ew/budget()*100)+"%"}
  $("#math-hint").textContent=m.lesson;$("#run-plan").disabled=busy||total()===0;
 }
-function setLevelUI(){document.body.classList.toggle("easy-level",level==="easy");document.body.classList.toggle("hard-level",level==="hard");$("#city-map").classList.toggle("easy-mode",level==="easy");document.querySelectorAll(".level-tab").forEach(b=>{const on=b.dataset.level===level;b.classList.toggle("active",on);b.setAttribute("aria-pressed",String(on))});$("#city-heading").textContent=level==="easy"?"Central Avenue · Two-way road":level==="medium"?"Central Avenue · Four-way junction":"Metro City · Mixed-fleet intersection";$("#map-description").textContent=level==="easy"?"A simple two-way avenue with traffic moving in opposite directions.": "A large four-way city junction with residential blocks, shops, a hospital, pedestrian crossings and mixed traffic."}
-function startRound(index=0){runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;missionStartedAt=Date.now();const m=mission();queues=Object.fromEntries(dirs().map(d=>[d,[...m.queues[d]]]));nsSeconds=Math.round(budget()/2/cfg().step)*cfg().step;$("#mission-number").textContent=String(round+1).padStart(2,"0")+" / 03";$("#mission-progress-fill").style.width=((round+1)/3*100)+"%";$("#mission-tag").textContent=cfg().label;$("#challenge-tag").textContent=level.toUpperCase();$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;for(const d of DIRS)setSignal(d,false);$("#signal-east").style.display=dirs().includes("east")?"":"none";$("#signal-west").style.display=dirs().includes("west")?"":"none";$("#traffic-status").textContent="Study the queues, calculate your plan and run the signal.";renderVehicles();updateMath()}
+function setLevelUI(){
+ document.body.classList.toggle("easy-level",level==="easy");document.body.classList.toggle("hard-level",level==="hard");city.setLevel(level);
+ document.querySelectorAll(".level-tab").forEach(b=>{const on=b.dataset.level===level;b.classList.toggle("active",on);b.setAttribute("aria-pressed",String(on))});
+ $("#city-heading").textContent=level==="easy"?"Central Avenue · Two-way road":level==="medium"?"Central Avenue · Four-way junction":"Metro City · Mixed-fleet intersection";
+}
+function startRound(index=0){
+ runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;missionStartedAt=Date.now();
+ const m=mission();queues=Object.fromEntries(dirs().map(d=>[d,[...m.queues[d]]]));nsSeconds=Math.round(budget()/2/cfg().step)*cfg().step;
+ $("#mission-number").textContent=String(round+1).padStart(2,"0")+" / 03";$("#mission-progress-fill").style.width=((round+1)/3*100)+"%";$("#mission-tag").textContent=cfg().label;$("#challenge-tag").textContent=level.toUpperCase();$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
+ for(const d of DIRS)setSignal(d,false);
+ $("#traffic-status").textContent="Study the queues, calculate your plan and run the signal.";
+ renderVehicles();updateMath();
+}
 function setLevel(next){level=next;round=0;setLevelUI();startRound(0)}
-function runPlan(){if(busy||!total())return;const id=++runId,m=mission(),p=level==="easy"?planAt(budget()):planAt(nsSeconds),best=bestPlan(),moving=[];optimalScore+=best.points;cycles++;busy=true;$("#run-plan").disabled=true;
- for(const d of dirs()){for(let i=0;i<p.caps[d]&&queues[d].length;i++){const start=pos(d,i),kind=queues[d].shift();moving.push({d,kind,start})}}
- for(const d of DIRS)setSignal(d,false);renderVehicles();const ns=level==="easy"||p.ns>0,ew=level!=="easy"&&p.ew>0;
+function runPlan(){
+ if(busy||!total())return;
+ const id=++runId,p=level==="easy"?planAt(budget()):planAt(nsSeconds),best=bestPlan(),moving=[];
+ optimalScore+=best.points;cycles++;busy=true;$("#run-plan").disabled=true;
+ for(const d of dirs()){
+  let previous=null;
+  for(let i=0;i<p.caps[d]&&queues[d].length;i++){
+   const kind=queues[d].shift(),start=city.positionFor(d,i,kind,previous);
+   moving.push({d,kind,start});previous=kind;
+  }
+ }
+ for(const d of DIRS)setSignal(d,false);
+ renderVehicles();
+ const ns=level==="easy"||p.ns>0,ew=level!=="easy"&&p.ew>0;
  if(dirs().includes("north"))setSignal("north",ns);if(dirs().includes("south"))setSignal("south",ns);if(dirs().includes("east"))setSignal("east",ew);if(dirs().includes("west"))setSignal("west",ew);
- moving.forEach((v,i)=>{const g=vehicle(v.d,0,v.kind);$("#vehicle-layer").append(g);animate(g,v.d,v.start,reduced?0:i*120)});
- cleared+=p.moved;score+=p.points;$("#traffic-status").textContent="Your signal plan is running. Watch the vehicles clear the junction.";const duration=reduced?200:1900+moving.length*100;
- window.setTimeout(()=>{if(id!==runId)return;busy=false;for(const d of DIRS)setSignal(d,false);updateQueue();updateMath();$("#math-hint").textContent=p.points===best.points?"Excellent! That split earned the best possible score for this cycle.":"Your plan earned "+p.points+" points. Best split: "+best.ns+"s North–South and "+best.ew+"s East–West ("+best.points+" points).";if(total()===0)finish();else $("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for the next cycle."},duration)}
-function finish(){const m=mission();$("#math-check").hidden=false;$("#math-title").textContent="Junction cleared! Excellent engineering.";$("#math-question").textContent="You moved "+cleared+" vehicles in "+cycles+" cycles and earned "+score+" priority points.";$("#math-feedback").textContent=m.lesson;$("#next-mission").hidden=false;$("#next-mission").textContent=round===2?"Replay this level ↻":"Next challenge →";$("#traffic-status").textContent="All queues cleared. Level challenge complete.";const scorePercent=optimalScore>0?Math.max(0,Math.min(100,(score/optimalScore)*100)):0;const durationSeconds=Math.max(1,Math.min(14400,Math.round((Date.now()-missionStartedAt)/1000)));const accounts=window.MfaAccounts;if(accounts?.refreshSession&&accounts?.submitAttempt){accounts.refreshSession().then(()=>accounts.submitAttempt("traffic-control",scorePercent,durationSeconds)).catch(error=>console.warn("Could not save Traffic Control Centre score:",error.message));}}
+ cleared+=p.moved;score+=p.points;
+ $("#traffic-status").textContent="Your signal plan is running. Watch the vehicles clear the junction.";
+ const duration=reduced?350:1900+moving.length*130;
+ city.moveVehicles(moving,()=>{
+  if(id!==runId)return;
+  busy=false;for(const d of DIRS)setSignal(d,false);updateQueue();updateMath();
+  $("#math-hint").textContent=p.points===best.points?"Excellent! That split earned the best possible score for this cycle.":"Your plan earned "+p.points+" points. Best split: "+best.ns+"s North–South and "+best.ew+"s East–West ("+best.points+" points).";
+  if(total()===0)finish();else $("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for the next cycle.";
+ },{stagger:reduced?0:100,duration});
+}
+function finish(){
+ const m=mission();$("#math-check").hidden=false;$("#math-title").textContent="Junction cleared! Excellent engineering.";$("#math-question").textContent="You moved "+cleared+" vehicles in "+cycles+" cycles and earned "+score+" priority points.";$("#math-feedback").textContent=m.lesson;$("#next-mission").hidden=false;$("#next-mission").textContent=round===2?"Replay this level ↻":"Next challenge →";$("#traffic-status").textContent="All queues cleared. Level challenge complete.";
+ const scorePercent=optimalScore>0?Math.max(0,Math.min(100,(score/optimalScore)*100)):0,durationSeconds=Math.max(1,Math.min(14400,Math.round((Date.now()-missionStartedAt)/1000))),accounts=window.MfaAccounts;
+ if(accounts?.refreshSession&&accounts?.submitAttempt)accounts.refreshSession().then(()=>accounts.submitAttempt("traffic-control",scorePercent,durationSeconds)).catch(error=>console.warn("Could not save Traffic Control Centre score:",error.message));
+}
 $("#ns-seconds").addEventListener("input",e=>{nsSeconds=Number(e.target.value);updateMath()});
-$("#run-plan").addEventListener("click",runPlan);
-$("#restart-mission").addEventListener("click",()=>startRound(round));
-$("#next-mission").addEventListener("click",()=>startRound((round+1)%3));
+$("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>startRound((round+1)%3));
 document.querySelectorAll(".level-tab").forEach(b=>b.addEventListener("click",()=>setLevel(b.dataset.level)));
 $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.body.classList.toggle("reduce-motion",reduced)});
 $("#text-size-toggle")?.addEventListener("click",()=>document.body.classList.toggle("large-type"));
