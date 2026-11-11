@@ -35,11 +35,11 @@
         <div>
           <p class="eyebrow">YOUR CITY NEEDS A TRAFFIC CAPTAIN</p>
           <h1 id="page-title">Keep the city <span>moving safely.</span></h1>
-          <p class="intro-copy">Choose a signal, release a safe wave of traffic, and use maths to keep every road moving. There is no countdown. Take your time.</p>
+          <p class="intro-copy">Plan a signal schedule, calculate what it can achieve, and see how your mathematics changes the city.</p>
         </div>
         <div class="captain-badge" aria-label="Five guided missions">
           <span class="badge-icon" aria-hidden="true">✦</span>
-          <span><strong>5 missions</strong><small>Learn one step at a time</small></span>
+          <span><strong>5 engineering missions</strong><small>Plan · Calculate · Simulate</small></span>
         </div>
       </section>
 
@@ -169,66 +169,70 @@
             <button type="button" id="restart-mission" class="restart-button">↻ Restart this mission</button>
           </section>
 
-          <section class="math-briefing" aria-labelledby="math-briefing-title">
-            <div class="briefing-heading"><span class="briefing-icon">∑</span><div><p class="section-kicker">YOUR MATHS DECIDES THE SIGNAL</p><h2 id="math-briefing-title">Which road needs green first?</h2></div></div>
-            <p class="briefing-rule">Calculate the <strong>traffic pressure</strong> on each road. Give green to the road with the larger score.</p>
-            <div class="formula-banner">Pressure = vehicles waiting × waiting time (minutes)</div>
-            <div class="pressure-grid">
-              <div><strong>North</strong><span id="math-north">0 × 0 min</span></div>
-              <div><strong>South</strong><span id="math-south">0 × 0 min</span></div>
-              <div><strong>West</strong><span id="math-west">0 × 0 min</span></div>
-              <div><strong>East</strong><span id="math-east">0 × 0 min</span></div>
+          <section class="math-briefing planner-card" aria-labelledby="math-briefing-title">
+            <div class="briefing-heading"><span class="briefing-icon">∑</span><div><p class="section-kicker">THE MATHS IS THE CONTROLS</p><h2 id="math-briefing-title">Design your signal schedule</h2></div></div>
+            <p id="planner-brief" class="briefing-rule">You have a fixed green-time budget. Choose how much goes to North + South; the rest goes to East + West.</p>
+            <div class="formula-banner">Vehicles served per approach = green seconds ÷ seconds per vehicle</div>
+            <div class="planner-stats">
+              <div><span>Total cycle</span><strong id="cycle-budget">40 s</strong></div>
+              <div><span>Pedestrian reserve</span><strong id="pedestrian-reserve">0 s</strong></div>
+              <div><span>Vehicle green time</span><strong id="vehicle-budget">40 s</strong></div>
+              <div><span>Time per vehicle</span><strong id="service-time">10 s</strong></div>
             </div>
-            <div class="pressure-totals"><div><span>North + South</span><strong id="pressure-ns">Work it out</strong></div><div><span>East + West</span><strong id="pressure-ew">Work it out</strong></div></div>
-            <p id="math-hint" class="math-hint" role="status">Calculate both totals and choose the larger score.</p>
+            <div class="approach-math">
+              <div><strong>North</strong><span id="math-north">3 waiting · 2 min</span></div>
+              <div><strong>South</strong><span id="math-south">2 waiting · 2 min</span></div>
+              <div><strong>East</strong><span id="math-east">2 waiting · 2 min</span></div>
+              <div><strong>West</strong><span id="math-west">1 waiting · 2 min</span></div>
+            </div>
+            <div class="schedule-inputs">
+              <label for="ns-seconds">North + South green time <output id="ns-output" for="ns-seconds">20 s</output></label>
+              <input id="ns-seconds" type="range" min="0" max="40" step="5" value="20">
+              <div class="schedule-split"><span>NS: <strong id="ns-preview">20 s</strong></span><span>EW: <strong id="ew-preview">20 s</strong></span></div>
+              <div class="schedule-track"><span id="ns-track"></span><span id="ew-track"></span></div>
+            </div>
+            <div class="plan-prediction">
+              <p class="section-kicker">YOUR CALCULATED PLAN</p>
+              <div><span>Vehicles expected to move</span><strong id="predicted-vehicles">—</strong></div>
+              <div><span>Priority points earned</span><strong id="predicted-score">—</strong></div>
+            </div>
+            <button type="button" id="run-plan" class="send-button plan-button">▶ Run my schedule</button>
+            <p id="math-hint" class="math-hint" role="status">Move the slider, calculate the split, then run your plan to see its real effect.</p>
           </section>
 
           <section class="traffic-controls" aria-labelledby="controls-title">
-            <div class="panel-heading"><div><p class="section-kicker">JUNCTION CONTROLS</p><h2 id="controls-title">Choose a green light</h2></div><span class="control-icon" aria-hidden="true">◉</span></div>
-            <div class="phase-buttons">
-              <button type="button" class="phase-button" id="phase-ns" data-phase="ns" aria-pressed="false">
-                <span class="phase-lights" aria-hidden="true"><i></i><i class="on"></i></span>
-                <span><strong>North + South</strong><small>Vertical road · <span class="phase-count">0 vehicles</span></small></span><span class="phase-arrow" aria-hidden="true">→</span>
-              </button>
-              <button type="button" class="phase-button" id="phase-ew" data-phase="ew" aria-pressed="false">
-                <span class="phase-lights phase-lights-ew" aria-hidden="true"><i></i><i class="on"></i></span>
-                <span><strong>East + West</strong><small>Horizontal road · <span class="phase-count">0 vehicles</span></small></span><span class="phase-arrow" aria-hidden="true">→</span>
-              </button>
-            </div>
-            <div class="wave-action">
-              <div class="wave-copy"><strong>Ready for a safe wave?</strong><small id="wave-help">Choose a green phase first.</small></div>
-              <button type="button" class="send-button" id="send-wave" disabled><span aria-hidden="true">▶</span> Release wave</button>
-            </div>
+            <div class="panel-heading"><div><p class="section-kicker">LIVE JUNCTION DATA</p><h2 id="controls-title">Traffic conditions</h2></div><span class="control-icon" aria-hidden="true">◉</span></div>
             <div class="queue-summary" aria-label="Vehicles waiting by direction">
               <div><span class="queue-arrow">↑</span><span>North</span><strong id="count-north">0</strong></div>
               <div><span class="queue-arrow">↓</span><span>South</span><strong id="count-south">0</strong></div>
               <div><span class="queue-arrow">→</span><span>West</span><strong id="count-west">0</strong></div>
               <div><span class="queue-arrow">←</span><span>East</span><strong id="count-east">0</strong></div>
             </div>
-            <p id="traffic-status" class="status-message" role="status" aria-live="polite">All signals are red. Choose a direction to begin.</p>
+            <div class="live-results">
+              <div><span>Vehicles cleared</span><strong id="cleared-count">0</strong></div>
+              <div><span>Total score</span><strong id="total-score">0</strong></div>
+              <div><span>Cycles used</span><strong id="cycles-used">0</strong></div>
+            </div>
+            <p id="traffic-status" class="status-message" role="status" aria-live="polite">Study the queues and plan your first signal cycle.</p>
+            <button type="button" id="restart-mission" class="restart-button">↻ Restart this mission</button>
           </section>
 
-          <section id="pedestrian-panel" class="pedestrian-panel" hidden aria-labelledby="pedestrian-title">
-            <div><p class="section-kicker">PEDESTRIAN SAFETY</p><h3 id="pedestrian-title">People are waiting to cross</h3><p id="pedestrian-help">Stop all vehicles before giving pedestrians a walk signal.</p></div>
-            <div class="pedestrian-row"><span class="people-icon" aria-hidden="true">● ● ● ●</span><strong id="pedestrian-count">8 waiting</strong></div>
-            <button type="button" class="walk-button" id="walk-button">Stop traffic &amp; start crossing</button>
-          </section>
+          
 
           <section id="math-check" class="math-card" hidden aria-labelledby="math-title">
-            <div class="math-card-top"><span class="math-star" aria-hidden="true">✦</span><span class="section-kicker">MATHS MOMENT</span></div>
-            <h3 id="math-title">Let's think it through</h3>
+            <div class="math-card-top"><span class="math-star" aria-hidden="true">✦</span><span class="section-kicker">ENGINEERING DEBRIEF</span></div>
+            <h3 id="math-title">How did your plan perform?</h3>
             <p id="math-question"></p>
-            <div id="math-answers" class="answer-grid"></div>
             <p id="math-feedback" class="math-feedback" role="status" aria-live="polite"></p>
-            <button type="button" id="next-mission" class="next-button" hidden>Next mission <span aria-hidden="true">→</span></button>
+            <button type="button" id="next-mission" class="next-button" hidden>Next mission →</button>
           </section>
         </aside>
       </div>
 
       <section class="bottom-strip" aria-label="Learning goals">
-        <div><span class="bottom-icon">01</span><span><strong>Think safely</strong><small>One direction at a time</small></span></div>
-        <div><span class="bottom-icon">02</span><span><strong>Use your maths</strong><small>Count, add, subtract and divide</small></span></div>
-        <div><span class="bottom-icon">03</span><span><strong>Go at your pace</strong><small>No timer and no penalty</small></span></div>
+        <div><span class="bottom-icon">01</span><span><strong>Think safely</strong><small>Build a safe signal schedule</small></span></div>
+        <div><span class="bottom-icon">02</span><span><strong>Use your maths</strong><small>Calculate capacity and optimise time</small></span></div>
+        <div><span class="bottom-icon">03</span><span><strong>Go at your pace</strong><small>Test a plan and learn from results</small></span></div>
       </section>
     </main>
     <footer class="footer-note">A practice city. Mistakes are part of learning. You can reset any mission whenever you like.</footer>
