@@ -3,8 +3,8 @@ main = "src/index.js"
 compatibility_date = "2026-11-11"
 
 [vars]
-SERVICE_ENV = "development"
-# Set ALLOWED_ORIGIN as a deployment variable before enabling browser credentials.
+SERVICE_ENV = "production"
+ALLOWED_ORIGIN = "https://04pranab.github.io"
 
 [[d1_databases]]
 binding = "DB"
