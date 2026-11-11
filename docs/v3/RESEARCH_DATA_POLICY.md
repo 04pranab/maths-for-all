@@ -3,7 +3,7 @@
 **Version:** 2.0 · **Updated:** 11 November 2026  
 **Applies to:** the official Maths For All website, account API, Cloudflare D1 database, games, and any research collection feature operated by this project.
 
-> **Current research status: OFF.** Maths For All is designed for children and inclusive learning. Research collection is technically disabled in production until a verifiable adult / parent / lawful-guardian consent process is available. The presence of research tables or a consent explanation does not mean collection is active.
+ > **Current research status: OFF.** No research events are recorded locally, queued, uploaded or stored. The Worker endpoint always returns HTTP 503 and migration 0005 removes the legacy aggregate research table. Ordinary player-service data remains available for accounts, progress, points, XP, achievements and leaderboards.
 
 This policy describes the current product, the safeguards already implemented, and the additional controls required before any research collection can be enabled. It is a project privacy notice, not a legal opinion or a certification of compliance.
 
@@ -41,7 +41,7 @@ An account exists to save a player's username, points, XP, level, game achieveme
 - Saving a score does **not** opt a person into research.
 - A player can use guest mode and play without an account.
 - The research gateway does not receive an account ID, session token, username, or email.
-- Research and player databases are not joined.
+- No research database or research event tables exist in this release.
 
 The current account system stores an email address for account identity, a username, a password hash, account timestamps, and hashed session-token records. The public leaderboard displays the username and earned competition points. It does not display email addresses or passwords.
 
@@ -55,8 +55,8 @@ Research collection is **disabled for everyone** while the child/guardian verifi
 
 - The browser gateway refuses to record or queue research events.
 - Legacy local research queues are removed unless a future, valid consent implementation explicitly permits them.
-- The Worker rejects research uploads while its feature flag is disabled, even if a client sends `consent: true`.
-- No research aggregate table is populated by the official production application at this time.
+- The Worker always returns HTTP 503 without touching D1, even if a client sends `consent: true` or an environment flag is accidentally enabled.
+- Migration 0005 removes the legacy `research_aggregates` table and its historical aggregate rows. No replacement research tables are created.
 - Normal gameplay, accounts, XP, badges, and leaderboards continue to work.
 
 The sign-in flow explains this status. The privacy control remains available at all times.
@@ -88,9 +88,11 @@ If a person declines, does not answer, closes the prompt, or has no recorded val
 
 The game must continue normally. Declining research must never reduce points, XP, levels, badges, game access, or leaderboard eligibility.
 
-## 4. Research data model, if later enabled
+## 4. Research data model is not implemented
 
-The planned research store is aggregate-only and physically separated by game. It has one daily aggregate table for each active game:
+There is no research event storage in this release. No per-game research tables are created. A future research proposal would need a new, separately reviewed data model and explicit release approval before any collection begins.
+
+If a future design is approved, it must use data minimization and logical separation. The following dimensions are examples for a future proposal only, not fields currently collected:
 
 - `research_arithmetic_quiz`
 - `research_math_racing`
@@ -116,9 +118,7 @@ Each row is a daily count bucket. The allowed aggregate dimensions are:
 | Duration band | Under 10s, 10–30s, 30–120s, over 120s, or unspecified |
 | Event count | Number of events in that aggregate bucket |
 
-The tables deliberately have no learner, participant, account, parent, school, username, email, IP, session, or device identifier. The Worker accepts only allowlisted game/action names and reduces details to these broad fields. Raw questions, answers, free-form text, and exact response times are not stored.
-
-Separate tables are used to keep game research logically isolated. They do not make the data personal or non-personal by themselves; the purpose, fields, access, and surrounding processing still matter.
+No such table currently exists, and no such fields are currently collected. Any future implementation must be reviewed for necessity, re-identification risk, access, retention and legal basis before deployment.
 
 ## 5. Data that is not collected for research
 
@@ -135,7 +135,7 @@ The research system must never collect:
 - disability diagnosis, medical information, or inferred ability labels;
 - research events from a person who has declined or has no valid permission.
 
-The research database does not receive authentication credentials. Standard hosting and network-security systems may process technical connection metadata under their own security and service terms; that infrastructure processing is not a research event and must not be repurposed as learner research.
+No research database receives authentication credentials because no research database is provisioned. Standard hosting and network-security systems may process technical connection metadata under their own security and service terms; that infrastructure processing is not a research event and must not be repurposed as learner research.
 
 ## 6. School and parent/guardian profile fields
 
@@ -170,7 +170,7 @@ Account information and leaderboard records are separate from research. Account 
 
 ## 9. Security and access
 
-The project uses HTTPS for the website and API. Passwords are stored as password hashes, not plaintext. Session tokens are random and only their hashes are stored in D1. Research tables are designed without account identifiers and are not joined to player tables.
+The project uses HTTPS for the website and API. Passwords are stored as password hashes, not plaintext. Session tokens are random and only their hashes are stored in D1. No research tables or research writes exist in this release.
 
 Before any research activation, the maintainer must additionally verify:
 - least-privilege access to the research database;
@@ -203,4 +203,4 @@ The policy is a project requirement, not a substitute for legal advice. No relea
 
 ## 12. Change history
 
-- **11 November 2026:** Rewritten to distinguish account, leaderboard, and research processing; document child/guardian safeguards; specify ten separate game research tables; and record that production research collection remains disabled pending verifiable consent.
+- **11 November 2026:** Rewritten to distinguish account, leaderboard, and research processing; document child/guardian safeguards; document that no research data is collected or stored and distinguish it from ordinary player-service data.
