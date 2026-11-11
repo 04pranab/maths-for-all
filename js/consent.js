@@ -85,7 +85,7 @@ const ResearchConsent = (function () {
               <li>Game/module and event type</li>
               <li>Difficulty and learning state</li>
               <li>Correct/incorrect result and attempt count</li>
-              <li>Response/event timing</li>
+              <li>Coarse response-time band (under 10s, 10–30s, 30–120s, or over 120s), not an exact timestamp</li>
               <li>Game progress and completion events</li>
               <li>Technical event timestamp</li>
             </ul>
