@@ -454,7 +454,93 @@ body.easy-level #schedule-inputs { display:block !important; visibility:visible 
 @media(max-width:800px) { .city-stage-3d { height:68vh; min-height:500px; } }
 @media(max-width:520px) { .city-stage-3d { height:62vh; min-height:430px; } }
 
-/* Shared research-consent sheet on the standalone Traffic Control page. */
+
+/* Final Easy-mode visibility and fixed-city presentation safeguards. */
+body.easy-level #schedule-inputs { display:block !important; visibility:visible !important; opacity:1 !important; }
+#schedule-inputs[hidden] { display:none !important; }
+.city3d, .city3d canvas { cursor:default !important; }
+.city3d { touch-action:none; }
+
+
+/* Minimal game interface: level selector, city, and the challenge planner only. */
+body { background:#edf2f6; }
+.app-shell { width:min(2200px,100%); margin:0 auto; padding:18px clamp(10px,2vw,30px) 24px; }
+.level-picker { position:relative; z-index:5; margin:0 0 14px; }
+.game-layout { grid-template-columns:minmax(0,1.7fr) minmax(390px,.83fr); gap:16px; align-items:stretch; }
+.city-card { border-radius:18px; }
+.city-stage-3d { height:clamp(620px,calc(100vh - 150px),1050px); min-height:540px; border-radius:18px; }
+.control-column { display:block; }
+.planner-card { height:100%; padding:18px; overflow:visible; }
+.planner-card h2 { margin:12px 0 8px; }
+.challenge-question { font-size:.86rem; }
+.challenge-budget,.approach-math,.schedule-inputs,.prediction-row { margin-top:11px; }
+.plan-button { margin-top:11px; }
+.math-hint,.logic-hooks,.city-camera-tip,.map-legend,.city-card-head,.topbar,.hero,.bottom-strip,.footer-note { display:none !important; }
+@media(max-width:950px) {
+ .game-layout { grid-template-columns:1fr; }
+ .city-stage-3d { height:62vh; min-height:420px; }
+ .planner-card { height:auto; }
+}
+@media(max-width:560px) {
+ .app-shell { padding:9px 8px 16px; }
+ .level-picker { gap:6px; margin-bottom:9px; }
+ .level-tab { min-height:58px; padding:8px; gap:8px; }
+ .level-number { width:32px; height:32px; }
+ .level-tab small { font-size:.58rem; }
+ .city-stage-3d { height:48vh; min-height:320px; }
+ .planner-card { padding:14px; }
+}
+
+
+/* Hide every non-game section explicitly requested for removal. */
+.topbar,
+.hero,
+.hero-stat,
+.intro-copy,
+.eyebrow,
+.utility-button,
+.brand-lockup,
+.back-link,
+.bottom-strip,
+.footer-note,
+.traffic-controls,
+.mission-card,
+.status-message,
+#reserve-note,
+#research-consent-modal,
+#math-hint,
+.learning-goals {
+  display: none !important;
+}
+/* Keep the screen focused on difficulty selection, the 3D city and planner. */
+.app-shell > header,
+.app-shell > footer,
+.app-shell > #game-main > header,
+.app-shell > #game-main > footer {
+  display: none !important;
+}
+
+
+/* Minimal game interface: level selector, city, and challenge planner only. */
+body { background:#edf2f6; }
+.app-shell { width:min(2200px,100%); margin:0 auto; padding:18px clamp(10px,2vw,30px) 24px; }
+.level-picker { position:relative; z-index:5; margin:0 0 14px; }
+.game-layout { grid-template-columns:minmax(0,1.7fr) minmax(390px,.83fr); gap:16px; align-items:stretch; }
+.city-card { border-radius:18px; }
+.city-stage-3d { height:clamp(620px,calc(100vh - 150px),1050px); min-height:540px; border-radius:18px; }
+.control-column { display:block; }
+.planner-card { height:100%; padding:18px; overflow:visible; }
+.planner-card h2 { margin:12px 0 8px; }
+.challenge-question { font-size:.86rem; }
+.challenge-budget,.approach-math,.schedule-inputs,.prediction-row { margin-top:11px; }
+.plan-button { margin-top:11px; }
+.math-hint,.logic-hooks,.city-camera-tip,.map-legend,.city-card-head,.topbar,.hero,.bottom-strip,.footer-note { display:none !important; }
+.topbar,.hero,.hero-stat,.intro-copy,.eyebrow,.utility-button,.brand-lockup,.back-link,.bottom-strip,.footer-note,.traffic-controls,.mission-card,.status-message,#reserve-note,#math-hint,.learning-goals { display:none !important; }
+.app-shell > header,.app-shell > footer { display:none !important; }
+@media(max-width:950px){.game-layout{grid-template-columns:1fr}.city-stage-3d{height:62vh;min-height:420px}.planner-card{height:auto}}
+@media(max-width:560px){.app-shell{padding:9px 8px 16px}.level-picker{gap:6px;margin-bottom:9px}.level-tab{min-height:58px;padding:8px;gap:8px}.level-number{width:32px;height:32px}.level-tab small{font-size:.58rem}.city-stage-3d{height:48vh;min-height:320px}.planner-card{padding:14px}}
+
+/* Shared research-consent sheet retained for the site's consent workflow. */
 .modal-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:1rem;background:#17251d99}
 .modal-overlay.hidden{display:none}
 .consent-card{position:relative;width:min(760px,96vw);max-height:90vh;overflow:auto;padding:1.4rem;border:1px solid #d9dfd4;border-radius:18px;background:#fffdf8;color:#26352c;box-shadow:0 20px 70px #0004}
