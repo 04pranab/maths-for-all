@@ -8,6 +8,7 @@ export const ACTIVE_GAME_IDS = Object.freeze([
   "fraction-bakery",
   "little-shop",
   "number-maze",
+  "traffic-control",
 ]);
 
 export const MAX_GAME_POINTS = 1000;

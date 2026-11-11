@@ -29,7 +29,7 @@ export function handleCorsPreflight(request, env) {
       "Access-Control-Allow-Origin": origin,
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Idempotency-Key",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization, Idempotency-Key",
       "Access-Control-Max-Age": "600",
       Vary: "Origin",
     },

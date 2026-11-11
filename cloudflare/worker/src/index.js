@@ -71,7 +71,9 @@ async function rateLimit(request, env, action) {
   return true;
 }
 async function currentUser(request, env) {
-  const raw = cookie(request, COOKIE);
+  const authorization = request.headers.get("Authorization") || "";
+  const bearer = authorization.match(/^Bearer ([A-Za-z0-9_-]{32,100})$/);
+  const raw = bearer ? bearer[1] : cookie(request, COOKIE);
   if (!raw) return null;
   const tokenHash = await digest(raw);
   const row = await env.DB.prepare(
@@ -108,7 +110,7 @@ async function register(request, env) {
     throw e;
   }
   const token = await createSession(id, env);
-  return jsonResponse({ authenticated: true, user: { id, username, createdAt: now } }, 201, { "Set-Cookie": cookieHeader(token) });
+  return jsonResponse({ authenticated: true, user: { id, username, createdAt: now }, sessionToken: token }, 201, { "Set-Cookie": cookieHeader(token) });
 }
 async function login(request, env) {
   if (!await rateLimit(request, env, "login")) return error("Too many attempts. Please try again in ten minutes.", 429);
@@ -118,13 +120,29 @@ async function login(request, env) {
   const row = await env.DB.prepare("SELECT id,username,email,password_hash,created_at FROM users WHERE username=? OR email=? LIMIT 1").bind(identifier, identifier).first();
   if (!row || !await verifyPassword(input.password, row.password_hash)) return error("The username/email or password is incorrect.", 401);
   const token = await createSession(row.id, env);
-  return jsonResponse({ authenticated: true, user: cleanUser(row) }, 200, { "Set-Cookie": cookieHeader(token) });
+  return jsonResponse({ authenticated: true, user: cleanUser(row), sessionToken: token }, 200, { "Set-Cookie": cookieHeader(token) });
 }
 async function submitAttempt(request, env, user, gameId) {
   const input = await body(request);
   const checked = validateAttempt({ ...input, gameId });
   if (!checked.ok) return error(checked.error);
   const a = checked.value, now = new Date().toISOString();
+  if (a.gameId === "traffic-control") {
+    const inserted = await env.DB.prepare("INSERT OR IGNORE INTO traffic_control_attempts(attempt_id,user_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?)")
+      .bind(a.attemptId,user.id,a.scorePercent,a.points,a.durationSeconds,now).run();
+    if (inserted.meta?.changes) {
+      await env.DB.prepare(`INSERT INTO traffic_control_best_scores(user_id,points,duration_seconds,achieved_at)
+        VALUES(?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET
+        points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at
+        WHERE excluded.points > traffic_control_best_scores.points`)
+        .bind(user.id,a.points,a.durationSeconds,now).run();
+    } else {
+      const prior=await env.DB.prepare("SELECT user_id FROM traffic_control_attempts WHERE attempt_id=?").bind(a.attemptId).first();
+      if(!prior||prior.user_id!==user.id)return error("Attempt ID already used.",409);
+    }
+    const best=await env.DB.prepare("SELECT points,duration_seconds,achieved_at FROM traffic_control_best_scores WHERE user_id=?").bind(user.id).first();
+    return jsonResponse({accepted:true,duplicate:!inserted.meta?.changes,points:a.points,best});
+  }
   const inserted = await env.DB.prepare("INSERT OR IGNORE INTO game_attempts(attempt_id,user_id,game_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?,?)")
     .bind(a.attemptId, user.id, a.gameId, a.scorePercent, a.points, a.durationSeconds, now).run();
   if (inserted.meta?.changes) {
@@ -132,8 +150,7 @@ async function submitAttempt(request, env, user, gameId) {
       VALUES(?,?,?,?,?)
       ON CONFLICT(user_id,game_id) DO UPDATE SET
         points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')
-      WHERE excluded.points > best_game_scores.points
-         `)
+      WHERE excluded.points > best_game_scores.points`)
       .bind(user.id, a.gameId, a.points, a.durationSeconds, now).run();
   } else {
     const prior = await env.DB.prepare("SELECT user_id,game_id FROM game_attempts WHERE attempt_id=?").bind(a.attemptId).first();
@@ -143,12 +160,14 @@ async function submitAttempt(request, env, user, gameId) {
   return jsonResponse({ accepted: true, duplicate: !inserted.meta?.changes, points: a.points, best });
 }
 async function globalLeaderboard(env, limit) {
-  const result = await env.DB.prepare(`SELECT u.username, SUM(b.points) AS points, COUNT(b.game_id) AS games_played,
-      SUM(b.duration_seconds) AS total_duration
-    FROM users u JOIN best_game_scores b ON b.user_id=u.id
+  const result = await env.DB.prepare(`WITH scores AS (
+      SELECT user_id,game_id,points,duration_seconds FROM best_game_scores
+      UNION ALL SELECT user_id,'traffic-control' AS game_id,points,duration_seconds FROM traffic_control_best_scores
+    )
+    SELECT u.username,SUM(s.points) AS points,COUNT(s.game_id) AS games_played
+    FROM users u JOIN scores s ON s.user_id=u.id
     GROUP BY u.id,u.username
-    ORDER BY points DESC,u.username COLLATE NOCASE ASC
-    LIMIT ?`).bind(limit).all();
+    ORDER BY points DESC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
   return result.results || [];
 }
 async function route(request, env) {
@@ -183,13 +202,17 @@ async function route(request, env) {
     const gameId = path.slice("/api/leaderboards/games/".length);
     if (!ACTIVE_GAME_IDS.includes(gameId)) return error("Unknown or inactive game.", 404);
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 25)));
-    const result = await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM best_game_scores b JOIN users u ON u.id=b.user_id WHERE b.game_id=? ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId, limit).all();
+    const result = gameId === "traffic-control"
+      ? await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM traffic_control_best_scores b JOIN users u ON u.id=b.user_id ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all()
+      : await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM best_game_scores b JOIN users u ON u.id=b.user_id WHERE b.game_id=? ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId, limit).all();
     return jsonResponse({ gameId, entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,durationSeconds:r.duration_seconds})) });
   }
   if (method === "GET" && path === "/api/players/me/stats") {
     const user = await currentUser(request, env);
     if (!user) return error("Sign in to view account statistics.", 401);
-    const scores = await env.DB.prepare("SELECT game_id,points,duration_seconds,achieved_at FROM best_game_scores WHERE user_id=? ORDER BY game_id").bind(user.id).all();
+    const scores = await env.DB.prepare(`SELECT game_id,points,duration_seconds,achieved_at FROM best_game_scores WHERE user_id=?
+      UNION ALL SELECT 'traffic-control' AS game_id,points,duration_seconds,achieved_at FROM traffic_control_best_scores WHERE user_id=?
+      ORDER BY game_id`).bind(user.id,user.id).all();
     const total = (scores.results||[]).reduce((n,r)=>n+r.points,0);
     return jsonResponse({ user:cleanUser(user), scores:scores.results||[], totalPoints:total, maximumPoints:MAX_GLOBAL_POINTS });
   }
