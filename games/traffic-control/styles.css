@@ -413,7 +413,7 @@ body{background:radial-gradient(ellipse at 12% 0%,#f9fbfd 0,#eaf0f5 55%,#e3eaf1 
 body.hard-level .fleet-legend{display:flex}
 body.easy-level .approach-chip.east-chip,body.easy-level .approach-chip.west-chip{display:none}
 body.easy-level .approach-math{grid-template-columns:repeat(2,minmax(0,1fr))}
-body.easy-level #schedule-inputs{display:none}
+
 body.easy-level .mission-card .mission-number{color:#07828b}
 .traffic-controls{background:#fff;border-radius:18px;padding:18px}
 .queue-summary>div{background:#f0f4f8;border:1px solid #e0e7ed;border-radius:12px}
