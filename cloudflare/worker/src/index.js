@@ -1,5 +1,6 @@
 import { jsonResponse, handleCorsPreflight, withCors } from "./http.js";
-import { ACTIVE_GAME_IDS, GAME_RULES, MAX_GLOBAL_POINTS } from "./leaderboard/scoring.js";
+import { ACTIVE_GAME_IDS, GAME_RULES } from "./leaderboard/scoring.js";
+import { progressForXp, earnedBadges, BADGE_RULES } from "./leaderboard/progression.js";
 import { validateAttempt } from "./leaderboard/validation.js";
 
 const SESSION_SECONDS = 60 * 60 * 24 * 30;
@@ -111,6 +112,7 @@ async function register(request, env) {
     if (/UNIQUE|constraint/i.test(String(e))) return error("That username or email is already in use.", 409);
     throw e;
   }
+  await env.DB.prepare("INSERT OR IGNORE INTO player_progress(user_id) VALUES(?)").bind(id).run();
   const token = await createSession(id, env);
   return jsonResponse({ authenticated: true, user: { id, username, createdAt: now }, sessionToken: token }, 201, { "Set-Cookie": cookieHeader(token) });
 }
@@ -129,47 +131,66 @@ async function submitAttempt(request, env, user, gameId) {
   const checked = validateAttempt({ ...input, gameId });
   if (!checked.ok) return error(checked.error);
   const a = checked.value, now = new Date().toISOString();
+  const perfect = a.scorePercent === 100 && a.hintsUsed === 0 && a.mistakes === 0 ? 1 : 0;
+  const hard = ["hard","stretch","champion"].includes(a.difficulty) ? 1 : 0;
+  const legacyPoints = Math.min(1000, a.points);
+  const legacyAttempt = a.gameId === "traffic-control"
+    ? env.DB.prepare("INSERT OR IGNORE INTO traffic_control_attempts(attempt_id,user_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?)").bind(a.attemptId,user.id,a.scorePercent,legacyPoints,a.durationSeconds,now)
+    : env.DB.prepare("INSERT OR IGNORE INTO game_attempts(attempt_id,user_id,game_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?,?)").bind(a.attemptId,user.id,a.gameId,a.scorePercent,legacyPoints,a.durationSeconds,now);
+  const inserted = await env.DB.prepare("INSERT OR IGNORE INTO player_game_attempts(attempt_id,user_id,game_id,score_percent,points,duration_seconds,difficulty,level,hints_used,mistakes,perfect,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)")
+    .bind(a.attemptId,user.id,a.gameId,a.scorePercent,a.points,a.durationSeconds,a.difficulty,a.level,a.hintsUsed,a.mistakes,perfect,now).run();
+  if (!inserted.meta?.changes) {
+    const prior = await env.DB.prepare("SELECT user_id,game_id,points FROM player_game_attempts WHERE attempt_id=?").bind(a.attemptId).first();
+    if (!prior || prior.user_id !== user.id || prior.game_id !== a.gameId) return error("Attempt ID already used.",409);
+    return jsonResponse({accepted:true,duplicate:true,points:prior.points});
+  }
+  await legacyAttempt.run();
   if (a.gameId === "traffic-control") {
-    const inserted = await env.DB.prepare("INSERT OR IGNORE INTO traffic_control_attempts(attempt_id,user_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?)")
-      .bind(a.attemptId,user.id,a.scorePercent,a.points,a.durationSeconds,now).run();
-    if (inserted.meta?.changes) {
-      await env.DB.prepare(`INSERT INTO traffic_control_best_scores(user_id,points,duration_seconds,achieved_at)
-        VALUES(?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET
-        points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at
-        WHERE excluded.points > traffic_control_best_scores.points`)
-        .bind(user.id,a.points,a.durationSeconds,now).run();
-    } else {
-      const prior=await env.DB.prepare("SELECT user_id FROM traffic_control_attempts WHERE attempt_id=?").bind(a.attemptId).first();
-      if(!prior||prior.user_id!==user.id)return error("Attempt ID already used.",409);
-    }
-    const best=await env.DB.prepare("SELECT points,duration_seconds,achieved_at FROM traffic_control_best_scores WHERE user_id=?").bind(user.id).first();
-    return jsonResponse({accepted:true,duplicate:!inserted.meta?.changes,points:a.points,best});
-  }
-  const inserted = await env.DB.prepare("INSERT OR IGNORE INTO game_attempts(attempt_id,user_id,game_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?,?)")
-    .bind(a.attemptId, user.id, a.gameId, a.scorePercent, a.points, a.durationSeconds, now).run();
-  if (inserted.meta?.changes) {
-    await env.DB.prepare(`INSERT INTO best_game_scores(user_id,game_id,points,duration_seconds,achieved_at)
-      VALUES(?,?,?,?,?)
-      ON CONFLICT(user_id,game_id) DO UPDATE SET
-        points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')
-      WHERE excluded.points > best_game_scores.points`)
-      .bind(user.id, a.gameId, a.points, a.durationSeconds, now).run();
+    await env.DB.prepare(`INSERT INTO traffic_control_best_scores(user_id,points,duration_seconds,achieved_at) VALUES(?,?,?,?)
+      ON CONFLICT(user_id) DO UPDATE SET points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at
+      WHERE excluded.points>traffic_control_best_scores.points`).bind(user.id,legacyPoints,a.durationSeconds,now).run();
   } else {
-    const prior = await env.DB.prepare("SELECT user_id,game_id FROM game_attempts WHERE attempt_id=?").bind(a.attemptId).first();
-    if (!prior || prior.user_id !== user.id || prior.game_id !== a.gameId) return error("Attempt ID already used.", 409);
+    await env.DB.prepare(`INSERT INTO best_game_scores(user_id,game_id,points,duration_seconds,achieved_at) VALUES(?,?,?,?,?)
+      ON CONFLICT(user_id,game_id) DO UPDATE SET points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')
+      WHERE excluded.points>best_game_scores.points`).bind(user.id,a.gameId,legacyPoints,a.durationSeconds,now).run();
   }
-  const best = await env.DB.prepare("SELECT points,duration_seconds,achieved_at FROM best_game_scores WHERE user_id=? AND game_id=?").bind(user.id, a.gameId).first();
-  return jsonResponse({ accepted: true, duplicate: !inserted.meta?.changes, points: a.points, best });
+  await env.DB.prepare(`INSERT INTO player_game_progress(user_id,game_id,total_points,total_xp,attempts,perfect_clears,hard_clears,current_streak,best_streak,highest_level,last_played_at)
+    VALUES(?,?,?, ?,1,?,?,1,1,?,?)
+    ON CONFLICT(user_id,game_id) DO UPDATE SET
+      total_points=total_points+excluded.total_points,total_xp=total_xp+excluded.total_xp,
+      attempts=attempts+1,perfect_clears=perfect_clears+excluded.perfect_clears,
+      hard_clears=hard_clears+excluded.hard_clears,current_streak=current_streak+1,
+      best_streak=MAX(best_streak,current_streak+1),highest_level=MAX(highest_level,excluded.highest_level),
+      last_played_at=excluded.last_played_at`).bind(user.id,a.gameId,a.points,a.points,perfect,hard,a.level,now).run();
+  await env.DB.prepare(`INSERT INTO player_progress(user_id,total_points,total_xp,level,xp_into_level,xp_to_next,total_attempts,updated_at)
+    VALUES(?,?,?,1,0,125,1,?)
+    ON CONFLICT(user_id) DO UPDATE SET total_points=total_points+excluded.total_points,
+      total_xp=total_xp+excluded.total_xp,total_attempts=total_attempts+1,updated_at=excluded.updated_at`)
+    .bind(user.id,a.points,a.points,now).run();
+  const player = await env.DB.prepare("SELECT total_xp FROM player_progress WHERE user_id=?").bind(user.id).first();
+  const level = progressForXp(player?.total_xp || 0);
+  await env.DB.prepare("UPDATE player_progress SET level=?,xp_into_level=?,xp_to_next=? WHERE user_id=?")
+    .bind(level.level,level.xpIntoLevel,level.xpToNext,user.id).run();
+  const gameProgress = await env.DB.prepare("SELECT * FROM player_game_progress WHERE user_id=? AND game_id=?").bind(user.id,a.gameId).first();
+  for (const badge of earnedBadges(gameProgress || {})) {
+    await env.DB.prepare("INSERT OR IGNORE INTO player_badges(user_id,game_id,badge_id,earned_at) VALUES(?,?,?,?)")
+      .bind(user.id,a.gameId,badge.id,now).run();
+  }
+  const globalBadges = [
+    {id:"level-5",test:level.level>=5},{id:"level-10",test:level.level>=10},
+    {id:"level-25",test:level.level>=25},{id:"level-50",test:level.level>=50},
+    {id:"level-100",test:level.level>=100}
+  ];
+  for (const badge of globalBadges.filter(x=>x.test)) {
+    await env.DB.prepare("INSERT OR IGNORE INTO player_badges(user_id,game_id,badge_id,earned_at) VALUES(?,?,?,?)")
+      .bind(user.id,"all",badge.id,now).run();
+  }
+  return jsonResponse({accepted:true,duplicate:false,points:a.points,best:{points:a.points},progress:level,badges:earnedBadges(gameProgress||{})});
 }
 async function globalLeaderboard(env, limit) {
-  const result = await env.DB.prepare(`WITH scores AS (
-      SELECT user_id,game_id,points,duration_seconds FROM best_game_scores
-      UNION ALL SELECT user_id,'traffic-control' AS game_id,points,duration_seconds FROM traffic_control_best_scores
-    )
-    SELECT u.username,SUM(s.points) AS points,COUNT(s.game_id) AS games_played
-    FROM users u JOIN scores s ON s.user_id=u.id
-    GROUP BY u.id,u.username
-    ORDER BY points DESC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
+  const result = await env.DB.prepare(`SELECT u.id,u.username,p.total_points AS points,p.total_attempts AS games_played
+    FROM player_progress p JOIN users u ON u.id=p.user_id
+    WHERE p.total_points>0 ORDER BY p.total_points DESC,p.updated_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
   return result.results || [];
 }
 const RESEARCH_GAMES = Object.freeze({
