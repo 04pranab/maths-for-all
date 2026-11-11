@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#eaf3e9">
   <meta name="description" content="A calm, interactive traffic-junction game that teaches Class 3–4 mathematics through safe traffic decisions.">
   <title>Metro Traffic Engineer · Maths for All</title>
-  <link rel="stylesheet" href="./styles.css?v=20261112-fixed-zoom-easy-slider">
+  <link rel="stylesheet" href="./styles.css?v=20261111-fixed-north-up-zoom-slider-r2">
   <script src="../../js/account.js?v=20261111-auth-repair-2"></script>
-  <script type="module" src="./app.js?v=20261112-fixed-zoom-easy-slider"></script>
+  <script type="module" src="./app.js?v=20261111-fixed-north-up-zoom-slider-r2"></script>
 </head>
 <body>
   <a class="skip-link" href="#game-main">Skip to game</a>
@@ -45,11 +45,11 @@
         <section class="city-card" aria-labelledby="city-heading">
           <div class="city-card-head"><div><p class="section-kicker">LIVE CITY NETWORK</p><h2 id="city-heading">Central Avenue · District 01</h2></div><div class="live-pill"><span class="live-dot"></span> LIVE SIMULATION</div></div>
           <div class="city-stage city-stage-3d">
-            <div id="city3d" class="city3d" role="img" aria-label="Interactive 3D isometric city with buildings, roads, traffic lights and individually modelled vehicles"></div>
+            <div id="city3d" class="city3d" role="img" aria-label="Static 3D north-up city view with northbound and southbound traffic, buildings, roads and traffic lights"></div>
             <div class="city-camera-tip">FIXED 3D VIEW <span>·</span> NORTH AT TOP</div>
             <div class="map-compass"><span>N</span><i>↑</i></div>
           </div>
-          <div class="map-legend"><span><i class="legend-dot legend-green"></i> Green: move</span><span><i class="legend-dot legend-red"></i> Red: stop</span><span>3D CITY · DRAG TO EXPLORE</span></div>
+          <div class="map-legend"><span><i class="legend-dot legend-green"></i> Green: move</span><span><i class="legend-dot legend-red"></i> Red: stop</span><span>3D CITY · FIXED NORTH-UP VIEW</span></div>
         </section>
         <aside class="control-column">
           <section class="mission-card"><div class="mission-topline"><span class="section-kicker">CURRENT CHALLENGE</span><span id="mission-number" class="mission-number">01 / 03</span></div><div class="mission-progress"><span id="mission-progress-fill"></span></div><p id="mission-tag" class="mission-tag">BEGINNER</p><h2 id="mission-title">First day on traffic duty</h2><p id="mission-description" class="mission-description">Learn to control a simple two-way road.</p><div class="mission-objective"><span class="objective-icon">✦</span><p id="mission-objective">Move the waiting vehicles safely.</p></div><button id="restart-mission" class="restart-button" type="button">↻ Restart level</button></section>
