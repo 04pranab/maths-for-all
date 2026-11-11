@@ -52,4 +52,4 @@ const ResearchEventGateway = (() => {
   if (typeof window !== "undefined") window.addEventListener("pagehide",()=>{if(consentAllowed())flush();});
   return {record,read,clear,flush};
 })();
-window.ResearchEventGateway = ResearchEventGateway;
+if (typeof window !== "undefined") window.ResearchEventGateway = ResearchEventGateway;
