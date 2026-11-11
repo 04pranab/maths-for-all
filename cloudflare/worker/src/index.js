@@ -191,7 +191,7 @@ async function collectResearch(request, env) {
     if (!gameId || !RESEARCH_ACTIONS.has(action)) continue;
     const detail = event.detail && typeof event.detail === "object" && !Array.isArray(event.detail) ? event.detail : {};
     const difficulty = ["easy","medium","hard","gentle","steady","stretch","starter","growing","champion"].includes(String(detail.difficulty || "").toLowerCase()) ? String(detail.difficulty).toLowerCase() : "unspecified";
-    const outcome = typeof detail.correct === "boolean" ? (detail.correct ? "correct" : "incorrect") : (action.includes("complete") || action === "puzzle_solved" ? "completed" : "unspecified");
+    const outcome = action.includes("complete") || action === "puzzle_solved" ? "completed" : (typeof detail.correct === "boolean" ? (detail.correct ? "correct" : "incorrect") : "unspecified");
     const level = Number.isInteger(detail.level) ? detail.level : 0;
     const levelBand = level <= 0 ? "unspecified" : level <= 10 ? "1-10" : level <= 30 ? "11-30" : "31+";
     const duration = Number(detail.durationMs ?? detail.timeMs ?? (Number(detail.seconds || detail.timer || 0) * 1000));
