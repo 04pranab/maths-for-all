@@ -154,7 +154,9 @@ class MemoryD1 {
           return {results:rows.sort((a,b)=>b.points-a.points).slice(0,args[1])};
         }
         if(query.startsWith("SELECT game_id,points,duration_seconds,achieved_at FROM best_game_scores")) {
-          return {results:[...db.best].filter(([key])=>key.startsWith(args[0]+"|")).map(([key,b])=>({game_id:key.split("|")[1],...b}))};
+          const rows=[...db.best].filter(([key])=>key.startsWith(args[0]+"|")).map(([key,b])=>({game_id:key.split("|")[1],...b}));
+          if(db.trafficBest.has(args[0]))rows.push({game_id:"traffic-control",...db.trafficBest.get(args[0])});
+          return {results:rows};
         }
         return {results:[]};
       }
