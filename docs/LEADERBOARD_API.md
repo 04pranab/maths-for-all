@@ -51,7 +51,7 @@ Global level milestones appear as player-wide badges. Achievement rules are serv
 | GET | /leaderboards/me?gameId=global | Authenticated player's rank and nearby competitors |
 | GET | /players/me/stats | XP, level, lifetime totals, game progress and badges |
 | DELETE | /players/me | Delete account and associated player data |
-| POST | /research/events | Research ingestion; currently disabled server-side |
+| POST | /research/events | Permanently disabled in this release; returns HTTP 503 without writing to D1 |
 
 The personal-rank route returns rank, points, total ranked players, and a small window of nearby competitors. A player with no score has rank null.
 
@@ -66,11 +66,9 @@ The personal-rank route returns rank, points, total ranked players, and a small 
 ## Research and privacy
 Research is separate from player progression. Account creation, sign-in, score saving, profile viewing, and leaderboard participation do not imply research consent.
 
-Migration 0005 creates ten independent daily aggregate tables, one per active game. Each stores only day, action, difficulty, outcome, broad level band, coarse duration band, and event count. No account, participant, parent, school, username, email, IP, session, or device identifier is stored.
+Migration 0005 removes the legacy research aggregate table and does not create research event tables. The browser gateway refuses to record or queue events. The Worker research endpoint always returns 503, even if a client sends consent=true or an environment flag is accidentally enabled. No research event is stored in D1.
 
-Production research collection is OFF. The browser gateway refuses to record or queue events. The Worker returns 503 unless RESEARCH_COLLECTION_ENABLED=true; the production setting must remain false until a verifiable adult/parent/lawful-guardian permission process is implemented and reviewed. A client-supplied consent flag is never sufficient.
-
-If research is enabled in a future release, aggregate buckets are retained for up to 90 days. Once a contribution has been merged into an aggregate count, it cannot reliably be separated back out; this must be explained before a future opt-in.
+Any future research system requires a separate reviewed design, verifiable adult/parent/lawful-guardian permission where applicable, and a new explicit release. Until then, there is no research retention period because no research data is collected.
 
 ## Profile data
 School name and parent/guardian name are not collected. They are unnecessary for gameplay and would add personal data in a child-focused service. Any future request requires a specific purpose, private-by-default handling, a retention/deletion plan, and applicable verified guardian permission. They must never be public or used as research dimensions.
