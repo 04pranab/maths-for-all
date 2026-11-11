@@ -139,7 +139,7 @@ class MemoryD1 {
         return {meta:{changes:0}};
       },
       async all(){
-        if(query.includes("FROM users u JOIN best_game_scores b")) {
+        if(query.includes("FROM users u JOIN scores s")) {
           const grouped=new Map();
           for(const [key,b] of db.best){const user=db.users.get(key.split("|")[0]);if(!user)continue;const g=grouped.get(user.id)||{username:user.username,points:0,games_played:0};g.points+=b.points;g.games_played++;grouped.set(user.id,g);}
           for(const [uid,b] of db.trafficBest){const user=db.users.get(uid);if(!user)continue;const g=grouped.get(uid)||{username:user.username,points:0,games_played:0};g.points+=b.points;g.games_played++;grouped.set(uid,g);}
