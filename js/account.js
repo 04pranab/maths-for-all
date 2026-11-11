@@ -107,9 +107,9 @@
       "sudoku:puzzle_solved": { game:"sudoku", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:detail.difficulty||"easy", hintsUsed:Number(detail.hintsUsed||0) },
       "shape:level_complete": { game:"shape-fitting", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:level>=70?"hard":level>=30?"medium":"easy", level },
       "slab:round_complete": { game:"slab-maths", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:level>=20?"hard":level>=8?"medium":"easy", level, hintsUsed:Number(detail.hintsUsed||0) },
-      "shape_architect:complete": { game:"shape-architect", score:() => 100, duration:() => Number(detail.time||3), difficulty:level>=70?"hard":level>=30?"medium":"easy", level },
+      "shape_architect:complete": { game:"shape-architect", score:() => 100, duration:() => Number(detail.time||3), difficulty:level>=70?"hard":level>=30?"medium":"easy", level, hintsUsed:Number(detail.hints||0) },
       "fraction_bakery:level_complete": { game:"fraction-bakery", score:() => 100, duration:() => Math.max(3,Math.round(Number(detail.timeMs||3000)/1000)), difficulty:level>=70?"hard":level>=25?"medium":"easy", level },
-      "number_maze:complete": { game:"number-maze", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:detail.difficulty||"gentle", level },
+      "number_maze:complete": { game:"number-maze", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:detail.difficulty||"gentle", level, hintsUsed:Number(detail.hints||0) },
       "little_shop:sale_complete": { game:"little-shop", score:() => Math.min(100,Math.max(0,Number(detail.accuracy||100))), duration:() => Number(detail.seconds||3), difficulty:level>=20?"hard":level>=8?"medium":"easy", level },
     };
     const item = map[category + ":" + action];
