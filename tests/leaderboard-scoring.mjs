@@ -11,7 +11,7 @@ test("a hard Sudoku clear is worth substantially more than an easy arithmetic cl
 });
 test("challenge level increases points without a fixed score ceiling",()=>{
  const low=calculateAttemptPoints({gameId:"number-maze",scorePercent:100,difficulty:"stretch",level:1});
- const high=calculateAttemptPoints({gameId:"number-maze",scorePercent:100,difficulty:"stretch",level:100000});
+ const high=calculateAttemptPoints({gameId:"number-maze",scorePercent:100,difficulty:"stretch",level:10000000000});
  assert.ok(high>low);
  assert.ok(high>GAME_RULES["number-maze"].base);
 });
@@ -32,6 +32,6 @@ test("achievement milestones unlock from genuine game progress counters",()=>{
 });
 test("attempt validation accepts unbounded progression levels",()=>{
  assert.equal(validateAttempt({gameId:"math-court",scorePercent:90,durationSeconds:60,attemptId:"attempt_123456"}).ok,false);
- const result=validateAttempt({gameId:"number-maze",scorePercent:100,durationSeconds:240,attemptId:"maze_attempt_12345",difficulty:"stretch",level:100000});
+ const result=validateAttempt({gameId:"number-maze",scorePercent:100,durationSeconds:240,attemptId:"maze_attempt_12345",difficulty:"stretch",level:10000000000});
  assert.equal(result.ok,true);assert.ok(result.value.points>0);
 });
