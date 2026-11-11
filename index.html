@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Math For All — Inclusive Math Arcade (NEP 2020)</title>
     <link rel="icon" href="favicon.svg?v=20261022-symbol-mark" />
-    <link rel="stylesheet" href="css/accounts.css?v=20261111-d1-accounts-1" />
+    <link rel="stylesheet" href="css/accounts.css?v=20261111-auth-repair-2" />
     <meta
       name="description"
       content="A free, offline-friendly math arcade built for inclusive classrooms — big text, gentle colors, read-aloud support, and games that never punish a wrong answer."
@@ -1141,7 +1141,7 @@
         <p>Accounts save your best scores. You can always play as a guest.</p>
         <form id="auth-form">
           <label for="auth-username">Username</label>
-          <input id="auth-username" name="username" autocomplete="username" minlength="3" maxlength="30" required />
+          <input id="auth-username" name="username" autocomplete="username" minlength="3" maxlength="254" autocapitalize="none" spellcheck="false" required />
           <label for="auth-email" id="auth-email-label" hidden>Email address</label>
           <input id="auth-email" name="email" type="email" autocomplete="email" hidden />
           <label for="auth-password">Password</label>
@@ -1157,6 +1157,20 @@
         <button type="button" class="account-close" onclick="MfaAccounts.closeLeaderboard()" aria-label="Close leaderboard">×</button>
         <h2 class="modal-title">🏆 Maths For All leaderboard</h2>
         <p>Celebrate learning. Rankings use each player's best score in each active game.</p>
+        <label for="leaderboard-game-select">Choose a leaderboard</label>
+        <select id="leaderboard-game-select" class="leaderboard-game-select">
+          <option value="global">Overall learning points</option>
+          <option value="arithmetic-quiz">Arithmetic Quiz</option>
+          <option value="math-racing">Math Racing</option>
+          <option value="sudoku">Sudoku</option>
+          <option value="shape-fitting">Shape Fitting</option>
+          <option value="slab-maths">Slab Maths</option>
+          <option value="shape-architect">Shape Architect</option>
+          <option value="fraction-bakery">Fraction Bakery</option>
+          <option value="little-shop">Little Shop</option>
+          <option value="number-maze">Number Maze</option>
+          <option value="traffic-control">Traffic Control Centre</option>
+        </select>
         <div id="leaderboard-content" aria-live="polite">Loading the leaderboard…</div>
       </div>
     </div>
@@ -1181,7 +1195,7 @@
     </section>
 
     <script src="js/research-gateway.js?v=20260926-1"></script>
-    <script src="js/account.js?v=20261111-d1-accounts-1"></script>
+    <script src="js/account.js?v=20261111-auth-repair-2"></script>
     <script src="js/probability-carnival.js?v=20261110-game-routes-1"></script>
     
     
