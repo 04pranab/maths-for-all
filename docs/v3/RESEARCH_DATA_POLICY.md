@@ -24,9 +24,9 @@ A user must be shown a clear research-data explanation and must actively choose 
 | Game/module               | arithmetic quiz, racing, Sudoku, shape fitting, Slab Maths                              |
 | Event type                | game opened, answer submitted, hint requested, explanation requested, retry, completion |
 | Learning state            | difficulty level, correct/incorrect result, attempt count                               |
-| Timing                    | time spent on an answer or game event                                                   |
+| Timing                    | coarse duration band only: under 10s, 10–30s, 30–120s, or over 120s                      |
 | Game progress             | question/round/level completion                                                         |
-| Technical event timestamp | time at which the research event occurred                                               |
+| Date bucket               | UTC calendar day only; no exact event timestamp                                         |
 
 The exact fields must remain tied to documented research questions. Future fields require a review of this policy and the consent wording.
 
@@ -69,3 +69,14 @@ No game module may write research events directly to localStorage, a future data
 ## Gateway enforcement
 
 All research writes must pass through ResearchEventGateway. The gateway rejects writes unless consent is Yes, validates event shape, caps retained local events, and clears persisted research events when collection is withdrawn.
+
+
+## Remote research-data architecture (v3 implementation)
+When, and only when, a user actively selects **Allow research data collection**, the research gateway may send a strict allowlist of learning events to the Cloudflare Worker. The Worker stores daily aggregate counts grouped by game, event type, difficulty band, outcome, and broad level band.
+
+Research records are **not connected to player accounts**. The research table does not store usernames, emails, account IDs, session tokens, IP addresses, browser fingerprints, stable participant IDs, exact event timestamps, question text, or free-form answers. The Worker discards unapproved fields and rejects requests without an explicit consent flag. Events older than 90 days are removed during accepted research writes.
+
+If consent is changed to No, future uploads stop and queued local events are deleted. Because uploaded records are non-identifying aggregate counts shared across participants, an individual contribution cannot be located and subtracted after aggregation. This limitation must be shown before opting in. Account creation and leaderboard participation do not imply research consent.
+
+## Important implementation boundary
+Aggregate research is for broad product/learning research only. It is not an individual learner assessment, diagnosis, ability profile, or automated decision system. Do not use these aggregates to label or rank individual children.
