@@ -52,6 +52,7 @@
           <button class="nav-link active" onclick="Navigation.home()">🎮 Games</button>
           <button class="nav-link" onclick="Navigation.progress()">📊 My Progress</button>
           <a class="nav-link nav-wiki-link" href="wiki.html">📚 Wiki</a>
+          <button class="nav-link" type="button" onclick="MfaAccounts.openLeaderboard()">🏆 Leaderboard</button>
         </div>
         <div class="nav-right">
           <div class="nav-accessibility">
@@ -80,7 +81,7 @@
           >
             Privacy &amp; data
           </button>
-          <!-- Authentication is temporarily disabled for the physical game prototype. -->
+          <button class="nav-policy" type="button" id="account-nav-button" onclick="Auth.open()">Sign in</button>
         </div>
       </nav>
     </header>
@@ -1120,37 +1121,42 @@
       </div>
     </div>
 
-    <!-- ===================================================
-       MODAL: MY ACCOUNT
-       =================================================== -->
-    <!-- Authentication UI is disabled for the physical prototype.
-       These stable DOM containers remain so the browser smoke-test
-       contract and future authentication implementation retain their
-       expected mount points. -->
+    <!-- Account and leaderboard: optional additions; guest play stays open. -->
     <div id="account-profile-modal" class="modal-overlay hidden">
-      <div class="modal-box progress-box">
-        <h2 id="account-profile-title" class="modal-title">Account profile</h2>
+      <div class="modal-box auth-card">
+        <button type="button" class="account-close" onclick="Auth.close()" aria-label="Close account">×</button>
+        <h2 class="modal-title">Your Maths For All account</h2>
+        <p id="account-profile-copy">Your saved scores and public ranking.</p>
+        <div id="account-profile-stats"></div>
+        <button type="button" onclick="MfaAccounts.logout()">Sign out</button>
+        <button type="button" class="account-danger" onclick="MfaAccounts.deleteAccount()">Delete account</button>
       </div>
     </div>
-
     <div id="research-consent-modal" class="modal-overlay hidden"></div>
-
     <div id="auth-modal" class="modal-overlay hidden">
       <div class="modal-box auth-card">
+        <button type="button" class="account-close" onclick="Auth.close()" aria-label="Close sign in">×</button>
         <h2 id="auth-modal-title" class="modal-title">Sign in</h2>
+        <p>Accounts save your best scores. You can always play as a guest.</p>
         <form id="auth-form">
-          <label for="auth-username">Username or email</label>
-          <input id="auth-username" name="username" autocomplete="username" required />
+          <label for="auth-username">Username</label>
+          <input id="auth-username" name="username" autocomplete="username" minlength="3" maxlength="30" required />
+          <label for="auth-email" id="auth-email-label" hidden>Email address</label>
+          <input id="auth-email" name="email" type="email" autocomplete="email" hidden />
           <label for="auth-password">Password</label>
-          <input
-            id="auth-password"
-            name="password"
-            type="password"
-            autocomplete="current-password"
-            required
-          />
-          <button type="submit">Sign in</button>
+          <input id="auth-password" name="password" type="password" minlength="8" maxlength="128" autocomplete="current-password" required />
+          <p id="auth-message" class="account-message" role="status" aria-live="polite"></p>
+          <button id="auth-submit" type="submit">Sign in</button>
         </form>
+        <button id="auth-mode-toggle" class="account-link" type="button">Create an account</button>
+      </div>
+    </div>
+    <div id="leaderboard-modal" class="modal-overlay hidden">
+      <div class="modal-box auth-card leaderboard-card">
+        <button type="button" class="account-close" onclick="MfaAccounts.closeLeaderboard()" aria-label="Close leaderboard">×</button>
+        <h2 class="modal-title">🏆 Maths For All leaderboard</h2>
+        <p>Celebrate learning. Rankings use each player's best score in each active game.</p>
+        <div id="leaderboard-content" aria-live="polite">Loading the leaderboard…</div>
       </div>
     </div>
 
@@ -1174,6 +1180,7 @@
     </section>
 
     <script src="js/research-gateway.js?v=20260926-1"></script>
+    <script src="js/account.js?v=20261111-d1-accounts-1"></script>
     <script src="js/probability-carnival.js?v=20261110-game-routes-1"></script>
     
     
@@ -1638,18 +1645,7 @@
     <script type="module" src="js/little-shop.js?v=20261110-completion-overlay-1"></script>
     <script src="js/consent.js?v=20261110-keyboard-3"></script>
     <script>
-      /* Prototype compatibility shim. Production authentication remains disabled. */
-      const Auth = {
-        open() {
-          const modal = document.getElementById("auth-modal");
-          if (!modal) return;
-          modal.classList.remove("hidden");
-          setTimeout(() => document.getElementById("auth-username")?.focus(), 0);
-        },
-        close() {
-          document.getElementById("auth-modal")?.classList.add("hidden");
-        },
-      };
+
     </script>
   </body>
 </html>
