@@ -33,6 +33,7 @@ code{padding:.12rem .3rem;border-radius:5px;background:#eef1ea;overflow-wrap:any
 <h2>2. Account creation is not research consent</h2>
 <p>An account saves a username, points, XP, level, game achievements, and leaderboard progress. Creating an account, signing in, or saving a score does not opt anyone into research. Guest play remains available. The research gateway does not receive an account ID, session token, username, or email, and research tables are not joined to player tables.</p>
 <p>The account service stores an email address for account identity, a username, a password hash, account timestamps, and hashed session-token records. Public leaderboards display the chosen username and competition points, never the email address or password.</p>
+<p><strong>Child-account limitation:</strong> the current account flow does not yet provide verifiable age or parent/lawful-guardian onboarding. Therefore the project does not claim that account processing is fully DPDP-compliant for under-18 learners. Before enabling child accounts where the relevant child-data rules apply, the project must implement verifiable parent/lawful-guardian permission for the account purpose itself, or keep that learner in guest mode / a properly parent-managed account flow until the safeguard is available. Research consent cannot substitute for account consent.</p>
 
 <h2>3. Research status and consent</h2>
 <h3>What happens in production now</h3>
