@@ -443,3 +443,10 @@ body.easy-level .mission-card .mission-number{color:#07828b}
 @media(max-width:800px){.game-layout{grid-template-columns:1fr}.city-stage-3d{height:66vh;min-height:460px}.city-card-head{padding:15px}.control-column{display:flex;flex-direction:column}}
 @media(max-width:520px){.city-stage-3d{height:58vh;min-height:390px}.city-camera-tip{left:9px;bottom:9px;font-size:.54rem;padding:7px 9px}.city-stage-3d .map-compass{top:9px;right:9px}}
 @media(prefers-reduced-motion:reduce){.city3d{scroll-behavior:auto}}
+
+/* Shared research-consent sheet on the standalone Traffic Control page. */
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:1rem;background:#17251d99}
+.modal-overlay.hidden{display:none}
+.consent-card{position:relative;width:min(760px,96vw);max-height:90vh;overflow:auto;padding:1.4rem;border:1px solid #d9dfd4;border-radius:18px;background:#fffdf8;color:#26352c;box-shadow:0 20px 70px #0004}
+.consent-card h2{margin:.3rem 0 .7rem}.consent-card p,.consent-card li{line-height:1.5}.consent-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.consent-columns section{padding:.8rem;border-radius:12px;background:#f2f5ef}.consent-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}.consent-btn{min-height:44px;padding:.65rem .9rem;border:1px solid #9ba99b;border-radius:10px;background:#fff;color:#26352c;font:inherit;font-weight:700}.consent-btn.primary{background:#315c42;color:#fff}.consent-policy{color:#285e72;text-decoration:underline}.consent-close{float:right;border:0;background:transparent;font-size:1.7rem}
+@media(max-width:620px){.consent-columns{grid-template-columns:1fr}.consent-card{padding:1rem}}
