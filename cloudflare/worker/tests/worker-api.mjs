@@ -37,13 +37,13 @@ test("score normalization and global cap", () => {
   assert.equal(normalizeScore(100), 1000);
   assert.throws(() => normalizeScore(101), RangeError);
   assert.equal(calculateGlobalPoints({"arithmetic-quiz":800,"number-maze":900}),1700);
-  assert.equal(MAX_GLOBAL_POINTS,10000);
+  assert.equal(MAX_GLOBAL_POINTS,2150);
 });
 
 test("attempt validation accepts only active games and valid unique IDs", () => {
   assert.equal(validateAttempt({gameId:"math-court",scorePercent:90,durationSeconds:60,attemptId:"attempt_123456"}).ok,false);
   assert.equal(validateAttempt({gameId:"number-maze",scorePercent:90,durationSeconds:60,attemptId:"x"}).ok,false);
-  assert.equal(validateAttempt({gameId:"number-maze",scorePercent:92.5,durationSeconds:240,attemptId:"maze_attempt_12345"}).value.points,925);
+  assert.equal(validateAttempt({gameId:"number-maze",scorePercent:92.5,durationSeconds:240,attemptId:"maze_attempt_12345"}).value.points,104);
 });
 
 
@@ -203,29 +203,29 @@ test("end-to-end D1 account, bearer session, score and leaderboard flow", async 
   const wrong=await send("/api/auth/login","POST",{identifier:"learner_01",password:"incorrect-password"});
   assert.equal(wrong.status,401);
 
-  const attempt=await send("/api/games/number-maze/attempts","POST",{attemptId:"maze_attempt_0001",scorePercent:92.5,durationSeconds:240},reg.sessionToken);
+  const attempt=await send("/api/games/number-maze/attempts","POST",{attemptId:"maze_attempt_0001",scorePercent:92.5,durationSeconds:240,difficulty:"easy"},reg.sessionToken);
   assert.equal(attempt.status,200);
-  assert.equal((await attempt.json()).points,925);
+  assert.equal((await attempt.json()).points,104);
 
-  const traffic=await send("/api/games/traffic-control/attempts","POST",{attemptId:"traffic_attempt_0001",scorePercent:80,durationSeconds:360},reg.sessionToken);
+  const traffic=await send("/api/games/traffic-control/attempts","POST",{attemptId:"traffic_attempt_0001",scorePercent:80,durationSeconds:360,difficulty:"easy"},reg.sessionToken);
   assert.equal(traffic.status,200);
-  assert.equal((await traffic.json()).points,800);
+  assert.equal((await traffic.json()).points,94);
 
   const global=await send("/api/leaderboards/global");
   const globalBody=await global.json();
   assert.equal(globalBody.entries.length,1);
   assert.equal(globalBody.entries[0].username,"learner_01");
-  assert.equal(globalBody.entries[0].points,1725);
-  assert.equal(globalBody.maximumPoints,10000);
+  assert.equal(globalBody.entries[0].points,198);
+  assert.equal(globalBody.maximumPoints,2150);
   assert.equal(globalBody.entries[0].gamesPlayed,2);
 
   const game=await send("/api/leaderboards/games/number-maze");
-  assert.equal((await game.json()).entries[0].points,925);
+  assert.equal((await game.json()).entries[0].points,104);
   const trafficBoard=await send("/api/leaderboards/games/traffic-control");
-  assert.equal((await trafficBoard.json()).entries[0].points,800);
+  assert.equal((await trafficBoard.json()).entries[0].points,94);
 
   const stats=await send("/api/players/me/stats","GET",null,reg.sessionToken);
-  assert.equal((await stats.json()).totalPoints,1725);
+  assert.equal((await stats.json()).totalPoints,198);
 
   const deleted=await send("/api/players/me","DELETE",null,reg.sessionToken);
   assert.equal(deleted.status,200);
@@ -235,4 +235,11 @@ test("end-to-end D1 account, bearer session, score and leaderboard flow", async 
   assert.equal(DB.best.size,0);
   assert.equal(DB.trafficBest.size,0);
   assert.equal(DB.trafficAttempts.size,0);
+});
+
+test("research ingestion rejects missing consent without touching D1", async () => {
+  const response = await worker.fetch(new Request("https://api.example.test/api/research/events", {
+    method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({consent:false,events:[]})
+  }), {});
+  assert.equal(response.status,403);
 });
