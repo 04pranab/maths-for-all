@@ -133,7 +133,7 @@ async function submitAttempt(request, env, user, gameId) {
       ON CONFLICT(user_id,game_id) DO UPDATE SET
         points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')
       WHERE excluded.points > best_game_scores.points
-         OR (excluded.points = best_game_scores.points AND excluded.duration_seconds < best_game_scores.duration_seconds)`)
+         `)
       .bind(user.id, a.gameId, a.points, a.durationSeconds, now).run();
   } else {
     const prior = await env.DB.prepare("SELECT user_id,game_id FROM game_attempts WHERE attempt_id=?").bind(a.attemptId).first();
@@ -147,7 +147,7 @@ async function globalLeaderboard(env, limit) {
       SUM(b.duration_seconds) AS total_duration
     FROM users u JOIN best_game_scores b ON b.user_id=u.id
     GROUP BY u.id,u.username
-    ORDER BY points DESC,total_duration ASC,u.username COLLATE NOCASE ASC
+    ORDER BY points DESC,u.username COLLATE NOCASE ASC
     LIMIT ?`).bind(limit).all();
   return result.results || [];
 }
@@ -183,7 +183,7 @@ async function route(request, env) {
     const gameId = path.slice("/api/leaderboards/games/".length);
     if (!ACTIVE_GAME_IDS.includes(gameId)) return error("Unknown or inactive game.", 404);
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 25)));
-    const result = await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM best_game_scores b JOIN users u ON u.id=b.user_id WHERE b.game_id=? ORDER BY b.points DESC,b.duration_seconds ASC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId, limit).all();
+    const result = await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM best_game_scores b JOIN users u ON u.id=b.user_id WHERE b.game_id=? ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId, limit).all();
     return jsonResponse({ gameId, entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,durationSeconds:r.duration_seconds})) });
   }
   if (method === "GET" && path === "/api/players/me/stats") {
