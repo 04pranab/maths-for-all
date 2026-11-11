@@ -177,7 +177,7 @@ const RESEARCH_GAMES = Object.freeze({
   slab: "slab-maths", shape_architect: "shape-architect", fraction_bakery: "fraction-bakery",
   little_shop: "little-shop", number_maze: "number-maze", "traffic-control": "traffic-control",
 });
-const RESEARCH_ACTIONS = new Set(["game_opened","answer","hint_requested","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
+const RESEARCH_ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
 async function collectResearch(request, env) {
   const input = await body(request);
   if (input.consent !== true) return error("Explicit research consent is required.", 403);
