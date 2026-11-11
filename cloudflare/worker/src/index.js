@@ -3,7 +3,7 @@ import { ACTIVE_GAME_IDS, GAME_RULES } from "./leaderboard/scoring.js";
 import { progressForXp, earnedBadges, BADGE_RULES } from "./leaderboard/progression.js";
 import { validateAttempt } from "./leaderboard/validation.js";
 
-// Lifetime progression is the leaderboard source of truth; research writes use isolated per-game aggregate tables.
+// Lifetime progression is the leaderboard source of truth. Research event collection is intentionally disabled.
 
 const SESSION_SECONDS = 60 * 60 * 24 * 30;
 // Cloudflare Workers WebCrypto currently supports PBKDF2 up to 100,000 iterations.
