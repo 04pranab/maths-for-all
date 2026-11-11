@@ -3,13 +3,14 @@
   const API = "https://maths-for-all-api.ompranabmohanty.workers.dev/api";
   let mode = "login";
   let currentUser = null;
+  let sessionToken = "";
   let quizCorrect = 0, quizTotal = 0, quizStartedAt = 0;
   const $ = id => document.getElementById(id);
   const request = async (path, options = {}) => {
     const response = await fetch(API + path, {
       ...options,
-      credentials: "include",
-      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+      credentials: "omit",
+      headers: { "Content-Type": "application/json", ...(sessionToken ? { Authorization: "Bearer " + sessionToken } : {}), ...(options.headers || {}) },
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "The account service is unavailable.");
@@ -18,6 +19,8 @@
   function setMode(next) {
     mode = next;
     $("auth-modal-title").textContent = mode === "login" ? "Sign in" : "Create your account";
+    const usernameLabel = document.querySelector('label[for="auth-username"]');
+    if (usernameLabel) usernameLabel.textContent = mode === "login" ? "Username or email" : "Choose a username";
     $("auth-email-label").hidden = mode !== "register";
     $("auth-email").hidden = mode !== "register";
     $("auth-email").required = mode === "register";
@@ -32,11 +35,13 @@
     if (button) button.onclick = () => currentUser ? openProfile() : Auth.open();
   }
   async function refreshSession() {
-    if (window.location.origin !== "https://04pranab.github.io") { currentUser = null; renderNav(); return; }
+    if (window.location.origin !== "https://04pranab.github.io") { currentUser = null; sessionToken = ""; renderNav(); return; }
+    sessionToken = sessionStorage.getItem("mfa_session_token") || "";
     try {
       const result = await request("/auth/me");
       currentUser = result.authenticated ? result.user : null;
-    } catch { currentUser = null; }
+      if (!currentUser) { sessionToken = ""; sessionStorage.removeItem("mfa_session_token"); }
+    } catch { currentUser = null; sessionToken = ""; sessionStorage.removeItem("mfa_session_token"); }
     renderNav();
   }
   async function openProfile() {
@@ -107,13 +112,13 @@
   }
   async function logout() {
     try { await request("/auth/logout", { method: "POST", body: "{}" }); } finally {
-      currentUser = null; renderNav(); $("account-profile-modal").classList.add("hidden");
+      currentUser = null; sessionToken = ""; sessionStorage.removeItem("mfa_session_token"); renderNav(); $("account-profile-modal").classList.add("hidden");
     }
   }
   async function deleteAccount() {
     if (!confirm("Permanently delete your account and all saved leaderboard scores? Device-local guest progress is not affected.")) return;
     await request("/players/me", { method: "DELETE" });
-    currentUser = null; renderNav(); $("account-profile-modal").classList.add("hidden");
+    currentUser = null; sessionToken = ""; sessionStorage.removeItem("mfa_session_token"); renderNav(); $("account-profile-modal").classList.add("hidden");
   }
   window.Auth = {
     open() { setMode("login"); $("auth-modal").classList.remove("hidden"); $("auth-username").focus(); },
@@ -135,6 +140,9 @@
         const result = mode === "register"
           ? await request("/auth/register", { method: "POST", body: JSON.stringify({ username, email: $("auth-email").value, password }) })
           : await request("/auth/login", { method: "POST", body: JSON.stringify({ identifier: username, password }) });
+        if (!result.sessionToken) throw new Error("The server did not return a session. Please try again.");
+        sessionToken = result.sessionToken;
+        sessionStorage.setItem("mfa_session_token", sessionToken);
         currentUser = result.user; renderNav(); Auth.close(); $("auth-form").reset();
         if (mode === "register") setMode("login");
       } catch (e) { message.textContent = e.message; }
