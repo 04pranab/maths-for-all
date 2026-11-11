@@ -44,10 +44,10 @@ function runPlan(){
  const id=++runId,p=level==="easy"?planAt(budget()):planAt(nsSeconds),best=bestPlan(),moving=[];
  optimalScore+=best.points;cycles++;busy=true;$("#run-plan").disabled=true;
  for(const d of dirs()){
-  let previous=null;
-  for(let i=0;i<p.caps[d]&&queues[d].length;i++){
-   const kind=queues[d].shift(),start=city.positionFor(d,i,kind,previous);
-   moving.push({d,kind,start});previous=kind;
+  const selected=queues[d].slice(0,p.caps[d]),starts=city.positionsForQueue(d,selected);
+  for(let i=0;i<selected.length;i++){
+   const kind=queues[d].shift(),start=starts[i];
+   moving.push({d,kind,start});
   }
  }
  for(const d of DIRS)setSignal(d,false);
