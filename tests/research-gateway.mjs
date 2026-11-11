@@ -5,6 +5,7 @@ import vm from "node:vm";
 const source = fs.readFileSync(new URL("../js/research-gateway.js", import.meta.url), "utf8");
 const consentSource = fs.readFileSync(new URL("../js/consent.js", import.meta.url), "utf8");
 const storage = new Map();
+let fetchCalls = 0;
 const context = {
   localStorage: {
     getItem: key => storage.has(key) ? storage.get(key) : null,
@@ -12,7 +13,8 @@ const context = {
     removeItem: key => storage.delete(key),
   },
   ResearchConsent: { isAllowed: () => true },
-  fetch: async () => { throw new Error("Research network calls must never happen."); },
+  fetch: async () => { fetchCalls += 1; throw new Error("Research network calls must never happen."); },
+  window: { location: { origin: "https://04pranab.github.io" }, addEventListener() {} },
   Date, JSON, Array, Object, Number, String, Boolean, console,
 };
 vm.createContext(context);
@@ -25,6 +27,8 @@ assert.equal(gateway.record("sudoku", "puzzle_solved", { correct: true }), false
 assert.equal(gateway.read().length, 0);
 assert.equal(storage.has("mfa_analytics_v1"), false);
 assert.equal(await gateway.flush(), false);
+assert.equal(fetchCalls, 0);
+storage.set("mfa_analytics_v1", JSON.stringify([{category:"quiz",action:"answer"}]));
 gateway.clear();
 assert.equal(storage.has("mfa_analytics_v1"), false);
 
