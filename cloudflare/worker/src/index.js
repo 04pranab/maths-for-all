@@ -195,47 +195,9 @@ async function globalLeaderboard(env, limit) {
     WHERE p.total_points>0 GROUP BY u.id,u.username,p.total_points,p.updated_at ORDER BY p.total_points DESC,p.updated_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
   return result.results || [];
 }
-const RESEARCH_TABLES = Object.freeze({
-  "arithmetic-quiz":"research_arithmetic_quiz","math-racing":"research_math_racing","sudoku":"research_sudoku",
-  "shape-fitting":"research_shape_fitting","slab-maths":"research_slab_maths","shape-architect":"research_shape_architect",
-  "fraction-bakery":"research_fraction_bakery","little-shop":"research_little_shop","number-maze":"research_number_maze",
-  "traffic-control":"research_traffic_control"
-});
-const RESEARCH_CATEGORIES = Object.freeze({
-  quiz:"arithmetic-quiz",race:"math-racing",sudoku:"sudoku",shape:"shape-fitting",slab:"slab-maths",
-  shape_architect:"shape-architect",fraction_bakery:"fraction-bakery",little_shop:"little-shop",
-  number_maze:"number-maze","traffic-control":"traffic-control"
-});
-const RESEARCH_ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
-async function collectResearch(request, env) {
-  // Fail closed until a verifiable adult/parent/guardian consent process is live.
-  if (env.RESEARCH_COLLECTION_ENABLED !== "true") return error("Research sharing is currently paused. No research data is collected.",503);
-  const input = await body(request);
-  if (input.consent !== true) return error("Explicit research consent is required.",403);
-  if (!Array.isArray(input.events) || input.events.length < 1 || input.events.length > 50) return error("Submit between 1 and 50 research events.");
-  const day = new Date().toISOString().slice(0,10), statements = [], touched = new Set();
-  for (const event of input.events) {
-    if (!event || typeof event !== "object" || Array.isArray(event)) continue;
-    const gameId = RESEARCH_CATEGORIES[String(event.category || "")], table = RESEARCH_TABLES[gameId], action = String(event.action || "");
-    if (!table || !RESEARCH_ACTIONS.has(action)) continue;
-    const detail = event.detail && typeof event.detail === "object" && !Array.isArray(event.detail) ? event.detail : {};
-    const allowedDifficulty = ["easy","medium","hard","gentle","steady","stretch","starter","growing","champion"];
-    const difficulty = allowedDifficulty.includes(String(detail.difficulty || "").toLowerCase()) ? String(detail.difficulty).toLowerCase() : "unspecified";
-    const outcome = action.includes("complete") || action === "puzzle_solved" ? "completed" : typeof detail.correct === "boolean" ? (detail.correct ? "correct" : "incorrect") : "unspecified";
-    const level = Number.isInteger(detail.level) ? Math.max(0,Math.min(1_000_000_000,detail.level)) : 0;
-    const levelBand = level <= 0 ? "unspecified" : level <= 10 ? "1-10" : level <= 30 ? "11-30" : level <= 100 ? "31-100" : "101+";
-    const duration = Number(detail.durationMs ?? detail.timeMs ?? (Number(detail.seconds || detail.timer || 0)*1000));
-    const durationBand = duration <= 0 ? "unspecified" : duration < 10000 ? "under-10s" : duration < 30000 ? "10-30s" : duration < 120000 ? "30-120s" : "over-120s";
-    statements.push(env.DB.prepare(`INSERT INTO ${table}(day,action,difficulty,outcome,level_band,duration_band,event_count)
-      VALUES(?,?,?,?,?,?,1) ON CONFLICT(day,action,difficulty,outcome,level_band,duration_band)
-      DO UPDATE SET event_count=event_count+1`).bind(day,action,difficulty,outcome,levelBand,durationBand));
-    touched.add(table);
-  }
-  if (statements.length) {
-    await env.DB.batch(statements);
-    for (const table of touched) await env.DB.prepare(`DELETE FROM ${table} WHERE day < date('now','-90 days')`).run();
-  }
-  return jsonResponse({accepted:statements.length,rejected:input.events.length-statements.length});
+async function collectResearch() {
+  // This endpoint is permanently fail-closed in this release. Player progress is not research data.
+  return error("Research collection is disabled. No research events are stored.", 503);
 }
 
 async function route(request, env) {
