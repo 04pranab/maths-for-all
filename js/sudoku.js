@@ -5,6 +5,8 @@ const Sudoku = (function () {
   let fixedCells = []; // 9×9 boolean – pre-filled cells
   let selected = null; // { row, col }
   let hintsLeft = 3;
+  let hintsUsed = 0;
+  let puzzleStartedAt = 0;
   let difficulty = "easy";
 
   /* PIN state */
@@ -78,6 +80,8 @@ const Sudoku = (function () {
   function newPuzzle(level) {
     difficulty = level;
     hintsLeft = 3;
+    hintsUsed = 0;
+    puzzleStartedAt = Date.now();
     selected = null;
 
     // Step 1 – Create an empty board
@@ -492,6 +496,7 @@ const Sudoku = (function () {
     cell.classList.add("hinted");
 
     hintsLeft--;
+    hintsUsed++;
     document.getElementById("hints-left").textContent = hintsLeft;
     showMessage(`💡 Hint revealed at Row ${r + 1}, Col ${c + 1}`, "info");
     Analytics.log("sudoku", "hint_used", { difficulty });
@@ -521,7 +526,7 @@ const Sudoku = (function () {
     if (!allFilled) showMessage("Some cells are still empty – keep going! 💪", "info");
     else if (allCorrect) {
       showMessage("🎉 Congratulations! Puzzle solved correctly!", "success");
-      Analytics.log("sudoku", "puzzle_solved", { difficulty });
+      Analytics.log("sudoku", "puzzle_solved", { difficulty, hintsUsed, seconds: Math.max(3, Math.round((Date.now() - puzzleStartedAt) / 1000)) });
       window.CompletionOverlay?.show({
         title: "Sudoku complete!",
         message: "Every row, column, and 3×3 box is correct. You solved the puzzle!",
