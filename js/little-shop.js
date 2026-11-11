@@ -579,6 +579,7 @@ function finishSale() {
   renderBasket();
   renderPayment();
   setStatus("Sale complete. The counter is ready for the next customer.");
+  if (typeof Analytics !== "undefined") Analytics.log("little_shop", "sale_complete", { customerNumber });
   window.CompletionOverlay?.show({
     title: "Sale complete!",
     message: "Customer " + customerNumber + " has been served. The next customer is ready when you are.",

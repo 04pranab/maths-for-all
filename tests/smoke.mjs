@@ -1528,12 +1528,12 @@ async function main() {
         'if (innerWidth > 560) assert(isVisible(heroIllustration), "The homepage illustration should be visible when there is room for it.");' +
         'else assert(!isVisible(heroIllustration), "The homepage illustration should step aside on narrow screens.");' +
         'const gameCards = Array.from(document.querySelectorAll("#screen-menu .menu-card")).filter(isVisible);' +
-        'assert(gameCards.length === 9, "The visible game menu should contain nine active game cards, not " + gameCards.length + ".");' +
+        'assert(gameCards.length === 10, "The visible game menu should contain the nine core games plus Traffic Control Centre, not " + gameCards.length + ".");' +
         'assert(gameCards.every(card => (card.innerText || "").trim().length > 0), "A visible game card has no title or description.");' +
         'const themedAccents = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-accent").trim());' +
         'const themedWashes = gameCards.map(card => getComputedStyle(card).getPropertyValue("--tile-wash").trim());' +
-        'assert(themedAccents.every(Boolean) && new Set(themedAccents).size === 9, "Every visible home game should have its own distinct theme colour.");' +
-        'assert(themedWashes.every(Boolean) && new Set(themedWashes).size === 9, "Every visible home game should have its own calm background wash.");' +
+        'assert(themedAccents.every(Boolean) && new Set(themedAccents).size === 10, "Every visible home game should have its own distinct theme colour.");' +
+        'assert(themedWashes.every(Boolean) && new Set(themedWashes).size === 10, "Every visible home game should have its own calm background wash.");' +
         "const expectedColumns = innerWidth >= 1101 ? 3 : innerWidth >= 421 ? 2 : 1;" +
         "const symmetricRowWidths = gameCards.slice(0, expectedColumns).map(card => card.getBoundingClientRect().width);" +
         'assert(Math.max(...symmetricRowWidths) - Math.min(...symmetricRowWidths) < 2, "Home game cards should have matching widths within each row.");' +

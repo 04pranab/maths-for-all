@@ -8,8 +8,8 @@ const JSON_HEADERS = {
 function allowedOrigin(request, env) {
   const origin = request.headers.get("Origin");
   const configured = String(env.ALLOWED_ORIGIN || "").trim();
-  if (!origin || !configured) return null;
-  return origin === configured ? origin : null;
+  if (!origin || !configured || origin !== configured) return null;
+  return origin;
 }
 
 export function jsonResponse(body, status = 200, extraHeaders = {}) {
@@ -27,6 +27,7 @@ export function handleCorsPreflight(request, env) {
     status: 204,
     headers: {
       "Access-Control-Allow-Origin": origin,
+      "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Idempotency-Key",
       "Access-Control-Max-Age": "600",
@@ -40,10 +41,7 @@ export function withCors(response, request, env) {
   if (!origin) return response;
   const headers = new Headers(response.headers);
   headers.set("Access-Control-Allow-Origin", origin);
+  headers.set("Access-Control-Allow-Credentials", "true");
   headers.set("Vary", "Origin");
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
