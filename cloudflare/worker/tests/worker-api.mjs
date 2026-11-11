@@ -37,7 +37,7 @@ test("score normalization and global cap", () => {
   assert.equal(normalizeScore(100), 1000);
   assert.throws(() => normalizeScore(101), RangeError);
   assert.equal(calculateGlobalPoints({"arithmetic-quiz":800,"number-maze":900}),1700);
-  assert.equal(MAX_GLOBAL_POINTS,9000);
+  assert.equal(MAX_GLOBAL_POINTS,10000);
 });
 
 test("attempt validation accepts only active games and valid unique IDs", () => {
@@ -54,6 +54,8 @@ class MemoryD1 {
     this.rates = new Map();
     this.attempts = new Map();
     this.best = new Map();
+    this.trafficAttempts = new Map();
+    this.trafficBest = new Map();
   }
   prepare(sql) {
     const db=this, query=sql.replace(/\s+/g," ").trim();
@@ -75,6 +77,12 @@ class MemoryD1 {
         }
         if(query.startsWith("SELECT points,duration_seconds,achieved_at FROM best_game_scores")) {
           return db.best.get(args[0]+"|"+args[1])||null;
+        }
+        if(query.startsWith("SELECT user_id FROM traffic_control_attempts")) {
+          const a=db.trafficAttempts.get(args[0]); return a?{user_id:a.user_id}:null;
+        }
+        if(query.startsWith("SELECT points,duration_seconds,achieved_at FROM traffic_control_best_scores")) {
+          return db.trafficBest.get(args[0])||null;
         }
         return null;
       },
@@ -100,6 +108,15 @@ class MemoryD1 {
         if(query.startsWith("DELETE FROM sessions WHERE token_hash")) {
           const ok=db.sessions.delete(args[0]);return {meta:{changes:ok?1:0}};
         }
+        if(query.startsWith("INSERT OR IGNORE INTO traffic_control_attempts")) {
+          if(db.trafficAttempts.has(args[0]))return {meta:{changes:0}};
+          db.trafficAttempts.set(args[0],{attempt_id:args[0],user_id:args[1],score_percent:args[2],points:args[3],duration_seconds:args[4],created_at:args[5]});
+          return {meta:{changes:1}};
+        }
+        if(query.startsWith("INSERT INTO traffic_control_best_scores")) {
+          const old=db.trafficBest.get(args[0]); if(!old||args[1]>old.points)db.trafficBest.set(args[0],{points:args[1],duration_seconds:args[2],achieved_at:args[3]});
+          return {meta:{changes:1}};
+        }
         if(query.startsWith("INSERT OR IGNORE INTO game_attempts")) {
           if(db.attempts.has(args[0]))return {meta:{changes:0}};
           db.attempts.set(args[0],{attempt_id:args[0],user_id:args[1],game_id:args[2],score_percent:args[3],points:args[4],duration_seconds:args[5],created_at:args[6]});
@@ -115,6 +132,8 @@ class MemoryD1 {
           for(const [k,v] of db.sessions)if(v.user_id===args[0])db.sessions.delete(k);
           for(const [k,v] of db.attempts)if(v.user_id===args[0])db.attempts.delete(k);
           for(const k of [...db.best.keys()])if(k.startsWith(args[0]+"|"))db.best.delete(k);
+          db.trafficBest.delete(args[0]);
+          for(const [k,v] of db.trafficAttempts)if(v.user_id===args[0])db.trafficAttempts.delete(k);
           return {meta:{changes:1}};
         }
         return {meta:{changes:0}};
@@ -123,7 +142,12 @@ class MemoryD1 {
         if(query.includes("FROM users u JOIN best_game_scores b")) {
           const grouped=new Map();
           for(const [key,b] of db.best){const user=db.users.get(key.split("|")[0]);if(!user)continue;const g=grouped.get(user.id)||{username:user.username,points:0,games_played:0};g.points+=b.points;g.games_played++;grouped.set(user.id,g);}
+          for(const [uid,b] of db.trafficBest){const user=db.users.get(uid);if(!user)continue;const g=grouped.get(uid)||{username:user.username,points:0,games_played:0};g.points+=b.points;g.games_played++;grouped.set(uid,g);}
           return {results:[...grouped.values()].sort((a,b)=>b.points-a.points||a.username.localeCompare(b.username)).slice(0,args[0])};
+        }
+        if(query.includes("FROM traffic_control_best_scores b JOIN users u")) {
+          const rows=[];for(const [uid,b] of db.trafficBest){const u=db.users.get(uid);if(u)rows.push({username:u.username,points:b.points,duration_seconds:b.duration_seconds,achieved_at:b.achieved_at});}
+          return {results:rows.sort((a,b)=>b.points-a.points).slice(0,args[0])};
         }
         if(query.includes("FROM best_game_scores b JOIN users u")) {
           const rows=[];for(const [key,b] of db.best){const [uid,gid]=key.split("|");if(gid!==args[0])continue;const u=db.users.get(uid);if(u)rows.push({username:u.username,points:b.points,duration_seconds:b.duration_seconds,achieved_at:b.achieved_at});}
@@ -181,17 +205,25 @@ test("end-to-end D1 account, bearer session, score and leaderboard flow", async 
   assert.equal(attempt.status,200);
   assert.equal((await attempt.json()).points,925);
 
+  const traffic=await send("/api/games/traffic-control/attempts","POST",{attemptId:"traffic_attempt_0001",scorePercent:80,durationSeconds:360},reg.sessionToken);
+  assert.equal(traffic.status,200);
+  assert.equal((await traffic.json()).points,800);
+
   const global=await send("/api/leaderboards/global");
   const globalBody=await global.json();
   assert.equal(globalBody.entries.length,1);
   assert.equal(globalBody.entries[0].username,"learner_01");
-  assert.equal(globalBody.entries[0].points,925);
+  assert.equal(globalBody.entries[0].points,1725);
+  assert.equal(globalBody.maximumPoints,10000);
+  assert.equal(globalBody.entries[0].gamesPlayed,2);
 
   const game=await send("/api/leaderboards/games/number-maze");
   assert.equal((await game.json()).entries[0].points,925);
+  const trafficBoard=await send("/api/leaderboards/games/traffic-control");
+  assert.equal((await trafficBoard.json()).entries[0].points,800);
 
   const stats=await send("/api/players/me/stats","GET",null,reg.sessionToken);
-  assert.equal((await stats.json()).totalPoints,925);
+  assert.equal((await stats.json()).totalPoints,1725);
 
   const deleted=await send("/api/players/me","DELETE",null,reg.sessionToken);
   assert.equal(deleted.status,200);
@@ -199,4 +231,6 @@ test("end-to-end D1 account, bearer session, score and leaderboard flow", async 
   assert.equal(DB.sessions.size,0);
   assert.equal(DB.attempts.size,0);
   assert.equal(DB.best.size,0);
+  assert.equal(DB.trafficBest.size,0);
+  assert.equal(DB.trafficAttempts.size,0);
 });
