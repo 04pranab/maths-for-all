@@ -103,7 +103,7 @@ const ResearchConsent = (function () {
           </section>
         </div>
 
-        <p class="consent-note"><strong>No means no.</strong> If you choose No, research events are rejected and locally stored research events are removed. The games continue to work normally.</p>
+        <p class="consent-note"><strong>No means no.</strong> If you choose No, research events are rejected and locally stored research events are removed. The games continue to work normally. Uploaded research is stored only as anonymous daily totals, not as individual histories. Once combined into a shared total, an individual contribution cannot be separated back out.</p>
         <p class="consent-note">You can change this preference at any time from <strong>Privacy &amp; research</strong>.</p>
         <div class="consent-actions">
           <button class="consent-btn primary" onclick="ResearchConsent.choose('yes')">✓ Allow research data collection</button>
