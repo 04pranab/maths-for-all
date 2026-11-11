@@ -10,7 +10,7 @@ export function calculateAttemptPoints({gameId,scorePercent,difficulty="easy",le
  const rule=GAME_RULES[gameId];if(!rule)throw new RangeError("Unknown game.");
  if(typeof scorePercent!=="number"||!Number.isFinite(scorePercent)||scorePercent<0||scorePercent>100)throw new RangeError("Score percentage must be between 0 and 100.");
  const factor=DIFFICULTY_FACTOR[String(difficulty).toLowerCase()]??DIFFICULTY_FACTOR.easy;
- const progression=1+Math.log2(clamp(Number(level)||1,1,1_000_000_000))*.12;
+ const progression=1+Math.log2(Math.max(1,Number(level)||1))*.12;
  const hintPenalty=Math.max(.4,1-clamp(Number(hintsUsed)||0,0,20)*.06);
  const mistakePenalty=Math.max(.5,1-clamp(Number(mistakes)||0,0,40)*.02);
  return Math.max(0,Math.round(rule.base*(scorePercent/100)*factor*progression*hintPenalty*mistakePenalty));
