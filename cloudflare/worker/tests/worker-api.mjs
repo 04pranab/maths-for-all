@@ -14,9 +14,12 @@ test("health endpoint reports the D1-backed service", async () => {
   assert.equal(body.features.leaderboards, true);
 });
 
-test("missing D1 binding fails safely", async () => {
+test("unauthenticated session lookup does not require a database query", async () => {
   const response = await worker.fetch(new Request("https://api.example.test/api/auth/me"), {});
-  assert.equal(response.status, 500);
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.authenticated, false);
+  assert.equal(body.user, null);
 });
 
 test("CORS allows only the configured exact origin and credentials", async () => {
