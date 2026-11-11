@@ -144,7 +144,8 @@ function runPlan() {
   const moving = [];
   for (const d of ["north","south","east","west"]) {
     for (let i=0; i<plan.caps[d] && queues[d].length; i++) {
-      const kind = queues[d].shift(), start = vehiclePosition(d,0);
+      const start = vehiclePosition(d,i);
+      const kind = queues[d].shift();
       moving.push({d,kind,start});
     }
   }
