@@ -307,8 +307,15 @@ async function route(request, env) {
       const unlocked = new Set(earned.map(b=>b.id));
       return {gameId,gameName:GAME_RULES[gameId].label,...progress,earned,locked:BADGE_RULES.filter(b=>!unlocked.has(b.id))};
     });
-    const globalBadges = (earnedByGame.all||[]).map(row=>({id:row.badge_id,title:row.badge_id.replace("level-","Level "),icon:"⭐",earnedAt:row.earned_at}));
     const level = progressForXp(player.total_xp);
+    const playerMilestones = [
+      {id:"level-5",level:5,title:"Trailblazer",icon:"🧭"},
+      {id:"level-10",level:10,title:"Pathfinder",icon:"🚀"},
+      {id:"level-25",level:25,title:"Maths Champion",icon:"🏆"},
+      {id:"level-50",level:50,title:"Grand Strategist",icon:"👑"},
+      {id:"level-100",level:100,title:"Grand Sage",icon:"🌟"}
+    ];
+    const globalBadges = playerMilestones.filter(b=>level.level>=b.level).map(b=>({...b,earnedAt:(earnedByGame.all||[]).find(r=>r.badge_id===b.id)?.earned_at||null}));
     return jsonResponse({user:cleanUser(user),...level,totalPoints:player.total_points,totalAttempts:player.total_attempts,gamesPlayed:(games.results||[]).filter(g=>g.attempts>0).length,badges,globalBadges});
   }
   if (method === "DELETE" && path === "/api/players/me") {
