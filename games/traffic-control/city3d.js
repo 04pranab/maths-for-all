@@ -27,7 +27,7 @@ export class TrafficCity3D{
  cyl(parent,r1,r2,h,x,y,z,material,segments=12){const m=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,segments),material);m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m}
  buildCity(){
   const ground=mat(0x9fbd96),grass=mat(0x7fa77e),road=mat(COLORS.road),curb=mat(0xc7c5b7),lane=mat(0xf5e7bc),white=mat(0xf5f4eb),concrete=mat(0xd4d2c5);
-  this.box(this.city,58,.5,46,0,-.35,0,ground,false);
+  this.box(this.city,58,.5,58,0,-.35,0,ground,false);
   // City blocks and parks around the central junction.
   for(const [x,z] of [[-19,-14],[19,-14],[-19,14],[19,14]]){
    this.box(this.city,17,.18,12,x,.02,z,grass,false);
@@ -37,12 +37,12 @@ export class TrafficCity3D{
   }
   // Broad roads, raised kerbs, sidewalks and intersection.
   const hCurb=this.box(this.city,58,.18,10,0,.02,0,curb,false);hCurb.userData.horizontalRoad=true;const hRoad=this.box(this.city,58,.2,8.8,0,.13,0,road,false);hRoad.userData.horizontalRoad=true;
-  this.box(this.city,10,.18,46,0,.02,0,curb,false);this.box(this.city,8.8,.2,46,0,.13,0,road,false);
+  this.box(this.city,10,.18,58,0,.02,0,curb,false);this.box(this.city,8.8,.2,58,0,.13,0,road,false);
   for(const z of [-5.5,5.5]){const m=this.box(this.city,58,.18,.55,0,.18,z,white,false);m.userData.horizontalRoad=true;}
   for(const x of [-5.5,5.5])this.box(this.city,.55,.18,46,x,.18,0,white,false);
   // Dashed lane markings, short and clear around the junction.
   for(let x=-28;x<=28;x+=4.3){if(Math.abs(x)>6){const m=this.box(this.city,1.9,.025,.12,x,.245,0,lane,false);m.userData.horizontalRoad=true;}}
-  for(let z=-22;z<=22;z+=4.3){if(Math.abs(z)>6)this.box(this.city,.12,.025,1.9,0,.245,z,lane,false)}
+  for(let z=-26;z<=26;z+=4.3){if(Math.abs(z)>6)this.box(this.city,.12,.025,1.9,0,.245,z,lane,false)}
   // Stop bars and zebra crossings on all four approaches.
   for(const z of [-6.1,6.1]){this.box(this.city,8.4,.035,.22,0,.27,z,white,false);for(let x=-4.2;x<=4.2;x+=1.2)this.box(this.city,.65,.035,1.25,x,.28,z+(z<0?-1.2:1.2),white,false)}
   for(const x of [-6.1,6.1]){const stop=this.box(this.city,.22,.035,8.4,x,.27,0,white,false);stop.userData.horizontalRoad=true;for(let z=-4.2;z<=4.2;z+=1.2){const stripe=this.box(this.city,1.25,.035,.65,x+(x<0?-1.2:1.2),.28,z,white,false);stripe.userData.horizontalRoad=true}}
