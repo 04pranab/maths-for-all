@@ -223,8 +223,12 @@ function finishMission() {
   setStatus("All queues are clear. Mission complete!");
   const scorePercent = optimalScore > 0 ? Math.max(0, Math.min(100, (score / optimalScore) * 100)) : 0;
   const durationSeconds = Math.max(1, Math.min(14400, Math.round((Date.now() - missionStartedAt) / 1000)));
-  window.MfaAccounts?.submitAttempt?.("traffic-control", scorePercent, durationSeconds)
-    .catch(error => console.warn("Could not save Traffic Control Centre score:", error.message));
+  const accounts = window.MfaAccounts;
+  if (accounts?.refreshSession && accounts?.submitAttempt) {
+    accounts.refreshSession()
+      .then(() => accounts.submitAttempt("traffic-control", scorePercent, durationSeconds))
+      .catch(error => console.warn("Could not save Traffic Control Centre score:", error.message));
+  }
   $("#math-check").scrollIntoView({behavior:reducedMotion?"auto":"smooth",block:"nearest"});
 }
 function toggleMotion() {
