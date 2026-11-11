@@ -4,9 +4,9 @@
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
 **Current focus:** stabilize the active learner-facing games; complete supervised review of Fraction Bakery and Little Shop; keep Number Maze under learner/educator evaluation  
-**Authentication:** temporarily disabled for prototype testing  
+**Authentication:** optional Cloudflare D1 accounts and leaderboard are active; guest play remains available  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 10 November 2026
+**Last updated:** 11 November 2026
 
 **Current quality gate:** keep the `main` branch CI green; complete physical learner/educator and assistive-technology review for active games. The latest recorded `main` Tests and Pages deployment runs both passed on 31 October 2026. Physical-device review is not implied by headless CI.
 
