@@ -243,7 +243,7 @@ async function route(request, env) {
     const result = gameId === "traffic-control"
       ? await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM traffic_control_best_scores b JOIN users u ON u.id=b.user_id ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all()
       : await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM best_game_scores b JOIN users u ON u.id=b.user_id WHERE b.game_id=? ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId, limit).all();
-    return jsonResponse({ gameId, entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,durationSeconds:r.duration_seconds})) });
+    return jsonResponse({ gameId, maximumPoints: GAME_RULES[gameId].maximum, entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,durationSeconds:r.duration_seconds})) });
   }
   if (method === "GET" && path === "/api/players/me/stats") {
     const user = await currentUser(request, env);
