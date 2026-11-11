@@ -753,7 +753,13 @@ const Navigation = (() => {
   }
   function home(){closeMenu();Game.goHome();}
   function progress(){closeMenu();Progress.open();}
-  return{toggleMenu,home,progress,closeMenu};
+  function howToPlay(){
+    const screen=document.querySelector(".screen.active")?.id;
+    const keys={"screen-quiz":"quiz","screen-race":"race","screen-sudoku":"sudoku","screen-shape":"shape","screen-slab":"slab","screen-architect":"architect","screen-fraction-bakery":"fraction","screen-number-maze":"numberMaze"};
+    const key=keys[screen];
+    if(key)ControlsOverlay.forceShow(key);
+  }
+  return{toggleMenu,home,progress,howToPlay,closeMenu};
 })();
 window.Navigation=Navigation;
 
