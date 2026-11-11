@@ -12,7 +12,7 @@ Maths for All is an independent mathematics learning project inspired by inclusi
 
 The repository's current implementation includes Number Maze on `main`, with seeded procedural boards and a bounded uniqueness check. Fraction Bakery and Little Shop are implemented but still need supervised learner/educator acceptance. Probability Machine remains in the codebase but is hidden from the visible menu. Math Court is shelved and hidden from the learner menu; its code and tests are retained, not presented as an active game.
 
-Authentication and account controls remain disabled in the learner-facing prototype. The repository contains backend authentication code and PostgreSQL migrations, but this is not a claim that production authentication is enabled or deployed.
+The current main branch includes optional account sign-in, Cloudflare D1-backed player progression, achievements, and leaderboards. Guest play remains available. The account system is separate from research consent; creating an account never opts a learner into research.
 
 ## Features
 
@@ -27,7 +27,10 @@ Authentication and account controls remain disabled in the learner-facing protot
 - 📱 Responsive desktop and mobile layouts
 - ⌨️ Keyboard-friendly controls and visible focus states
 - ❓ Game-specific How to play instructions
-- 🔐 Explicit research-consent controls
+- 🏅 Player HQ with unbounded XP levels, lifetime points, game mastery and achievements
+- 🏆 Global and per-game lifetime leaderboards with a personal-rank view
+- 🎖️ Earned badges shown on profiles and game tiles
+- 🔐 Strictly separate research privacy controls
 - 📄 Privacy and research-data policy available without login
 - 🚫 Strict No-means-no research collection
 - 🧪 Automated browser smoke/stress testing
@@ -187,3 +190,20 @@ Automated tests are regression tools, not substitutes for real assistive-technol
 See `LICENSE`.
 
 The project uses a custom responsible-use license. It is not an OSI-approved open-source license.
+
+
+## Player progression and competition
+
+Registered players earn game-weighted points and XP from completed challenges. There is no maximum lifetime score and no final player level. Harder games and difficulty tiers award more; hints and mistakes reduce awards. XP thresholds grow with level. A player's profile shows lifetime points, level, XP progress, per-game challenge history and earned badges.
+
+Achievements are game-specific and appear in Player HQ and on the corresponding game tile. The leaderboard includes global and per-game standings, plus a personal-rank view showing the player's position and nearby competitors. Guest play remains open.
+
+The current award system is difficulty-aware and idempotent, but the browser still reports game completion metrics. It is not cheat-proof until each game supplies server-verifiable challenge proofs.
+
+## Research status
+
+Research collection is currently disabled in production. Account creation and sign-in never imply research consent. The browser refuses to queue events and the Worker rejects research uploads until a verifiable adult/parent/lawful-guardian consent process is implemented for the child-focused service.
+
+Migration 0005 creates separate daily aggregate tables for all ten active games. Those tables are not currently populated by the official production application. See [the full privacy and research policy](docs/v3/research-data-policy.html) and [the technical policy](docs/v3/RESEARCH_DATA_POLICY.md).
+
+School and parent/guardian names are not collected in player profiles because they are not required to play or compete.
