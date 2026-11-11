@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Math For All — Inclusive Math Arcade (NEP 2020)</title>
     <link rel="icon" href="favicon.svg?v=20261022-symbol-mark" />
-    <link rel="stylesheet" href="css/accounts.css?v=20261111-player-profile-2" />
+    <link rel="stylesheet" href="css/accounts.css?v=20261111-player-hq-3" />
     <meta
       name="description"
       content="A free, offline-friendly math arcade built for inclusive classrooms — big text, gentle colors, read-aloud support, and games that never punish a wrong answer."
@@ -1126,11 +1126,9 @@
     <div id="account-profile-modal" class="modal-overlay hidden">
       <div class="modal-box auth-card profile-window">
         <button type="button" class="account-close" onclick="MfaAccounts.closeProfile()" aria-label="Close player profile">×</button>
-        <h2 class="modal-title">🏅 Player profile</h2>
-        <p id="account-profile-copy">Your saved scores, game mastery and earned badges.</p>
+        <div class="profile-window-heading"><span>🎮 PLAYER HQ</span><h2>My player profile</h2><p>Your journey, your achievements, your next level.</p></div>
         <div id="account-profile-stats"></div>
-        <button type="button" onclick="MfaAccounts.logout()">Sign out</button>
-        <button type="button" class="account-danger" onclick="MfaAccounts.deleteAccount()">Delete account</button>
+        <div class="profile-window-actions"><button type="button" onclick="MfaAccounts.logout()">Sign out</button><button type="button" class="account-danger" onclick="MfaAccounts.deleteAccount()">Delete account</button></div>
       </div>
     </div>
     <div id="research-consent-modal" class="modal-overlay hidden"></div>
@@ -1138,7 +1136,7 @@
       <div class="modal-box auth-card">
         <button type="button" class="account-close" onclick="Auth.close()" aria-label="Close sign in">×</button>
         <h2 id="auth-modal-title" class="modal-title">Sign in</h2>
-        <p>Accounts save your best scores. You can always play as a guest.</p>
+        <p>Accounts save your progress, levels and achievements. You can always play as a guest.</p>
         <form id="auth-form">
           <label for="auth-username">Username</label>
           <input id="auth-username" name="username" autocomplete="username" minlength="3" maxlength="254" autocapitalize="none" spellcheck="false" required />
@@ -1150,28 +1148,23 @@
           <button id="auth-submit" type="submit">Sign in</button>
         </form>
         <button id="auth-mode-toggle" class="account-link" type="button">Create an account</button>
+        <p class="auth-privacy-note">Creating an account does not sign you up for research. Research sharing is separate and off by default.</p>
       </div>
     </div>
     <div id="leaderboard-modal" class="modal-overlay hidden">
       <div class="modal-box auth-card leaderboard-card">
         <button type="button" class="account-close" onclick="MfaAccounts.closeLeaderboard()" aria-label="Close leaderboard">×</button>
-        <h2 class="modal-title">🏆 Maths For All leaderboard</h2>
-        <p>Celebrate learning. Rankings use each player's best score in each active game.</p>
-        <label for="leaderboard-game-select">Choose a leaderboard</label>
+        <div class="leaderboard-masthead"><span>🏆 THE HALL OF LEARNERS</span><h2>Maths For All standings</h2><p>Every challenge counts. Keep climbing.</p></div>
+        <label for="leaderboard-game-select">Choose your arena</label>
         <select id="leaderboard-game-select" class="leaderboard-game-select">
-          <option value="global">Overall learning points</option>
-          <option value="arithmetic-quiz">Arithmetic Quiz</option>
-          <option value="math-racing">Math Racing</option>
-          <option value="sudoku">Sudoku</option>
-          <option value="shape-fitting">Shape Fitting</option>
-          <option value="slab-maths">Slab Maths</option>
-          <option value="shape-architect">Shape Architect</option>
-          <option value="fraction-bakery">Fraction Bakery</option>
-          <option value="little-shop">Little Shop</option>
-          <option value="number-maze">Number Maze</option>
-          <option value="traffic-control">Traffic Control Centre</option>
+          <option value="global">🌍 All games · Global</option>
+          <option value="arithmetic-quiz">Arithmetic Quiz</option><option value="math-racing">Math Racing</option>
+          <option value="sudoku">Sudoku</option><option value="shape-fitting">Shape Fitting</option>
+          <option value="slab-maths">Slab Maths</option><option value="shape-architect">Shape Architect</option>
+          <option value="fraction-bakery">Fraction Bakery</option><option value="little-shop">Little Shop</option>
+          <option value="number-maze">Number Maze</option><option value="traffic-control">Traffic Control Centre</option>
         </select>
-        <div id="leaderboard-content" aria-live="polite">Loading the leaderboard…</div>
+        <div id="leaderboard-content" aria-live="polite">Loading the standings…</div>
       </div>
     </div>
 
@@ -1194,8 +1187,8 @@
       </div>
     </section>
 
-    <script src="js/research-gateway.js?v=20261111-aggregate-2"></script>
-    <script src="js/account.js?v=20261111-profile-badges-2"></script>
+    <script src="js/research-gateway.js?v=20261111-game-aggregate-3"></script>
+    <script src="js/account.js?v=20261111-player-hq-3"></script>
     <script src="js/probability-carnival.js?v=20261110-game-routes-1"></script>
     
     
@@ -1658,7 +1651,7 @@
     </section>
 
     <script type="module" src="js/little-shop.js?v=20261110-completion-overlay-1"></script>
-    <script src="js/consent.js?v=20261111-aggregate-4"></script>
+    <script src="js/consent.js?v=20261111-guardian-gate-5"></script>
     <script>
 
     </script>
