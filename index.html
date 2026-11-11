@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Math For All — Inclusive Math Arcade (NEP 2020)</title>
     <link rel="icon" href="favicon.svg?v=20261022-symbol-mark" />
-    <link rel="stylesheet" href="css/accounts.css?v=20261111-auth-repair-2" />
+    <link rel="stylesheet" href="css/accounts.css?v=20261111-player-profile-1" />
     <meta
       name="description"
       content="A free, offline-friendly math arcade built for inclusive classrooms — big text, gentle colors, read-aloud support, and games that never punish a wrong answer."
@@ -1124,10 +1124,10 @@
 
     <!-- Account and leaderboard: optional additions; guest play stays open. -->
     <div id="account-profile-modal" class="modal-overlay hidden">
-      <div class="modal-box auth-card">
-        <button type="button" class="account-close" onclick="Auth.close()" aria-label="Close account">×</button>
-        <h2 class="modal-title">Your Maths For All account</h2>
-        <p id="account-profile-copy">Your saved scores and public ranking.</p>
+      <div class="modal-box auth-card profile-window">
+        <button type="button" class="account-close" onclick="MfaAccounts.closeProfile()" aria-label="Close player profile">×</button>
+        <h2 class="modal-title">🏅 Player profile</h2>
+        <p id="account-profile-copy">Your saved scores, game mastery and earned badges.</p>
         <div id="account-profile-stats"></div>
         <button type="button" onclick="MfaAccounts.logout()">Sign out</button>
         <button type="button" class="account-danger" onclick="MfaAccounts.deleteAccount()">Delete account</button>
