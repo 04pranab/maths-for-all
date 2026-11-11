@@ -1,5 +1,5 @@
 import { LEVELS } from "./missions.js?v=20261112a";
-import { TrafficCity3D } from "./city3d.js?v=20261112-3d-city";
+import { TrafficCity3D } from "./city3d.js?v=20261112-3d-city-spacing-fix";
 const $=s=>document.querySelector(s);
 const DIRS=["north","south","east","west"],TIMES={bike:5,car:10,truck:15};
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
@@ -44,10 +44,10 @@ function runPlan(){
  const id=++runId,p=level==="easy"?planAt(budget()):planAt(nsSeconds),best=bestPlan(),moving=[];
  optimalScore+=best.points;cycles++;busy=true;$("#run-plan").disabled=true;
  for(const d of dirs()){
-  let previous=null;
-  for(let i=0;i<p.caps[d]&&queues[d].length;i++){
-   const kind=queues[d].shift(),start=city.positionFor(d,i,kind,previous);
-   moving.push({d,kind,start});previous=kind;
+  const selected=queues[d].slice(0,p.caps[d]),starts=city.positionsForQueue(d,selected);
+  for(let i=0;i<selected.length;i++){
+   const kind=queues[d].shift(),start=starts[i];
+   moving.push({d,kind,start});
   }
  }
  for(const d of DIRS)setSignal(d,false);
