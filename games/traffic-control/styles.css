@@ -490,3 +490,32 @@ body { background:#edf2f6; }
  .city-stage-3d { height:48vh; min-height:320px; }
  .planner-card { padding:14px; }
 }
+
+
+/* Hide every non-game section explicitly requested for removal. */
+.topbar,
+.hero,
+.hero-stat,
+.intro-copy,
+.eyebrow,
+.utility-button,
+.brand-lockup,
+.back-link,
+.bottom-strip,
+.footer-note,
+.traffic-controls,
+.mission-card,
+.status-message,
+#reserve-note,
+#research-consent-modal,
+#math-hint,
+.learning-goals {
+  display: none !important;
+}
+/* Keep the screen focused on difficulty selection, the 3D city and planner. */
+.app-shell > header,
+.app-shell > footer,
+.app-shell > #game-main > header,
+.app-shell > #game-main > footer {
+  display: none !important;
+}
