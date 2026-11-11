@@ -30,6 +30,7 @@ const directionLayout = {
 };
 
 let missionIndex = 0;
+let runId = 0;
 let queues = {};
 let activePhase = null;
 let busy = false;
@@ -131,7 +132,7 @@ function setSignal(direction, color) {
 
 function updateSignals() {
   ["north", "south", "east", "west"].forEach((direction) => {
-    const green = activePhase && queueDirections[activePhase].includes(direction) && !busy;
+    const green = activePhase && queueDirections[activePhase].includes(direction);
     setSignal(direction, green ? "green" : "red");
   });
 }
@@ -184,6 +185,7 @@ function updateProgress() {
 }
 
 function startMission(index) {
+  runId += 1;
   missionIndex = index;
   const mission = MISSIONS[missionIndex];
   queues = {
@@ -248,6 +250,7 @@ function releaseWave() {
     return;
   }
   waveCount[phase] += 1;
+  const currentRun = runId;
   busy = true;
   updateSignals();
   updateControls();
@@ -258,6 +261,7 @@ function releaseWave() {
   });
   setStatus("A safe wave is moving. Watch the vehicles cross the junction.");
   window.setTimeout(() => {
+    if (currentRun !== runId) return;
     busy = false;
     activePhase = null;
     updateSignals();
@@ -282,6 +286,7 @@ function startPedestrianCrossing() {
   activePhase = null;
   updateSignals();
   updateControls();
+  const currentRun = runId;
   const groupSize = Math.min(pedestrianGroupSize, pedestriansRemaining);
   pedestriansRemaining -= groupSize;
   pedestriansCrossed += groupSize;
@@ -294,6 +299,7 @@ function startPedestrianCrossing() {
   $("#walk-button").textContent = pedestriansRemaining > 0 ? "Start next group" : "Crossing complete";
   setStatus(groupSize + " pedestrians are crossing. All vehicle signals remain red.");
   window.setTimeout(() => {
+    if (currentRun !== runId) return;
     busy = false;
     updateControls();
     if (pedestriansRemaining === 0) {
