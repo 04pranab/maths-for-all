@@ -1,76 +1,32 @@
-# Account and leaderboard API contract
+# Accounts and leaderboards
 
-This document records the intended API shape. Routes are not live until the
-database and authentication implementation are completed.
+Base URL: `https://maths-for-all-api.ompranabmohanty.workers.dev/api`
 
-Base path: `/api`
+## Account model
+- Email + username + password registration. Email is collected for account identity and future account recovery, but no email is sent and no email verification is required.
+- Usernames are public; email addresses are private.
+- Passwords are PBKDF2-HMAC-SHA-256 hashes (310,000 iterations); plaintext passwords are never stored.
+- Sessions are 30-day, HttpOnly, Secure, SameSite=Lax cookies. Browser requests must use `credentials: "include"`.
+- Sign-out revokes the current session. Account deletion cascades to sessions and scores.
+- Guest play and device-local progress remain available without an account.
 
-## Authentication
-
-| Method | Route | Purpose |
+## Routes
+| Method | Route | Description |
 |---|---|---|
-| POST | `/auth/register` | Create account and begin email verification |
-| POST | `/auth/login` | Create authenticated session |
-| POST | `/auth/logout` | Revoke current session |
-| GET | `/auth/me` | Return current public account profile |
-| POST | `/auth/verify-email` | Verify email token |
-| POST | `/auth/resend-verification` | Request another verification email |
-| POST | `/auth/password-reset/request` | Request password reset |
-| POST | `/auth/password-reset/confirm` | Set a new password |
+| POST | `/auth/register` | `{username,email,password}`, creates account and session |
+| POST | `/auth/login` | `{identifier,password}`, username or email |
+| POST | `/auth/logout` | Revoke session |
+| GET | `/auth/me` | Current public profile |
+| POST | `/games/:gameId/attempts` | Save a completed attempt |
+| GET | `/leaderboards/global` | Global total of best game scores |
+| GET | `/leaderboards/games/:gameId` | Per-game ranking |
+| GET | `/players/me/stats` | Current player's bests |
+| DELETE | `/players/me` | Permanently delete account and associated scores |
 
-The public profile contains only the account ID, public username, and
-verification status. Email remains private.
+## Scoring
+Only the nine active games are accepted. The API accepts `scorePercent` from 0 to 100 and calculates `points = round(scorePercent * 10)` on the server. Each player's best score per game is kept, up to 1,000 points per game and 9,000 globally. Replayed attempt IDs are idempotent. Leaderboards expose username and scores only.
 
-## Scores and rankings
+The game client must submit only after a genuine completed game, using a unique `attemptId`, actual completion percentage, and elapsed seconds. Do not award points for opening a game, viewing a page, or merely signing in. The API does not trust a client-supplied user ID, rank, or points value.
 
-| Method | Route | Purpose |
-|---|---|---|
-| POST | `/games/:gameId/attempts` | Submit a completed game attempt |
-| GET | `/leaderboards/global` | Global ranking by total best-game points |
-| GET | `/leaderboards/games/:gameId` | Ranking for one active game |
-| GET | `/players/me/stats` | Current player's best scores and totals |
-| DELETE | `/players/me` | Delete account and associated account data |
-
-## Attempt request
-
-```json
-{
-  "attemptId": "client-generated-unique-id",
-  "scorePercent": 92.5,
-  "durationSeconds": 240
-}
-```
-
-The route's `gameId` is taken from the URL. The authenticated user is derived
-from the server-side session. The client must not send `userId`, username,
-rank, normalized points, or global points.
-
-The server validates the active game, score range, duration, attempt ID,
-duplicate submission, and per-account request rate. It calculates normalized
-points itself.
-
-## Ranking rules
-
-- Per-game ranking: highest normalized best score first.
-- Global ranking: sum of one best normalized score per active game.
-- Current maximum global score: 9000 points (nine games × 1000).
-- Tie-break: shorter completion duration where meaningful, then earliest
-  timestamp at which the best score was achieved.
-- A new attempt never adds points on top of a player's existing best score.
-- Repeated submissions of the same attempt ID are idempotent.
-
-## Error conventions
-
-- `400`: invalid request or score.
-- `401`: missing/expired session.
-- `403`: forbidden origin or action.
-- `404`: unknown route or inactive game.
-- `409`: duplicate/conflicting operation where idempotent replay is not possible.
-- `429`: rate limit exceeded.
-- `503`: service not configured or temporarily unavailable.
-
-## Privacy
-
-Leaderboard entries expose public username, rank, and score only. They must
-never expose email, session tokens, verification tokens, or research-consent
-records.
+## No mail dependency
+No SMTP, email provider, Google OAuth, verification, or reset-email integration is part of this release. Password recovery is not available until an email delivery or another verified recovery mechanism is deliberately added.
