@@ -20,7 +20,7 @@ The game uses JavaScript modules, so serve it over HTTP rather than opening the 
 
 ## Gameplay
 
-The learner operates a four-way junction with two mutually exclusive vehicle phases:
+The learner operates a traffic junction with two mutually exclusive vehicle phases:
 
 - **North + South** moves one vehicle from each of those approaches.
 - **East + West** moves one vehicle from each of those approaches.
@@ -29,7 +29,9 @@ The learner operates a four-way junction with two mutually exclusive vehicle pha
 - When all vehicles have cleared, the learner completes a short maths reflection.
 - The final mission stops all vehicles and lets pedestrians cross in groups before asking a time question.
 
-Five guided missions introduce:
+Each difficulty contains 50 sequential challenges (150 total). Completing a challenge unlocks the next one, and progress is saved locally in the browser. The 50 scenarios per level vary queue sizes, waiting times, vehicle mixes, and cycle budgets. The final challenge offers a replay option.
+
+The game introduces these skills:
 
 1. Counting vehicles and understanding a green wave.
 2. Addition across four queues.
@@ -57,13 +59,13 @@ These are configurable access supports, not a claim that one design meets every 
 
 ## Tests
 
-Run the standalone mission-data checks from the repository root:
+Run the challenge-data checks from the repository root:
 
 \`\`\`sh
 node games/traffic-control/tests/mission-data.test.mjs
 \`\`\`
 
-The test checks mission count, queue values, answer-option integrity, and the arithmetic used by the five mission briefs.
+The test verifies that all three levels contain exactly 50 unique challenge layouts, valid queues, matching vehicle types, meaningful objectives, and cycle budgets compatible with the signal slider.
 
 ## Integration note
 
