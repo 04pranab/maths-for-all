@@ -3,13 +3,14 @@
   const API = "https://maths-for-all-api.ompranabmohanty.workers.dev/api";
   let mode = "login";
   let currentUser = null;
+  let sessionToken = "";
   let quizCorrect = 0, quizTotal = 0, quizStartedAt = 0;
   const $ = id => document.getElementById(id);
   const request = async (path, options = {}) => {
     const response = await fetch(API + path, {
       ...options,
-      credentials: "include",
-      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+      credentials: "omit",
+      headers: { "Content-Type": "application/json", ...(sessionToken ? { Authorization: "Bearer " + sessionToken } : {}), ...(options.headers || {}) },
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "The account service is unavailable.");
@@ -18,12 +19,16 @@
   function setMode(next) {
     mode = next;
     $("auth-modal-title").textContent = mode === "login" ? "Sign in" : "Create your account";
+    const usernameLabel = document.querySelector('label[for="auth-username"]');
+    if (usernameLabel) usernameLabel.textContent = mode === "login" ? "Username or email" : "Choose a username";
     $("auth-email-label").hidden = mode !== "register";
     $("auth-email").hidden = mode !== "register";
     $("auth-email").required = mode === "register";
     $("auth-submit").textContent = mode === "login" ? "Sign in" : "Create account";
     $("auth-mode-toggle").textContent = mode === "login" ? "New here? Create an account" : "Already have an account? Sign in";
     $("auth-password").autocomplete = mode === "login" ? "current-password" : "new-password";
+    $("auth-username").maxLength = mode === "login" ? 254 : 30;
+    $("auth-username").minLength = mode === "login" ? 1 : 3;
     $("auth-message").textContent = "";
   }
   function renderNav() {
@@ -32,11 +37,13 @@
     if (button) button.onclick = () => currentUser ? openProfile() : Auth.open();
   }
   async function refreshSession() {
-    if (window.location.origin !== "https://04pranab.github.io") { currentUser = null; renderNav(); return; }
+    if (window.location.origin !== "https://04pranab.github.io") { currentUser = null; sessionToken = ""; renderNav(); return; }
+    sessionToken = sessionStorage.getItem("mfa_session_token") || "";
     try {
       const result = await request("/auth/me");
       currentUser = result.authenticated ? result.user : null;
-    } catch { currentUser = null; }
+      if (!currentUser) { sessionToken = ""; sessionStorage.removeItem("mfa_session_token"); }
+    } catch { currentUser = null; sessionToken = ""; sessionStorage.removeItem("mfa_session_token"); }
     renderNav();
   }
   async function openProfile() {
@@ -69,7 +76,9 @@
       if (detail.correct) quizCorrect += 1;
       if (quizTotal >= 10) {
         const accuracy = (quizCorrect / quizTotal) * 100;
-        submitAttempt("arithmetic-quiz", accuracy, Math.max(1, Math.round((Date.now() - quizStartedAt) / 1000)))
+        const elapsed = Math.max(1, Math.round((Date.now() - quizStartedAt) / 1000));
+        quizCorrect = 0; quizTotal = 0; quizStartedAt = 0;
+        submitAttempt("arithmetic-quiz", accuracy, elapsed)
           .catch(error => console.warn("Could not save quiz score:", error.message));
       }
       return;
@@ -97,23 +106,24 @@
     $("leaderboard-modal").classList.remove("hidden");
     $("leaderboard-content").textContent = "Loading the leaderboard…";
     try {
-      const result = await request("/leaderboards/global?limit=50");
+      const gameId = $("leaderboard-game-select")?.value || "global";
+      const result = await request(gameId === "global" ? "/leaderboards/global?limit=50" : "/leaderboards/games/" + encodeURIComponent(gameId) + "?limit=50");
       if (!result.entries.length) {
-        $("leaderboard-content").innerHTML = "<p>No scores yet. Be the first to complete a challenge!</p>";
+        $("leaderboard-content").innerHTML = "<p>No scores here yet. Complete a challenge to start this leaderboard!</p>";
         return;
       }
-      $("leaderboard-content").innerHTML = "<ol class='account-ranking'>" + result.entries.map(e => "<li><span>" + e.rank + ". " + escapeHtml(e.username) + "</span><strong>" + e.points + " pts</strong><small>" + e.gamesPlayed + " games</small></li>").join("") + "</ol><p class='account-footnote'>Maximum: " + result.maximumPoints + " points. Only public usernames and scores appear here.</p>";
+      $("leaderboard-content").innerHTML = "<ol class='account-ranking'>" + result.entries.map(e => "<li><span>" + e.rank + ". " + escapeHtml(e.username) + "</span><strong>" + e.points + " pts</strong><small>" + (e.gamesPlayed !== undefined ? e.gamesPlayed + " games" : "Best game score") + "</small></li>").join("") + "</ol>" + (result.maximumPoints ? "<p class='account-footnote'>Maximum: " + result.maximumPoints + " points. Only public usernames and scores appear here.</p>" : "");
     } catch (e) { $("leaderboard-content").textContent = e.message; }
   }
   async function logout() {
     try { await request("/auth/logout", { method: "POST", body: "{}" }); } finally {
-      currentUser = null; renderNav(); $("account-profile-modal").classList.add("hidden");
+      currentUser = null; sessionToken = ""; sessionStorage.removeItem("mfa_session_token"); renderNav(); $("account-profile-modal").classList.add("hidden");
     }
   }
   async function deleteAccount() {
     if (!confirm("Permanently delete your account and all saved leaderboard scores? Device-local guest progress is not affected.")) return;
     await request("/players/me", { method: "DELETE" });
-    currentUser = null; renderNav(); $("account-profile-modal").classList.add("hidden");
+    currentUser = null; sessionToken = ""; sessionStorage.removeItem("mfa_session_token"); renderNav(); $("account-profile-modal").classList.add("hidden");
   }
   window.Auth = {
     open() { setMode("login"); $("auth-modal").classList.remove("hidden"); $("auth-username").focus(); },
@@ -125,19 +135,30 @@
   };
   document.addEventListener("DOMContentLoaded", () => {
     $("auth-mode-toggle")?.addEventListener("click", () => setMode(mode === "login" ? "register" : "login"));
+    $("leaderboard-game-select")?.addEventListener("change", openLeaderboard);
     $("auth-form")?.addEventListener("submit", async event => {
       event.preventDefault();
       const message = $("auth-message");
       message.textContent = "Please wait…";
+      $("auth-submit").disabled = true;
       const username = $("auth-username").value.trim();
       const password = $("auth-password").value;
       try {
         const result = mode === "register"
           ? await request("/auth/register", { method: "POST", body: JSON.stringify({ username, email: $("auth-email").value, password }) })
           : await request("/auth/login", { method: "POST", body: JSON.stringify({ identifier: username, password }) });
+        if (!result.sessionToken) throw new Error("The server did not return a session. Please try again.");
+        sessionToken = result.sessionToken;
+        sessionStorage.setItem("mfa_session_token", sessionToken);
         currentUser = result.user; renderNav(); Auth.close(); $("auth-form").reset();
         if (mode === "register") setMode("login");
-      } catch (e) { message.textContent = e.message; }
+      } catch (e) {
+        message.textContent = e.message === "Failed to fetch"
+          ? "Cannot reach the account service. Check your connection and try again."
+          : (e.message || "Something went wrong. Please try again.");
+      } finally {
+        $("auth-submit").disabled = false;
+      }
     });
     refreshSession();
   });
