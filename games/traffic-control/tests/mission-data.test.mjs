@@ -1,32 +1,43 @@
 import assert from "node:assert/strict";
-import { MISSIONS } from "../missions.js";
+import { LEVELS } from "../missions.js";
 
-assert.equal(MISSIONS.length, 5, "the game should contain five guided missions");
-assert.deepEqual(MISSIONS.map((mission) => mission.id), [1, 2, 3, 4, 5]);
+const expectedDirections = {
+  easy: ["north", "south"],
+  medium: ["north", "south", "east", "west"],
+  hard: ["north", "south", "east", "west"]
+};
+const vehicleKinds = new Set(["bike", "car", "truck"]);
 
-for (const mission of MISSIONS) {
-  const queues = Object.values(mission.queues);
-  assert.equal(queues.every((count) => Number.isInteger(count) && count >= 0), true,
-    "queue sizes must be non-negative whole numbers");
-  assert.equal(mission.answers.includes(mission.answer), true,
-    "the correct answer must be one of the visible choices");
-  assert.equal(new Set(mission.answers).size, mission.answers.length,
-    "answer choices must not contain duplicates");
-  assert.ok(mission.question.length > 20, "each mission needs a meaningful maths question");
+for (const [level, config] of Object.entries(LEVELS)) {
+  assert.equal(config.rounds.length, 50, `${level} must have exactly 50 challenges`);
+  assert.deepEqual(config.directions, expectedDirections[level]);
+
+  const titles = new Set();
+  const queueSignatures = new Set();
+  for (const [index, challenge] of config.rounds.entries()) {
+    assert.ok(challenge.title.length > 5, `${level} challenge ${index + 1} needs a title`);
+    assert.ok(!titles.has(challenge.title), `${level} challenge titles must be unique`);
+    titles.add(challenge.title);
+    assert.ok(challenge.objective.length > 20, "every challenge needs a meaningful objective");
+    assert.ok(challenge.lesson.length > 20, "every challenge needs a learning explanation");
+    assert.ok(Number.isInteger(challenge.budget) && challenge.budget > 0);
+    assert.equal(challenge.budget % config.step, 0, "cycle budgets must match the slider step");
+
+    assert.deepEqual(Object.keys(challenge.queues).sort(), [...config.directions].sort());
+    for (const direction of config.directions) {
+      const queue = challenge.queues[direction];
+      assert.ok(Array.isArray(queue) && queue.length >= 1);
+      assert.ok(Number.isInteger(challenge.waitMinutes[direction]) && challenge.waitMinutes[direction] >= 1);
+      for (const kind of queue) {
+        assert.ok(level === "hard" ? vehicleKinds.has(kind) : kind === "car",
+          "vehicle types must match the selected difficulty");
+      }
+    }
+    const signature = JSON.stringify(challenge.queues);
+    assert.ok(!queueSignatures.has(signature), `${level} challenge queue layouts should be unique`);
+    queueSignatures.add(signature);
+  }
 }
 
-assert.equal(Object.values(MISSIONS[0].queues).reduce((sum, value) => sum + value, 0), 4);
-assert.equal(MISSIONS[0].answer, 2, "two opposite cars pass in each of two waves");
-assert.equal(Object.values(MISSIONS[1].queues).reduce((sum, value) => sum + value, 0), 10);
-assert.equal(MISSIONS[1].answer, 10, "the addition mission totals ten vehicles");
-assert.equal(MISSIONS[2].answer, 4, "eight vehicles in pairs need four waves");
-assert.equal(MISSIONS[3].answer, 6, "twelve vehicles in pairs need six waves");
-
-const pedestrianMission = MISSIONS[4];
-assert.equal(Object.values(pedestrianMission.queues).reduce((sum, value) => sum + value, 0), 8);
-assert.equal(pedestrianMission.pedestrians % pedestrianMission.pedestrianGroupSize, 0,
-  "pedestrian groups must divide evenly");
-assert.equal(pedestrianMission.pedestrians / pedestrianMission.pedestrianGroupSize, 2);
-assert.equal(pedestrianMission.answer, 10, "two five-second crossing groups take ten seconds");
-
-console.log("Traffic Control Centre mission data: all checks passed.");
+assert.equal(Object.values(LEVELS).reduce((sum, level) => sum + level.rounds.length, 0), 150);
+console.log("Traffic Control: all 150 challenge-data checks passed.");
