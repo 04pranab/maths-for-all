@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#eaf3e9">
   <meta name="description" content="A calm, interactive traffic-junction game that teaches Class 3–4 mathematics through safe traffic decisions.">
   <title>Metro Traffic Engineer · Maths for All</title>
-  <link rel="stylesheet" href="./styles.css?v=20261111-minimal-game-ui-r4">
+  <link rel="stylesheet" href="./styles.css?v=20261112-50-challenges-r1">
   <script src="../../js/research-gateway.js?v=20261111-game-aggregate-3"></script>
   <script src="../../js/consent.js?v=20261111-guardian-gate-5"></script>
   <script src="../../js/account.js?v=20261111-player-hq-3"></script>
@@ -47,6 +47,12 @@
           <div class="fleet-legend" id="fleet-legend"><span>🚲 Cycle · 5s</span><span>🚗 Car · 10s</span><span>🚚 Truck · 15s</span></div>
           <div class="prediction-row"><div class="prediction-card"><span>VEHICLES MOVING</span><strong id="predicted-vehicles">—</strong></div><div class="prediction-card points-card"><span>PRIORITY POINTS</span><strong id="predicted-score">—</strong></div></div>
           <button id="run-plan" class="send-button plan-button" type="button">Run my signal plan →</button>
+          <div id="challenge-complete" class="challenge-complete" hidden>
+            <strong id="challenge-complete-title">Challenge complete!</strong>
+            <p id="challenge-complete-text">Your next challenge is unlocked.</p>
+            <button id="next-mission" class="send-button next-challenge-button" type="button" hidden>Next challenge →</button>
+          </div>
+
           <p id="math-hint" class="math-hint" role="status"></p>
         </section>
       </aside>
@@ -57,7 +63,7 @@
       <span id="mission-objective"></span><button id="restart-mission" type="button"></button>
       <span id="count-north"></span><span id="count-south"></span><span id="count-east"></span><span id="count-west"></span>
       <span id="cleared-count"></span><span id="total-score"></span><span id="cycles-used"></span>
-      <span id="traffic-status"></span><section id="math-check" hidden><span id="math-title"></span><span id="math-question"></span><span id="math-feedback"></span><button id="next-mission" type="button"></button></section>
+      <span id="traffic-status"></span><section id="math-check" hidden><span id="math-title"></span><span id="math-question"></span><span id="math-feedback"></span></section>
     </div>
   </main>
   <div id="research-consent-modal" class="modal-overlay hidden"></div>
