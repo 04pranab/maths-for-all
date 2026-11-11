@@ -307,8 +307,12 @@ const Analytics = (function () {
   }
 
   function log(category, action, detail) {
-    if (typeof ResearchEventGateway === "undefined") return false;
-    return ResearchEventGateway.record(category, action, detail || {});
+    const payload = detail || {};
+    const recorded = typeof ResearchEventGateway !== "undefined"
+      ? ResearchEventGateway.record(category, action, payload)
+      : false;
+    window.MfaAccounts?.onGameEvent?.(category, action, payload);
+    return recorded;
   }
 
   function summary() {
