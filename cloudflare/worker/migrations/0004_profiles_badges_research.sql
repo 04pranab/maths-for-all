@@ -1,13 +1,13 @@
--- Profile achievements are derived from score history. Research events are
--- separate from account identity and accepted only with explicit opt-in.
-CREATE TABLE IF NOT EXISTS research_events (
-  event_id TEXT PRIMARY KEY,
-  participant_hash TEXT NOT NULL,
-  category TEXT NOT NULL CHECK(length(category) BETWEEN 1 AND 40),
-  action TEXT NOT NULL CHECK(length(action) BETWEEN 1 AND 40),
-  detail_json TEXT NOT NULL CHECK(length(detail_json) <= 1200),
-  occurred_at TEXT NOT NULL,
-  received_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+-- Research data is aggregate-only and deliberately has no user, participant,
+-- IP, device, or session identifier. One row is a daily count bucket.
+CREATE TABLE IF NOT EXISTS research_aggregates (
+  day TEXT NOT NULL,
+  game_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  difficulty TEXT NOT NULL DEFAULT 'unspecified',
+  outcome TEXT NOT NULL DEFAULT 'unspecified',
+  level_band TEXT NOT NULL DEFAULT 'unspecified',
+  event_count INTEGER NOT NULL DEFAULT 0 CHECK(event_count >= 0),
+  PRIMARY KEY(day, game_id, action, difficulty, outcome, level_band)
 );
-CREATE INDEX IF NOT EXISTS research_events_participant_idx ON research_events(participant_hash);
-CREATE INDEX IF NOT EXISTS research_events_received_idx ON research_events(received_at);
+CREATE INDEX IF NOT EXISTS research_aggregates_day_idx ON research_aggregates(day);
