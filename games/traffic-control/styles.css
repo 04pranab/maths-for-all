@@ -443,3 +443,14 @@ body.easy-level .mission-card .mission-number{color:#07828b}
 @media(max-width:800px){.game-layout{grid-template-columns:1fr}.city-stage-3d{height:66vh;min-height:460px}.city-card-head{padding:15px}.control-column{display:flex;flex-direction:column}}
 @media(max-width:520px){.city-stage-3d{height:58vh;min-height:390px}.city-camera-tip{left:9px;bottom:9px;font-size:.54rem;padding:7px 9px}.city-stage-3d .map-compass{top:9px;right:9px}}
 @media(prefers-reduced-motion:reduce){.city3d{scroll-behavior:auto}}
+
+/* Critical regression fix: keep the beginner signal-allocation control visible. */
+body.easy-level #schedule-inputs,
+body.easy-level #schedule-inputs[hidden] { display:block !important; visibility:visible !important; }
+/* The city is a fixed 3D illustration, not a draggable map. */
+.city3d,.city3d:active { cursor:default !important; touch-action:pan-y; }
+.city3d canvas { pointer-events:none; }
+.city-stage-3d { height:clamp(700px,82vh,1120px); min-height:700px; }
+@media(max-width:1050px) { .city-stage-3d { height:70vh; min-height:560px; } }
+@media(max-width:800px) { .city-stage-3d { height:68vh; min-height:500px; } }
+@media(max-width:520px) { .city-stage-3d { height:62vh; min-height:430px; } }
