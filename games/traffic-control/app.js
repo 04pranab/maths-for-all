@@ -176,7 +176,6 @@ function updateControls() {
   $("#send-wave").disabled = busy || missionFinished || !activePhase || queueTotal(activePhase) === 0;
   $("#wave-help").textContent = missionFinished ? "This mission is complete." : activePhase ? "One vehicle from each open approach can move." : "Choose a green phase first.";
   $("#walk-button").disabled = busy || pedestriansRemaining <= 0;
-  void canControlCars;
 }
 
 function updateProgress() {
@@ -239,7 +238,6 @@ function releaseWave() {
       const kind = queues[direction].shift();
       const start = vehiclePosition(direction, 0);
       const vehicle = makeVehicle(direction, 0, kind);
-      vehicleLayer.append(vehicle);
       moving.push({ vehicle, direction, start });
     }
   });
@@ -254,7 +252,10 @@ function releaseWave() {
   updateSignals();
   updateControls();
   renderQueues();
-  moving.forEach(({ vehicle, direction, start }) => animateVehicle(vehicle, direction, start));
+  moving.forEach(({ vehicle, direction, start }) => {
+    vehicleLayer.append(vehicle);
+    animateVehicle(vehicle, direction, start);
+  });
   setStatus("A safe wave is moving. Watch the vehicles cross the junction.");
   window.setTimeout(() => {
     busy = false;
