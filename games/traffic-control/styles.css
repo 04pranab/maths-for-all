@@ -421,3 +421,25 @@ body.easy-level .mission-card .mission-number{color:#07828b}
 @media(max-width:1050px){.game-layout{grid-template-columns:minmax(0,1.25fr) minmax(360px,.9fr)}.app-shell{padding-inline:18px}}
 @media(max-width:800px){.game-layout{grid-template-columns:1fr}.level-picker{gap:8px}.level-tab{padding:10px}.level-tab small{font-size:.62rem}.hero-stat{display:none}#city-map{max-height:none}}
 @media(max-width:540px){.app-shell{padding-inline:10px}.hero{padding:20px 2px}.level-picker{grid-template-columns:1fr}.level-tab{min-height:62px}.city-stage{min-height:250px}.planner-card{padding:14px}}
+
+/* True 3D city viewport */
+.city-stage-3d{position:relative;width:100%;height:clamp(560px,72vh,900px);min-height:560px;overflow:hidden;background:#b8cbd0;border-radius:0 0 18px 18px;isolation:isolate}
+.city3d{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:grab;overflow:hidden}
+.city3d:active{cursor:grabbing}
+.city3d canvas{display:block;width:100%;height:100%;outline:none}
+.city-camera-tip{position:absolute;left:18px;bottom:16px;z-index:3;padding:9px 13px;border:1px solid #ffffff80;border-radius:99px;background:#172b3dcc;color:#f6fbff;font-size:.63rem;font-weight:900;letter-spacing:.1em;backdrop-filter:blur(10px);pointer-events:none}
+.city-camera-tip span{padding:0 6px;color:#f0bd52}
+.city-stage-3d .map-compass{position:absolute;top:16px;right:16px;z-index:3;pointer-events:none}
+.city-fallback{display:grid;place-items:center;height:100%;padding:30px;text-align:center;color:#243b4b;font-weight:800}
+.city-card{overflow:hidden}
+.city-card-head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:20px 24px}
+.city-card-head h2{font-size:1.2rem}
+.city-card .map-legend{padding:13px 20px;background:#fff}
+.game-layout{grid-template-columns:minmax(0,1.85fr) minmax(390px,.82fr);gap:20px}
+.app-shell{width:min(2200px,100%);padding-inline:clamp(12px,2vw,34px)}
+.control-column{position:relative;z-index:2}
+@media(min-width:1500px){.city-stage-3d{height:clamp(680px,76vh,1050px)}}
+@media(max-width:1050px){.game-layout{grid-template-columns:minmax(0,1.4fr) minmax(340px,.9fr)}.city-stage-3d{height:62vh;min-height:480px}}
+@media(max-width:800px){.game-layout{grid-template-columns:1fr}.city-stage-3d{height:66vh;min-height:460px}.city-card-head{padding:15px}.control-column{display:flex;flex-direction:column}}
+@media(max-width:520px){.city-stage-3d{height:58vh;min-height:390px}.city-camera-tip{left:9px;bottom:9px;font-size:.54rem;padding:7px 9px}.city-stage-3d .map-compass{top:9px;right:9px}}
+@media(prefers-reduced-motion:reduce){.city3d{scroll-behavior:auto}}
