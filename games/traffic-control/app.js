@@ -352,23 +352,19 @@ function startPedestrianCrossing() {
 function showMathCheck() {
   activePhase = null;
   $("#math-check").hidden = false;
-  $("#math-question").textContent = MISSIONS[missionIndex].question;
-  $("#math-feedback").textContent = "";
+  const mission = MISSIONS[missionIndex];
+  const totalVehicles = Object.values(mission.queues).reduce((sum, count) => sum + count, 0);
+  const totalWaves = waveCount.ns + waveCount.ew;
+  $("#math-title").textContent = "Junction cleared — strategy complete!";
+  $("#math-question").textContent = "You safely moved all " + totalVehicles + " vehicles in " + totalWaves + " green waves. You used the traffic-pressure rule to decide which road deserved priority at each step.";
+  $("#math-feedback").textContent = "Remember: pressure = vehicles waiting × waiting time. Compare the North–South and East–West totals before every signal change.";
   $("#math-answers").replaceChildren();
-  $("#next-mission").hidden = true;
-  answerLocked = false;
-  MISSIONS[missionIndex].answers.forEach((answer) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "answer-button";
-    button.textContent = String(answer);
-    button.addEventListener("click", () => checkAnswer(answer, button));
-    $("#math-answers").append(button);
-  });
+  $("#next-mission").hidden = false;
+  $("#next-mission").textContent = missionIndex === MISSIONS.length - 1 ? "Play the missions again ↻" : "Next mission →";
+  answerLocked = true;
   updateSignals();
   updateControls();
-  setStatus("All clear! Now use your maths to finish the mission.");
-  $("#math-title").textContent = "Traffic cleared. Maths time!";
+  setStatus("Mission complete. Your maths guided every traffic decision.");
   $("#math-check").scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "nearest" });
 }
 
