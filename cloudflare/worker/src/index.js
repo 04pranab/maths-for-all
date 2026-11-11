@@ -199,33 +199,47 @@ const RESEARCH_GAMES = Object.freeze({
   little_shop: "little-shop", number_maze: "number-maze", "traffic-control": "traffic-control",
 });
 const RESEARCH_ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
+const RESEARCH_TABLES = Object.freeze({
+  "arithmetic-quiz":"research_arithmetic_quiz","math-racing":"research_math_racing","sudoku":"research_sudoku",
+  "shape-fitting":"research_shape_fitting","slab-maths":"research_slab_maths","shape-architect":"research_shape_architect",
+  "fraction-bakery":"research_fraction_bakery","little-shop":"research_little_shop","number-maze":"research_number_maze",
+  "traffic-control":"research_traffic_control"
+});
+const RESEARCH_CATEGORIES = Object.freeze({
+  quiz:"arithmetic-quiz",race:"math-racing",sudoku:"sudoku",shape:"shape-fitting",slab:"slab-maths",
+  shape_architect:"shape-architect",fraction_bakery:"fraction-bakery",little_shop:"little-shop",
+  number_maze:"number-maze","traffic-control":"traffic-control"
+});
+const RESEARCH_ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
 async function collectResearch(request, env) {
+  // Fail closed until a verifiable adult/parent/guardian consent process is live.
+  if (env.RESEARCH_COLLECTION_ENABLED !== "true") return error("Research sharing is currently paused. No research data is collected.",503);
   const input = await body(request);
-  if (input.consent !== true) return error("Explicit research consent is required.", 403);
+  if (input.consent !== true) return error("Explicit research consent is required.",403);
   if (!Array.isArray(input.events) || input.events.length < 1 || input.events.length > 50) return error("Submit between 1 and 50 research events.");
-  const day = new Date().toISOString().slice(0,10);
-  const statements = [];
+  const day = new Date().toISOString().slice(0,10), statements = [], touched = new Set();
   for (const event of input.events) {
     if (!event || typeof event !== "object" || Array.isArray(event)) continue;
-    const gameId = RESEARCH_GAMES[String(event.category || "")];
-    const action = String(event.action || "");
-    if (!gameId || !RESEARCH_ACTIONS.has(action)) continue;
+    const gameId = RESEARCH_CATEGORIES[String(event.category || "")], table = RESEARCH_TABLES[gameId], action = String(event.action || "");
+    if (!table || !RESEARCH_ACTIONS.has(action)) continue;
     const detail = event.detail && typeof event.detail === "object" && !Array.isArray(event.detail) ? event.detail : {};
-    const difficulty = ["easy","medium","hard","gentle","steady","stretch","starter","growing","champion"].includes(String(detail.difficulty || "").toLowerCase()) ? String(detail.difficulty).toLowerCase() : "unspecified";
-    const outcome = action.includes("complete") || action === "puzzle_solved" ? "completed" : (typeof detail.correct === "boolean" ? (detail.correct ? "correct" : "incorrect") : "unspecified");
-    const level = Number.isInteger(detail.level) ? detail.level : 0;
-    const levelBand = level <= 0 ? "unspecified" : level <= 10 ? "1-10" : level <= 30 ? "11-30" : "31+";
-    const duration = Number(detail.durationMs ?? detail.timeMs ?? (Number(detail.seconds || detail.timer || 0) * 1000));
+    const allowedDifficulty = ["easy","medium","hard","gentle","steady","stretch","starter","growing","champion"];
+    const difficulty = allowedDifficulty.includes(String(detail.difficulty || "").toLowerCase()) ? String(detail.difficulty).toLowerCase() : "unspecified";
+    const outcome = action.includes("complete") || action === "puzzle_solved" ? "completed" : typeof detail.correct === "boolean" ? (detail.correct ? "correct" : "incorrect") : "unspecified";
+    const level = Number.isInteger(detail.level) ? Math.max(0,Math.min(1_000_000_000,detail.level)) : 0;
+    const levelBand = level <= 0 ? "unspecified" : level <= 10 ? "1-10" : level <= 30 ? "11-30" : level <= 100 ? "31-100" : "101+";
+    const duration = Number(detail.durationMs ?? detail.timeMs ?? (Number(detail.seconds || detail.timer || 0)*1000));
     const durationBand = duration <= 0 ? "unspecified" : duration < 10000 ? "under-10s" : duration < 30000 ? "10-30s" : duration < 120000 ? "30-120s" : "over-120s";
-    statements.push(env.DB.prepare(`INSERT INTO research_aggregates(day,game_id,action,difficulty,outcome,level_band,duration_band,event_count)
-      VALUES(?,?,?,?,?,?,?,1) ON CONFLICT(day,game_id,action,difficulty,outcome,level_band,duration_band)
-      DO UPDATE SET event_count=event_count+1`).bind(day,gameId,action,difficulty,outcome,levelBand,durationBand));
+    statements.push(env.DB.prepare(`INSERT INTO ${table}(day,action,difficulty,outcome,level_band,duration_band,event_count)
+      VALUES(?,?,?,?,?,?,1) ON CONFLICT(day,action,difficulty,outcome,level_band,duration_band)
+      DO UPDATE SET event_count=event_count+1`).bind(day,action,difficulty,outcome,levelBand,durationBand));
+    touched.add(table);
   }
   if (statements.length) {
     await env.DB.batch(statements);
-    await env.DB.prepare("DELETE FROM research_aggregates WHERE day < date('now','-90 days')").run();
+    for (const table of touched) await env.DB.prepare(`DELETE FROM ${table} WHERE day < date('now','-90 days')`).run();
   }
-  return jsonResponse({ accepted: statements.length, rejected: input.events.length - statements.length });
+  return jsonResponse({accepted:statements.length,rejected:input.events.length-statements.length});
 }
 
 async function route(request, env) {
@@ -255,40 +269,49 @@ async function route(request, env) {
   if (method === "GET" && path === "/api/leaderboards/global") {
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 25)));
     const rows = await globalLeaderboard(env, limit);
-    return jsonResponse({ entries: rows.map((r,i)=>({ rank:i+1, username:r.username, points:r.points, gamesPlayed:r.games_played })), maximumPoints: MAX_GLOBAL_POINTS });
+    return jsonResponse({ entries: rows.map((r,i)=>({ rank:i+1, username:r.username, points:r.points, gamesPlayed:r.games_played })), maximumPoints: null, unlimited: true });
   }
   if (method === "GET" && path.startsWith("/api/leaderboards/games/")) {
     const gameId = path.slice("/api/leaderboards/games/".length);
     if (!ACTIVE_GAME_IDS.includes(gameId)) return error("Unknown or inactive game.", 404);
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 25)));
-    const result = gameId === "traffic-control"
-      ? await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM traffic_control_best_scores b JOIN users u ON u.id=b.user_id ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all()
-      : await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM best_game_scores b JOIN users u ON u.id=b.user_id WHERE b.game_id=? ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId, limit).all();
-    return jsonResponse({ gameId, maximumPoints: GAME_RULES[gameId].maximum, entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,durationSeconds:r.duration_seconds})) });
+    const result = await env.DB.prepare(`SELECT u.username,g.total_points AS points,g.attempts FROM player_game_progress g JOIN users u ON u.id=g.user_id WHERE g.game_id=? AND g.total_points>0 ORDER BY g.total_points DESC,g.last_played_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId,limit).all();
+    return jsonResponse({gameId,unlimited:true,entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,attempts:r.attempts}))});
+  }
+  if (method === "GET" && path === "/api/leaderboards/me") {
+    const user = await currentUser(request,env);
+    if (!user) return error("Sign in to see your position.",401);
+    const gameId = url.searchParams.get("gameId") || "global";
+    if (gameId !== "global" && !ACTIVE_GAME_IDS.includes(gameId)) return error("Unknown game.",404);
+    const cte = gameId === "global"
+      ? `WITH ranked AS (SELECT u.id,u.username,p.total_points AS points,ROW_NUMBER() OVER(ORDER BY p.total_points DESC,p.updated_at ASC,u.username COLLATE NOCASE ASC) AS rank FROM player_progress p JOIN users u ON u.id=p.user_id WHERE p.total_points>0)`
+      : `WITH ranked AS (SELECT u.id,u.username,g.total_points AS points,ROW_NUMBER() OVER(ORDER BY g.total_points DESC,g.last_played_at ASC,u.username COLLATE NOCASE ASC) AS rank FROM player_game_progress g JOIN users u ON u.id=g.user_id WHERE g.game_id=? AND g.total_points>0)`;
+    const mine = gameId === "global"
+      ? await env.DB.prepare(cte+" SELECT rank,points,(SELECT COUNT(*) FROM ranked) AS total_players FROM ranked WHERE id=?").bind(user.id).first()
+      : await env.DB.prepare(cte+" SELECT rank,points,(SELECT COUNT(*) FROM ranked) AS total_players FROM ranked WHERE id=?").bind(gameId,user.id).first();
+    if (!mine) return jsonResponse({gameId,rank:null,points:0,totalPlayers:0,nearby:[]});
+    const nearby = gameId === "global"
+      ? await env.DB.prepare(cte+" SELECT rank,username,points,id FROM ranked WHERE rank BETWEEN ? AND ? ORDER BY rank").bind(Math.max(1,mine.rank-2),mine.rank+2).all()
+      : await env.DB.prepare(cte+" SELECT rank,username,points,id FROM ranked WHERE rank BETWEEN ? AND ? ORDER BY rank").bind(gameId,Math.max(1,mine.rank-2),mine.rank+2).all();
+    return jsonResponse({gameId,rank:mine.rank,points:mine.points,totalPlayers:mine.total_players,nearby:nearby.results||[]});
   }
   if (method === "GET" && path === "/api/players/me/stats") {
-    const user = await currentUser(request, env);
-    if (!user) return error("Sign in to view account statistics.", 401);
-    const scores = await env.DB.prepare(`SELECT game_id,points,duration_seconds,achieved_at FROM best_game_scores WHERE user_id=?
-      UNION ALL SELECT 'traffic-control' AS game_id,points,duration_seconds,achieved_at FROM traffic_control_best_scores WHERE user_id=?
-      ORDER BY game_id`).bind(user.id,user.id).all();
-    const attempts = await env.DB.prepare(`SELECT game_id,COUNT(*) AS attempts FROM game_attempts WHERE user_id=? GROUP BY game_id
-      UNION ALL SELECT 'traffic-control' AS game_id,COUNT(*) AS attempts FROM traffic_control_attempts WHERE user_id=? GROUP BY user_id`).bind(user.id,user.id).all();
-    const attemptCounts = Object.fromEntries((attempts.results||[]).map(r=>[r.game_id,r.attempts]));
-    const scoreByGame = Object.fromEntries((scores.results||[]).map(r=>[r.game_id,r.points]));
+    const user = await currentUser(request,env);
+    if (!user) return error("Sign in to view account statistics.",401);
+    const player = await env.DB.prepare("SELECT total_points,total_xp,level,xp_into_level,xp_to_next,total_attempts FROM player_progress WHERE user_id=?").bind(user.id).first()
+      || {total_points:0,total_xp:0,level:1,xp_into_level:0,xp_to_next:125,total_attempts:0};
+    const games = await env.DB.prepare("SELECT game_id,total_points,total_xp,attempts,perfect_clears,hard_clears,current_streak,best_streak,highest_level,last_played_at FROM player_game_progress WHERE user_id=? ORDER BY game_id").bind(user.id).all();
+    const earnedRows = await env.DB.prepare("SELECT game_id,badge_id,earned_at FROM player_badges WHERE user_id=? ORDER BY earned_at").bind(user.id).all();
+    const earnedByGame = {};
+    for (const row of earnedRows.results||[]) (earnedByGame[row.game_id] ||= []).push(row);
     const badges = ACTIVE_GAME_IDS.map(gameId => {
-      const points = Number(scoreByGame[gameId] || 0), maximum = GAME_RULES[gameId].maximum;
-      const count = Number(attemptCounts[gameId] || 0), ratio = maximum ? points / maximum : 0;
-      const earned = [];
-      if (count > 0) earned.push({ id: gameId + "-first-clear", title: "First Steps", tier: "starter", icon: "🌱", description: "Completed a recorded challenge" });
-      if (ratio >= 0.25) earned.push({ id: gameId + "-bronze", title: "Bronze Explorer", tier: "bronze", icon: "🥉", description: "Earned 25% of this game's mastery points" });
-      if (ratio >= 0.5) earned.push({ id: gameId + "-silver", title: "Silver Solver", tier: "silver", icon: "🥈", description: "Earned 50% of this game's mastery points" });
-      if (ratio >= 0.75) earned.push({ id: gameId + "-gold", title: "Gold Strategist", tier: "gold", icon: "🥇", description: "Earned 75% of this game's mastery points" });
-      if (ratio >= 0.9) earned.push({ id: gameId + "-master", title: "Game Master", tier: "master", icon: "🏆", description: "Earned 90% of this game's mastery points" });
-      return { gameId, gameName: GAME_RULES[gameId].label, points, maximum, attempts: count, earned };
+      const progress = (games.results||[]).find(row=>row.game_id===gameId) || {game_id:gameId,total_points:0,total_xp:0,attempts:0,perfect_clears:0,hard_clears:0,current_streak:0,best_streak:0,highest_level:1};
+      const unlocked = new Set((earnedByGame[gameId]||[]).map(row=>row.badge_id));
+      return {gameId,gameName:GAME_RULES[gameId].label,...progress,earned:earnedBadges(progress).map(b=>({...b,earnedAt:(earnedByGame[gameId]||[]).find(r=>r.badge_id===b.id)?.earned_at||null})),locked:BADGE_RULES.filter(b=>!unlocked.has(b.id))};
     });
-    const total = (scores.results||[]).reduce((n,r)=>n+r.points,0);
-    return jsonResponse({ user:cleanUser(user), scores:scores.results||[], badges, totalPoints:total, maximumPoints:MAX_GLOBAL_POINTS, gamesPlayed:Object.keys(scoreByGame).length });
+    const globalBadges = (earnedByGame.all||[]).map(row=>({id:row.badge_id,title:row.badge_id.replace("level-","Level "),icon:"⭐",earnedAt:row.earned_at}));
+    const level = progressForXp(player.total_xp);
+    return jsonResponse({user:cleanUser(user),...level,totalPoints:player.total_points,totalAttempts:player.total_attempts,gamesPlayed:(games.results||[]).filter(g=>g.attempts>0).length,badges,globalBadges});
   }
   if (method === "DELETE" && path === "/api/players/me") {
     const user = await currentUser(request, env);
