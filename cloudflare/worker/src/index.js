@@ -71,7 +71,9 @@ async function rateLimit(request, env, action) {
   return true;
 }
 async function currentUser(request, env) {
-  const raw = cookie(request, COOKIE);
+  const authorization = request.headers.get("Authorization") || "";
+  const bearer = authorization.match(/^Bearer ([A-Za-z0-9_-]{32,100})$/);
+  const raw = bearer ? bearer[1] : cookie(request, COOKIE);
   if (!raw) return null;
   const tokenHash = await digest(raw);
   const row = await env.DB.prepare(
@@ -108,7 +110,7 @@ async function register(request, env) {
     throw e;
   }
   const token = await createSession(id, env);
-  return jsonResponse({ authenticated: true, user: { id, username, createdAt: now } }, 201, { "Set-Cookie": cookieHeader(token) });
+  return jsonResponse({ authenticated: true, user: { id, username, createdAt: now }, sessionToken: token }, 201, { "Set-Cookie": cookieHeader(token) });
 }
 async function login(request, env) {
   if (!await rateLimit(request, env, "login")) return error("Too many attempts. Please try again in ten minutes.", 429);
@@ -118,7 +120,7 @@ async function login(request, env) {
   const row = await env.DB.prepare("SELECT id,username,email,password_hash,created_at FROM users WHERE username=? OR email=? LIMIT 1").bind(identifier, identifier).first();
   if (!row || !await verifyPassword(input.password, row.password_hash)) return error("The username/email or password is incorrect.", 401);
   const token = await createSession(row.id, env);
-  return jsonResponse({ authenticated: true, user: cleanUser(row) }, 200, { "Set-Cookie": cookieHeader(token) });
+  return jsonResponse({ authenticated: true, user: cleanUser(row), sessionToken: token }, 200, { "Set-Cookie": cookieHeader(token) });
 }
 async function submitAttempt(request, env, user, gameId) {
   const input = await body(request);
