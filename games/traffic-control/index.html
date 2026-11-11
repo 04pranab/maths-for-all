@@ -169,16 +169,30 @@
             <button type="button" id="restart-mission" class="restart-button">↻ Restart this mission</button>
           </section>
 
+          <section class="math-briefing" aria-labelledby="math-briefing-title">
+            <div class="briefing-heading"><span class="briefing-icon">∑</span><div><p class="section-kicker">YOUR MATHS DECIDES THE SIGNAL</p><h2 id="math-briefing-title">Which road needs green first?</h2></div></div>
+            <p class="briefing-rule">Calculate the <strong>traffic pressure</strong> on each road. Give green to the road with the larger score.</p>
+            <div class="formula-banner">Pressure = vehicles waiting × waiting time (minutes)</div>
+            <div class="pressure-grid">
+              <div><strong>North</strong><span id="math-north">0 × 0 min</span></div>
+              <div><strong>South</strong><span id="math-south">0 × 0 min</span></div>
+              <div><strong>West</strong><span id="math-west">0 × 0 min</span></div>
+              <div><strong>East</strong><span id="math-east">0 × 0 min</span></div>
+            </div>
+            <div class="pressure-totals"><div><span>North + South</span><strong id="pressure-ns">Work it out</strong></div><div><span>East + West</span><strong id="pressure-ew">Work it out</strong></div></div>
+            <p id="math-hint" class="math-hint" role="status">Calculate both totals and choose the larger score.</p>
+          </section>
+
           <section class="traffic-controls" aria-labelledby="controls-title">
             <div class="panel-heading"><div><p class="section-kicker">JUNCTION CONTROLS</p><h2 id="controls-title">Choose a green light</h2></div><span class="control-icon" aria-hidden="true">◉</span></div>
             <div class="phase-buttons">
               <button type="button" class="phase-button" id="phase-ns" data-phase="ns" aria-pressed="false">
                 <span class="phase-lights" aria-hidden="true"><i></i><i class="on"></i></span>
-                <span><strong>North + South</strong><small>Vertical road</small></span><span class="phase-arrow" aria-hidden="true">→</span>
+                <span><strong>North + South</strong><small>Vertical road · <span class="phase-count">0 vehicles</span></small></span><span class="phase-arrow" aria-hidden="true">→</span>
               </button>
               <button type="button" class="phase-button" id="phase-ew" data-phase="ew" aria-pressed="false">
                 <span class="phase-lights phase-lights-ew" aria-hidden="true"><i></i><i class="on"></i></span>
-                <span><strong>East + West</strong><small>Horizontal road</small></span><span class="phase-arrow" aria-hidden="true">→</span>
+                <span><strong>East + West</strong><small>Horizontal road · <span class="phase-count">0 vehicles</span></small></span><span class="phase-arrow" aria-hidden="true">→</span>
               </button>
             </div>
             <div class="wave-action">

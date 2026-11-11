@@ -203,3 +203,32 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
 
 .restart-button { margin-top: 10px; padding: 7px 2px; border: 0; background: transparent; color: #789083; cursor: pointer; font-size: .68rem; font-weight: 800; }
 .restart-button:hover { color: #376c50; text-decoration: underline; }
+
+/* Strategy-first redesign: larger map, clearer maths and collision-free queues. */
+.app-shell { width: min(1760px, calc(100% - 32px)); padding-right: 0; padding-left: 0; }
+.game-layout { grid-template-columns: minmax(0, 1.55fr) minmax(390px, .9fr); gap: 22px; }
+.city-stage { padding: 0 8px; }
+#city-map { width: 100%; max-height: 760px; }
+.control-column { gap: 15px; }
+.math-briefing { padding: 18px; border: 1px solid #d9e7d8; border-radius: 19px; background: linear-gradient(145deg,#fbfff8,#eef6eb); box-shadow: 0 5px 18px rgba(52,76,61,.05); }
+.briefing-heading { display:flex; align-items:center; gap:12px; }
+.briefing-icon { width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#dceedd;color:#34724f;font-size:1.55rem;font-weight:900; }
+.briefing-heading h2 { margin:4px 0 0;font-size:1.1rem;letter-spacing:-.025em; }
+.briefing-rule { margin:13px 0 10px;color:#596f60;font-size:.82rem;line-height:1.5; }
+.formula-banner { padding:10px 12px;border-radius:11px;background:#294f40;color:#fff;text-align:center;font-size:.85rem;font-weight:850;letter-spacing:.01em; }
+.pressure-grid { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px; }
+.pressure-grid div,.pressure-totals div { min-width:0;padding:9px 7px;border:1px solid #e1eadc;border-radius:11px;background:#fff;text-align:center; }
+.pressure-grid strong,.pressure-grid span,.pressure-totals span,.pressure-totals strong { display:block; }
+.pressure-grid strong { color:#486a53;font-size:.73rem; }
+.pressure-grid span { margin-top:5px;color:#718176;font-size:.65rem;font-weight:750;white-space:nowrap; }
+.pressure-totals { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px; }
+.pressure-totals div { background:#f9fcf6; }
+.pressure-totals span { color:#718176;font-size:.67rem; }
+.pressure-totals strong { margin-top:4px;color:#2e6548;font-size:1.05rem; }
+.math-hint { margin:10px 0 0;padding:9px 11px;border-radius:10px;background:#e6f1e3;color:#4f7059;font-size:.73rem;line-height:1.45; }
+.phase-count { color:#63806d; }
+.phase-button[aria-pressed="true"] { box-shadow:0 0 0 3px rgba(107,159,119,.13); }
+@media (min-width:1500px) { .game-layout { grid-template-columns:minmax(0,1.65fr) minmax(420px,.85fr);gap:24px; } .city-card-head { min-height:76px; } }
+@media (max-width:1050px) { .app-shell { width:calc(100% - 28px); } .game-layout { grid-template-columns:minmax(0,1.2fr) minmax(330px,.9fr); } }
+@media (max-width:820px) { .game-layout { grid-template-columns:minmax(0,1fr); } .pressure-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+@media (max-width:560px) { .app-shell { width:calc(100% - 20px); } .pressure-grid span { font-size:.58rem; } }
