@@ -80,7 +80,7 @@ class MemoryD1 {
       },
       async run(){
         if(query.startsWith("INSERT INTO auth_rate_limits")) {
-          db.rates.set(args[0],{hits:args[1],window_started:args[2]}); return {meta:{changes:1}};
+          db.rates.set(args[0],{hits:1,window_started:args[1]}); return {meta:{changes:1}};
         }
         if(query.startsWith("UPDATE auth_rate_limits SET hits=hits+1")) {
           const r=db.rates.get(args[0]); if(r)r.hits++; return {meta:{changes:r?1:0}};
