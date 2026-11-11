@@ -1,65 +1,80 @@
-# Accounts and leaderboards
+# Player progression, achievements and leaderboards
 
-Base URL: `https://maths-for-all-api.ompranabmohanty.workers.dev/api`
+Base URL: https://maths-for-all-api.ompranabmohanty.workers.dev/api
 
-## Account model
-- Email + username + password registration. Email is collected for account identity and future account recovery, but no email is sent and no email verification is required.
-- Usernames are public; email addresses are private.
-- Passwords are PBKDF2-HMAC-SHA-256 hashes (310,000 iterations); plaintext passwords are never stored.
-- Sessions expire after 30 days. The browser holds the random bearer token in tab-scoped `sessionStorage`; the database stores only its SHA-256 digest. Cross-site cookies are not required.
-- Sign-out revokes the current session. Account deletion cascades to sessions and scores.
-- Guest play and device-local progress remain available without an account.
+## Player progression
+Guest play remains available. Registered accounts save cumulative lifetime points and XP. There is no global score ceiling, per-game lifetime score ceiling, or final player level. Each distinct completed attempt earns a game-weighted award. Harder games and harder difficulty tiers are worth more. Higher challenge levels increase awards with a logarithmic progression factor; hints and mistakes reduce awards. A unique attemptId makes a completed attempt idempotent.
 
-## Routes
+### Game base weights
+| Game | Base award |
+|---|---:|
+| Arithmetic Quiz | 12 |
+| Math Racing | 16 |
+| Sudoku | 32 |
+| Shape Fitting | 20 |
+| Slab Maths | 10 |
+| Shape Architect | 26 |
+| Fraction Bakery | 22 |
+| Little Shop | 12 |
+| Number Maze | 24 |
+| Traffic Control Centre | 28 |
+
+Difficulty factors: easy/gentle 0.50, medium/steady 0.80, hard/stretch 1.25. Level progression multiplier: 1 + 0.12 × log2(level). Hints and mistakes apply bounded reductions. Points have no hard ceiling. The browser still reports completion metrics, so awards are not cheat-proof until games submit server-verifiable challenge proofs.
+
+### XP levels
+The XP required to advance from level L is 100 + 25 × L. XP carries forward; there is no maximum level. The profile shows current level and progress to the next level.
+
+### Achievements
+Achievements are recorded durably and shown in Player HQ and on the corresponding game tile:
+- First Steps: first completed challenge
+- Flawless Finish: 100% clear with no hints or mistakes
+- Brave Thinker: hard/champion clear
+- Five in a Row: five consecutive recorded clears
+- Deep Diver: reach level 25
+- Century Club: reach level 100
+- Point Collector: 1,000 game points
+- Ten Thousand Club: 10,000 game points
+- Marathon Mind: 100 completed challenges
+
+Global level milestones appear as player-wide badges. Achievement rules are server-derived from saved progress, not client-supplied badge lists.
+
+## API routes
 | Method | Route | Description |
 |---|---|---|
-| POST | `/auth/register` | `{username,email,password}`, creates account and session |
-| POST | `/auth/login` | `{identifier,password}`, username or email |
-| POST | `/auth/logout` | Revoke session |
-| GET | `/auth/me` | Current public profile |
-| POST | `/games/:gameId/attempts` | Save a completed attempt |
-| GET | `/leaderboards/global` | Global total of best game scores |
-| GET | `/leaderboards/games/:gameId` | Per-game ranking |
-| GET | `/players/me/stats` | Current player's bests |
-| DELETE | `/players/me` | Permanently delete account and associated scores |
+| POST | /auth/register | Create account and session |
+| POST | /auth/login | Sign in with username or email |
+| POST | /auth/logout | Revoke session |
+| GET | /auth/me | Current public account identity |
+| POST | /games/:gameId/attempts | Record an idempotent completed attempt |
+| GET | /leaderboards/global | Global cumulative lifetime-points standings |
+| GET | /leaderboards/games/:gameId | Per-game cumulative lifetime standings |
+| GET | /leaderboards/me?gameId=global | Authenticated player's rank and nearby competitors |
+| GET | /players/me/stats | XP, level, lifetime totals, game progress and badges |
+| DELETE | /players/me | Delete account and associated player data |
+| POST | /research/events | Permanently disabled in this release; returns HTTP 503 without writing to D1 |
 
-## Scoring and achievements
-Points are calculated on the server from a bounded completion percentage plus a game-specific maximum, selected difficulty band, level progression, hint use, and mistakes. Current maximum budgets are:
-| Game | Maximum points |
-|---|---:|
-| Arithmetic Quiz | 140 |
-| Math Racing | 180 |
-| Sudoku | 350 |
-| Shape Fitting | 220 |
-| Slab Maths | 120 |
-| Shape Architect | 280 |
-| Fraction Bakery | 230 |
-| Little Shop | 120 |
-| Number Maze | 250 |
-| Traffic Control Centre | 260 |
+The personal-rank route returns rank, points, total ranked players, and a small window of nearby competitors. A player with no score has rank null.
 
-Difficulty factors are Starter/Easy 0.45, Growing/Medium 0.70, and Champion/Hard 1.00. Level progression adds at most 20%; hints and mistakes reduce the award. The best score per game is kept. Global ranking sums the best game scores, with a current theoretical maximum of 2,150 points. Historic scores are conservatively rebased to the starter tier because old difficulty metadata was not recorded.
+## Database model
+- users and sessions: account identity and hashed session credentials.
+- player_progress: cumulative lifetime points, XP, level and total attempts.
+- player_game_progress: cumulative points/XP, attempt counts, perfect/hard clears, streaks and highest level per game.
+- player_game_attempts: idempotent per-attempt record; points have no artificial 1,000-point ceiling.
+- player_badges: durable achievement awards.
+- Legacy game_attempts and best-score tables remain for compatibility; they are not the source of lifetime leaderboards.
 
-The browser still reports a completion result, so this is not a cheat-proof competitive anti-cheat system: a modified client can forge a result. The API bounds inputs and calculates awards server-side, but truly tamper-resistant scoring requires server-verifiable game seeds/solutions or signed challenge proofs. Do not describe these rankings as secure esports results.
+## Research and privacy
+Research is separate from player progression. Account creation, sign-in, score saving, profile viewing, and leaderboard participation do not imply research consent.
 
-Badges are derived from game-specific attempts and best-score thresholds: First Steps (first recorded attempt), Bronze Explorer (25%), Silver Solver (50%), Gold Strategist (75%), and Game Master (90%). They are returned in the authenticated profile response; no additional personal profile fields are public.
+Migration 0005 removes the legacy research aggregate table and does not create research event tables. The browser gateway refuses to record or queue events. The Worker research endpoint always returns 503, even if a client sends consent=true or an environment flag is accidentally enabled. No research event is stored in D1.
 
-## Research data
-Research is a separate, explicit opt-in. The consent-aware browser gateway sends only allowlisted game events. The Worker stores daily aggregate counts grouped by game, event, difficulty, outcome, and broad level band and coarse duration band. Research aggregates have no account/user/session/IP/device/participant identifier and are not joined to leaderboard records. The endpoint requires `consent: true`; it rejects unsupported fields/events. Aggregates are retained for up to 90 days and old daily buckets are removed during later accepted research writes. Once an event has been combined into a shared aggregate, an individual contribution cannot be separated or withdrawn; the consent notice states this before opt-in. Account creation never implies research consent.
+Any future research system requires a separate reviewed design, verifiable adult/parent/lawful-guardian permission where applicable, and a new explicit release. Until then, there is no research retention period because no research data is collected.
+
+## Profile data
+School name and parent/guardian name are not collected. They are unnecessary for gameplay and would add personal data in a child-focused service. Any future request requires a specific purpose, private-by-default handling, a retention/deletion plan, and applicable verified guardian permission. They must never be public or used as research dimensions.
 
 ## No mail dependency
-No SMTP, email provider, Google OAuth, verification, or reset-email integration is part of this release. Password recovery is not available until an email delivery or another verified recovery mechanism is deliberately added.
+No SMTP, email provider, verification email, or password-reset delivery is part of this release. Email is an account identifier only. Do not imply email-based account recovery is available.
 
-
-## Browser session transport
-GitHub Pages and the Worker are on different origins. The browser client therefore uses a short-lived-in-tab bearer token returned after registration or login and sends it in the `Authorization: Bearer` header. The Worker stores only a SHA-256 digest of the random session token in D1. The token is held in `sessionStorage`, not persistent local storage, and is cleared on logout, account deletion, or invalid session response. Credentialed third-party cookies are not required. CORS preflight explicitly permits the Authorization header for the exact GitHub Pages origin.
-
-## Tables
-The production D1 database uses these application tables:
-- `users`: unique case-insensitive username and email, password hash and account timestamps.
-- `sessions`: hashed bearer/cookie tokens, expiry and last-use timestamps; cascades on user deletion.
-- `game_attempts`: idempotent attempt history with game/score/duration constraints.
-- `best_game_scores`: one best normalized score per user for the nine original games.
-- `traffic_control_attempts` and `traffic_control_best_scores`: Traffic Control Centre attempts and its best score, kept separate to preserve the original score-table constraints.
-- `auth_rate_limits`: hashed-IP rate-limit counters.
-- `email_verification_tokens` and `password_reset_tokens` remain schema placeholders for a future explicitly approved email feature; this release does not send email or require verification.
+## Session transport
+The GitHub Pages client sends a random bearer token in the Authorization header and keeps it in tab-scoped sessionStorage. D1 stores only the token digest. CORS is restricted to the exact GitHub Pages origin.

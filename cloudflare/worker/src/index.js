@@ -1,6 +1,9 @@
 import { jsonResponse, handleCorsPreflight, withCors } from "./http.js";
-import { ACTIVE_GAME_IDS, GAME_RULES, MAX_GLOBAL_POINTS } from "./leaderboard/scoring.js";
+import { ACTIVE_GAME_IDS, GAME_RULES } from "./leaderboard/scoring.js";
+import { progressForXp, earnedBadges, BADGE_RULES } from "./leaderboard/progression.js";
 import { validateAttempt } from "./leaderboard/validation.js";
+
+// Lifetime progression is the leaderboard source of truth. Research event collection is intentionally disabled.
 
 const SESSION_SECONDS = 60 * 60 * 24 * 30;
 // Cloudflare Workers WebCrypto currently supports PBKDF2 up to 100,000 iterations.
@@ -111,6 +114,7 @@ async function register(request, env) {
     if (/UNIQUE|constraint/i.test(String(e))) return error("That username or email is already in use.", 409);
     throw e;
   }
+  await env.DB.prepare("INSERT OR IGNORE INTO player_progress(user_id) VALUES(?)").bind(id).run();
   const token = await createSession(id, env);
   return jsonResponse({ authenticated: true, user: { id, username, createdAt: now }, sessionToken: token }, 201, { "Set-Cookie": cookieHeader(token) });
 }
@@ -129,82 +133,71 @@ async function submitAttempt(request, env, user, gameId) {
   const checked = validateAttempt({ ...input, gameId });
   if (!checked.ok) return error(checked.error);
   const a = checked.value, now = new Date().toISOString();
+  const perfect = a.scorePercent === 100 && a.hintsUsed === 0 && a.mistakes === 0 ? 1 : 0;
+  const hard = ["hard","stretch","champion"].includes(a.difficulty) ? 1 : 0;
+  const legacyPoints = Math.min(1000, a.points);
+  const legacyAttempt = a.gameId === "traffic-control"
+    ? env.DB.prepare("INSERT OR IGNORE INTO traffic_control_attempts(attempt_id,user_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?)").bind(a.attemptId,user.id,a.scorePercent,legacyPoints,a.durationSeconds,now)
+    : env.DB.prepare("INSERT OR IGNORE INTO game_attempts(attempt_id,user_id,game_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?,?)").bind(a.attemptId,user.id,a.gameId,a.scorePercent,legacyPoints,a.durationSeconds,now);
+  const inserted = await env.DB.prepare("INSERT OR IGNORE INTO player_game_attempts(attempt_id,user_id,game_id,score_percent,points,duration_seconds,difficulty,level,hints_used,mistakes,perfect,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)")
+    .bind(a.attemptId,user.id,a.gameId,a.scorePercent,a.points,a.durationSeconds,a.difficulty,a.level,a.hintsUsed,a.mistakes,perfect,now).run();
+  if (!inserted.meta?.changes) {
+    const prior = await env.DB.prepare("SELECT user_id,game_id,points FROM player_game_attempts WHERE attempt_id=?").bind(a.attemptId).first();
+    if (!prior || prior.user_id !== user.id || prior.game_id !== a.gameId) return error("Attempt ID already used.",409);
+    return jsonResponse({accepted:true,duplicate:true,points:prior.points});
+  }
+  await legacyAttempt.run();
   if (a.gameId === "traffic-control") {
-    const inserted = await env.DB.prepare("INSERT OR IGNORE INTO traffic_control_attempts(attempt_id,user_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?)")
-      .bind(a.attemptId,user.id,a.scorePercent,a.points,a.durationSeconds,now).run();
-    if (inserted.meta?.changes) {
-      await env.DB.prepare(`INSERT INTO traffic_control_best_scores(user_id,points,duration_seconds,achieved_at)
-        VALUES(?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET
-        points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at
-        WHERE excluded.points > traffic_control_best_scores.points`)
-        .bind(user.id,a.points,a.durationSeconds,now).run();
-    } else {
-      const prior=await env.DB.prepare("SELECT user_id FROM traffic_control_attempts WHERE attempt_id=?").bind(a.attemptId).first();
-      if(!prior||prior.user_id!==user.id)return error("Attempt ID already used.",409);
-    }
-    const best=await env.DB.prepare("SELECT points,duration_seconds,achieved_at FROM traffic_control_best_scores WHERE user_id=?").bind(user.id).first();
-    return jsonResponse({accepted:true,duplicate:!inserted.meta?.changes,points:a.points,best});
-  }
-  const inserted = await env.DB.prepare("INSERT OR IGNORE INTO game_attempts(attempt_id,user_id,game_id,score_percent,points,duration_seconds,created_at) VALUES(?,?,?,?,?,?,?)")
-    .bind(a.attemptId, user.id, a.gameId, a.scorePercent, a.points, a.durationSeconds, now).run();
-  if (inserted.meta?.changes) {
-    await env.DB.prepare(`INSERT INTO best_game_scores(user_id,game_id,points,duration_seconds,achieved_at)
-      VALUES(?,?,?,?,?)
-      ON CONFLICT(user_id,game_id) DO UPDATE SET
-        points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')
-      WHERE excluded.points > best_game_scores.points`)
-      .bind(user.id, a.gameId, a.points, a.durationSeconds, now).run();
+    await env.DB.prepare(`INSERT INTO traffic_control_best_scores(user_id,points,duration_seconds,achieved_at) VALUES(?,?,?,?)
+      ON CONFLICT(user_id) DO UPDATE SET points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at
+      WHERE excluded.points>traffic_control_best_scores.points`).bind(user.id,legacyPoints,a.durationSeconds,now).run();
   } else {
-    const prior = await env.DB.prepare("SELECT user_id,game_id FROM game_attempts WHERE attempt_id=?").bind(a.attemptId).first();
-    if (!prior || prior.user_id !== user.id || prior.game_id !== a.gameId) return error("Attempt ID already used.", 409);
+    await env.DB.prepare(`INSERT INTO best_game_scores(user_id,game_id,points,duration_seconds,achieved_at) VALUES(?,?,?,?,?)
+      ON CONFLICT(user_id,game_id) DO UPDATE SET points=excluded.points,duration_seconds=excluded.duration_seconds,achieved_at=excluded.achieved_at,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')
+      WHERE excluded.points>best_game_scores.points`).bind(user.id,a.gameId,legacyPoints,a.durationSeconds,now).run();
   }
-  const best = await env.DB.prepare("SELECT points,duration_seconds,achieved_at FROM best_game_scores WHERE user_id=? AND game_id=?").bind(user.id, a.gameId).first();
-  return jsonResponse({ accepted: true, duplicate: !inserted.meta?.changes, points: a.points, best });
+  await env.DB.prepare(`INSERT INTO player_game_progress(user_id,game_id,total_points,total_xp,attempts,perfect_clears,hard_clears,current_streak,best_streak,highest_level,last_played_at)
+    VALUES(?,?,?, ?,1,?,?,1,1,?,?)
+    ON CONFLICT(user_id,game_id) DO UPDATE SET
+      total_points=total_points+excluded.total_points,total_xp=total_xp+excluded.total_xp,
+      attempts=attempts+1,perfect_clears=perfect_clears+excluded.perfect_clears,
+      hard_clears=hard_clears+excluded.hard_clears,current_streak=current_streak+1,
+      best_streak=MAX(best_streak,current_streak+1),highest_level=MAX(highest_level,excluded.highest_level),
+      last_played_at=excluded.last_played_at`).bind(user.id,a.gameId,a.points,a.points,perfect,hard,a.level,now).run();
+  await env.DB.prepare(`INSERT INTO player_progress(user_id,total_points,total_xp,level,xp_into_level,xp_to_next,total_attempts,updated_at)
+    VALUES(?,?,?,1,0,125,1,?)
+    ON CONFLICT(user_id) DO UPDATE SET total_points=total_points+excluded.total_points,
+      total_xp=total_xp+excluded.total_xp,total_attempts=total_attempts+1,updated_at=excluded.updated_at`)
+    .bind(user.id,a.points,a.points,now).run();
+  const player = await env.DB.prepare("SELECT total_xp FROM player_progress WHERE user_id=?").bind(user.id).first();
+  const level = progressForXp(player?.total_xp || 0);
+  await env.DB.prepare("UPDATE player_progress SET level=?,xp_into_level=?,xp_to_next=? WHERE user_id=?")
+    .bind(level.level,level.xpIntoLevel,level.xpToNext,user.id).run();
+  const gameProgress = await env.DB.prepare("SELECT * FROM player_game_progress WHERE user_id=? AND game_id=?").bind(user.id,a.gameId).first();
+  for (const badge of earnedBadges(gameProgress || {})) {
+    await env.DB.prepare("INSERT OR IGNORE INTO player_badges(user_id,game_id,badge_id,earned_at) VALUES(?,?,?,?)")
+      .bind(user.id,a.gameId,badge.id,now).run();
+  }
+  const globalBadges = [
+    {id:"level-5",test:level.level>=5},{id:"level-10",test:level.level>=10},
+    {id:"level-25",test:level.level>=25},{id:"level-50",test:level.level>=50},
+    {id:"level-100",test:level.level>=100}
+  ];
+  for (const badge of globalBadges.filter(x=>x.test)) {
+    await env.DB.prepare("INSERT OR IGNORE INTO player_badges(user_id,game_id,badge_id,earned_at) VALUES(?,?,?,?)")
+      .bind(user.id,"all",badge.id,now).run();
+  }
+  return jsonResponse({accepted:true,duplicate:false,points:a.points,best:{points:a.points},progress:level,badges:earnedBadges(gameProgress||{})});
 }
 async function globalLeaderboard(env, limit) {
-  const result = await env.DB.prepare(`WITH scores AS (
-      SELECT user_id,game_id,points,duration_seconds FROM best_game_scores
-      UNION ALL SELECT user_id,'traffic-control' AS game_id,points,duration_seconds FROM traffic_control_best_scores
-    )
-    SELECT u.username,SUM(s.points) AS points,COUNT(s.game_id) AS games_played
-    FROM users u JOIN scores s ON s.user_id=u.id
-    GROUP BY u.id,u.username
-    ORDER BY points DESC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
+  const result = await env.DB.prepare(`SELECT u.id,u.username,p.total_points AS points,COUNT(g.game_id) AS games_played
+    FROM player_progress p JOIN users u ON u.id=p.user_id LEFT JOIN player_game_progress g ON g.user_id=u.id AND g.attempts>0
+    WHERE p.total_points>0 GROUP BY u.id,u.username,p.total_points,p.updated_at ORDER BY p.total_points DESC,p.updated_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
   return result.results || [];
 }
-const RESEARCH_GAMES = Object.freeze({
-  quiz: "arithmetic-quiz", race: "math-racing", sudoku: "sudoku", shape: "shape-fitting",
-  slab: "slab-maths", shape_architect: "shape-architect", fraction_bakery: "fraction-bakery",
-  little_shop: "little-shop", number_maze: "number-maze", "traffic-control": "traffic-control",
-});
-const RESEARCH_ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
-async function collectResearch(request, env) {
-  const input = await body(request);
-  if (input.consent !== true) return error("Explicit research consent is required.", 403);
-  if (!Array.isArray(input.events) || input.events.length < 1 || input.events.length > 50) return error("Submit between 1 and 50 research events.");
-  const day = new Date().toISOString().slice(0,10);
-  const statements = [];
-  for (const event of input.events) {
-    if (!event || typeof event !== "object" || Array.isArray(event)) continue;
-    const gameId = RESEARCH_GAMES[String(event.category || "")];
-    const action = String(event.action || "");
-    if (!gameId || !RESEARCH_ACTIONS.has(action)) continue;
-    const detail = event.detail && typeof event.detail === "object" && !Array.isArray(event.detail) ? event.detail : {};
-    const difficulty = ["easy","medium","hard","gentle","steady","stretch","starter","growing","champion"].includes(String(detail.difficulty || "").toLowerCase()) ? String(detail.difficulty).toLowerCase() : "unspecified";
-    const outcome = action.includes("complete") || action === "puzzle_solved" ? "completed" : (typeof detail.correct === "boolean" ? (detail.correct ? "correct" : "incorrect") : "unspecified");
-    const level = Number.isInteger(detail.level) ? detail.level : 0;
-    const levelBand = level <= 0 ? "unspecified" : level <= 10 ? "1-10" : level <= 30 ? "11-30" : "31+";
-    const duration = Number(detail.durationMs ?? detail.timeMs ?? (Number(detail.seconds || detail.timer || 0) * 1000));
-    const durationBand = duration <= 0 ? "unspecified" : duration < 10000 ? "under-10s" : duration < 30000 ? "10-30s" : duration < 120000 ? "30-120s" : "over-120s";
-    statements.push(env.DB.prepare(`INSERT INTO research_aggregates(day,game_id,action,difficulty,outcome,level_band,duration_band,event_count)
-      VALUES(?,?,?,?,?,?,?,1) ON CONFLICT(day,game_id,action,difficulty,outcome,level_band,duration_band)
-      DO UPDATE SET event_count=event_count+1`).bind(day,gameId,action,difficulty,outcome,levelBand,durationBand));
-  }
-  if (statements.length) {
-    await env.DB.batch(statements);
-    await env.DB.prepare("DELETE FROM research_aggregates WHERE day < date('now','-90 days')").run();
-  }
-  return jsonResponse({ accepted: statements.length, rejected: input.events.length - statements.length });
+async function collectResearch() {
+  // This endpoint is permanently fail-closed in this release. Player progress is not research data.
+  return error("Research collection is disabled. No research events are stored.", 503);
 }
 
 async function route(request, env) {
@@ -234,40 +227,58 @@ async function route(request, env) {
   if (method === "GET" && path === "/api/leaderboards/global") {
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 25)));
     const rows = await globalLeaderboard(env, limit);
-    return jsonResponse({ entries: rows.map((r,i)=>({ rank:i+1, username:r.username, points:r.points, gamesPlayed:r.games_played })), maximumPoints: MAX_GLOBAL_POINTS });
+    return jsonResponse({ entries: rows.map((r,i)=>({ rank:i+1, username:r.username, points:r.points, gamesPlayed:r.games_played })), maximumPoints: null, unlimited: true });
   }
   if (method === "GET" && path.startsWith("/api/leaderboards/games/")) {
     const gameId = path.slice("/api/leaderboards/games/".length);
     if (!ACTIVE_GAME_IDS.includes(gameId)) return error("Unknown or inactive game.", 404);
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 25)));
-    const result = gameId === "traffic-control"
-      ? await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM traffic_control_best_scores b JOIN users u ON u.id=b.user_id ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all()
-      : await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM best_game_scores b JOIN users u ON u.id=b.user_id WHERE b.game_id=? ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId, limit).all();
-    return jsonResponse({ gameId, maximumPoints: GAME_RULES[gameId].maximum, entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,durationSeconds:r.duration_seconds})) });
+    const result = await env.DB.prepare(`SELECT u.username,g.total_points AS points,g.attempts FROM player_game_progress g JOIN users u ON u.id=g.user_id WHERE g.game_id=? AND g.total_points>0 ORDER BY g.total_points DESC,g.last_played_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId,limit).all();
+    return jsonResponse({gameId,unlimited:true,entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,attempts:r.attempts}))});
+  }
+  if (method === "GET" && path === "/api/leaderboards/me") {
+    const user = await currentUser(request,env);
+    if (!user) return error("Sign in to see your position.",401);
+    const gameId = url.searchParams.get("gameId") || "global";
+    if (gameId !== "global" && !ACTIVE_GAME_IDS.includes(gameId)) return error("Unknown game.",404);
+    const cte = gameId === "global"
+      ? `WITH ranked AS (SELECT u.id,u.username,p.total_points AS points,ROW_NUMBER() OVER(ORDER BY p.total_points DESC,p.updated_at ASC,u.username COLLATE NOCASE ASC) AS rank FROM player_progress p JOIN users u ON u.id=p.user_id WHERE p.total_points>0)`
+      : `WITH ranked AS (SELECT u.id,u.username,g.total_points AS points,ROW_NUMBER() OVER(ORDER BY g.total_points DESC,g.last_played_at ASC,u.username COLLATE NOCASE ASC) AS rank FROM player_game_progress g JOIN users u ON u.id=g.user_id WHERE g.game_id=? AND g.total_points>0)`;
+    const mine = gameId === "global"
+      ? await env.DB.prepare(cte+" SELECT rank,points,(SELECT COUNT(*) FROM ranked) AS total_players FROM ranked WHERE id=?").bind(user.id).first()
+      : await env.DB.prepare(cte+" SELECT rank,points,(SELECT COUNT(*) FROM ranked) AS total_players FROM ranked WHERE id=?").bind(gameId,user.id).first();
+    if (!mine) return jsonResponse({gameId,rank:null,points:0,totalPlayers:0,nearby:[]});
+    const nearby = gameId === "global"
+      ? await env.DB.prepare(cte+" SELECT rank,username,points,id FROM ranked WHERE rank BETWEEN ? AND ? ORDER BY rank").bind(Math.max(1,mine.rank-2),mine.rank+2).all()
+      : await env.DB.prepare(cte+" SELECT rank,username,points,id FROM ranked WHERE rank BETWEEN ? AND ? ORDER BY rank").bind(gameId,Math.max(1,mine.rank-2),mine.rank+2).all();
+    return jsonResponse({gameId,rank:mine.rank,points:mine.points,totalPlayers:mine.total_players,nearby:nearby.results||[]});
   }
   if (method === "GET" && path === "/api/players/me/stats") {
-    const user = await currentUser(request, env);
-    if (!user) return error("Sign in to view account statistics.", 401);
-    const scores = await env.DB.prepare(`SELECT game_id,points,duration_seconds,achieved_at FROM best_game_scores WHERE user_id=?
-      UNION ALL SELECT 'traffic-control' AS game_id,points,duration_seconds,achieved_at FROM traffic_control_best_scores WHERE user_id=?
-      ORDER BY game_id`).bind(user.id,user.id).all();
-    const attempts = await env.DB.prepare(`SELECT game_id,COUNT(*) AS attempts FROM game_attempts WHERE user_id=? GROUP BY game_id
-      UNION ALL SELECT 'traffic-control' AS game_id,COUNT(*) AS attempts FROM traffic_control_attempts WHERE user_id=? GROUP BY user_id`).bind(user.id,user.id).all();
-    const attemptCounts = Object.fromEntries((attempts.results||[]).map(r=>[r.game_id,r.attempts]));
-    const scoreByGame = Object.fromEntries((scores.results||[]).map(r=>[r.game_id,r.points]));
+    const user = await currentUser(request,env);
+    if (!user) return error("Sign in to view account statistics.",401);
+    const player = await env.DB.prepare("SELECT total_points,total_xp,level,xp_into_level,xp_to_next,total_attempts FROM player_progress WHERE user_id=?").bind(user.id).first()
+      || {total_points:0,total_xp:0,level:1,xp_into_level:0,xp_to_next:125,total_attempts:0};
+    const games = await env.DB.prepare("SELECT game_id,total_points,total_xp,attempts,perfect_clears,hard_clears,current_streak,best_streak,highest_level,last_played_at FROM player_game_progress WHERE user_id=? ORDER BY game_id").bind(user.id).all();
+    const earnedRows = await env.DB.prepare("SELECT game_id,badge_id,earned_at FROM player_badges WHERE user_id=? ORDER BY earned_at").bind(user.id).all();
+    const earnedByGame = {};
+    for (const row of earnedRows.results||[]) (earnedByGame[row.game_id] ||= []).push(row);
     const badges = ACTIVE_GAME_IDS.map(gameId => {
-      const points = Number(scoreByGame[gameId] || 0), maximum = GAME_RULES[gameId].maximum;
-      const count = Number(attemptCounts[gameId] || 0), ratio = maximum ? points / maximum : 0;
-      const earned = [];
-      if (count > 0) earned.push({ id: gameId + "-first-clear", title: "First Steps", tier: "starter", icon: "🌱", description: "Completed a recorded challenge" });
-      if (ratio >= 0.25) earned.push({ id: gameId + "-bronze", title: "Bronze Explorer", tier: "bronze", icon: "🥉", description: "Earned 25% of this game's mastery points" });
-      if (ratio >= 0.5) earned.push({ id: gameId + "-silver", title: "Silver Solver", tier: "silver", icon: "🥈", description: "Earned 50% of this game's mastery points" });
-      if (ratio >= 0.75) earned.push({ id: gameId + "-gold", title: "Gold Strategist", tier: "gold", icon: "🥇", description: "Earned 75% of this game's mastery points" });
-      if (ratio >= 0.9) earned.push({ id: gameId + "-master", title: "Game Master", tier: "master", icon: "🏆", description: "Earned 90% of this game's mastery points" });
-      return { gameId, gameName: GAME_RULES[gameId].label, points, maximum, attempts: count, earned };
+      const progress = (games.results||[]).find(row=>row.game_id===gameId) || {game_id:gameId,total_points:0,total_xp:0,attempts:0,perfect_clears:0,hard_clears:0,current_streak:0,best_streak:0,highest_level:1};
+      const stored = earnedByGame[gameId] || [];
+      const earned = earnedBadges(progress).map(b=>({...b,earnedAt:stored.find(r=>r.badge_id===b.id)?.earned_at||null}));
+      const unlocked = new Set(earned.map(b=>b.id));
+      return {gameId,gameName:GAME_RULES[gameId].label,...progress,earned,locked:BADGE_RULES.filter(b=>!unlocked.has(b.id))};
     });
-    const total = (scores.results||[]).reduce((n,r)=>n+r.points,0);
-    return jsonResponse({ user:cleanUser(user), scores:scores.results||[], badges, totalPoints:total, maximumPoints:MAX_GLOBAL_POINTS, gamesPlayed:Object.keys(scoreByGame).length });
+    const level = progressForXp(player.total_xp);
+    const playerMilestones = [
+      {id:"level-5",level:5,title:"Trailblazer",icon:"🧭"},
+      {id:"level-10",level:10,title:"Pathfinder",icon:"🚀"},
+      {id:"level-25",level:25,title:"Maths Champion",icon:"🏆"},
+      {id:"level-50",level:50,title:"Grand Strategist",icon:"👑"},
+      {id:"level-100",level:100,title:"Grand Sage",icon:"🌟"}
+    ];
+    const globalBadges = playerMilestones.filter(b=>level.level>=b.level).map(b=>({...b,earnedAt:(earnedByGame.all||[]).find(r=>r.badge_id===b.id)?.earned_at||null}));
+    return jsonResponse({user:cleanUser(user),...level,totalPoints:player.total_points,totalAttempts:player.total_attempts,gamesPlayed:(games.results||[]).filter(g=>g.attempts>0).length,badges,globalBadges});
   }
   if (method === "DELETE" && path === "/api/players/me") {
     const user = await currentUser(request, env);

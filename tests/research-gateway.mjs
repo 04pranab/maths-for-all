@@ -3,55 +3,37 @@ import fs from "node:fs";
 import vm from "node:vm";
 
 const source = fs.readFileSync(new URL("../js/research-gateway.js", import.meta.url), "utf8");
-
-let allowed = false;
+const consentSource = fs.readFileSync(new URL("../js/consent.js", import.meta.url), "utf8");
 const storage = new Map();
-
+let fetchCalls = 0;
 const context = {
   localStorage: {
-    getItem: (key) => (storage.has(key) ? storage.get(key) : null),
+    getItem: key => storage.has(key) ? storage.get(key) : null,
     setItem: (key, value) => storage.set(key, value),
-    removeItem: (key) => storage.delete(key),
+    removeItem: key => storage.delete(key),
   },
-  ResearchConsent: {
-    isAllowed: () => allowed,
-  },
-  Date,
-  JSON,
-  Array,
-  Object,
-  Number,
-  String,
-  Boolean,
-  console,
+  ResearchConsent: { isAllowed: () => true },
+  fetch: async () => { fetchCalls += 1; throw new Error("Research network calls must never happen."); },
+  window: { location: { origin: "https://04pranab.github.io" }, addEventListener() {} },
+  Date, JSON, Array, Object, Number, String, Boolean, console,
 };
-
 vm.createContext(context);
 vm.runInContext(source + "\nglobalThis.__gateway = ResearchEventGateway;", context);
-
 const gateway = context.__gateway;
+
 assert.ok(gateway);
-
 assert.equal(gateway.record("quiz", "game_opened", {}), false);
+assert.equal(gateway.record("sudoku", "puzzle_solved", { correct: true }), false);
 assert.equal(gateway.read().length, 0);
-
-allowed = true;
-
-assert.equal(gateway.record("quiz", "answer", { correct: true, timeMs: 1200 }), true);
-assert.equal(gateway.read().length, 1);
-
-const stored = JSON.parse(storage.get("mfa_analytics_v1"));
-assert.equal(stored.length, 1);
-assert.equal(stored[0].category, "quiz");
-
-assert.equal(gateway.record("", "answer", {}), false);
-assert.equal(gateway.record("quiz", "", {}), false);
-assert.equal(gateway.record("quiz", "answer", []), false);
-
-allowed = false;
-gateway.clear();
-
 assert.equal(storage.has("mfa_analytics_v1"), false);
-assert.equal(gateway.read().length, 0);
+assert.equal(await gateway.flush(), false);
+assert.equal(fetchCalls, 0);
+storage.set("mfa_analytics_v1", JSON.stringify([{category:"quiz",action:"answer"}]));
+gateway.clear();
+assert.equal(storage.has("mfa_analytics_v1"), false);
 
-console.log(JSON.stringify({ status: "PASS", checks: 8 }));
+// The actual consent controller must not expose an opt-in path in this release.
+assert.match(consentSource, /const isAllowed\s*=\s*\(\)\s*=>\s*false/);
+assert.match(consentSource, /Research collection: off/);
+
+console.log(JSON.stringify({ status: "PASS", checks: 9 }));

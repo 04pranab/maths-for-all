@@ -1,203 +1,75 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Maths for All · Research Data Collection Policy</title>
-    <style>
-      body {
-        font-family:
-          system-ui,
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
-        line-height: 1.6;
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 2rem;
-        color: #222;
-        background: #fafaf7;
-      }
-      main {
-        background: #fff;
-        padding: 2rem;
-        border-radius: 18px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-      }
-      h1,
-      h2 {
-        line-height: 1.2;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1rem 0;
-      }
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 0.7rem;
-        text-align: left;
-        vertical-align: top;
-      }
-      code {
-        background: #f2f2ed;
-        padding: 0.1rem 0.3rem;
-        border-radius: 4px;
-      }
-      .strict {
-        padding: 1rem;
-        border-radius: 12px;
-        background: #f3f3ee;
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1>Research Data Collection Policy</h1>
-      <p>
-        <strong>Status:</strong> This document defines the research-data collection contract for
-        Maths for All. It applies to any deployment that enables research collection.
-      </p>
-      <div class="strict">
-        <strong>Compliance declaration:</strong> Research collection is authorised only when this
-        policy is followed. A deployment that cannot satisfy this policy must keep research
-        collection disabled. Applicable privacy and data-protection law may impose additional
-        obligations.
-      </div>
-      <div class="strict">
-        <strong>Research collection is opt-in.</strong> No explicit research consent means no
-        research event.
-      </div>
-      <h2>Consent rule</h2>
-      <p>
-        A user must be shown a clear research-data explanation and must actively choose whether to
-        participate.
-      </p>
-      <ul>
-        <li>
-          <strong>Yes:</strong> the application may collect only the research fields listed below.
-        </li>
-        <li>
-          <strong>No:</strong> the application must collect none of the listed research fields.
-        </li>
-        <li>Login/account creation does not count as consent.</li>
-        <li>
-          Silence, closing the dialog, or continuing to use the games does not count as consent.
-        </li>
-        <li>The preference can be changed later from privacy/research settings.</li>
-        <li>
-          Switching from Yes to No immediately stops future research collection and removes locally
-          stored research events.
-        </li>
-      </ul>
-      <h2>What we may collect after explicit Yes</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Examples</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Game/module</td>
-            <td>Arithmetic Quiz, Racing, Sudoku, Shape Fitting, Slab Maths</td>
-          </tr>
-          <tr>
-            <td>Event type</td>
-            <td>
-              Game opened, answer submitted, hint requested, explanation requested, retry,
-              completion
-            </td>
-          </tr>
-          <tr>
-            <td>Learning state</td>
-            <td>Difficulty level, correct/incorrect result, attempt count</td>
-          </tr>
-          <tr>
-            <td>Timing</td>
-            <td>Coarse duration band only: under 10s, 10–30s, 30–120s, or over 120s</td>
-          </tr>
-          <tr>
-            <td>Game progress</td>
-            <td>Question, round, or level completion</td>
-          </tr>
-          <tr>
-            <td>Date bucket</td>
-            <td>UTC calendar day only; no exact event timestamp</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>
-        The exact fields must remain tied to documented research questions. Future fields require a
-        review of this policy and the consent wording.
-      </p>
-      <h2>What we do not collect as research data</h2>
-      <ul>
-        <li>Passwords or authentication secrets</li>
-        <li>Password hashes from the client</li>
-        <li>
-          Email addresses unless a separate account/privacy requirement explicitly requires them
-        </li>
-        <li>Phone numbers</li>
-        <li>Home or precise physical location</li>
-        <li>Contacts</li>
-        <li>Private messages or free-form personal notes</li>
-        <li>Advertising identifiers</li>
-        <li>Browser fingerprinting data</li>
-        <li>Precise device identifiers</li>
-        <li>Camera, microphone, or files</li>
-        <li>Data from other applications</li>
-        <li>Research events when consent is No</li>
-      </ul>
-      <h2>Existing local progress</h2>
-      <p>
-        Existing local progress/analytics functionality must remain behind the same consent gate so
-        the application does not silently continue recording research-style events after a user
-        declines.
-      </p>
-      <h2>Data minimization</h2>
-      <p>
-        Prefer derived, non-identifying measurements over raw content. Where possible, record
-        correctness, attempt count, response time, difficulty, and completion rather than
-        unnecessary copies of question text or personal input.
-      </p>
-      <h2>Withdrawal</h2>
-      <p>
-        A user can change the preference at any time. When research collection is disabled, future
-        research events are rejected, locally stored research events are deleted, research exports
-        are disabled, and the educational application continues to work normally.
-      </p>
-      <h2>Compliance and accountability</h2>
-      <p>
-        The project author treats this policy as a binding project requirement for the official
-        implementation: research collection must not be enabled in a way that contradicts the
-        policy. Operators of modified or redistributed deployments are responsible for their own
-        collection practices, notices, consent mechanisms, retention, security, and legal
-        compliance. A failure to follow this policy may constitute a breach of the software license
-        and may also create responsibility under applicable privacy or data-protection law. This
-        statement does not create legal obligations beyond those imposed by applicable law.
-      </p>
-      <h2>Policy changes</h2>
-      <p>
-        New research-data categories or materially different research purposes require a policy
-        update and corresponding consent-language review before they are enabled.
-      </p>
-      <h2>Transparency requirement</h2>
-      <p>
-        The consent UI must use plain language and provide two clearly available choices:
-        <strong>Allow research data collection</strong> and
-        <strong>Do not allow research data collection</strong>. It must include a concise
-        collected/not-collected explanation and access to this full policy.
-      </p>
-      <h2>Implementation requirement</h2>
-      <p>
-        No game module may write research events directly to localStorage, a future database API, or
-        a future telemetry API. All research writes must pass through the consent-aware research
-        event gateway.
-      </p>
-    <h2>How research uploads work</h2><p>Only after you actively choose Yes, a small allowlist of learning events may be sent to the research service. The service stores daily totals grouped by game, event type, difficulty, outcome, broad level band and coarse duration band (under 10 seconds, 10–30 seconds, 30–120 seconds, or over 120 seconds). No exact response time is retained. It does not store your account ID, username, email, session, IP address, device ID, exact event time, question text or free-form answer.</p><p>Changing your choice to No stops future uploads and clears events waiting on this device. Because uploaded information is combined into anonymous totals, an individual contribution cannot be separated back out after aggregation. Research totals are not used to rank or assess individual learners.</p><h2>Retention</h2><p>Aggregate research totals are retained for up to 90 days and old daily buckets are removed during later research uploads.</p></main>
-  </body>
-</html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Plain-language privacy and research data policy for Maths For All. Research collection is currently disabled.">
+<title>Maths For All · Privacy &amp; Research Data Policy</title>
+<style>
+:root{color-scheme:light;--ink:#28372e;--muted:#637267;--line:#dce5d9;--paper:#fffefa;--wash:#f4f7f0;--green:#315c40}
+*{box-sizing:border-box}body{margin:0;background:#f1f4ed;color:var(--ink);font:16px/1.68 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{width:min(960px,calc(100% - 28px));margin:32px auto;padding:clamp(20px,4vw,48px);background:var(--paper);border:1px solid var(--line);border-radius:22px;box-shadow:0 16px 50px #24372912}
+header{padding:clamp(18px,3vw,30px);border-radius:17px;background:linear-gradient(125deg,#f6efd9,#eaf4e9 55%,#e8f0fa)}
+header small{font-weight:850;letter-spacing:.14em;color:#61735f}h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.12;margin:.4rem 0;color:#2c4333}h2{margin:2rem 0 .55rem;font-size:1.35rem;color:#31533a;line-height:1.25}h3{margin:1rem 0 .35rem;font-size:1.05rem}
+p,li{max-width:78ch}a{color:#245f73;text-underline-offset:3px}ul,ol{padding-left:1.4rem}.status{margin:1.2rem 0;padding:1rem 1.1rem;border:1px solid #c9d9c5;border-radius:13px;background:#f0f7ed}.status strong{color:#285d39}.note{padding:1rem 1.1rem;border-radius:13px;background:var(--wash);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.94rem}th,td{padding:.7rem;text-align:left;vertical-align:top;border:1px solid var(--line)}th{background:#f1f5ee}
+code{padding:.12rem .3rem;border-radius:5px;background:#eef1ea;overflow-wrap:anywhere}.muted{color:var(--muted)}footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted)}
+@media(max-width:600px){main{margin:12px auto;padding:16px}table{font-size:.83rem}th,td{padding:.5rem}}
+</style>
+</head>
+<body><main>
+<header><small>MATHS FOR ALL · PRIVACY CENTRE</small><h1>Privacy &amp; Research Data Policy</h1><p>Clear rules for accounts, player profiles, leaderboards, and learning research.</p><p class="muted"><strong>Version 2.0 · Updated 11 November 2026</strong></p></header>
+<div class="status"><strong>Current research status: OFF.</strong> Maths For All is designed for children and inclusive learning. Research collection is technically disabled in production until a verifiable adult / parent / lawful-guardian consent process is available. Research tables do not mean research collection is active.</div>
+<p>This is the project privacy notice and implementation contract. It is not legal advice or a certification of compliance.</p>
+
+<h2>1. Our privacy rules</h2>
+<ol><li>No research without a separate, informed, affirmative choice.</li><li>No means no. Silence, a closed dialog, guest play, or account creation is not consent.</li><li>Research consent is separate from registration, sign-in, scores, badges, and leaderboards.</li><li>Collect only the minimum information for a stated purpose.</li><li>Never use research totals to assess, diagnose, label, or rank an individual learner.</li><li>Provide a simple way to review and withdraw a choice.</li><li>If a required consent safeguard is unavailable, research stays disabled.</li></ol>
+
+<h2>India's DPDP framework</h2>
+<p>The project is designed with India's Digital Personal Data Protection Act, 2023 and Digital Personal Data Protection Rules, 2025 in mind. The Act defines a child as someone who has not completed 18 years. The commencement notification phases sections 3–17, including section 9 on children's data, to 18 months after publication on 13 November 2025 (13 May 2027). The Rules similarly phase rules 3 and 5–16, including rule 10 on verifiable parental consent and rule 11 on lawful guardians for persons with disabilities, to that date.</p>
+<p>Maths For All adopts these safeguards early. A checkbox, typed parent name, or account registration is not verifiable parental permission. The law applying to a learner or deployment may differ by jurisdiction; obtain qualified legal review before claiming compliance.</p>
+<ul><li><a href="https://www.indiacode.nic.in/bitstream/123456789/22037/2/a2023-22.pdf">Digital Personal Data Protection Act, 2023 (India Code)</a></li><li><a href="https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf">Digital Personal Data Protection Rules, 2025 (MeitY Gazette)</a></li><li><a href="https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf">Commencement notification G.S.R. 843(E)</a></li></ul>
+
+<h2>2. Account creation is not research consent</h2>
+<p>An account saves a username, points, XP, level, game achievements, and leaderboard progress. Creating an account, signing in, or saving a score does not opt anyone into research. Guest play remains available. The research gateway does not receive an account ID, session token, username, or email, and research tables are not joined to player tables.</p>
+<p>The account service stores an email address for account identity, a username, a password hash, account timestamps, and hashed session-token records. Public leaderboards display the chosen username and competition points, never the email address or password.</p>
+<p><strong>Child-account limitation:</strong> the current account flow does not yet provide verifiable age or parent/lawful-guardian onboarding. Therefore the project does not claim that account processing is fully DPDP-compliant for under-18 learners. Before enabling child accounts where the relevant child-data rules apply, the project must implement verifiable parent/lawful-guardian permission for the account purpose itself, or keep that learner in guest mode / a properly parent-managed account flow until the safeguard is available. Research consent cannot substitute for account consent.</p>
+
+<h2>3. Research status and consent</h2>
+<h3>What happens in production now</h3>
+<ul><li>The browser gateway refuses to record or queue research events.</li><li>Legacy local research queues are purged unless a future valid consent implementation permits them.</li><li>The Worker rejects research uploads while its server-side feature flag is OFF, even if a browser sends <code>consent:true</code>.</li><li>No research aggregate table is populated by the official production application at this time.</li><li>Gameplay, accounts, XP, badges, and leaderboards continue normally.</li></ul>
+<p>The sign-in flow explains that sharing is paused. The privacy control remains available at all times.</p>
+<h3>Requirements before collection can be enabled</h3>
+<ol><li>A standalone plain-language notice describing each purpose, data category, recipient, and retention period.</li><li>A separate affirmative choice for each research purpose, with no pre-ticked controls.</li><li>Verifiable adult consent or verifiable parent/lawful-guardian permission where required. A checkbox or typed name is not verification.</li><li>A separate record of notice version, choice, scope, and time. This record must not be placed in research aggregates.</li><li>A withdrawal path as easy to use as the opt-in path.</li><li>A server-side feature flag that stays OFF until safeguards and review are complete.</li><li>Tests proving No means no at the browser, API, and database layers.</li></ol>
+<div class="note"><strong>No means no.</strong> If someone declines, does not answer, closes the prompt, or has no valid permission, no research event is recorded locally, uploaded, or inserted into D1. Declining never reduces game access, points, XP, levels, badges, or leaderboard eligibility.</div>
+
+<h2>4. Research collection is not implemented</h2>
+<p>Research collection is OFF and is not part of the current production data model. The browser gateway does not record, queue, or upload research events. The Worker research endpoint always returns HTTP 503 and does not access D1, even if a request contains <code>consent:true</code> or an environment flag is accidentally enabled.</p>
+<p>Migration 0005 removes the legacy aggregate research table and its historical rows. It creates player progression tables only. No research event tables are provisioned or populated. If a research project is proposed later, it must have a separate reviewed schema, verifiable adult/parent/lawful-guardian permission where applicable, a fresh notice, and an explicit release decision before any collection begins.</p>
+<p><strong>What is retained instead:</strong> ordinary account and gameplay records needed for the service, such as username, private email, password hash, sessions, completed-attempt scores, cumulative points, XP, levels, progress, achievements, and leaderboard totals. These records are used for player functionality and competition, not research. Account and competition data must never be silently relabelled as research data.</p>
+
+<h2>5. Data never collected for research</h2>
+<ul><li>Names, usernames, emails, phone numbers, or account IDs.</li><li>Parent/guardian names, contact details, or identity documents.</li><li>School, class, roll number, student ID, or teacher identity.</li><li>Passwords, hashes, session tokens, or authentication headers.</li><li>Home address, precise location, GPS, device fingerprint, advertising ID, or persistent device identifier.</li><li>Camera, microphone, photos, files, contacts, or data from other applications.</li><li>Question text, answer text, free-form explanations, or private notes.</li><li>Disability diagnosis, medical information, or inferred ability labels.</li><li>Events from anyone who declines or has no valid permission.</li></ul>
+<p>Standard hosting and network-security systems may process technical connection metadata under their own service terms. That is not a research event and must not be repurposed as learner research.</p>
+
+<h2>6. School and parent/guardian profile fields</h2>
+<p>Maths For All does not currently ask for or store a school name or parent/guardian name in player profiles. These fields are not needed to play or compete. If a future programme has a specific need, it must document purpose, retention, access, and deletion; obtain required verified parent/lawful-guardian permission; and keep the fields private by default. They must never appear on leaderboards or enter research tables.</p>
+
+<h2>7. Profiles and leaderboards</h2>
+<p>Public display is limited to the chosen username, lifetime competition points, and rank. Game standings may show points and completed challenge counts. Profiles may show XP level, game progress, and earned achievement titles. Email, password material, school/family details, and research preferences are never public. Research consent is not required to compete.</p>
+
+<h2>8. Retention, withdrawal, deletion</h2>
+<p>If research is enabled in a future release, aggregate buckets are scheduled for deletion after 90 days. A future consent system must define a separate minimum retention period for consent evidence. Withdrawal immediately stops future collection and clears queued local events. Once a contribution has been merged into a shared daily count, it cannot reliably be separated from that count; this limitation must be explained before opt-in.</p>
+<p>Account deletion must remove the player's account, sessions, attempts, progression totals, and earned badges. Guest progress remains on the learner's device and can be cleared using local-data controls.</p>
+
+<h2>9. Security and access</h2>
+<p>The website and API use HTTPS. Passwords are hashed, session tokens are random and only their hashes are stored in D1. Research tables are designed without account identifiers and are not joined to player tables.</p>
+<p>Before research activation, the maintainer must verify least-privilege access, protected backups and deletion, administrative access logging, no research payloads in application logs, dependency review, incident response, and data-processing arrangements with hosting providers. No security measure is absolute; omission of identifiers from one table alone does not prove anonymity or legal compliance.</p>
+
+<h2>10. Learner rights and contact</h2>
+<p>A learner or parent/lawful guardian may request information, correction, deletion, or help through the <a href="https://github.com/04pranab">project maintainer's GitHub profile</a>. Do not post personal details in a public issue. Never send passwords, identity documents, or student IDs through public issue trackers.</p>
+
+<h2>11. Policy changes and accountability</h2>
+<p>Any change to research purpose, event fields, table structure, retention, recipients, or consent flow requires an updated policy and notice, code review, No-path tests, migration review, and legal review where appropriate. No release may claim full DPDP compliance until applicable legal obligations, age/guardian verification, operational safeguards, and rights processes have been independently reviewed and implemented.</p>
+<footer>Policy version 2.0 · Updated 11 November 2026 · Maths For All</footer>
+</main></body></html>

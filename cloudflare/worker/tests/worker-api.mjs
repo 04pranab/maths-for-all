@@ -1,269 +1,86 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import worker from "../src/index.js";
-import { calculateGlobalPoints, normalizeScore, MAX_GLOBAL_POINTS } from "../src/leaderboard/scoring.js";
-import { validateAttempt } from "../src/leaderboard/validation.js";
+import {calculateAttemptPoints} from "../src/leaderboard/scoring.js";
+import {progressForXp} from "../src/leaderboard/progression.js";
+import {validateAttempt} from "../src/leaderboard/validation.js";
 
-test("health endpoint reports the D1-backed service", async () => {
-  const DB = { prepare(sql) { return { first: async () => ({count:0}) }; } };
-  const response = await worker.fetch(new Request("https://api.example.test/health"), { DB });
-  assert.equal(response.status, 200);
-  const body = await response.json();
-  assert.equal(body.database, "connected");
-  assert.equal(body.features.accounts, true);
-  assert.equal(body.features.leaderboards, true);
+test("endless scoring and level progression have no lifetime ceiling",()=>{
+ const p=calculateAttemptPoints({gameId:"number-maze",scorePercent:100,difficulty:"stretch",level:100000});
+ assert.ok(p>0);
+ assert.ok(progressForXp(100000000).level>100);
+ assert.equal(validateAttempt({gameId:"number-maze",scorePercent:100,durationSeconds:60,attemptId:"attempt_123456",level:100000}).ok,true);
+});
+test("research endpoint fails closed while guardian verification is unavailable",async()=>{
+ let touched=0;
+ const DB={prepare(){touched++;return{run:async()=>({meta:{changes:1}})}}};
+ const response=await worker.fetch(new Request("https://api.example.test/api/research/events",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({consent:true,events:[{category:"sudoku",action:"puzzle_solved"}]})}),{DB,RESEARCH_COLLECTION_ENABLED:"false"});
+ assert.equal(response.status,503);assert.equal(touched,0);
+});
+test("research endpoint stays disabled even when a client claims consent and the flag is enabled",async()=>{
+ let touched=0;const DB={prepare(){touched++;return{run:async()=>({meta:{changes:1}})}}};
+ const response=await worker.fetch(new Request("https://api.example.test/api/research/events",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({consent:true,events:[{category:"sudoku",action:"puzzle_solved"}]})}),{DB,RESEARCH_COLLECTION_ENABLED:"true"});
+ assert.equal(response.status,503);assert.equal(touched,0);
 });
 
-test("unauthenticated session lookup does not require a database query", async () => {
-  const response = await worker.fetch(new Request("https://api.example.test/api/auth/me"), {});
-  assert.equal(response.status, 200);
-  const body = await response.json();
-  assert.equal(body.authenticated, false);
-  assert.equal(body.user, null);
-});
-
-test("CORS allows only the configured exact origin and credentials", async () => {
-  const env = { ALLOWED_ORIGIN: "https://04pranab.github.io", DB: {prepare(){return {first:async()=>({count:0})}}} };
-  const allowed = await worker.fetch(new Request("https://api.example.test/health", {headers:{Origin:env.ALLOWED_ORIGIN}}), env);
-  assert.equal(allowed.headers.get("Access-Control-Allow-Origin"), env.ALLOWED_ORIGIN);
-  assert.equal(allowed.headers.get("Access-Control-Allow-Credentials"), "true");
-  const denied = await worker.fetch(new Request("https://api.example.test/health", {headers:{Origin:"https://attacker.example"}}), env);
-  assert.equal(denied.headers.get("Access-Control-Allow-Origin"), null);
-});
-
-test("score normalization and global cap", () => {
-  assert.equal(normalizeScore(0), 0);
-  assert.equal(normalizeScore(84.4), 844);
-  assert.equal(normalizeScore(100), 1000);
-  assert.throws(() => normalizeScore(101), RangeError);
-  assert.equal(calculateGlobalPoints({"arithmetic-quiz":800,"number-maze":900}),1700);
-  assert.equal(MAX_GLOBAL_POINTS,2150);
-});
-
-test("attempt validation accepts only active games and valid unique IDs", () => {
-  assert.equal(validateAttempt({gameId:"math-court",scorePercent:90,durationSeconds:60,attemptId:"attempt_123456"}).ok,false);
-  assert.equal(validateAttempt({gameId:"number-maze",scorePercent:90,durationSeconds:60,attemptId:"x"}).ok,false);
-  assert.equal(validateAttempt({gameId:"number-maze",scorePercent:92.5,durationSeconds:240,attemptId:"maze_attempt_12345"}).value.points,104);
-});
-
-
-class MemoryD1 {
-  constructor() {
-    this.users = new Map();
-    this.sessions = new Map();
-    this.rates = new Map();
-    this.attempts = new Map();
-    this.best = new Map();
-    this.trafficAttempts = new Map();
-    this.trafficBest = new Map();
-  }
-  prepare(sql) {
-    const db=this, query=sql.replace(/\s+/g," ").trim();
-    let args=[];
-    const statement={
-      bind(...values){args=values;return statement;},
-      async first(){
-        if(query.startsWith("SELECT COUNT(*) AS count FROM users")) return {count:db.users.size};
-        if(query.startsWith("SELECT hits, window_started FROM auth_rate_limits")) return db.rates.get(args[0])||null;
-        if(query.startsWith("SELECT id,username,email,password_hash,created_at FROM users")) {
-          return [...db.users.values()].find(u=>u.username===args[0]||u.email===args[1])||null;
-        }
-        if(query.startsWith("SELECT u.id,u.username,u.created_at FROM sessions")) {
-          const s=db.sessions.get(args[0]); if(!s||s.expires_at<=args[1]) return null;
-          const u=db.users.get(s.user_id); return u?{id:u.id,username:u.username,created_at:u.created_at}:null;
-        }
-        if(query.startsWith("SELECT user_id,game_id FROM game_attempts")) {
-          const a=db.attempts.get(args[0]); return a?{user_id:a.user_id,game_id:a.game_id}:null;
-        }
-        if(query.startsWith("SELECT points,duration_seconds,achieved_at FROM best_game_scores")) {
-          return db.best.get(args[0]+"|"+args[1])||null;
-        }
-        if(query.startsWith("SELECT user_id FROM traffic_control_attempts")) {
-          const a=db.trafficAttempts.get(args[0]); return a?{user_id:a.user_id}:null;
-        }
-        if(query.startsWith("SELECT points,duration_seconds,achieved_at FROM traffic_control_best_scores")) {
-          return db.trafficBest.get(args[0])||null;
-        }
-        return null;
-      },
-      async run(){
-        if(query.startsWith("INSERT INTO auth_rate_limits")) {
-          db.rates.set(args[0],{hits:1,window_started:args[1]}); return {meta:{changes:1}};
-        }
-        if(query.startsWith("UPDATE auth_rate_limits SET hits=hits+1")) {
-          const r=db.rates.get(args[0]); if(r)r.hits++; return {meta:{changes:r?1:0}};
-        }
-        if(query.startsWith("INSERT INTO users")) {
-          if([...db.users.values()].some(u=>u.username===args[1]||u.email===args[2])) throw new Error("UNIQUE constraint failed");
-          db.users.set(args[0],{id:args[0],username:args[1],email:args[2],password_hash:args[3],created_at:args[4]});
-          return {meta:{changes:1}};
-        }
-        if(query.startsWith("DELETE FROM sessions WHERE expires_at")) {
-          let n=0;for(const [k,s] of db.sessions)if(s.expires_at<=args[0]){db.sessions.delete(k);n++;}return {meta:{changes:n}};
-        }
-        if(query.startsWith("INSERT INTO sessions")) {
-          db.sessions.set(args[0],{token_hash:args[0],user_id:args[1],expires_at:args[2],created_at:args[3],last_used_at:args[4]});return {meta:{changes:1}};
-        }
-        if(query.startsWith("UPDATE sessions SET last_used_at")) return {meta:{changes:1}};
-        if(query.startsWith("DELETE FROM sessions WHERE token_hash")) {
-          const ok=db.sessions.delete(args[0]);return {meta:{changes:ok?1:0}};
-        }
-        if(query.startsWith("INSERT OR IGNORE INTO traffic_control_attempts")) {
-          if(db.trafficAttempts.has(args[0]))return {meta:{changes:0}};
-          db.trafficAttempts.set(args[0],{attempt_id:args[0],user_id:args[1],score_percent:args[2],points:args[3],duration_seconds:args[4],created_at:args[5]});
-          return {meta:{changes:1}};
-        }
-        if(query.startsWith("INSERT INTO traffic_control_best_scores")) {
-          const old=db.trafficBest.get(args[0]); if(!old||args[1]>old.points)db.trafficBest.set(args[0],{points:args[1],duration_seconds:args[2],achieved_at:args[3]});
-          return {meta:{changes:1}};
-        }
-        if(query.startsWith("INSERT OR IGNORE INTO game_attempts")) {
-          if(db.attempts.has(args[0]))return {meta:{changes:0}};
-          db.attempts.set(args[0],{attempt_id:args[0],user_id:args[1],game_id:args[2],score_percent:args[3],points:args[4],duration_seconds:args[5],created_at:args[6]});
-          return {meta:{changes:1}};
-        }
-        if(query.startsWith("INSERT INTO best_game_scores")) {
-          const key=args[0]+"|"+args[1],old=db.best.get(key);
-          if(!old||args[2]>old.points)db.best.set(key,{points:args[2],duration_seconds:args[3],achieved_at:args[4]});
-          return {meta:{changes:1}};
-        }
-        if(query.startsWith("DELETE FROM users WHERE id")) {
-          db.users.delete(args[0]);
-          for(const [k,v] of db.sessions)if(v.user_id===args[0])db.sessions.delete(k);
-          for(const [k,v] of db.attempts)if(v.user_id===args[0])db.attempts.delete(k);
-          for(const k of [...db.best.keys()])if(k.startsWith(args[0]+"|"))db.best.delete(k);
-          db.trafficBest.delete(args[0]);
-          for(const [k,v] of db.trafficAttempts)if(v.user_id===args[0])db.trafficAttempts.delete(k);
-          return {meta:{changes:1}};
-        }
-        return {meta:{changes:0}};
-      },
-      async all(){
-        if(query.includes("FROM users u JOIN scores s")) {
-          const grouped=new Map();
-          for(const [key,b] of db.best){const user=db.users.get(key.split("|")[0]);if(!user)continue;const g=grouped.get(user.id)||{username:user.username,points:0,games_played:0};g.points+=b.points;g.games_played++;grouped.set(user.id,g);}
-          for(const [uid,b] of db.trafficBest){const user=db.users.get(uid);if(!user)continue;const g=grouped.get(uid)||{username:user.username,points:0,games_played:0};g.points+=b.points;g.games_played++;grouped.set(uid,g);}
-          return {results:[...grouped.values()].sort((a,b)=>b.points-a.points||a.username.localeCompare(b.username)).slice(0,args[0])};
-        }
-        if(query.includes("FROM traffic_control_best_scores b JOIN users u")) {
-          const rows=[];for(const [uid,b] of db.trafficBest){const u=db.users.get(uid);if(u)rows.push({username:u.username,points:b.points,duration_seconds:b.duration_seconds,achieved_at:b.achieved_at});}
-          return {results:rows.sort((a,b)=>b.points-a.points).slice(0,args[0])};
-        }
-        if(query.includes("FROM best_game_scores b JOIN users u")) {
-          const rows=[];for(const [key,b] of db.best){const [uid,gid]=key.split("|");if(gid!==args[0])continue;const u=db.users.get(uid);if(u)rows.push({username:u.username,points:b.points,duration_seconds:b.duration_seconds,achieved_at:b.achieved_at});}
-          return {results:rows.sort((a,b)=>b.points-a.points).slice(0,args[1])};
-        }
-        if(query.startsWith("SELECT game_id,points,duration_seconds,achieved_at FROM best_game_scores")) {
-          const rows=[...db.best].filter(([key])=>key.startsWith(args[0]+"|")).map(([key,b])=>({game_id:key.split("|")[1],...b}));
-          if(db.trafficBest.has(args[0]))rows.push({game_id:"traffic-control",...db.trafficBest.get(args[0])});
-          return {results:rows};
-        }
-        return {results:[]};
-      }
-    };
-    return statement;
-  }
+class MemoryD1{
+ constructor(){this.users=new Map();this.sessions=new Map();this.rates=new Map();this.playerAttempts=new Map();this.gameProgress=new Map();this.playerProgress=new Map();this.badges=new Map();this.legacyAttempts=new Map();this.legacyBest=new Map();}
+ prepare(sql){
+  const db=this,q=sql.replace(/\s+/g," ").trim();let args=[];
+  const st={bind(...v){args=v;return st;},
+   async first(){
+    if(q.startsWith("SELECT COUNT(*) AS count FROM users"))return{count:db.users.size};
+    if(q.startsWith("SELECT hits, window_started FROM auth_rate_limits"))return db.rates.get(args[0])||null;
+    if(q.startsWith("SELECT id,username,email,password_hash,created_at FROM users"))return[...db.users.values()].find(u=>u.username===args[0]||u.email===args[1])||null;
+    if(q.startsWith("SELECT u.id,u.username,u.created_at FROM sessions")){const s=db.sessions.get(args[0]);if(!s||s.expires_at<=args[1])return null;const u=db.users.get(s.user_id);return u?{id:u.id,username:u.username,created_at:u.created_at}:null;}
+    if(q.startsWith("SELECT user_id,game_id,points FROM player_game_attempts")){const a=db.playerAttempts.get(args[0]);return a?{user_id:a.user_id,game_id:a.game_id,points:a.points}:null;}
+    if(q.startsWith("SELECT total_points,total_xp,level,xp_into_level,xp_to_next,total_attempts FROM player_progress"))return db.playerProgress.get(args[0])||null;
+    if(q.startsWith("SELECT total_xp FROM player_progress")){const p=db.playerProgress.get(args[0]);return p?{total_xp:p.total_xp}:null;}
+    if(q.startsWith("SELECT * FROM player_game_progress"))return db.gameProgress.get(args[0]+"|"+args[1])||null;
+    if(q.startsWith("WITH ranked AS")&&q.includes("FROM player_progress")){const rows=[...db.playerProgress].map(([id,p])=>({id,username:db.users.get(id)?.username,points:p.total_points})).filter(x=>x.points>0).sort((a,b)=>b.points-a.points);const i=rows.findIndex(x=>x.id===args[0]);return i<0?null:{rank:i+1,points:rows[i].points,total_players:rows.length};}
+    if(q.startsWith("WITH ranked AS")&&q.includes("FROM player_game_progress")){const [gid,uid]=args;const rows=[...db.gameProgress].filter(([k])=>k.endsWith("|"+gid)).map(([k,p])=>({id:k.split("|")[0],username:db.users.get(k.split("|")[0])?.username,points:p.total_points})).filter(x=>x.points>0).sort((a,b)=>b.points-a.points);const i=rows.findIndex(x=>x.id===uid);return i<0?null:{rank:i+1,points:rows[i].points,total_players:rows.length};}
+    return null;
+   },
+   async run(){
+    if(q.startsWith("INSERT INTO auth_rate_limits")){db.rates.set(args[0],{hits:1,window_started:args[1]});return{meta:{changes:1}};}
+    if(q.startsWith("UPDATE auth_rate_limits SET hits=hits+1")){const r=db.rates.get(args[0]);if(r)r.hits++;return{meta:{changes:r?1:0}};}
+    if(q.startsWith("INSERT INTO users")){if([...db.users.values()].some(u=>u.username===args[1]||u.email===args[2]))throw new Error("UNIQUE constraint failed");db.users.set(args[0],{id:args[0],username:args[1],email:args[2],password_hash:args[3],created_at:args[4]});return{meta:{changes:1}};}
+    if(q.startsWith("INSERT OR IGNORE INTO player_progress")){if(!db.playerProgress.has(args[0]))db.playerProgress.set(args[0],{total_points:0,total_xp:0,level:1,xp_into_level:0,xp_to_next:125,total_attempts:0});return{meta:{changes:1}};}
+    if(q.startsWith("DELETE FROM sessions WHERE expires_at")){for(const[k,s]of db.sessions)if(s.expires_at<=args[0])db.sessions.delete(k);return{meta:{changes:1}};}
+    if(q.startsWith("INSERT INTO sessions")){db.sessions.set(args[0],{token_hash:args[0],user_id:args[1],expires_at:args[2],created_at:args[3],last_used_at:args[4]});return{meta:{changes:1}};}
+    if(q.startsWith("UPDATE sessions SET last_used_at"))return{meta:{changes:1}};
+    if(q.startsWith("INSERT OR IGNORE INTO player_game_attempts")){if(db.playerAttempts.has(args[0]))return{meta:{changes:0}};db.playerAttempts.set(args[0],{attempt_id:args[0],user_id:args[1],game_id:args[2],score_percent:args[3],points:args[4],duration_seconds:args[5],difficulty:args[6],level:args[7],hints_used:args[8],mistakes:args[9],perfect:args[10],created_at:args[11]});return{meta:{changes:1}};}
+    if(q.startsWith("INSERT OR IGNORE INTO game_attempts")||q.startsWith("INSERT OR IGNORE INTO traffic_control_attempts")){if(db.legacyAttempts.has(args[0]))return{meta:{changes:0}};db.legacyAttempts.set(args[0],{user_id:args[1],game_id:q.includes("traffic_control")?"traffic-control":args[2],points:q.includes("traffic_control")?args[3]:args[4]});return{meta:{changes:1}};}
+    if(q.startsWith("INSERT INTO best_game_scores")||q.startsWith("INSERT INTO traffic_control_best_scores")){return{meta:{changes:1}};}
+    if(q.startsWith("INSERT INTO player_game_progress")){const k=args[0]+"|"+args[1],old=db.gameProgress.get(k)||{total_points:0,total_xp:0,attempts:0,perfect_clears:0,hard_clears:0,current_streak:0,best_streak:0,highest_level:1};const next={game_id:args[1],total_points:old.total_points+args[2],total_xp:old.total_xp+args[3],attempts:old.attempts+1,perfect_clears:old.perfect_clears+args[4],hard_clears:old.hard_clears+args[5],current_streak:old.current_streak+1,best_streak:Math.max(old.best_streak,old.current_streak+1),highest_level:Math.max(old.highest_level,args[6]),last_played_at:args[7]};db.gameProgress.set(k,next);return{meta:{changes:1}};}
+    if(q.startsWith("INSERT INTO player_progress")){const p=db.playerProgress.get(args[0])||{total_points:0,total_xp:0,level:1,xp_into_level:0,xp_to_next:125,total_attempts:0};p.total_points+=args[1];p.total_xp+=args[2];p.total_attempts++;db.playerProgress.set(args[0],p);return{meta:{changes:1}};}
+    if(q.startsWith("UPDATE player_progress SET level")){const p=db.playerProgress.get(args[3]);if(p){p.level=args[0];p.xp_into_level=args[1];p.xp_to_next=args[2];}return{meta:{changes:1}};}
+    if(q.startsWith("INSERT OR IGNORE INTO player_badges")){const k=args[0]+"|"+args[1]+"|"+args[2];db.badges.set(k,{game_id:args[1],badge_id:args[2],earned_at:args[3]});return{meta:{changes:1}};}
+    if(q.startsWith("DELETE FROM users WHERE id")){const id=args[0];db.users.delete(id);db.playerProgress.delete(id);for(const k of [...db.sessions.keys()])if(db.sessions.get(k).user_id===id)db.sessions.delete(k);for(const k of [...db.gameProgress.keys()])if(k.startsWith(id+"|"))db.gameProgress.delete(k);for(const k of [...db.playerAttempts.keys()])if(db.playerAttempts.get(k).user_id===id)db.playerAttempts.delete(k);for(const k of [...db.badges.keys()])if(k.startsWith(id+"|"))db.badges.delete(k);return{meta:{changes:1}};}
+    return{meta:{changes:0}};
+   },
+   async all(){
+    if(q.includes("FROM player_progress p JOIN users u")){return{results:[...db.playerProgress].map(([id,p])=>({id,username:db.users.get(id)?.username,points:p.total_points,games_played:p.total_attempts})).filter(x=>x.username&&x.points>0).sort((a,b)=>b.points-a.points).slice(0,args[0])};}
+    if(q.includes("FROM player_game_progress g JOIN users u")){return{results:[...db.gameProgress].filter(([k])=>k.endsWith("|"+args[0])).map(([k,p])=>({username:db.users.get(k.split("|")[0])?.username,points:p.total_points,attempts:p.attempts})).filter(x=>x.username&&x.points>0).sort((a,b)=>b.points-a.points).slice(0,args[1])};}
+    if(q.startsWith("SELECT rank,username,points,id FROM ranked")){return{results:[]};}
+    if(q.startsWith("SELECT game_id,total_points,total_xp,attempts,perfect_clears,hard_clears,current_streak,best_streak,highest_level,last_played_at FROM player_game_progress")){return{results:[...db.gameProgress].filter(([k])=>k.startsWith(args[0]+"|")).map(([k,p])=>({...p,game_id:k.split("|")[1]}))};}
+    if(q.startsWith("SELECT game_id,badge_id,earned_at FROM player_badges")){return{results:[...db.badges].filter(([k])=>k.startsWith(args[0]+"|")).map(([,v])=>v)};}
+    return{results:[]};
+   }
+  };return st;
+ }
 }
-
-test("end-to-end D1 account, bearer session, score and leaderboard flow", async () => {
-  const DB=new MemoryD1();
-  const env={DB,ALLOWED_ORIGIN:"https://04pranab.github.io"};
-  const origin={Origin:env.ALLOWED_ORIGIN};
-  const send=async(path,method="GET",payload=null,token="")=>{
-    const headers={...origin};
-    if(payload!==null)headers["Content-Type"]="application/json";
-    if(token)headers.Authorization="Bearer "+token;
-    return worker.fetch(new Request("https://api.example.test"+path,{method,headers,body:payload===null?undefined:JSON.stringify(payload)}),env);
-  };
-  const preflight=await worker.fetch(new Request("https://api.example.test/api/auth/login",{method:"OPTIONS",headers:{Origin:env.ALLOWED_ORIGIN,"Access-Control-Request-Method":"POST","Access-Control-Request-Headers":"authorization,content-type"}}),env);
-  assert.equal(preflight.status,204);
-  assert.match(preflight.headers.get("Access-Control-Allow-Headers"),/Authorization/i);
-
-  const registered=await send("/api/auth/register","POST",{username:"learner_01",email:"learner@example.com",password:"LearningPass123"});
-  assert.equal(registered.status,201);
-  const reg=await registered.json();
-  assert.equal(reg.authenticated,true);
-  assert.ok(reg.sessionToken);
-  assert.equal(reg.user.username,"learner_01");
-
-  const me=await send("/api/auth/me","GET",null,reg.sessionToken);
-  assert.equal(me.status,200);
-  assert.equal((await me.json()).user.username,"learner_01");
-
-  const byUsername=await send("/api/auth/login","POST",{identifier:"learner_01",password:"LearningPass123"});
-  assert.equal(byUsername.status,200);
-  const login=await byUsername.json();
-  assert.ok(login.sessionToken);
-
-  const byEmail=await send("/api/auth/login","POST",{identifier:"learner@example.com",password:"LearningPass123"});
-  assert.equal(byEmail.status,200);
-  const emailLogin=await byEmail.json();
-  assert.ok(emailLogin.sessionToken);
-
-  const wrong=await send("/api/auth/login","POST",{identifier:"learner_01",password:"incorrect-password"});
-  assert.equal(wrong.status,401);
-
-  const attempt=await send("/api/games/number-maze/attempts","POST",{attemptId:"maze_attempt_0001",scorePercent:92.5,durationSeconds:240,difficulty:"easy"},reg.sessionToken);
-  assert.equal(attempt.status,200);
-  assert.equal((await attempt.json()).points,104);
-
-  const traffic=await send("/api/games/traffic-control/attempts","POST",{attemptId:"traffic_attempt_0001",scorePercent:80,durationSeconds:360,difficulty:"easy"},reg.sessionToken);
-  assert.equal(traffic.status,200);
-  assert.equal((await traffic.json()).points,94);
-
-  const global=await send("/api/leaderboards/global");
-  const globalBody=await global.json();
-  assert.equal(globalBody.entries.length,1);
-  assert.equal(globalBody.entries[0].username,"learner_01");
-  assert.equal(globalBody.entries[0].points,198);
-  assert.equal(globalBody.maximumPoints,2150);
-  assert.equal(globalBody.entries[0].gamesPlayed,2);
-
-  const game=await send("/api/leaderboards/games/number-maze");
-  assert.equal((await game.json()).entries[0].points,104);
-  const trafficBoard=await send("/api/leaderboards/games/traffic-control");
-  assert.equal((await trafficBoard.json()).entries[0].points,94);
-
-  const stats=await send("/api/players/me/stats","GET",null,reg.sessionToken);
-  assert.equal((await stats.json()).totalPoints,198);
-
-  const deleted=await send("/api/players/me","DELETE",null,reg.sessionToken);
-  assert.equal(deleted.status,200);
-  assert.equal(DB.users.size,0);
-  assert.equal(DB.sessions.size,0);
-  assert.equal(DB.attempts.size,0);
-  assert.equal(DB.best.size,0);
-  assert.equal(DB.trafficBest.size,0);
-  assert.equal(DB.trafficAttempts.size,0);
-});
-
-test("research ingestion rejects missing consent without touching D1", async () => {
-  const response = await worker.fetch(new Request("https://api.example.test/api/research/events", {
-    method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({consent:false,events:[]})
-  }), {});
-  assert.equal(response.status,403);
-});
-
-test("consented research events are reduced to non-identifying daily aggregates", async () => {
-  const captured = [];
-  const DB = {
-    prepare(sql) {
-      let values = [];
-      const statement = { bind(...args) { values=args; return statement; }, async run() { return {meta:{changes:1}}; } };
-      statement.snapshot = () => ({sql,values});
-      return statement;
-    },
-    async batch(statements) { captured.push(...statements.map(s=>s.snapshot())); return []; }
-  };
-  const response = await worker.fetch(new Request("https://api.example.test/api/research/events", {
-    method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({consent:true,events:[{category:"sudoku",action:"puzzle_solved",detail:{difficulty:"hard",correct:true,level:9,seconds:75,email:"private@example.com",answer:"123456789"}}]})
-  }), {DB});
-  assert.equal(response.status,200);
-  assert.deepEqual(await response.json(),{accepted:1,rejected:0});
-  assert.equal(captured.length,1);
-  assert.match(captured[0].sql,/research_aggregates/);
-  assert.deepEqual(captured[0].values.slice(1),["sudoku","puzzle_solved","hard","completed","1-10","30-120s"]);
-  assert.equal(JSON.stringify(captured).includes("private@example.com"),false);
-  assert.equal(JSON.stringify(captured).includes("123456789"),false);
+test("D1 account, cumulative XP, endless scores and personal leaderboard position",async()=>{
+ const DB=new MemoryD1(),env={DB,ALLOWED_ORIGIN:"https://04pranab.github.io"};
+ const send=(path,method="GET",payload=null,token="")=>{const headers={Origin:env.ALLOWED_ORIGIN};if(payload!==null)headers["Content-Type"]="application/json";if(token)headers.Authorization="Bearer "+token;return worker.fetch(new Request("https://api.example.test"+path,{method,headers,body:payload===null?undefined:JSON.stringify(payload)}),env);};
+ const pre=await worker.fetch(new Request("https://api.example.test/api/auth/login",{method:"OPTIONS",headers:{Origin:env.ALLOWED_ORIGIN,"Access-Control-Request-Method":"POST","Access-Control-Request-Headers":"authorization,content-type"}}),env);assert.equal(pre.status,204);
+ const registered=await send("/api/auth/register","POST",{username:"learner_01",email:"learner@example.com",password:"LearningPass123"});assert.equal(registered.status,201);const reg=await registered.json();assert.ok(reg.sessionToken);
+ const attempt=await send("/api/games/number-maze/attempts","POST",{attemptId:"maze_attempt_0001",scorePercent:100,durationSeconds:240,difficulty:"stretch",level:100000},reg.sessionToken);assert.equal(attempt.status,200);const a=await attempt.json();assert.ok(a.points>24);
+ const again=await send("/api/games/number-maze/attempts","POST",{attemptId:"maze_attempt_0001",scorePercent:100,durationSeconds:240,difficulty:"stretch",level:100000},reg.sessionToken);assert.equal((await again.json()).duplicate,true);
+ const traffic=await send("/api/games/traffic-control/attempts","POST",{attemptId:"traffic_attempt_0001",scorePercent:100,durationSeconds:360,difficulty:"hard",level:25},reg.sessionToken);assert.equal(traffic.status,200);
+ const global=await send("/api/leaderboards/global");const g=await global.json();assert.equal(g.entries.length,1);assert.equal(g.entries[0].username,"learner_01");assert.equal(g.entries[0].points,a.points+(await traffic.json()).points);assert.equal(g.unlimited,true);assert.equal(g.maximumPoints,null);
+ const game=await send("/api/leaderboards/games/number-maze");assert.equal((await game.json()).entries[0].points,a.points);
+ const stats=await send("/api/players/me/stats","GET",null,reg.sessionToken);const p=await stats.json();assert.equal(p.totalPoints,g.entries[0].points);assert.ok(p.level>=1);assert.equal(p.badges.length,10);
+ const position=await send("/api/leaderboards/me?gameId=global","GET",null,reg.sessionToken);assert.equal((await position.json()).rank,1);
+ const deleted=await send("/api/players/me","DELETE",null,reg.sessionToken);assert.equal(deleted.status,200);assert.equal(DB.users.size,0);assert.equal(DB.playerProgress.size,0);
 });

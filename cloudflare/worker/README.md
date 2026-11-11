@@ -1,41 +1,24 @@
-# Maths For All API Worker
+# Maths For All Cloudflare Worker
 
-This directory contains the Cloudflare Worker API foundation for the Maths for
-All GitHub Pages frontend.
+The Worker provides account authentication, lifetime game progression, achievement records, public leaderboards, personal-rank lookup, with research collection disabled.
 
-## Database
+## Deploy
+Use the repository's Cloudflare Worker workflow and committed Wrangler configuration. Do not commit API tokens or database credentials. Apply D1 migrations before deploying code that queries new tables.
 
-The Cloudflare D1 database `maths-for-all-prod` has been provisioned in APAC.
-The initial schema is versioned in `migrations/0001_initial.sql` and includes:
+## D1 migrations
+Apply in order: 0001, 0002, 0003, 0004, 0005. Confirm each migration is recorded in d1_migrations. Migration 0005 preserves player records, backfills lifetime progression from legacy scores, and drops the legacy research aggregate table.
 
-- Private user identities, password-hash storage, and Google identity mapping.
-- Hashed session, email-verification, and password-reset tokens.
-- Idempotent game attempts and one best score per player per active game.
-- Database constraints for the nine active game IDs and normalized score bounds.
+Migration 0005 adds:
+- cumulative player_progress;
+- per-game player_game_progress;
+- idempotent player_game_attempts;
+- player_badges;
+- no research tables; research storage is intentionally absent.
 
-The Worker binding is named `DB`. The schema does not make authentication or
-leaderboards live by itself. The API remains fail-closed until the D1-backed
-handlers, password hashing, email delivery, session cookies, and frontend
-integration have been implemented and tested.
+## Scoring
+Points and XP accumulate across completed attempts. There is no per-game or global points cap and no maximum player level. The game base award, difficulty factor, logarithmic level progression, hint penalty and mistake penalty are defined in src/leaderboard/scoring.js. XP thresholds and achievement milestones are defined in src/leaderboard/progression.js.
 
-## Preserve the game
+Legacy best-score tables remain for compatibility and are not the source of lifetime standings. The client still supplies completion metrics; server-verifiable challenge proofs are required before the competition can be described as cheat-proof.
 
-Guest play and local progress remain the default and must continue working
-without an account. Account features are additive. Never require registration
-to play, and never collect research consent as a condition of account creation.
-Only public usernames and scores belong on leaderboards; email and tokens stay
-private. The hidden Probability Machine and shelved Math Court are excluded.
-
-## Local checks
-
-From this directory run `npm test`. Use the repository's existing Node version
-and package lock. The D1 migration can be applied with the project's Wrangler
-version after reviewing the target environment.
-
-## Deployment safety
-
-Do not deploy a partially implemented account service as production-ready.
-Configure the exact production frontend origin and required secrets only after
-the complete API and browser integration tests pass. Keep production secrets
-out of Git. Do not migrate any existing PostgreSQL/SQLite data until the
-source schema and migration plan have been reviewed.
+## Research safety
+Research collection is not implemented in this release. The browser gateway does not record or queue events. The Worker endpoint always returns HTTP 503 without touching D1, even if a request claims consent or an environment flag is set. Migration 0005 removes the legacy research aggregate table. Do not add research storage or enable collection without a separately reviewed design and verifiable adult/parent/lawful-guardian permission where applicable.

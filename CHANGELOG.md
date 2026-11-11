@@ -1,5 +1,32 @@
 # Changelog
 
+## Unreleased · Player progression, Player HQ and privacy hardening
+
+### Competition and progression
+- Replace fixed score ceilings with cumulative lifetime points and XP; endless games can keep awarding points and player levels have no maximum.
+- Weight awards by game difficulty and challenge level, with bounded hint and mistake penalties.
+- Persist per-game progress, achievement milestones and player-wide level badges.
+- Redesign Player HQ with level/XP progression, lifetime totals, per-game achievements and locked milestones.
+- Redesign global and per-game leaderboards with personal rank and nearby competitors.
+- Show earned medals prominently on game tiles.
+- Preserve the latest Traffic Control mission and interface changes from main.
+- Document that client-reported completion metrics are not cheat-proof.
+
+### Research privacy
+- Remove the legacy research aggregate store and its historical rows; do not create replacement research tables.
+- Rewrite the Markdown and HTML privacy policy to distinguish player-service data from research data.
+- Disable research ingestion unconditionally in the Worker, even if a client claims consent or an environment flag is accidentally enabled.
+- Keep the browser research gateway OFF: no research events are recorded, queued or uploaded.
+- Clarify that account creation, sign-in, scoring and leaderboard participation are not research consent.
+- Document that school and parent/guardian names are not collected.
+- Add child/guardian safeguards and the phased India DPDP Act/Rules context.
+
+### Documentation and tests
+- Update leaderboard API, architecture, database, Worker and README documentation.
+- Test endless scoring, XP levels, achievement milestones, personal rank, and that browser and Worker research collection remain disabled.
+
+**Release status:** awaiting CI, migration application and production verification. Research collection must remain OFF.
+
 ## Unreleased
 
 ### Project status correction

@@ -52,28 +52,60 @@
     "fraction-bakery":"Fraction Bakery","little-shop":"Little Shop","number-maze":"Number Maze",
     "traffic-control":"Traffic Control Centre"
   };
+  function renderTileBadges(stats) {
+    const selectors = {
+      "arithmetic-quiz":".card-quiz","math-racing":".card-race","sudoku":".card-sudoku",
+      "shape-fitting":".card-shape","slab-maths":".card-slab","shape-architect":".card-architect",
+      "fraction-bakery":".card-fraction","little-shop":".card-little-shop","number-maze":".card-number-maze",
+      "traffic-control":".card-traffic-control"
+    };
+    for (const game of stats.badges || []) {
+      const tile = document.querySelector(selectors[game.gameId]);
+      if (!tile) continue;
+      tile.querySelector(".tile-achievements")?.remove();
+      if (!game.earned?.length) continue;
+      const top = game.earned[game.earned.length - 1];
+      const strip = document.createElement("span");
+      strip.className = "tile-achievements";
+      strip.setAttribute("aria-label", game.earned.length + " achievements earned");
+      strip.title = game.earned.map(b=>b.title).join(" · ");
+      strip.innerHTML = "<span class='tile-achievement-crown'>" + escapeHtml(top.icon) + "</span><span>" + game.earned.length + " badge" + (game.earned.length===1?"":"s") + "</span>";
+      tile.appendChild(strip);
+    }
+  }
+  async function loadPlayerStats() {
+    if (!currentUser) return null;
+    const stats = await request("/players/me/stats");
+    renderTileBadges(stats);
+    return stats;
+  }
   async function openProfile() {
     if (!currentUser) return Auth.open();
-    $("account-profile-copy").textContent = "Your public name is " + currentUser.username + ". Your email and account details stay private.";
+    $("account-profile-copy").textContent = "Your public name is " + currentUser.username + ". Email and private account details are never shown here.";
     $("account-profile-stats").innerHTML = "<p class='profile-loading'>Loading your player card…</p>";
     $("account-profile-modal").classList.remove("hidden");
     try {
-      const stats = await request("/players/me/stats");
-      const earned = (stats.badges || []).reduce((n, game) => n + game.earned.length, 0);
-      const gameCards = (stats.badges || []).map(game => {
-        const ratio = game.maximum ? Math.min(100, Math.round(game.points / game.maximum * 100)) : 0;
-        const medals = game.earned.length
-          ? game.earned.map(b => "<span class='profile-badge' title='" + escapeHtml(b.description) + "'><i>" + b.icon + "</i><span>" + escapeHtml(b.title) + "</span></span>").join("")
-          : "<span class='profile-locked'>Complete a challenge to earn your first badge</span>";
-        return "<article class='profile-game-card'><div class='profile-game-head'><strong>" + escapeHtml(game.gameName) + "</strong><b>" + game.points + " / " + game.maximum + "</b></div><div class='profile-meter' role='progressbar' aria-label='" + escapeHtml(game.gameName) + " mastery' aria-valuenow='" + ratio + "' aria-valuemin='0' aria-valuemax='100'><span style='width:" + ratio + "%'></span></div><small>" + game.attempts + " recorded attempts · " + ratio + "% mastery</small><div class='profile-badges'>" + medals + "</div></article>";
+      const stats = await loadPlayerStats();
+      const badgeCount = (stats.badges||[]).reduce((n,g)=>n+(g.earned||[]).length,0)+(stats.globalBadges||[]).length;
+      const xpPercent = stats.xpToNext ? Math.min(100,Math.round(stats.xpIntoLevel/stats.xpToNext*100)) : 0;
+      const gameCards = (stats.badges||[]).map(game => {
+        const earned = game.earned||[];
+        const badges = earned.length ? earned.map(b=>"<span class='profile-badge tier-"+escapeHtml(b.tier||"earned")+"' title='"+escapeHtml(b.description||b.title)+"'><i>"+escapeHtml(b.icon)+"</i><span>"+escapeHtml(b.title)+"</span></span>").join("") : "<span class='profile-locked'>Your first achievement is waiting</span>";
+        const locked = (game.locked||[]).map(b=>"<li><span>🔒 "+escapeHtml(b.title)+"</span><small>"+escapeHtml(b.description)+"</small></li>").join("");
+        const lockedPanel = locked ? "<details class='profile-locked-list'><summary>"+(game.locked||[]).length+" achievements still to unlock</summary><ul>"+locked+"</ul></details>" : "";
+        return "<article class='profile-game-card'><div class='profile-game-head'><strong>"+escapeHtml(game.gameName)+"</strong><b>"+Number(game.total_points||0).toLocaleString()+" pts</b></div><p class='profile-game-sub'>"+Number(game.attempts||0).toLocaleString()+" challenges · personal best level "+Number(game.highest_level||1)+"</p><div class='profile-badges'>"+badges+"</div>"+lockedPanel+"<p class='profile-game-foot'>"+Number(earned.length)+" achievements unlocked</p></article>";
       }).join("");
+      const globalBadges = (stats.globalBadges||[]).map(b=>"<span class='profile-badge tier-global' title='Player milestone'><i>"+escapeHtml(b.icon)+"</i><span>"+escapeHtml(b.title)+"</span></span>").join("");
+      const playerLevel=Number(stats.level||1);
+      const playerTitle=playerLevel>=100?"Grand Sage":playerLevel>=50?"Master Scholar":playerLevel>=25?"Maths Champion":playerLevel>=10?"Problem Solver":playerLevel>=5?"Curious Explorer":"New Explorer";
       $("account-profile-stats").innerHTML =
-        "<section class='profile-hero'><div><span class='profile-kicker'>PLAYER PROFILE</span><h3>" + escapeHtml(currentUser.username) + "</h3><p>Learning is the achievement. Points are the record.</p></div><div class='profile-avatar' aria-hidden='true'>" + escapeHtml(currentUser.username.slice(0,1).toUpperCase()) + "</div></section>" +
-        "<section class='profile-summary'><div><strong>" + stats.totalPoints.toLocaleString() + "</strong><span>Total points</span></div><div><strong>" + stats.gamesPlayed + " / 10</strong><span>Games played</span></div><div><strong>" + earned + "</strong><span>Badges earned</span></div></section>" +
-        "<div class='profile-section-title'><h3>Game mastery</h3><p>Each game has its own challenge-weighted points.</p></div>" +
-        "<div class='profile-game-grid'>" + (gameCards || "<p>Complete a game to start building your profile.</p>") + "</div>" +
-        "<p class='profile-privacy-note'>Only your username, best scores and earned badges appear on public leaderboards. Email and research data are not shown on this profile.</p>";
-    } catch (e) { $("account-profile-stats").textContent = e.message; }
+        "<section class='profile-hero'><div><span class='profile-kicker'>YOUR PLAYER JOURNEY</span><h3>"+escapeHtml(currentUser.username)+"</h3><p class='profile-player-title'>"+playerTitle+"</p><p>Every challenge adds to your journey. There is no final level.</p><div class='profile-level-line'><strong>LEVEL "+playerLevel.toLocaleString()+"</strong><span>"+Number(stats.xpIntoLevel||0).toLocaleString()+" / "+Number(stats.xpToNext||125).toLocaleString()+" XP to next level</span></div><div class='profile-xp-track' role='progressbar' aria-label='Experience to next level' aria-valuenow='"+xpPercent+"' aria-valuemin='0' aria-valuemax='100'><span style='width:"+xpPercent+"%'></span></div></div><div class='profile-avatar' aria-hidden='true'>"+escapeHtml(currentUser.username.slice(0,1).toUpperCase())+"</div></section>"+
+        "<section class='profile-summary'><div><strong>"+Number(stats.totalPoints||0).toLocaleString()+"</strong><span>Lifetime points</span></div><div><strong>"+Number(stats.totalAttempts||0).toLocaleString()+"</strong><span>Challenges completed</span></div><div><strong>"+badgeCount.toLocaleString()+"</strong><span>Badges earned</span></div></section>"+
+        "<section class='profile-global-badges'><div class='profile-section-title'><h3>Player milestones</h3><p>Achievements across every game</p></div>"+(globalBadges||"<span class='profile-locked'>Your next player milestone awaits.</span>")+"</section>"+
+        "<div class='profile-section-title'><h3>Your game collection</h3><p>Each game has its own endless achievement path.</p></div>"+
+        "<div class='profile-game-grid'>"+(gameCards||"<p>Complete a challenge to start building your profile.</p>")+"</div>"+
+        "<p class='profile-privacy-note'>Only your username, lifetime points and public achievement titles appear on leaderboards. School, family, email and research preferences are never public.</p>";
+    } catch(e) { $("account-profile-stats").textContent=e.message; }
   }
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -101,7 +133,7 @@
       }
       return;
     }
-    const level = Math.max(1, Math.min(100, Number(detail.level || detail.round || detail.customerNumber || 1)));
+    const level = Math.max(1, Number(detail.level || detail.round || detail.customerNumber || 1));
     const map = {
       "race:round_complete": { game:"math-racing", score:() => { const total=Number(detail.correct||0)+Number(detail.wrong||0); return total?(Number(detail.correct||0)/total)*100:0; }, duration:() => Number(detail.timer||3), difficulty:detail.difficulty||"easy" },
       "sudoku:puzzle_solved": { game:"sudoku", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:detail.difficulty||"easy", hintsUsed:Number(detail.hintsUsed||0) },
@@ -116,21 +148,32 @@
     if (!item) return;
     const meta = { difficulty:item.difficulty, level:item.level||level, hintsUsed:item.hintsUsed||0, mistakes:Number(detail.mistakes||0) };
     submitAttempt(item.game,item.score(),Math.min(14400,Math.max(3,Math.round(item.duration()))),null,meta)
-      .then(() => { if (item.game === "math-racing") openLeaderboard(); })
+      .then(() => loadPlayerStats().catch(()=>null))
       .catch(error => console.warn("Could not save Maths For All score:",error.message));
   }
   async function openLeaderboard() {
     $("leaderboard-modal").classList.remove("hidden");
-    $("leaderboard-content").textContent = "Loading the leaderboard…";
+    $("leaderboard-content").innerHTML = "<p class='profile-loading'>Loading the standings…</p>";
     try {
       const gameId = $("leaderboard-game-select")?.value || "global";
-      const result = await request(gameId === "global" ? "/leaderboards/global?limit=50" : "/leaderboards/games/" + encodeURIComponent(gameId) + "?limit=50");
-      if (!result.entries.length) {
-        $("leaderboard-content").innerHTML = "<p>No scores here yet. Complete a challenge to start this leaderboard!</p>";
-        return;
-      }
-      $("leaderboard-content").innerHTML = "<ol class='account-ranking'>" + result.entries.map(e => "<li><span>" + e.rank + ". " + escapeHtml(e.username) + "</span><strong>" + e.points + " pts</strong><small>" + (e.gamesPlayed !== undefined ? e.gamesPlayed + " games" : "Best game score") + "</small></li>").join("") + "</ol>" + (result.maximumPoints ? "<p class='account-footnote'>Maximum: " + result.maximumPoints + " points. Only public usernames and scores appear here.</p>" : "");
-    } catch (e) { $("leaderboard-content").textContent = e.message; }
+      const [result,position] = await Promise.all([
+        request(gameId==="global"?"/leaderboards/global?limit=50":"/leaderboards/games/"+encodeURIComponent(gameId)+"?limit=50"),
+        currentUser ? request("/leaderboards/me?gameId="+encodeURIComponent(gameId)).catch(()=>null) : Promise.resolve(null)
+      ]);
+      const entries=result.entries||[];
+      const positionCard = !currentUser
+        ? "<section class='leaderboard-position guest'><strong>Playing as a guest?</strong><p>Sign in to save your points and see your personal place in the standings. Guest play stays open.</p></section>"
+        : !position || position.rank===null
+          ? "<section class='leaderboard-position'><span class='leaderboard-position-kicker'>YOUR PLACE</span><strong>Not ranked yet</strong><p>Complete a challenge in this category to enter the standings.</p></section>"
+          : "<section class='leaderboard-position'><div><span class='leaderboard-position-kicker'>YOUR PLACE</span><strong>#"+Number(position.rank).toLocaleString()+" <small>of "+Number(position.totalPlayers).toLocaleString()+"</small></strong><p>"+Number(position.points).toLocaleString()+" lifetime points</p></div><button type='button' class='leaderboard-jump' onclick='MfaAccounts.showMyPlace()'>Show my neighbourhood ↓</button></section>";
+      const rows=entries.length?entries.map(e=>"<li class='leaderboard-row "+(currentUser&&e.username===currentUser.username?"is-you":"")+"' data-rank='"+e.rank+"'><span class='leaderboard-rank'>"+(e.rank<=3?["🥇","🥈","🥉"][e.rank-1]:("#"+e.rank))+"</span><span class='leaderboard-player'>"+escapeHtml(e.username)+(currentUser&&e.username===currentUser.username?" <b class='leaderboard-you'>YOU</b>":"")+"</span><strong>"+Number(e.points).toLocaleString()+" <small>pts</small></strong><span class='leaderboard-row-sub'>"+(e.gamesPlayed!==undefined?e.gamesPlayed+" games":(e.attempts||0)+" challenges")+"</span></li>").join(""):"<li class='leaderboard-empty'>No scores yet. Be the first to make your mark!</li>";
+      const nearby=position?.nearby?.length? "<section class='leaderboard-nearby' id='leaderboard-nearby'><h3>Your neighbourhood</h3><p>The players just above and below you.</p><ol>"+position.nearby.map(e=>"<li class='"+(currentUser&&e.id===currentUser.id?"is-you":"")+"'><span>#"+e.rank+" · "+escapeHtml(e.username)+(currentUser&&e.id===currentUser.id?" (You)":"")+"</span><strong>"+Number(e.points).toLocaleString()+" pts</strong></li>").join("")+"</ol></section>":"";
+      $("leaderboard-content").innerHTML=positionCard+"<div class='leaderboard-board-head'><div><h3>"+(gameId==="global"?"The Hall of Learners":escapeHtml($("leaderboard-game-select").selectedOptions[0]?.textContent||"Game standings"))+"</h3><p>Lifetime points. Endless progress. Every learner counts.</p></div><span class='leaderboard-live-dot'>LIVE STANDINGS</span></div><ol class='leaderboard-list'>"+rows+"</ol>"+nearby+"<p class='account-footnote'>Rankings use cumulative points earned from completed challenges. There is no maximum score or final level.</p>";
+    } catch(e) { $("leaderboard-content").textContent=e.message; }
+  }
+  function showMyPlace() {
+    const el=$("leaderboard-nearby");
+    if(el)el.scrollIntoView({behavior:"smooth",block:"center"});
   }
   async function logout() {
     try { await request("/auth/logout", { method: "POST", body: "{}" }); } finally {
@@ -147,7 +190,7 @@
     close() { $("auth-modal").classList.add("hidden"); },
   };
   window.MfaAccounts = {
-    openLeaderboard, closeLeaderboard() { $("leaderboard-modal").classList.add("hidden"); }, closeProfile() { $("account-profile-modal").classList.add("hidden"); },
+    openLeaderboard, showMyPlace, closeLeaderboard() { $("leaderboard-modal").classList.add("hidden"); }, closeProfile() { $("account-profile-modal").classList.add("hidden"); },
     logout, deleteAccount, submitAttempt, onGameEvent, refreshSession,
   };
   document.addEventListener("DOMContentLoaded", () => {
@@ -169,6 +212,8 @@
         sessionStorage.setItem("mfa_session_token", sessionToken);
         currentUser = result.user; renderNav(); Auth.close(); $("auth-form").reset();
         if (mode === "register") setMode("login");
+        if (typeof ResearchConsent !== "undefined" && ResearchConsent.get() === null) ResearchConsent.open();
+        loadPlayerStats().catch(()=>null);
       } catch (e) {
         message.textContent = e.message === "Failed to fetch"
           ? "Cannot reach the account service. Check your connection and try again."
@@ -177,6 +222,6 @@
         $("auth-submit").disabled = false;
       }
     });
-    refreshSession();
+    refreshSession().then(()=>loadPlayerStats().catch(()=>null));
   });
 })();

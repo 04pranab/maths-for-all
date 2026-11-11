@@ -1,66 +1,51 @@
-# Maths for All Database Preparation
+# Maths For All database architecture
 
-## Current boundary
+Updated: 11 November 2026
 
-The application server uses PostgreSQL for authentication. The browser never connects directly to the database.
+## Production data store
+The active account and competition backend uses Cloudflare D1 behind the Cloudflare Worker. The browser never connects directly to D1.
 
-The planned architecture is:
+Production database: maths-for-all (D1). Worker binding: DB.
 
-Browser -> Application server -> PostgreSQL
+## Migration sequence
+- 0001_initial.sql: users, sessions, legacy attempts and best-score tables.
+- 0002_auth_rate_limits.sql: hashed-key rate-limit counters.
+- 0003_traffic_control_scores.sql: Traffic Control Centre compatibility score tables.
+- 0004_profiles_badges_research.sql: first aggregate research schema and historic-score rebasing.
+- 0005_player_progress_research.sql: lifetime progression, XP, levels, achievement records, per-game attempt history, and removal of the legacy research aggregate store.
 
-The browser must never receive the PostgreSQL connection string or server-side database credentials.
+Migrations are versioned in d1_migrations. Apply each migration once, verify the ledger, and inspect the resulting schema before deploying Worker code that depends on it. Do not rerun non-idempotent data transformations manually.
 
-## Supabase
+## Player/account tables
+| Table | Purpose |
+|---|---|
+| users | Username, email account identifier, password hash and account timestamps |
+| sessions | Hashed session tokens and expiry |
+| auth_rate_limits | Hashed rate-limit keys and counters |
+| player_progress | Cumulative lifetime points, XP, level and total attempts |
+| player_game_progress | Cumulative points/XP, streaks, challenge achievements and highest level per game |
+| player_game_attempts | Unique attempt history with unbounded points and bounded metadata |
+| player_badges | Durable per-game and player-wide achievement awards |
 
-The project is prepared to use Supabase PostgreSQL for the managed database layer.
+Legacy game_attempts, best_game_scores, traffic_control_attempts, and traffic_control_best_scores remain for compatibility. New global and game-specific leaderboards read cumulative lifetime totals from progression tables, not legacy best-score caps.
 
-The free plan is intended for the project's early development stage. Current Supabase documentation lists 500 MB database size per free project, 5 GB egress, and 50,000 monthly active users. Free projects can also be paused after inactivity. Check the provider's current limits before deployment.
+## Research storage
+No research event tables exist in the current production schema. Migration 0005 removes the legacy `research_aggregates` table and its historical aggregate rows. The browser does not record or queue research events, and the Worker research endpoint always returns HTTP 503 without touching D1. No research data is collected or retained.
 
-## Local configuration
+Ordinary player-service data remains separate: accounts, sessions, completed attempts, lifetime points/XP, game progress, achievements and leaderboard totals. These records are used to provide gameplay and competition, not research.
 
-Copy the template:
-
-    cp .env.local.example .env.local
-
-Then put the real database connection string in:
-
-    DATABASE_URL=
-
-Never commit .env.local.
-
-## Connection choice
-
-For a persistent backend, choose the Supabase direct connection when the deployment supports IPv6. If the backend is IPv4-only, use the shared session pooler. Do not guess the pooler host or construct it manually. Copy the connection string from the Supabase Connect dialog.
-
-Use SSL for database connections. For stronger certificate and hostname verification, configure the Supabase CA certificate and the PostgreSQL verify-full mode in the server deployment.
-
-## Current authentication schema
-
-The PostgreSQL schema in `db/migrations/001_auth.sql` contains users, sessions, email-verification tokens, and password-reset tokens. The server validates these tables at startup and does not silently create or alter them.
-
-Google identity linkage is represented by `users.google_subject` and its unique partial index.
-
-## Migration order
-
-1. Create the Supabase project.
-2. Create the local environment file.
-3. Verify the connection from the server only.
-4. Apply the versioned PostgreSQL authentication schema.
-5. Configure the application server with DATABASE_URL.
-6. Run API and browser regression tests.
-7. Run concurrency and failure-path tests.
-8. Keep research tables and research collection outside this migration until the v3 research milestone.
+## Child-data safeguards
+Maths For All is child-focused. The project adopts DPDP Act/Rules child and guardian safeguards ahead of their phased commencement. A checkbox or typed parent name is not verifiable parental consent. School and parent names are not currently collected because they are not necessary for gameplay. Any future collection requires a specific purpose, private-by-default handling, retention/deletion controls, and applicable verified guardian permission.
 
 ## Security rules
+- Never expose database credentials or Worker secrets to browser JavaScript.
+- Use HTTPS and exact-origin CORS.
+- Store password hashes, never plaintext passwords.
+- Store only hashes of bearer session tokens.
+- Restrict database access to the Worker and authorized maintainers.
+- Do not create research tables or accept research-event writes in this release.
+- Verify foreign-key cascades and account deletion.
+- Keep account and player records private except for explicitly public username/score standings.
 
-- Never put DATABASE_URL in browser JavaScript.
-- Never commit a database password.
-- Never commit a Supabase service-role credential.
-- Keep database access server-side.
-- Use least-privilege database roles where practical.
-- Keep authentication data and research data logically separated.
-- Research writes remain blocked unless explicit research consent is active.
-
-## Important
-
-Do not paste a real DATABASE_URL into GitHub issues, pull requests, README files, screenshots, browser console logs, or source files.
+## Historical data
+Migration 0005 backfills each player's legacy best scores into lifetime progress so existing leaderboard participation is preserved. Historical difficulty and hint metadata may not exist, so do not infer it. Existing points are treated as a conservative starting balance. The migration drops the old aggregate research table; account, attempt and best-score records are preserved.
