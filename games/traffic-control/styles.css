@@ -546,3 +546,11 @@ body { background:#edf2f6; }
 .consent-card{position:relative;width:min(760px,96vw);max-height:90vh;overflow:auto;padding:1.4rem;border:1px solid #d9dfd4;border-radius:18px;background:#fffdf8;color:#26352c;box-shadow:0 20px 70px #0004}
 .consent-card h2{margin:.3rem 0 .7rem}.consent-card p,.consent-card li{line-height:1.5}.consent-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.consent-columns section{padding:.8rem;border-radius:12px;background:#f2f5ef}.consent-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}.consent-btn{min-height:44px;padding:.65rem .9rem;border:1px solid #9ba99b;border-radius:10px;background:#fff;color:#26352c;font:inherit;font-weight:700}.consent-btn.primary{background:#315c42;color:#fff}.consent-policy{color:#285e72;text-decoration:underline}.consent-close{float:right;border:0;background:transparent;font-size:1.7rem}
 @media(max-width:620px){.consent-columns{grid-template-columns:1fr}.consent-card{padding:1rem}}
+
+
+/* Challenge completion and progression, shown only after clearing a queue. */
+.challenge-complete{margin-top:12px;padding:13px 14px;border:1px solid #b9dfd2;border-radius:12px;background:#eaf8f2;color:#174b3d}
+.challenge-complete[hidden],.next-challenge-button[hidden]{display:none!important}
+.challenge-complete strong{display:block;font-size:.9rem}
+.challenge-complete p{margin:5px 0 10px;font-size:.78rem;line-height:1.45;color:#496b60}
+.next-challenge-button{width:100%;margin:0}
