@@ -1,0 +1,20 @@
+name: Production Worker smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cloudflare/worker/**"
+      - "tests/worker-production-smoke.mjs"
+      - ".github/workflows/worker-production-smoke.yml"
+  workflow_dispatch:
+jobs:
+  production-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exercise the deployed Cloudflare Worker
+        run: node tests/worker-production-smoke.mjs
