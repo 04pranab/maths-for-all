@@ -3,6 +3,7 @@
   const API = "https://maths-for-all-api.ompranabmohanty.workers.dev/api";
   let mode = "login";
   let currentUser = null;
+  let quizCorrect = 0, quizTotal = 0, quizStartedAt = 0;
   const $ = id => document.getElementById(id);
   const request = async (path, options = {}) => {
     const response = await fetch(API + path, {
@@ -62,6 +63,17 @@
   }
   function onGameEvent(category, action, detail = {}) {
     if (!currentUser) return;
+    if (category === "quiz" && action === "answer") {
+      if (!quizStartedAt) quizStartedAt = Date.now();
+      quizTotal += 1;
+      if (detail.correct) quizCorrect += 1;
+      if (quizTotal >= 10) {
+        const accuracy = (quizCorrect / quizTotal) * 100;
+        submitAttempt("arithmetic-quiz", accuracy, Math.max(1, Math.round((Date.now() - quizStartedAt) / 1000)))
+          .catch(error => console.warn("Could not save quiz score:", error.message));
+      }
+      return;
+    }
     const map = {
       "race:round_complete": { game: "math-racing", score: () => {
         const total = Number(detail.correct || 0) + Number(detail.wrong || 0);
@@ -73,6 +85,7 @@
       "shape_architect:complete": { game: "shape-architect", score: () => 100, duration: () => Number(detail.time || 1) },
       "fraction_bakery:level_complete": { game: "fraction-bakery", score: () => 100, duration: () => Math.max(1, Math.round(Number(detail.timeMs || 1000) / 1000)) },
       "number_maze:complete": { game: "number-maze", score: () => 100, duration: () => 1 },
+      "little_shop:sale_complete": { game: "little-shop", score: () => Math.min(100, Math.max(0, Number(detail.customerNumber || 1))), duration: () => 1 },
     };
     const item = map[category + ":" + action];
     if (!item) return;
