@@ -133,7 +133,7 @@
       }
       return;
     }
-    const level = Math.max(1, Math.min(1000000000, Number(detail.level || detail.round || detail.customerNumber || 1)));
+    const level = Math.max(1, Number(detail.level || detail.round || detail.customerNumber || 1));
     const map = {
       "race:round_complete": { game:"math-racing", score:() => { const total=Number(detail.correct||0)+Number(detail.wrong||0); return total?(Number(detail.correct||0)/total)*100:0; }, duration:() => Number(detail.timer||3), difficulty:detail.difficulty||"easy" },
       "sudoku:puzzle_solved": { game:"sudoku", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:detail.difficulty||"easy", hintsUsed:Number(detail.hintsUsed||0) },
