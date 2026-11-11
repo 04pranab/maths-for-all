@@ -72,7 +72,12 @@ function generatedRounds(levelKey, originalRounds) {
 
     for (const direction of directions) {
       const variation = random(5) - 2;
-      const size = Math.max(1, Math.min(levelKey === "hard" ? 7 : 6, base + variation));
+      const directionIndex = directions.indexOf(direction);
+      const size = levelKey === "easy"
+        ? (direction === "north" ? 1 + (i % 10) : 1 + Math.floor(i / 10))
+        : levelKey === "medium"
+          ? 1 + (Math.floor(i / Math.pow(6, directionIndex)) % 6)
+          : 2 + (Math.floor(i / Math.pow(6, directionIndex)) % 6);
       queues[direction] = [];
       for (let vehicle = 0; vehicle < size; vehicle++) {
         if (levelKey === "hard") {
