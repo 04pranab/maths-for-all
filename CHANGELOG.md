@@ -13,17 +13,17 @@
 - Document that client-reported completion metrics are not cheat-proof.
 
 ### Research privacy
-- Create ten separate daily aggregate research tables, one per active game.
-- Rewrite the full Markdown and HTML research policy.
-- Make the Worker fail closed unless its server-side research feature flag is explicitly enabled.
-- Keep browser research sharing OFF while verifiable adult/parent/lawful-guardian permission is unavailable.
+- Remove the legacy research aggregate store and its historical rows; do not create replacement research tables.
+- Rewrite the Markdown and HTML privacy policy to distinguish player-service data from research data.
+- Disable research ingestion unconditionally in the Worker, even if a client claims consent or an environment flag is accidentally enabled.
+- Keep the browser research gateway OFF: no research events are recorded, queued or uploaded.
 - Clarify that account creation, sign-in, scoring and leaderboard participation are not research consent.
 - Document that school and parent/guardian names are not collected.
 - Add child/guardian safeguards and the phased India DPDP Act/Rules context.
 
 ### Documentation and tests
 - Update leaderboard API, architecture, database, Worker and README documentation.
-- Test endless scoring, XP levels, achievement milestones, personal rank and fail-closed research ingestion.
+- Test endless scoring, XP levels, achievement milestones, personal rank, and that browser and Worker research collection remain disabled.
 
 **Release status:** awaiting CI, migration application and production verification. Research collection must remain OFF.
 
