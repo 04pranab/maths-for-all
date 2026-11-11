@@ -30,3 +30,16 @@ The game client must submit only after a genuine completed game, using a unique 
 
 ## No mail dependency
 No SMTP, email provider, Google OAuth, verification, or reset-email integration is part of this release. Password recovery is not available until an email delivery or another verified recovery mechanism is deliberately added.
+
+
+## Browser session transport
+GitHub Pages and the Worker are on different origins. The browser client therefore uses a short-lived-in-tab bearer token returned after registration or login and sends it in the `Authorization: Bearer` header. The Worker stores only a SHA-256 digest of the random session token in D1. The token is held in `sessionStorage`, not persistent local storage, and is cleared on logout, account deletion, or invalid session response. Credentialed third-party cookies are not required. CORS preflight explicitly permits the Authorization header for the exact GitHub Pages origin.
+
+## Tables
+The production D1 database uses these application tables:
+- `users`: unique case-insensitive username and email, password hash and account timestamps.
+- `sessions`: hashed bearer/cookie tokens, expiry and last-use timestamps; cascades on user deletion.
+- `game_attempts`: idempotent attempt history with game/score/duration constraints.
+- `best_game_scores`: one best normalized score per user and active game.
+- `auth_rate_limits`: hashed-IP rate-limit counters.
+- `email_verification_tokens` and `password_reset_tokens` remain schema placeholders for a future explicitly approved email feature; this release does not send email or require verification.
