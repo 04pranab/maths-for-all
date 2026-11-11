@@ -13,7 +13,7 @@ const layout = {
   east: { x: 602, y: 315, dx: 38, dy: 0, angle: -90, exit: { x: -90, y: 315 } },
   west: { x: 298, y: 285, dx: -38, dy: 0, angle: 90, exit: { x: 990, y: 285 } }
 };
-let missionIndex = 0, runId = 0, queues = {}, busy = false, nsSeconds = 20, cleared = 0, score = 0, cycles = 0;
+let missionIndex = 0, runId = 0, queues = {}, busy = false, nsSeconds = 20, cleared = 0, score = 0, cycles = 0, optimalScore = 0, missionStartedAt = Date.now();
 let reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function svgNode(name, attrs = {}) {
@@ -136,7 +136,7 @@ function renderQueues() {
   updateQueueDisplay();
 }
 function startMission(index) {
-  runId++; missionIndex = index; busy = false; cleared = 0; score = 0; cycles = 0;
+  runId++; missionIndex = index; busy = false; cleared = 0; score = 0; cycles = 0; optimalScore = 0; missionStartedAt = Date.now();
   const m = MISSIONS[index];
   queues = Object.fromEntries(["north","south","east","west"].map(d => [d, Array.from({length:m.queues[d]},(_,i)=>vehicleKinds[d][i%vehicleKinds[d].length])]));
   nsSeconds = Math.round(availableBudget() / (2*m.step)) * m.step;
@@ -157,6 +157,7 @@ function startMission(index) {
 function runPlan() {
   if (busy || totalVehicles() === 0) return;
   const plan = evaluate(nsSeconds), optimal = bestPlan(), m = MISSIONS[missionIndex];
+  optimalScore += optimal.points;
   cycles++; busy = true; $("#run-plan").disabled = true;
   const moving = [];
   for (const d of ["north","south","east","west"]) {
@@ -220,6 +221,10 @@ function finishMission() {
   $("#next-mission").hidden = false;
   $("#next-mission").textContent = missionIndex === MISSIONS.length-1 ? "Replay all missions ↻" : "Next engineering mission →";
   setStatus("All queues are clear. Mission complete!");
+  const scorePercent = optimalScore > 0 ? Math.max(0, Math.min(100, (score / optimalScore) * 100)) : 0;
+  const durationSeconds = Math.max(1, Math.min(14400, Math.round((Date.now() - missionStartedAt) / 1000)));
+  window.MfaAccounts?.submitAttempt?.("traffic-control", scorePercent, durationSeconds)
+    .catch(error => console.warn("Could not save Traffic Control Centre score:", error.message));
   $("#math-check").scrollIntoView({behavior:reducedMotion?"auto":"smooth",block:"nearest"});
 }
 function toggleMotion() {
