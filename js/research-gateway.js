@@ -1,80 +1,56 @@
-/* =============================================================
-   RESEARCH EVENT GATEWAY
-   Single consent-aware boundary for all research-style events.
-   ============================================================= */
-const ResearchEventGateway = (function () {
+/* Consent-aware, aggregate-only research gateway.
+   Research events are never joined to account IDs or session tokens. */
+const ResearchEventGateway = (() => {
   const KEY = "mfa_analytics_v1";
+  const API = "https://maths-for-all-api.ompranabmohanty.workers.dev/api/research/events";
   const MAX_EVENTS = 1500;
-  let events = null;
-
-  function consentAllowed() {
-    return typeof ResearchConsent !== "undefined" && ResearchConsent.isAllowed();
-  }
-
+  let events = null, flushing = false;
+  const CATEGORIES = new Set(["quiz","race","sudoku","shape","slab","shape_architect","fraction_bakery","little_shop","number_maze","traffic-control"]);
+  const ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
+  const DETAIL_KEYS = new Set(["difficulty","correct","level","attempts","hintsUsed","mistakes","completed","durationMs","timeMs","seconds","timer"]);
+  function consentAllowed() { return typeof ResearchConsent !== "undefined" && ResearchConsent.isAllowed(); }
   function load() {
     if (events) return events;
-    try {
-      const raw = localStorage.getItem(KEY);
-      events = raw ? JSON.parse(raw) : [];
-      if (!Array.isArray(events)) events = [];
-    } catch (e) {
-      events = [];
-    }
+    try { const raw=localStorage.getItem(KEY); events=raw?JSON.parse(raw):[]; if(!Array.isArray(events))events=[]; }
+    catch { events=[]; }
     return events;
   }
-
-  function save() {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(events || []));
-      return true;
-    } catch (e) {
-      return false;
+  function save() { try { localStorage.setItem(KEY,JSON.stringify(events||[])); return true; } catch { return false; } }
+  function cleanDetail(detail) {
+    const clean={};
+    if(!detail||typeof detail!=="object"||Array.isArray(detail))return clean;
+    for(const key of DETAIL_KEYS){
+      const value=detail[key];
+      if(key==="difficulty"&&typeof value==="string"&&["easy","medium","hard","gentle","steady","stretch","starter","growing","champion"].includes(value.toLowerCase()))clean[key]=value.toLowerCase();
+      else if(["correct","completed"].includes(key)&&typeof value==="boolean")clean[key]=value;
+      else if(["level","attempts","hintsUsed","mistakes","durationMs"].includes(key)&&Number.isFinite(value))clean[key]=Math.max(0,Math.min(10000,Math.round(value)));
     }
+    return clean;
   }
-
-  function validString(value, max) {
-    return typeof value === "string" && value.length > 0 && value.length <= max;
-  }
-
-  function validDetail(detail) {
-    return (
-      detail === undefined ||
-      (detail !== null && typeof detail === "object" && !Array.isArray(detail))
-    );
-  }
-
-  function record(category, action, detail = {}) {
-    if (!consentAllowed()) return false;
-    if (!validString(category, 64) || !validString(action, 64) || !validDetail(detail))
-      return false;
-
-    const list = load();
-    list.push({
-      ts: Date.now(),
-      category,
-      action,
-      detail,
-    });
-
-    if (list.length > MAX_EVENTS) {
-      list.splice(0, list.length - MAX_EVENTS);
-    }
-
+  function record(category, action, detail={}) {
+    if(!consentAllowed()||!CATEGORIES.has(category)||!ACTIONS.has(action))return false;
+    if(detail !== undefined && (detail === null || typeof detail !== "object" || Array.isArray(detail))) return false;
+    const list=load();
+    list.push({category,action,detail:cleanDetail(detail)});
+    if(list.length>MAX_EVENTS)list.splice(0,list.length-MAX_EVENTS);
     save();
+    if(list.length>=10||action.includes("complete")||action==="puzzle_solved") flush();
     return true;
   }
-
-  function read() {
-    if (!consentAllowed()) return [];
-    return load().slice();
+  async function flush() {
+    if(!consentAllowed() || typeof window === "undefined" || window.location.origin !== "https://04pranab.github.io" || flushing)return false;
+    const list=load(); if(!list.length)return true;
+    flushing=true;
+    const batch=list.slice(0,50);
+    try{
+      const response=await fetch(API,{method:"POST",credentials:"omit",keepalive:true,headers:{"Content-Type":"application/json"},body:JSON.stringify({consent:true,events:batch})});
+      if(!response.ok)return false;
+      events=list.slice(batch.length);save();return true;
+    }catch{return false;}finally{flushing=false;}
   }
-
-  function clear() {
-    events = [];
-    try {
-      localStorage.removeItem(KEY);
-    } catch (e) {}
-  }
-
-  return { record, read, clear };
+  function read() { return consentAllowed()?load().slice():[]; }
+  function clear() { events=[];try{localStorage.removeItem(KEY);}catch{} }
+  if (typeof window !== "undefined") window.addEventListener("pagehide",()=>{if(consentAllowed())flush();});
+  return {record,read,clear,flush};
 })();
+if (typeof window !== "undefined") window.ResearchEventGateway = ResearchEventGateway;
