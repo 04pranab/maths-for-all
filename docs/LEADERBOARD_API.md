@@ -23,10 +23,29 @@ Base URL: `https://maths-for-all-api.ompranabmohanty.workers.dev/api`
 | GET | `/players/me/stats` | Current player's bests |
 | DELETE | `/players/me` | Permanently delete account and associated scores |
 
-## Scoring
-All ten active games are accepted, including Traffic Control Centre. The API accepts `scorePercent` from 0 to 100 and calculates `points = round(scorePercent * 10)` on the server. Each player's best score per game is kept, up to 1,000 points per game and 10,000 globally. Replayed attempt IDs are idempotent. Leaderboards expose username and scores only.
+## Scoring and achievements
+Points are calculated on the server from a bounded completion percentage plus a game-specific maximum, selected difficulty band, level progression, hint use, and mistakes. Current maximum budgets are:
+| Game | Maximum points |
+|---|---:|
+| Arithmetic Quiz | 140 |
+| Math Racing | 180 |
+| Sudoku | 350 |
+| Shape Fitting | 220 |
+| Slab Maths | 120 |
+| Shape Architect | 280 |
+| Fraction Bakery | 230 |
+| Little Shop | 120 |
+| Number Maze | 250 |
+| Traffic Control Centre | 260 |
 
-The game client must submit only after a genuine completed game, using a unique `attemptId`, actual completion percentage, and elapsed seconds. Do not award points for opening a game, viewing a page, or merely signing in. The API does not trust a client-supplied user ID, rank, or points value.
+Difficulty factors are Starter/Easy 0.45, Growing/Medium 0.70, and Champion/Hard 1.00. Level progression adds at most 20%; hints and mistakes reduce the award. The best score per game is kept. Global ranking sums the best game scores, with a current theoretical maximum of 2,150 points. Historic scores are conservatively rebased to the starter tier because old difficulty metadata was not recorded.
+
+The browser still reports a completion result, so this is not a cheat-proof competitive anti-cheat system: a modified client can forge a result. The API bounds inputs and calculates awards server-side, but truly tamper-resistant scoring requires server-verifiable game seeds/solutions or signed challenge proofs. Do not describe these rankings as secure esports results.
+
+Badges are derived from game-specific attempts and best-score thresholds: First Steps (first recorded attempt), Bronze Explorer (25%), Silver Solver (50%), Gold Strategist (75%), and Game Master (90%). They are returned in the authenticated profile response; no additional personal profile fields are public.
+
+## Research data
+Research is a separate, explicit opt-in. The consent-aware browser gateway sends only allowlisted game events. The Worker stores daily aggregate counts grouped by game, event, difficulty, outcome, and broad level band. Research aggregates have no account/user/session/IP/device/participant identifier and are not joined to leaderboard records. The endpoint requires `consent: true`; it rejects unsupported fields/events. Aggregates are retained for up to 90 days and old daily buckets are removed during later accepted research writes. Once an event has been combined into a shared aggregate, an individual contribution cannot be separated or withdrawn; the consent notice states this before opt-in. Account creation never implies research consent.
 
 ## No mail dependency
 No SMTP, email provider, Google OAuth, verification, or reset-email integration is part of this release. Password recovery is not available until an email delivery or another verified recovery mechanism is deliberately added.
