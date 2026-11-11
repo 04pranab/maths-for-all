@@ -60,6 +60,26 @@
       body: JSON.stringify({ attemptId: id, scorePercent, durationSeconds }),
     });
   }
+  function onGameEvent(category, action, detail = {}) {
+    if (!currentUser) return;
+    const map = {
+      "race:round_complete": { game: "math-racing", score: () => {
+        const total = Number(detail.correct || 0) + Number(detail.wrong || 0);
+        return total ? (Number(detail.correct || 0) / total) * 100 : 0;
+      }, duration: () => Number(detail.timer || 1) },
+      "sudoku:puzzle_solved": { game: "sudoku", score: () => 100, duration: () => 1 },
+      "shape:level_complete": { game: "shape-fitting", score: () => 100, duration: () => Number(detail.seconds || 1) },
+      "slab:round_complete": { game: "slab-maths", score: () => 100, duration: () => 1 },
+      "shape_architect:complete": { game: "shape-architect", score: () => 100, duration: () => Number(detail.time || 1) },
+      "fraction_bakery:level_complete": { game: "fraction-bakery", score: () => 100, duration: () => Math.max(1, Math.round(Number(detail.timeMs || 1000) / 1000)) },
+      "number_maze:complete": { game: "number-maze", score: () => 100, duration: () => 1 },
+    };
+    const item = map[category + ":" + action];
+    if (!item) return;
+    submitAttempt(item.game, item.score(), Math.min(14400, Math.max(1, Math.round(item.duration()))))
+      .then(() => { if (item.game === "math-racing") openLeaderboard(); })
+      .catch(error => console.warn("Could not save Maths For All score:", error.message));
+  }
   async function openLeaderboard() {
     $("leaderboard-modal").classList.remove("hidden");
     $("leaderboard-content").textContent = "Loading the leaderboard…";
@@ -88,7 +108,7 @@
   };
   window.MfaAccounts = {
     openLeaderboard, closeLeaderboard() { $("leaderboard-modal").classList.add("hidden"); },
-    logout, deleteAccount, submitAttempt, refreshSession,
+    logout, deleteAccount, submitAttempt, onGameEvent, refreshSession,
   };
   document.addEventListener("DOMContentLoaded", () => {
     $("auth-mode-toggle")?.addEventListener("click", () => setMode(mode === "login" ? "register" : "login"));
