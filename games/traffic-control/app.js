@@ -1,5 +1,5 @@
 import { LEVELS } from "./missions.js?v=20261112a";
-import { TrafficCity3D } from "./city3d.js?v=20261112-3d-city-spacing-fix";
+import { TrafficCity3D } from "./city3d.js?v=20261112-static-upper-city";
 const $=s=>document.querySelector(s);
 const DIRS=["north","south","east","west"],TIMES={bike:5,car:10,truck:15};
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
@@ -53,7 +53,7 @@ function runPlan(){
  for(const d of DIRS)setSignal(d,false);
  renderVehicles();
  const ns=p.ns>0,ew=p.ew>0;
- if(dirs().includes("north"))setSignal("north",ns);if(dirs().includes("south"))setSignal("south",ns);if(dirs().includes("east"))setSignal("east",ew);if(dirs().includes("west"))setSignal("west",ew);
+ if(dirs().includes("north"))setSignal("north",ns);if(dirs().includes("south"))setSignal("south",level==="easy"?ew:ns);if(dirs().includes("east"))setSignal("east",ew);if(dirs().includes("west"))setSignal("west",ew);
  cleared+=p.moved;score+=p.points;
  $("#traffic-status").textContent="Your signal plan is running. Watch the vehicles clear the junction.";
  const duration=reduced?350:1900+moving.length*130;
