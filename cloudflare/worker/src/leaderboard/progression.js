@@ -11,7 +11,7 @@ const BADGE_RULES=Object.freeze([
 ]);
 export function progressForXp(totalXp){
  const xp=Math.max(0,Math.floor(Number(totalXp)||0)),cum=l=>100*(l-1)+12.5*(l-1)*l;
- let lo=1,hi=1;while(cum(hi)<=xp&&hi<1_000_000_000)hi*=2;
+ let lo=1,hi=1;while(cum(hi)<=xp&&hi<Number.MAX_SAFE_INTEGER/2)hi*=2;
  while(lo+1<hi){const mid=Math.floor((lo+hi)/2);if(cum(mid)<=xp)lo=mid;else hi=mid;}
  const level=lo,xpIntoLevel=xp-cum(level),xpToNext=100+level*25;
  return{level,totalXp:xp,xpIntoLevel,xpToNext,levelProgress:Math.min(100,Math.floor(xpIntoLevel/xpToNext*100))};
