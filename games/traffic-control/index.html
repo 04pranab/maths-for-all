@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#eaf3e9">
   <meta name="description" content="A calm, interactive traffic-junction game that teaches Class 3–4 mathematics through safe traffic decisions.">
   <title>Traffic Control Centre · Maths for All</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./app.js"></script>
+  <link rel="stylesheet" href="./styles.css?v=20261111b">
+  <script type="module" src="./app.js?v=20261111b"></script>
 </head>
 <body>
   <a class="skip-link" href="#game-main">Skip to game</a>
@@ -170,35 +170,29 @@
           </section>
 
           <section class="math-briefing planner-card" aria-labelledby="math-briefing-title">
-            <div class="briefing-heading"><span class="briefing-icon">∑</span><div><p class="section-kicker">THE MATHS IS THE CONTROLS</p><h2 id="math-briefing-title">Design your signal schedule</h2></div></div>
-            <p id="planner-brief" class="briefing-rule">You have a fixed green-time budget. Choose how much goes to North + South; the rest goes to East + West.</p>
-            <div class="formula-banner">Vehicles served per approach = green seconds ÷ seconds per vehicle</div>
-            <div class="planner-stats">
-              <div><span>Total cycle</span><strong id="cycle-budget">40 s</strong></div>
-              <div><span>Pedestrian reserve</span><strong id="pedestrian-reserve">0 s</strong></div>
-              <div><span>Vehicle green time</span><strong id="vehicle-budget">40 s</strong></div>
-              <div><span>Time per vehicle</span><strong id="service-time">10 s</strong></div>
-            </div>
-            <div class="approach-math">
-              <div><strong>North</strong><span id="math-north">3 waiting · 2 min</span></div>
-              <div><strong>South</strong><span id="math-south">2 waiting · 2 min</span></div>
-              <div><strong>East</strong><span id="math-east">2 waiting · 2 min</span></div>
-              <div><strong>West</strong><span id="math-west">1 waiting · 2 min</span></div>
-            </div>
-            <div class="schedule-inputs">
-              <label for="ns-seconds">North + South green time <output id="ns-output" for="ns-seconds">20 s</output></label>
-              <input id="ns-seconds" type="range" min="0" max="40" step="5" value="20">
-              <div class="schedule-split"><span>NS: <strong id="ns-preview">20 s</strong></span><span>EW: <strong id="ew-preview">20 s</strong></span></div>
-              <div class="schedule-track"><span id="ns-track"></span><span id="ew-track"></span></div>
-            </div>
-            <div class="plan-prediction">
-              <p class="section-kicker">YOUR CALCULATED PLAN</p>
-              <div><span>Vehicles expected to move</span><strong id="predicted-vehicles">—</strong></div>
-              <div><span>Priority points earned</span><strong id="predicted-score">—</strong></div>
-            </div>
-            <button type="button" id="run-plan" class="send-button plan-button">▶ Run my schedule</button>
-            <p id="math-hint" class="math-hint" role="status">Move the slider, calculate the split, then run your plan to see its real effect.</p>
-          </section>
+  <div class="challenge-top"><span class="challenge-icon">✦</span><div><p class="challenge-kicker">YOUR ENGINEERING CHALLENGE</p><span id="challenge-tag" class="challenge-tag">ADDITION & SUBTRACTION</span></div></div>
+  <h2 id="math-briefing-title">Design the smartest signal plan</h2>
+  <p id="planner-question" class="challenge-question">You have 40 seconds of green time. How will you split it to move the most vehicles?</p>
+  <div class="challenge-budget"><span>⏱ YOUR TIME BANK</span><strong id="vehicle-budget">40 <small>seconds</small></strong><span id="reserve-note">No pedestrian reserve this round</span></div>
+  <div class="approach-math" aria-label="Traffic waiting at each approach">
+    <div class="approach-chip north-chip"><span class="direction">↑ NORTH</span><strong id="math-north">3 vehicles</strong><small>Waiting <b id="wait-north">2 min</b></small></div>
+    <div class="approach-chip south-chip"><span class="direction">↓ SOUTH</span><strong id="math-south">2 vehicles</strong><small>Waiting <b id="wait-south">2 min</b></small></div>
+    <div class="approach-chip east-chip"><span class="direction">← EAST</span><strong id="math-east">2 vehicles</strong><small>Waiting <b id="wait-east">2 min</b></small></div>
+    <div class="approach-chip west-chip"><span class="direction">→ WEST</span><strong id="math-west">1 vehicle</strong><small>Waiting <b id="wait-west">2 min</b></small></div>
+  </div>
+  <div class="schedule-inputs">
+    <div class="slider-heading"><label for="ns-seconds">How much green time goes to North + South?</label><output id="ns-output" for="ns-seconds">20 sec</output></div>
+    <input id="ns-seconds" type="range" min="0" max="40" step="5" value="20">
+    <div class="schedule-split"><span>NS <strong id="ns-preview">20 sec</strong></span><span>EW <strong id="ew-preview">20 sec</strong></span></div>
+    <div class="schedule-track"><span id="ns-track"></span><span id="ew-track"></span></div>
+  </div>
+  <div class="prediction-row">
+    <div class="prediction-card"><span>🚗 VEHICLES YOU'LL MOVE</span><strong id="predicted-vehicles">—</strong></div>
+    <div class="prediction-card points-card"><span>★ PRIORITY SCORE</span><strong id="predicted-score">—</strong></div>
+  </div>
+  <button type="button" id="run-plan" class="send-button plan-button">Run my signal plan <span aria-hidden="true">→</span></button>
+  <p id="math-hint" class="math-hint" role="status">Move the slider to build your plan. Then run it and see what happens.</p>
+</section>
 
           <section class="traffic-controls" aria-labelledby="controls-title">
             <div class="panel-heading"><div><p class="section-kicker">LIVE JUNCTION DATA</p><h2 id="controls-title">Traffic conditions</h2></div><span class="control-icon" aria-hidden="true">◉</span></div>
@@ -214,10 +208,7 @@
               <div><span>Cycles used</span><strong id="cycles-used">0</strong></div>
             </div>
             <p id="traffic-status" class="status-message" role="status" aria-live="polite">Study the queues and plan your first signal cycle.</p>
-            <button type="button" id="restart-mission" class="restart-button">↻ Restart this mission</button>
-          </section>
-
-          
+            </section>
 
           <section id="math-check" class="math-card" hidden aria-labelledby="math-title">
             <div class="math-card-top"><span class="math-star" aria-hidden="true">✦</span><span class="section-kicker">ENGINEERING DEBRIEF</span></div>

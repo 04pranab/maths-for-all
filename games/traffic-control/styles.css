@@ -280,3 +280,67 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
 @media(max-width:1100px) { .app-shell{width:calc(100% - 26px)} .game-layout{grid-template-columns:minmax(0,1.2fr) minmax(350px,.9fr);gap:14px} }
 @media(max-width:850px) { .game-layout{grid-template-columns:minmax(0,1fr)} .control-column{grid-template-columns:1fr 1fr;align-items:start} .mission-card{grid-column:1/-1} .planner-card{grid-column:1} .traffic-controls{grid-column:2;grid-row:2} .math-card{grid-column:1/-1} }
 @media(max-width:560px) { .app-shell{width:calc(100% - 18px);padding:0 2px 20px} .control-column{grid-template-columns:1fr} .mission-card,.planner-card,.traffic-controls,.math-card{grid-column:auto} .approach-math span{font-size:.56rem} .planner-card{padding:14px} }
+
+/* Mission-card redesign: vivid, high-contrast engineering challenge */
+:root { --ink:#182c43; --teal:#087f8c; --coral:#f07862; --gold:#f3bd54; --violet:#7567c8; }
+body { background:#f3f5fb; color:var(--ink); }
+.app-shell { width:min(1760px,calc(100% - 48px)); }
+.topbar { border-color:#dce3ef; }
+.intro-row h1 span { color:#087f8c; }
+.game-layout { grid-template-columns:minmax(0,1.58fr) minmax(420px,.92fr); gap:22px; align-items:start; }
+.city-card,.mission-card,.traffic-controls,.math-card { border:1px solid #dce4ef; box-shadow:0 12px 32px rgba(29,47,75,.08); }
+.city-card { overflow:hidden; }
+.city-stage { background:#dfe9e4; }
+#city-map { width:100%; }
+.control-column { gap:14px; }
+.mission-card { background:linear-gradient(135deg,#fff 0%,#f4f7ff 100%); }
+.planner-card { padding:20px; border:1px solid #d8dff4; border-radius:20px; background:linear-gradient(145deg,#fff 0%,#f1f2ff 52%,#edf8fa 100%); box-shadow:0 14px 34px rgba(54,62,112,.12); }
+.challenge-top { display:flex; align-items:center; gap:12px; }
+.challenge-icon { display:grid; place-items:center; width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#087f8c,#39b5ae);color:white;font-size:1.45rem;box-shadow:0 7px 16px rgba(8,127,140,.2); }
+.challenge-kicker { margin:0 0 4px;color:#63718d;font-size:.63rem;font-weight:900;letter-spacing:.15em; }
+.challenge-tag { display:inline-block;padding:4px 8px;border-radius:99px;background:#fff0d7;color:#925b0d;font-size:.61rem;font-weight:900;letter-spacing:.07em; }
+.briefing-heading { display:none; }
+.planner-card h2 { margin:14px 0 8px;color:#182c43;font-size:1.22rem;line-height:1.2;letter-spacing:-.035em; }
+.challenge-question { margin:0;padding:14px 15px;border-left:4px solid var(--coral);border-radius:0 13px 13px 0;background:#fff0ed;color:#34465e;font-size:.9rem;font-weight:750;line-height:1.5; }
+.challenge-budget { display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;margin-top:13px;padding:12px 14px;border-radius:14px;background:linear-gradient(110deg,#172e49,#24516a);color:white; }
+.challenge-budget>span:first-child { font-size:.62rem;font-weight:900;letter-spacing:.1em;color:#b8d7e2; }
+.challenge-budget strong { grid-column:2;grid-row:1/3;color:#fff;font-size:1.55rem;line-height:1; }
+.challenge-budget strong small { font-size:.7rem;font-weight:700; }
+.challenge-budget>span:last-child { font-size:.68rem;color:#d4e6ed; }
+.approach-math { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px; }
+.approach-chip { padding:10px 12px!important;border:1px solid #e0e6f1!important;border-radius:13px!important;background:#fff!important;text-align:left!important;box-shadow:0 3px 10px rgba(25,46,72,.035); }
+.approach-chip .direction { color:#65748c;font-size:.62rem;font-weight:900;letter-spacing:.08em; }
+.approach-chip strong { margin:5px 0 2px;color:#20364f;font-size:.91rem; }
+.approach-chip small { color:#8a96a8;font-size:.67rem; }
+.approach-chip small b { color:#52647b; }
+.north-chip { border-left:4px solid #18a0a5!important; }
+.south-chip { border-left:4px solid #4e83d5!important; }
+.east-chip { border-left:4px solid #e6a63e!important; }
+.west-chip { border-left:4px solid #9678d4!important; }
+.schedule-inputs { margin-top:13px;padding:14px;border:1px solid #dfe5f0;border-radius:15px;background:#fff; }
+.slider-heading { display:flex;justify-content:space-between;align-items:center;gap:10px; }
+.slider-heading label { color:#34465e;font-size:.75rem;font-weight:850;line-height:1.35; }
+.slider-heading output { flex:none;padding:5px 9px;border-radius:9px;background:#e4f5f3;color:#087f8c;font-size:.84rem;font-weight:950; }
+#ns-seconds { margin:13px 0 8px;accent-color:#087f8c;height:8px; }
+.schedule-split { font-size:.72rem;font-weight:800; }
+.schedule-split strong { color:#20364f;font-size:.83rem; }
+.schedule-track { height:13px;border-radius:99px;background:#e9edf5; }
+.schedule-track span:first-child { background:linear-gradient(90deg,#087f8c,#3ab8ae); }
+.schedule-track span:last-child { background:linear-gradient(90deg,#f3bd54,#f07862); }
+.prediction-row { display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px; }
+.prediction-card { padding:12px;border:1px solid #d8eee9;border-radius:14px;background:#eaf8f5; }
+.prediction-card span { display:block;color:#527c78;font-size:.59rem;font-weight:900;letter-spacing:.06em; }
+.prediction-card strong { display:block;margin-top:5px;color:#087f75;font-size:1.35rem; }
+.points-card { border-color:#f4e4c6;background:#fff7e8; }
+.points-card span { color:#99743b; }
+.points-card strong { color:#b87517; }
+.plan-button { display:flex;justify-content:center;align-items:center;gap:10px;width:100%;min-height:50px;margin-top:12px;border:0;border-radius:13px;background:linear-gradient(100deg,#087f8c,#176a92);color:#fff;font-size:.88rem;font-weight:900;box-shadow:0 8px 18px rgba(8,127,140,.22);transition:transform .18s,box-shadow .18s; }
+.plan-button:hover:not(:disabled) { transform:translateY(-2px);box-shadow:0 12px 22px rgba(8,127,140,.27); }
+.math-hint { margin:10px 0 0;padding:10px 12px;border-radius:11px;background:#e9eefb;color:#536482;font-size:.7rem;line-height:1.45; }
+.traffic-controls { background:#fff; }
+.queue-summary>div { border-radius:12px;background:#f3f6fb; }
+.live-results strong { color:#087f8c; }
+.mission-tag { color:#b46b26; }
+@media(max-width:1100px) { .game-layout{grid-template-columns:minmax(0,1.2fr) minmax(360px,.9fr);gap:14px} }
+@media(max-width:850px) { .game-layout{grid-template-columns:1fr} .control-column{display:grid;grid-template-columns:1fr 1fr} .mission-card{grid-column:1/-1} .planner-card{grid-column:1} .traffic-controls{grid-column:2;grid-row:2} .math-card{grid-column:1/-1} }
+@media(max-width:560px) { .app-shell{width:calc(100% - 18px)} .control-column{display:flex;flex-direction:column} .approach-math{grid-template-columns:repeat(2,minmax(0,1fr))} .planner-card{padding:15px} .challenge-question{font-size:.83rem} }
