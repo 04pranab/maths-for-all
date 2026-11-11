@@ -43,6 +43,11 @@ assert.equal(gateway.read().length, 1);
 const stored = JSON.parse(storage.get("mfa_analytics_v1"));
 assert.equal(stored.length, 1);
 assert.equal(stored[0].category, "quiz");
+assert.equal(gateway.record("race", "start", {difficulty:"medium"}), true);
+assert.equal(gateway.record("slab", "restart_round", {}), true);
+const normalized = JSON.parse(storage.get("mfa_analytics_v1"));
+assert.equal(normalized[1].action, "game_opened");
+assert.equal(normalized[2].action, "retry");
 
 assert.equal(gateway.record("", "answer", {}), false);
 assert.equal(gateway.record("quiz", "", {}), false);
@@ -54,4 +59,4 @@ gateway.clear();
 assert.equal(storage.has("mfa_analytics_v1"), false);
 assert.equal(gateway.read().length, 0);
 
-console.log(JSON.stringify({ status: "PASS", checks: 8 }));
+console.log(JSON.stringify({ status: "PASS", checks: 10 }));
