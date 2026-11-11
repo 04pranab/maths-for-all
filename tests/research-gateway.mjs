@@ -32,7 +32,7 @@ vm.runInContext(source + "\nglobalThis.__gateway = ResearchEventGateway;", conte
 const gateway = context.__gateway;
 assert.ok(gateway);
 
-assert.equal(gateway.record("quiz", "open", {}), false);
+assert.equal(gateway.record("quiz", "game_opened", {}), false);
 assert.equal(gateway.read().length, 0);
 
 allowed = true;
