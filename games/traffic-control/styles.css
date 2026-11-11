@@ -445,8 +445,7 @@ body.easy-level .mission-card .mission-number{color:#07828b}
 @media(prefers-reduced-motion:reduce){.city3d{scroll-behavior:auto}}
 
 /* Critical regression fix: keep the beginner signal-allocation control visible. */
-body.easy-level #schedule-inputs,
-body.easy-level #schedule-inputs[hidden] { display:block !important; visibility:visible !important; }
+body.easy-level #schedule-inputs { display:block !important; visibility:visible !important; }
 /* The city is a fixed 3D illustration, not a draggable map. */
 .city3d,.city3d:active { cursor:default !important; touch-action:pan-y; }
 .city3d canvas { pointer-events:none; }
