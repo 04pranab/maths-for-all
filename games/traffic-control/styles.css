@@ -453,3 +453,10 @@ body.easy-level #schedule-inputs { display:block !important; visibility:visible 
 @media(max-width:1050px) { .city-stage-3d { height:70vh; min-height:560px; } }
 @media(max-width:800px) { .city-stage-3d { height:68vh; min-height:500px; } }
 @media(max-width:520px) { .city-stage-3d { height:62vh; min-height:430px; } }
+
+
+/* Final Easy-mode visibility and fixed-city presentation safeguards. */
+body.easy-level #schedule-inputs { display:block !important; visibility:visible !important; opacity:1 !important; }
+#schedule-inputs[hidden] { display:none !important; }
+.city3d, .city3d canvas { cursor:default !important; }
+.city3d { touch-action:none; }
