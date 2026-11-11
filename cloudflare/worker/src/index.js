@@ -188,8 +188,8 @@ async function submitAttempt(request, env, user, gameId) {
   return jsonResponse({accepted:true,duplicate:false,points:a.points,best:{points:a.points},progress:level,badges:earnedBadges(gameProgress||{})});
 }
 async function globalLeaderboard(env, limit) {
-  const result = await env.DB.prepare(`SELECT u.id,u.username,p.total_points AS points,p.total_attempts AS games_played
-    FROM player_progress p JOIN users u ON u.id=p.user_id
+  const result = await env.DB.prepare(`SELECT u.id,u.username,p.total_points AS points,COUNT(g.game_id) AS games_played
+    FROM player_progress p JOIN users u ON u.id=p.user_id LEFT JOIN player_game_progress g ON g.user_id=u.id AND g.attempts>0
     WHERE p.total_points>0 ORDER BY p.total_points DESC,p.updated_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
   return result.results || [];
 }
@@ -306,8 +306,10 @@ async function route(request, env) {
     for (const row of earnedRows.results||[]) (earnedByGame[row.game_id] ||= []).push(row);
     const badges = ACTIVE_GAME_IDS.map(gameId => {
       const progress = (games.results||[]).find(row=>row.game_id===gameId) || {game_id:gameId,total_points:0,total_xp:0,attempts:0,perfect_clears:0,hard_clears:0,current_streak:0,best_streak:0,highest_level:1};
-      const unlocked = new Set((earnedByGame[gameId]||[]).map(row=>row.badge_id));
-      return {gameId,gameName:GAME_RULES[gameId].label,...progress,earned:earnedBadges(progress).map(b=>({...b,earnedAt:(earnedByGame[gameId]||[]).find(r=>r.badge_id===b.id)?.earned_at||null})),locked:BADGE_RULES.filter(b=>!unlocked.has(b.id))};
+      const stored = earnedByGame[gameId] || [];
+      const earned = earnedBadges(progress).map(b=>({...b,earnedAt:stored.find(r=>r.badge_id===b.id)?.earned_at||null}));
+      const unlocked = new Set(earned.map(b=>b.id));
+      return {gameId,gameName:GAME_RULES[gameId].label,...progress,earned,locked:BADGE_RULES.filter(b=>!unlocked.has(b.id))};
     });
     const globalBadges = (earnedByGame.all||[]).map(row=>({id:row.badge_id,title:row.badge_id.replace("level-","Level "),icon:"⭐",earnedAt:row.earned_at}));
     const level = progressForXp(player.total_xp);
