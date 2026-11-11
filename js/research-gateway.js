@@ -29,6 +29,7 @@ const ResearchEventGateway = (() => {
   }
   function record(category, action, detail={}) {
     if(!consentAllowed()||!CATEGORIES.has(category)||!ACTIONS.has(action))return false;
+    if(detail !== undefined && (detail === null || typeof detail !== "object" || Array.isArray(detail))) return false;
     const list=load();
     list.push({category,action,detail:cleanDetail(detail)});
     if(list.length>MAX_EVENTS)list.splice(0,list.length-MAX_EVENTS);
