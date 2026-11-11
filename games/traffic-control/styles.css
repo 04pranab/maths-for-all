@@ -460,3 +460,33 @@ body.easy-level #schedule-inputs { display:block !important; visibility:visible 
 #schedule-inputs[hidden] { display:none !important; }
 .city3d, .city3d canvas { cursor:default !important; }
 .city3d { touch-action:none; }
+
+
+/* Minimal game interface: level selector, city, and the challenge planner only. */
+body { background:#edf2f6; }
+.app-shell { width:min(2200px,100%); margin:0 auto; padding:18px clamp(10px,2vw,30px) 24px; }
+.level-picker { position:relative; z-index:5; margin:0 0 14px; }
+.game-layout { grid-template-columns:minmax(0,1.7fr) minmax(390px,.83fr); gap:16px; align-items:stretch; }
+.city-card { border-radius:18px; }
+.city-stage-3d { height:clamp(620px,calc(100vh - 150px),1050px); min-height:540px; border-radius:18px; }
+.control-column { display:block; }
+.planner-card { height:100%; padding:18px; overflow:visible; }
+.planner-card h2 { margin:12px 0 8px; }
+.challenge-question { font-size:.86rem; }
+.challenge-budget,.approach-math,.schedule-inputs,.prediction-row { margin-top:11px; }
+.plan-button { margin-top:11px; }
+.math-hint,.logic-hooks,.city-camera-tip,.map-legend,.city-card-head,.topbar,.hero,.bottom-strip,.footer-note { display:none !important; }
+@media(max-width:950px) {
+ .game-layout { grid-template-columns:1fr; }
+ .city-stage-3d { height:62vh; min-height:420px; }
+ .planner-card { height:auto; }
+}
+@media(max-width:560px) {
+ .app-shell { padding:9px 8px 16px; }
+ .level-picker { gap:6px; margin-bottom:9px; }
+ .level-tab { min-height:58px; padding:8px; gap:8px; }
+ .level-number { width:32px; height:32px; }
+ .level-tab small { font-size:.58rem; }
+ .city-stage-3d { height:48vh; min-height:320px; }
+ .planner-card { padding:14px; }
+}
