@@ -1,4 +1,4 @@
-import { MISSIONS } from "./missions.js";
+import { MISSIONS } from "./missions.js?v=20261111b";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const $ = (selector) => document.querySelector(selector);
@@ -120,13 +120,15 @@ function updateMathData() {
   const m = MISSIONS[missionIndex];
   for (const d of ["north","south","east","west"]) {
     const node = $("#math-" + d);
-    if (node) node.textContent = queues[d].length + " waiting · " + m.waitMinutes[d] + " min";
+    const waitNode = $("#wait-" + d);
+    if (node) node.textContent = queues[d].length + (queues[d].length === 1 ? " vehicle" : " vehicles");
+    if (waitNode) waitNode.textContent = m.waitMinutes[d] + " min";
   }
   $("#cycle-budget").textContent = m.budget + " s";
   $("#pedestrian-reserve").textContent = m.pedestrianReserve + " s";
-  $("#vehicle-budget").textContent = availableBudget() + " s";
-  $("#service-time").textContent = m.serviceSeconds + " s";
-  $("#planner-brief").textContent = "Split " + availableBudget() + " seconds of vehicle green time between the two roads. " + (m.pedestrianReserve ? "A pedestrian crossing has already reserved " + m.pedestrianReserve + " seconds." : "Both roads can receive the time you allocate.");
+  $("#vehicle-budget").innerHTML = availableBudget() + ' <small>seconds</small>';
+  $("#reserve-note").textContent = m.pedestrianReserve ? m.pedestrianReserve + " seconds reserved for pedestrians" : "No pedestrian reserve this round";
+  $("#planner-question").textContent = "You have " + availableBudget() + " seconds of green time. How will you split it to move the most vehicles and earn the highest score?";
   $("#math-hint").textContent = m.lesson;
   updatePlanner();
 }
