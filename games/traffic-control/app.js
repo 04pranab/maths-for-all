@@ -241,8 +241,8 @@ function updateMathBriefing() {
     const node = $("#math-" + direction);
     if (node) node.textContent = queues[direction].length + " × " + mission.waitMinutes[direction] + " min";
   });
-  $("#pressure-ns").textContent = phasePressure("ns") + " points";
-  $("#pressure-ew").textContent = phasePressure("ew") + " points";
+  $("#pressure-ns").textContent = "Work it out";
+  $("#pressure-ew").textContent = "Work it out";
   $("#phase-ns .phase-count").textContent = queueTotal("ns") + " vehicles";
   $("#phase-ew .phase-count").textContent = queueTotal("ew") + " vehicles";
 }
