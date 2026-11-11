@@ -12,7 +12,7 @@ Maths for All is an independent mathematics learning project inspired by inclusi
 
 The repository's current implementation includes Number Maze on `main`, with seeded procedural boards and a bounded uniqueness check. Fraction Bakery and Little Shop are implemented but still need supervised learner/educator acceptance. Probability Machine remains in the codebase but is hidden from the visible menu. Math Court is shelved and hidden from the learner menu; its code and tests are retained, not presented as an active game.
 
-The current main branch includes optional account sign-in, Cloudflare D1-backed player progression, achievements, and leaderboards. Guest play remains available. The account system is separate from research consent; creating an account never opts a learner into research.
+The current main branch includes optional account sign-in, Cloudflare D1-backed player progression, achievements, and leaderboards. Guest play remains available. The account system is separate from research: account creation never opts a learner into research. Research collection is currently absent: no research events are recorded locally, queued, uploaded or stored. Ordinary player data such as accounts, completed-game scores, lifetime points, XP, levels, progress and badges is retained solely to provide player functionality and competition. The research endpoint always rejects requests, and migration 0005 removes the legacy research aggregate store.
 
 ## Features
 
