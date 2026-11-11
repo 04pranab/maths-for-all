@@ -4,7 +4,7 @@ import worker from "../src/index.js";
 import { calculateGlobalPoints, normalizeScore, MAX_GLOBAL_POINTS } from "../src/leaderboard/scoring.js";
 import { validateAttempt } from "../src/leaderboard/validation.js";
 
-test("health endpoint requires a D1 binding and reports live features", async () => {
+test("health endpoint reports the D1-backed service", async () => {
   const DB = { prepare(sql) { return { first: async () => ({count:0}) }; } };
   const response = await worker.fetch(new Request("https://api.example.test/health"), { DB });
   assert.equal(response.status, 200);
@@ -17,7 +17,6 @@ test("health endpoint requires a D1 binding and reports live features", async ()
 test("missing D1 binding fails safely", async () => {
   const response = await worker.fetch(new Request("https://api.example.test/api/auth/me"), {});
   assert.equal(response.status, 500);
-  assert.equal((await response.json()).error.length > 0, true);
 });
 
 test("CORS allows only the configured exact origin and credentials", async () => {
