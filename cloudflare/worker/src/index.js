@@ -193,12 +193,6 @@ async function globalLeaderboard(env, limit) {
     WHERE p.total_points>0 GROUP BY u.id,u.username,p.total_points,p.updated_at ORDER BY p.total_points DESC,p.updated_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
   return result.results || [];
 }
-const RESEARCH_GAMES = Object.freeze({
-  quiz: "arithmetic-quiz", race: "math-racing", sudoku: "sudoku", shape: "shape-fitting",
-  slab: "slab-maths", shape_architect: "shape-architect", fraction_bakery: "fraction-bakery",
-  little_shop: "little-shop", number_maze: "number-maze", "traffic-control": "traffic-control",
-});
-const RESEARCH_ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
 const RESEARCH_TABLES = Object.freeze({
   "arithmetic-quiz":"research_arithmetic_quiz","math-racing":"research_math_racing","sudoku":"research_sudoku",
   "shape-fitting":"research_shape_fitting","slab-maths":"research_slab_maths","shape-architect":"research_shape_architect",
