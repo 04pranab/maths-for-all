@@ -11,7 +11,8 @@ const context = {
     setItem: (key, value) => storage.set(key, value),
     removeItem: key => storage.delete(key),
   },
-  ResearchConsent: { isAllowed: () => false },
+  ResearchConsent: { isAllowed: () => true },
+  fetch: async () => { throw new Error("Research network calls must never happen."); },
   Date, JSON, Array, Object, Number, String, Boolean, console,
 };
 vm.createContext(context);
