@@ -20,26 +20,17 @@ The game uses JavaScript modules, so serve it over HTTP rather than opening the 
 
 ## Gameplay
 
-The learner operates a traffic junction with two mutually exclusive vehicle phases:
+The game has three difficulty levels, each with 50 sequential challenges (150 total):
 
-- **North + South** moves one vehicle from each of those approaches.
-- **East + West** moves one vehicle from each of those approaches.
-- Every wave is released only after the learner explicitly chooses a phase.
-- The selected phase remains green while its vehicles pass; the other approaches remain red.
-- When all vehicles have cleared, the learner completes a short maths reflection.
-- The final mission stops all vehicles and lets pedestrians cross in groups before asking a time question.
+- **Easy:** A two-way road with northbound and southbound car queues.
+- **Medium:** A four-way junction. North + South and East + West receive separate green phases.
+- **Hard:** A four-way junction with bicycles (5 seconds), cars (10 seconds), and trucks (15 seconds).
 
-Each difficulty contains 50 sequential challenges (150 total). Completing a challenge unlocks the next one, and progress is saved locally in the browser. The 50 scenarios per level vary queue sizes, waiting times, vehicle mixes, and cycle budgets. The final challenge offers a replay option.
+For each challenge, learners read the queue sizes and waiting times, divide the available signal budget between the two phases, and run their plan. Vehicles move according to the chosen allocation; priority points reward clearing vehicles that have waited longer.
 
-The game introduces these skills:
+The first three scenarios in each level are preserved. The remaining 47 scenarios per level add distinct queue layouts, waiting-time weights, vehicle mixes where applicable, and signal budgets. Completing a challenge unlocks the next one. Progress is stored locally in the browser, and the final challenge offers a replay option.
 
-1. Counting vehicles and understanding a green wave.
-2. Addition across four queues.
-3. Repeated addition and division into equal groups.
-4. Planning across two pairs of approaches.
-5. Pedestrian crossing groups and elapsed-time multiplication.
-
-There is no countdown, score penalty, sound effect, or forced speed requirement. Incorrect answers can be retried.
+There is no countdown or forced speed requirement. Learners can restart a challenge and try a different signal plan.
 
 ## Visual assets
 
