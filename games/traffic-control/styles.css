@@ -200,3 +200,6 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
   .wave-action { align-items: flex-start; flex-direction: column; }
   .send-button { width: 100%; }
 }
+
+.restart-button { margin-top: 10px; padding: 7px 2px; border: 0; background: transparent; color: #789083; cursor: pointer; font-size: .68rem; font-weight: 800; }
+.restart-button:hover { color: #376c50; text-decoration: underline; }
