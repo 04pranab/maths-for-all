@@ -1,41 +1,28 @@
-# Maths For All API Worker
+# Maths For All Cloudflare Worker
 
-This directory contains the Cloudflare Worker API foundation for the Maths for
-All GitHub Pages frontend.
+The Worker provides account authentication, lifetime game progression, achievement records, public leaderboards, personal-rank lookup, and a fail-closed research endpoint.
 
-## Database
+## Deploy
+Use the repository's Cloudflare Worker workflow and committed Wrangler configuration. Do not commit API tokens or database credentials. Apply D1 migrations before deploying code that queries new tables.
 
-The Cloudflare D1 database `maths-for-all-prod` has been provisioned in APAC.
-The initial schema is versioned in `migrations/0001_initial.sql` and includes:
+## D1 migrations
+Apply in order: 0001, 0002, 0003, 0004, 0005. Confirm each migration is recorded in d1_migrations.
 
-- Private user identities, password-hash storage, and Google identity mapping.
-- Hashed session, email-verification, and password-reset tokens.
-- Idempotent game attempts and one best score per player per active game.
-- Database constraints for the nine active game IDs and normalized score bounds.
+Migration 0005 adds:
+- cumulative player_progress;
+- per-game player_game_progress;
+- idempotent player_game_attempts;
+- player_badges;
+- ten separate research_<game> daily aggregate tables.
 
-The Worker binding is named `DB`. The schema does not make authentication or
-leaderboards live by itself. The API remains fail-closed until the D1-backed
-handlers, password hashing, email delivery, session cookies, and frontend
-integration have been implemented and tested.
+## Scoring
+Points and XP accumulate across completed attempts. There is no per-game or global points cap and no maximum player level. The game base award, difficulty factor, logarithmic level progression, hint penalty and mistake penalty are defined in src/leaderboard/scoring.js. XP thresholds and achievement milestones are defined in src/leaderboard/progression.js.
 
-## Preserve the game
+Legacy best-score tables remain for compatibility and are not the source of lifetime standings. The client still supplies completion metrics; server-verifiable challenge proofs are required before the competition can be described as cheat-proof.
 
-Guest play and local progress remain the default and must continue working
-without an account. Account features are additive. Never require registration
-to play, and never collect research consent as a condition of account creation.
-Only public usernames and scores belong on leaderboards; email and tokens stay
-private. The hidden Probability Machine and shelved Math Court are excluded.
+## Research safety
+Research ingestion is OFF by default. The Worker rejects requests unless RESEARCH_COLLECTION_ENABLED is exactly "true". Production must remain OFF until a verifiable adult/parent/lawful-guardian permission mechanism is implemented and reviewed for the child-focused audience.
 
-## Local checks
+When later enabled, the Worker accepts an allowlist and writes only daily aggregates to the corresponding per-game table. It does not store account IDs, usernames, emails, parent names, school names, IP addresses, session tokens, device IDs, question text or raw answers in research tables. Retention target is 90 days.
 
-From this directory run `npm test`. Use the repository's existing Node version
-and package lock. The D1 migration can be applied with the project's Wrangler
-version after reviewing the target environment.
-
-## Deployment safety
-
-Do not deploy a partially implemented account service as production-ready.
-Configure the exact production frontend origin and required secrets only after
-the complete API and browser integration tests pass. Keep production secrets
-out of Git. Do not migrate any existing PostgreSQL/SQLite data until the
-source schema and migration plan have been reviewed.
+A client-provided consent:true is not proof of valid consent. Do not enable the server flag based only on the browser UI.
