@@ -69,12 +69,16 @@ function generatedRounds(levelKey, originalRounds) {
         : 2 + Math.floor(i / 12);
     const queues = {};
     const waitMinutes = {};
+    let easyLayoutCode = i + 3;
+    for (const reservedCode of [1, 12, 23]) {
+      if (easyLayoutCode >= reservedCode) easyLayoutCode++;
+    }
 
     for (const direction of directions) {
       const variation = random(5) - 2;
       const directionIndex = directions.indexOf(direction);
       const size = levelKey === "easy"
-        ? (direction === "north" ? 1 + (i % 10) : 1 + Math.floor(i / 10))
+        ? (direction === "north" ? 1 + (easyLayoutCode % 10) : 1 + Math.floor(easyLayoutCode / 10))
         : levelKey === "medium"
           ? 1 + (Math.floor(i / Math.pow(6, directionIndex)) % 6)
           : 2 + (Math.floor(i / Math.pow(6, directionIndex)) % 6);
