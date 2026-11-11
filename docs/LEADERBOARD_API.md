@@ -6,7 +6,7 @@ Base URL: `https://maths-for-all-api.ompranabmohanty.workers.dev/api`
 - Email + username + password registration. Email is collected for account identity and future account recovery, but no email is sent and no email verification is required.
 - Usernames are public; email addresses are private.
 - Passwords are PBKDF2-HMAC-SHA-256 hashes (310,000 iterations); plaintext passwords are never stored.
-- Sessions are 30-day, HttpOnly, Secure, SameSite=Lax cookies. Browser requests must use `credentials: "include"`.
+- Sessions expire after 30 days. The browser holds the random bearer token in tab-scoped `sessionStorage`; the database stores only its SHA-256 digest. Cross-site cookies are not required.
 - Sign-out revokes the current session. Account deletion cascades to sessions and scores.
 - Guest play and device-local progress remain available without an account.
 
@@ -24,7 +24,7 @@ Base URL: `https://maths-for-all-api.ompranabmohanty.workers.dev/api`
 | DELETE | `/players/me` | Permanently delete account and associated scores |
 
 ## Scoring
-Only the nine active games are accepted. The API accepts `scorePercent` from 0 to 100 and calculates `points = round(scorePercent * 10)` on the server. Each player's best score per game is kept, up to 1,000 points per game and 9,000 globally. Replayed attempt IDs are idempotent. Leaderboards expose username and scores only.
+All ten active games are accepted, including Traffic Control Centre. The API accepts `scorePercent` from 0 to 100 and calculates `points = round(scorePercent * 10)` on the server. Each player's best score per game is kept, up to 1,000 points per game and 10,000 globally. Replayed attempt IDs are idempotent. Leaderboards expose username and scores only.
 
 The game client must submit only after a genuine completed game, using a unique `attemptId`, actual completion percentage, and elapsed seconds. Do not award points for opening a game, viewing a page, or merely signing in. The API does not trust a client-supplied user ID, rank, or points value.
 
@@ -40,6 +40,7 @@ The production D1 database uses these application tables:
 - `users`: unique case-insensitive username and email, password hash and account timestamps.
 - `sessions`: hashed bearer/cookie tokens, expiry and last-use timestamps; cascades on user deletion.
 - `game_attempts`: idempotent attempt history with game/score/duration constraints.
-- `best_game_scores`: one best normalized score per user and active game.
+- `best_game_scores`: one best normalized score per user for the nine original games.
+- `traffic_control_attempts` and `traffic_control_best_scores`: Traffic Control Centre attempts and its best score, kept separate to preserve the original score-table constraints.
 - `auth_rate_limits`: hashed-IP rate-limit counters.
 - `email_verification_tokens` and `password_reset_tokens` remain schema placeholders for a future explicitly approved email feature; this release does not send email or require verification.
