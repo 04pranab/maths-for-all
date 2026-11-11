@@ -20,24 +20,17 @@ The game uses JavaScript modules, so serve it over HTTP rather than opening the 
 
 ## Gameplay
 
-The learner operates a four-way junction with two mutually exclusive vehicle phases:
+The game has three difficulty levels, each with 50 sequential challenges (150 total):
 
-- **North + South** moves one vehicle from each of those approaches.
-- **East + West** moves one vehicle from each of those approaches.
-- Every wave is released only after the learner explicitly chooses a phase.
-- The selected phase remains green while its vehicles pass; the other approaches remain red.
-- When all vehicles have cleared, the learner completes a short maths reflection.
-- The final mission stops all vehicles and lets pedestrians cross in groups before asking a time question.
+- **Easy:** A two-way road with northbound and southbound car queues.
+- **Medium:** A four-way junction. North + South and East + West receive separate green phases.
+- **Hard:** A four-way junction with bicycles (5 seconds), cars (10 seconds), and trucks (15 seconds).
 
-Five guided missions introduce:
+For each challenge, learners read the queue sizes and waiting times, divide the available signal budget between the two phases, and run their plan. Vehicles move according to the chosen allocation; priority points reward clearing vehicles that have waited longer.
 
-1. Counting vehicles and understanding a green wave.
-2. Addition across four queues.
-3. Repeated addition and division into equal groups.
-4. Planning across two pairs of approaches.
-5. Pedestrian crossing groups and elapsed-time multiplication.
+The first three scenarios in each level are preserved. The remaining 47 scenarios per level add distinct queue layouts, waiting-time weights, vehicle mixes where applicable, and signal budgets. Completing a challenge unlocks the next one. Progress is stored locally in the browser, and the final challenge offers a replay option.
 
-There is no countdown, score penalty, sound effect, or forced speed requirement. Incorrect answers can be retried.
+There is no countdown or forced speed requirement. Learners can restart a challenge and try a different signal plan.
 
 ## Visual assets
 
@@ -57,13 +50,13 @@ These are configurable access supports, not a claim that one design meets every 
 
 ## Tests
 
-Run the standalone mission-data checks from the repository root:
+Run the challenge-data checks from the repository root:
 
 \`\`\`sh
 node games/traffic-control/tests/mission-data.test.mjs
 \`\`\`
 
-The test checks mission count, queue values, answer-option integrity, and the arithmetic used by the five mission briefs.
+The test verifies that all three levels contain exactly 50 unique challenge layouts, valid queues, matching vehicle types, meaningful objectives, and cycle budgets compatible with the signal slider.
 
 ## Integration note
 
