@@ -167,7 +167,6 @@ function setStatus(message) {
 }
 
 function updateControls() {
-  const canControlCars = !busy && !$("#math-check").hidden && false;
   const missionFinished = !$("#math-check").hidden;
   ["ns", "ew"].forEach((phase) => {
     const button = phaseButtons[phase];
