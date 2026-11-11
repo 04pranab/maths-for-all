@@ -24,9 +24,9 @@ A user must be shown a clear research-data explanation and must actively choose 
 | Game/module               | arithmetic quiz, racing, Sudoku, shape fitting, Slab Maths                              |
 | Event type                | game opened, answer submitted, hint requested, explanation requested, retry, completion |
 | Learning state            | difficulty level, correct/incorrect result, attempt count                               |
-| Timing                    | time spent on an answer or game event                                                   |
+| Timing                    | coarse duration band only: under 10s, 10–30s, 30–120s, or over 120s                      |
 | Game progress             | question/round/level completion                                                         |
-| Technical event timestamp | time at which the research event occurred                                               |
+| Date bucket               | UTC calendar day only; no exact event timestamp                                         |
 
 The exact fields must remain tied to documented research questions. Future fields require a review of this policy and the consent wording.
 
