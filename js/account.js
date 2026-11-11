@@ -147,7 +147,7 @@
     close() { $("auth-modal").classList.add("hidden"); },
   };
   window.MfaAccounts = {
-    openLeaderboard, closeLeaderboard() { $("leaderboard-modal").classList.add("hidden"); },
+    openLeaderboard, closeLeaderboard() { $("leaderboard-modal").classList.add("hidden"); }, closeProfile() { $("account-profile-modal").classList.add("hidden"); },
     logout, deleteAccount, submitAttempt, onGameEvent, refreshSession,
   };
   document.addEventListener("DOMContentLoaded", () => {
