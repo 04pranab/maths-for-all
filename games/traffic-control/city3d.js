@@ -10,24 +10,23 @@ export class TrafficCity3D{
   host.innerHTML="";
   if(!THREE){host.innerHTML='<div class="city-fallback">The 3D city could not load. Check your internet connection and reload the game.</div>';return}
   this.scene=new THREE.Scene();this.scene.background=new THREE.Color(0xb8cbd0);this.scene.fog=new THREE.Fog(0xb8cbd0,48,100);
-  this.camera=new THREE.PerspectiveCamera(42,1,.1,220);this.camera.position.set(25,27,30);this.camera.lookAt(0,0,0);
+  this.camera=new THREE.PerspectiveCamera(42,1,.1,260);this.camera.position.set(0,72,34);this.camera.lookAt(0,0,0);
   try{this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:false})}catch(error){console.error("WebGL is unavailable:",error);host.innerHTML='<div class="city-fallback">This browser could not start the 3D city. Please enable hardware acceleration or try a browser with WebGL support.</div>';return}this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.8));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;this.renderer.outputColorSpace=THREE.SRGBColorSpace;this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.15;host.append(this.renderer.domElement);
   this.scene.add(new THREE.HemisphereLight(0xe9f6ff,0x71816b,2.1));const sun=new THREE.DirectionalLight(0xffe4bd,3.1);sun.position.set(-18,30,15);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-38;sun.shadow.camera.right=38;sun.shadow.camera.top=38;sun.shadow.camera.bottom=-38;this.scene.add(sun);
   this.city=new THREE.Group();this.scene.add(this.city);this.vehicleGroup=new THREE.Group();this.scene.add(this.vehicleGroup);this.buildCity();this.buildSignals();this.resize();
   this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(host);
-  this.onPointerDown=e=>{this.drag={x:e.clientX,y:e.clientY,az:this.azimuth,el:this.elevation};host.setPointerCapture?.(e.pointerId)};
-  this.azimuth=Math.PI/4;this.elevation=.56;this.distance=68;
-  this.onPointerMove=e=>{if(!this.drag)return;this.azimuth=this.drag.az+(e.clientX-this.drag.x)*.006;this.elevation=THREE.MathUtils.clamp(this.drag.el+(e.clientY-this.drag.y)*.004,.34,1.05);this.placeCamera()};
+  this.onPointerDown=()=>{};
+  this.azimuth=0;this.elevation=Math.atan2(72,34);this.distance=Math.hypot(72,34);
+  this.onPointerMove=()=>{};
   this.onPointerUp=()=>{this.drag=null};
-  host.addEventListener("pointerdown",this.onPointerDown);host.addEventListener("pointermove",this.onPointerMove);host.addEventListener("pointerup",this.onPointerUp);host.addEventListener("pointercancel",this.onPointerUp);
-  host.addEventListener("wheel",this.onWheel={handleEvent:e=>{e.preventDefault();this.distance=THREE.MathUtils.clamp((this.distance||68)+e.deltaY*.035,48,92);this.placeCamera()}},{passive:false});
+  host.style.cursor="default";
   this.placeCamera();this.animate();
  }
  box(parent,w,h,d,x,y,z,material,cast=true){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=cast;m.receiveShadow=true;parent.add(m);return m}
  cyl(parent,r1,r2,h,x,y,z,material,segments=12){const m=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,segments),material);m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m}
  buildCity(){
   const ground=mat(0x9fbd96),grass=mat(0x7fa77e),road=mat(COLORS.road),curb=mat(0xc7c5b7),lane=mat(0xf5e7bc),white=mat(0xf5f4eb),concrete=mat(0xd4d2c5);
-  this.box(this.city,58,.5,58,0,-.35,0,ground,false);
+  this.box(this.city,76,.5,76,0,-.35,0,ground,false);
   // City blocks and parks around the central junction.
   for(const [x,z] of [[-19,-14],[19,-14],[-19,14],[19,14]]){
    this.box(this.city,17,.18,12,x,.02,z,grass,false);
@@ -36,13 +35,13 @@ export class TrafficCity3D{
    for(let k=0;k<4;k++){const tx=x+(k%2?5:-5),tz=z+(k<2?-4:4);this.tree(tx,.12,tz)}
   }
   // Broad roads, raised kerbs, sidewalks and intersection.
-  const hCurb=this.box(this.city,58,.18,10,0,.02,0,curb,false);hCurb.userData.horizontalRoad=true;const hRoad=this.box(this.city,58,.2,8.8,0,.13,0,road,false);hRoad.userData.horizontalRoad=true;
-  this.box(this.city,10,.18,58,0,.02,0,curb,false);this.box(this.city,8.8,.2,58,0,.13,0,road,false);
-  for(const z of [-5.5,5.5]){const m=this.box(this.city,58,.18,.55,0,.18,z,white,false);m.userData.horizontalRoad=true;}
+  const hCurb=this.box(this.city,70,.18,10,0,.02,0,curb,false);hCurb.userData.horizontalRoad=true;const hRoad=this.box(this.city,70,.2,8.8,0,.13,0,road,false);hRoad.userData.horizontalRoad=true;
+  this.box(this.city,10,.18,70,0,.02,0,curb,false);this.box(this.city,8.8,.2,70,0,.13,0,road,false);
+  for(const z of [-5.5,5.5]){const m=this.box(this.city,70,.18,.55,0,.18,z,white,false);m.userData.horizontalRoad=true;}
   for(const x of [-5.5,5.5])this.box(this.city,.55,.18,46,x,.18,0,white,false);
   // Dashed lane markings, short and clear around the junction.
-  for(let x=-28;x<=28;x+=4.3){if(Math.abs(x)>6){const m=this.box(this.city,1.9,.025,.12,x,.245,0,lane,false);m.userData.horizontalRoad=true;}}
-  for(let z=-26;z<=26;z+=4.3){if(Math.abs(z)>6)this.box(this.city,.12,.025,1.9,0,.245,z,lane,false)}
+  for(let x=-34;x<=34;x+=4.3){if(Math.abs(x)>6){const m=this.box(this.city,1.9,.025,.12,x,.245,0,lane,false);m.userData.horizontalRoad=true;}}
+  for(let z=-34;z<=34;z+=4.3){if(Math.abs(z)>6)this.box(this.city,.12,.025,1.9,0,.245,z,lane,false)}
   // Stop bars and zebra crossings on all four approaches.
   for(const z of [-6.1,6.1]){this.box(this.city,8.4,.035,.22,0,.27,z,white,false);for(let x=-4.2;x<=4.2;x+=1.2)this.box(this.city,.65,.035,1.25,x,.28,z+(z<0?-1.2:1.2),white,false)}
   for(const x of [-6.1,6.1]){const stop=this.box(this.city,.22,.035,8.4,x,.27,0,white,false);stop.userData.horizontalRoad=true;for(let z=-4.2;z<=4.2;z+=1.2){const stripe=this.box(this.city,1.25,.035,.65,x+(x<0?-1.2:1.2),.28,z,white,false);stripe.userData.horizontalRoad=true}}
@@ -52,7 +51,7 @@ export class TrafficCity3D{
   this.building(-20,15,7,6,8,0xe5d4ac,0xc18a5b,"MARKET");
   this.building(20,15,8,6,11,0xc9ddd7,0x689b94,"HOSPITAL");
   // Extra skyline in the far blocks for scale.
-  for(const [x,z,h,c] of [[-26,-17,13,0x8da7b4],[26,-17,15,0xb4a5c4],[-26,17,12,0xb3a18b],[26,17,16,0x8baea6]])this.building(x,z,4.4,4.5,h,c,0x566f78,"");
+  for(const [x,z,h,c] of [[-26,-17,13,0x8da7b4],[26,-17,15,0xb4a5c4],[-26,17,12,0xb3a18b],[26,17,16,0x8baea6],[-31,-28,10,0x9bb2bd],[31,-28,14,0xb4a5c4],[-31,28,13,0xb3a18b],[31,28,11,0x8baea6]])this.building(x,z,4.4,4.5,h,c,0x566f78,"");
   // Street lamps at the outer corners.
   for(const x of [-8,8])for(const z of [-8,8])this.streetLamp(x,z);
  }
@@ -110,7 +109,7 @@ export class TrafficCity3D{
   const tick=()=>{if(!animations.length){onDone?.();return}const now=performance.now();for(let i=animations.length-1;i>=0;i--){const a=animations[i];const t=THREE.MathUtils.clamp((now-a.start)/a.duration,0,1),e=1-Math.pow(1-t,3);a.g.position.x=THREE.MathUtils.lerp(a.from.x,a.to.x,e);a.g.position.z=THREE.MathUtils.lerp(a.from.z,a.to.z,e);if(t>=1){this.vehicleGroup.remove(a.g);animations.splice(i,1)}}if(animations.length)requestAnimationFrame(tick);else onDone?.()};requestAnimationFrame(tick)
  }
  resize(){if(!this.renderer)return;const w=Math.max(1,this.host.clientWidth),h=Math.max(1,this.host.clientHeight);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.renderer.setSize(w,h,false)}
- placeCamera(){if(!this.camera)return;const r=this.distance||47;this.camera.position.set(Math.sin(this.azimuth)*r,Math.sin(this.elevation)*r,Math.cos(this.azimuth)*r);this.camera.lookAt(0,1.2,0)}
+ placeCamera(){if(!this.camera)return;this.camera.position.set(0,72,34);this.camera.lookAt(0,0,0)}
  animate(){if(this.disposed||!this.renderer)return;this.frame=requestAnimationFrame(()=>this.animate());this.renderer.render(this.scene,this.camera)}
  dispose(){this.disposed=true;cancelAnimationFrame(this.frame);this.resizeObserver?.disconnect();this.renderer?.dispose()}
 }

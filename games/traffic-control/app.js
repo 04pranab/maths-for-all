@@ -1,5 +1,5 @@
 import { LEVELS } from "./missions.js?v=20261112a";
-import { TrafficCity3D } from "./city3d.js?v=20261112-3d-city-spacing-fix";
+import { TrafficCity3D } from "./city3d.js?v=20261112-static-upper-city";
 const $=s=>document.querySelector(s);
 const DIRS=["north","south","east","west"],TIMES={bike:5,car:10,truck:15};
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
@@ -9,7 +9,7 @@ function total(){return dirs().reduce((s,d)=>s+(queues[d]?.length||0),0)}
 function budget(){return mission().budget}
 function service(kind){return level==="hard"?TIMES[kind]:mission().serviceSeconds}
 function capacity(d,seconds){let used=0,count=0;for(const v of queues[d]||[]){const t=service(v);if(used+t>seconds)break;used+=t;count++}return count}
-function planAt(ns){const ew=budget()-ns,caps={};for(const d of dirs())caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew);let moved=0,points=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;points+=n*mission().waitMinutes[d]*10}return{ns,ew,caps,moved,points}}
+function planAt(ns){const ew=budget()-ns,caps={};for(const d of dirs()){if(level==="easy")caps[d]=capacity(d,d==="north"?ns:ew);else caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew)}let moved=0,points=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;points+=n*mission().waitMinutes[d]*10}return{ns,ew,caps,moved,points}}
 function bestPlan(){let best=null;for(let n=0;n<=budget();n+=cfg().step){const p=planAt(n);if(!best||p.points>best.points||(p.points===best.points&&p.moved>best.moved))best=p}return best}
 function updateQueue(){for(const d of DIRS)$("#count-"+d).textContent=queues[d]?.length||0;$("#cleared-count").textContent=cleared;$("#total-score").textContent=score;$("#cycles-used").textContent=cycles}
 function renderVehicles(){city.addVehicles(queues);updateQueue()}
@@ -19,10 +19,10 @@ function updateMath(){
  for(const d of DIRS){const active=dirs().includes(d),chip=$(".approach-math ."+d+"-chip");if(chip)chip.hidden=!active;if(active){$("#math-"+d).textContent=queues[d].length+" "+(queues[d].length===1?"vehicle":"vehicles");$("#wait-"+d).textContent=m.waitMinutes[d]+" min"}}
  $("#vehicle-budget").innerHTML=budget()+' <small>seconds</small>';
  $("#reserve-note").textContent=level==="hard"?"Mixed fleet: bicycle 5s · car 10s · truck 15s":level==="easy"?"One green phase serves both directions":"Split the cycle between the two roads";
- $("#planner-question").textContent=m.objective;$("#fleet-legend").hidden=level!=="hard";$("#schedule-inputs").hidden=level==="easy";
- const result=level==="easy"?planAt(budget()):planAt(nsSeconds);
+ $("#planner-question").textContent=m.objective;$("#fleet-legend").hidden=level!=="hard";$("#schedule-inputs").hidden=false;
+ const result=planAt(nsSeconds);
  $("#predicted-vehicles").textContent=result.moved+" / "+total();$("#predicted-score").textContent=result.points+" pts";
- if(level!=="easy"){const ew=budget()-nsSeconds;$("#ns-seconds").max=budget();$("#ns-seconds").step=cfg().step;$("#ns-seconds").value=nsSeconds;$("#ns-output").textContent=nsSeconds+" sec";$("#ns-preview").textContent=nsSeconds+" sec";$("#ew-preview").textContent=ew+" sec";$("#ns-track").style.width=(nsSeconds/budget()*100)+"%";$("#ew-track").style.width=(ew/budget()*100)+"%"}
+ {const ew=budget()-nsSeconds;$("#ns-seconds").max=budget();$("#ns-seconds").step=cfg().step;$("#ns-seconds").value=nsSeconds;$("#ns-output").textContent=nsSeconds+" sec";$("#ns-preview").textContent=nsSeconds+" sec";$("#ew-preview").textContent=ew+" sec";$("#ns-track").style.width=(nsSeconds/budget()*100)+"%";$("#ew-track").style.width=(ew/budget()*100)+"%";$("#slider-label").textContent=level==="easy"?"Green time for Northbound traffic":"Green time for North + South";$("#ns-side-label").textContent=level==="easy"?"Northbound":"North + South";$("#ew-side-label").textContent=level==="easy"?"Southbound":"East + West";}
  $("#math-hint").textContent=m.lesson;$("#run-plan").disabled=busy||total()===0;
 }
 function setLevelUI(){
@@ -41,7 +41,7 @@ function startRound(index=0){
 function setLevel(next){level=next;round=0;setLevelUI();startRound(0)}
 function runPlan(){
  if(busy||!total())return;
- const id=++runId,p=level==="easy"?planAt(budget()):planAt(nsSeconds),best=bestPlan(),moving=[];
+ const id=++runId,p=planAt(nsSeconds),best=bestPlan(),moving=[];
  optimalScore+=best.points;cycles++;busy=true;$("#run-plan").disabled=true;
  for(const d of dirs()){
   const selected=queues[d].slice(0,p.caps[d]),starts=city.positionsForQueue(d,selected);
@@ -52,8 +52,8 @@ function runPlan(){
  }
  for(const d of DIRS)setSignal(d,false);
  renderVehicles();
- const ns=level==="easy"||p.ns>0,ew=level!=="easy"&&p.ew>0;
- if(dirs().includes("north"))setSignal("north",ns);if(dirs().includes("south"))setSignal("south",ns);if(dirs().includes("east"))setSignal("east",ew);if(dirs().includes("west"))setSignal("west",ew);
+ const ns=p.ns>0,ew=p.ew>0;
+ if(dirs().includes("north"))setSignal("north",ns);if(dirs().includes("south"))setSignal("south",level==="easy"?ew:ns);if(dirs().includes("east"))setSignal("east",ew);if(dirs().includes("west"))setSignal("west",ew);
  cleared+=p.moved;score+=p.points;
  $("#traffic-status").textContent="Your signal plan is running. Watch the vehicles clear the junction.";
  const duration=reduced?350:1900+moving.length*130;
