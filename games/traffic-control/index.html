@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eaf3e9">
+  <meta name="description" content="A calm, interactive traffic-junction game that teaches Class 3–4 mathematics through safe traffic decisions.">
+  <title>Traffic Control Centre · Maths for All</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#game-main">Skip to game</a>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="back-link" href="../../index.html" aria-label="Return to Maths for All games">
+        <span aria-hidden="true">←</span><span>Maths for All</span>
+      </a>
+      <div class="brand-lockup">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40"><path d="M20 3 36 12v16L20 37 4 28V12z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M20 10v20M10 20h20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="20" r="4" fill="currentColor"/></svg>
+        </span>
+        <span><strong>TRAFFIC</strong><small>CONTROL CENTRE</small></span>
+      </div>
+      <div class="top-actions">
+        <button class="utility-button" id="text-size-toggle" type="button" aria-pressed="false" title="Make text larger">A+</button>
+        <button class="utility-button motion-button" id="motion-toggle" type="button" aria-pressed="false">
+          <span aria-hidden="true">◌</span><span class="utility-label">Reduce motion</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="game-main">
+      <section class="intro-row" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">YOUR CITY NEEDS A TRAFFIC CAPTAIN</p>
+          <h1 id="page-title">Keep the city <span>moving safely.</span></h1>
+          <p class="intro-copy">Choose a signal, release a safe wave of traffic, and use maths to keep every road moving. There is no countdown. Take your time.</p>
+        </div>
+        <div class="captain-badge" aria-label="Five guided missions">
+          <span class="badge-icon" aria-hidden="true">✦</span>
+          <span><strong>5 missions</strong><small>Learn one step at a time</small></span>
+        </div>
+      </section>
+
+      <div class="game-layout">
+        <section class="city-card" aria-labelledby="city-heading">
+          <div class="city-card-head">
+            <div><p class="section-kicker">LIVE CITY VIEW</p><h2 id="city-heading">Maple Street Junction</h2></div>
+            <div class="live-pill"><span class="live-dot"></span> SIMULATION</div>
+          </div>
+
+          <div class="city-stage">
+            <svg id="city-map" viewBox="0 0 900 620" role="img" aria-labelledby="map-title map-description">
+              <title id="map-title">A four-way city intersection</title>
+              <desc id="map-description">A top-down illustrated town junction with four roads, marked pedestrian crossings, buildings, trees and traffic lights. Vehicles move when a safe signal phase is selected.</desc>
+              <defs>
+                <linearGradient id="grass" x1="0" y1="0" x2="0.9" y2="1"><stop offset="0" stop-color="#dcebd5"/><stop offset="1" stop-color="#c8dfc2"/></linearGradient>
+                <linearGradient id="asphalt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#596a70"/><stop offset="1" stop-color="#46585f"/></linearGradient>
+                <linearGradient id="buildingBlue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8e7c9"/><stop offset="1" stop-color="#e9cda4"/></linearGradient>
+                <linearGradient id="buildingRose" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5d8d0"/><stop offset="1" stop-color="#e9bdb4"/></linearGradient>
+                <filter id="softShadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#304b3d" flood-opacity=".17"/></filter>
+                <pattern id="grassDots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="5" cy="7" r="1.2" fill="#a8c99e" opacity=".5"/><circle cx="20" cy="19" r="1" fill="#a8c99e" opacity=".45"/></pattern>
+              </defs>
+
+              <rect width="900" height="620" fill="url(#grass)"/>
+              <rect width="900" height="620" fill="url(#grassDots)"/>
+
+              <!-- City blocks and miniature buildings -->
+              <g class="city-block" filter="url(#softShadow)">
+                <rect x="36" y="34" width="246" height="142" rx="24" fill="#c6d9bd"/>
+                <rect x="55" y="49" width="128" height="111" rx="15" fill="url(#buildingBlue)"/>
+                <path d="M47 58 118 22 192 58" fill="#d48f62"/>
+                <rect x="72" y="75" width="31" height="30" rx="5" fill="#a8c7c5"/><rect x="119" y="75" width="31" height="30" rx="5" fill="#a8c7c5"/>
+                <rect x="102" y="119" width="34" height="41" rx="7" fill="#9b765e"/>
+                <rect x="198" y="62" width="64" height="96" rx="13" fill="#f3e7c9"/>
+                <rect x="210" y="78" width="18" height="22" rx="4" fill="#9dc3c5"/><rect x="235" y="78" width="18" height="22" rx="4" fill="#9dc3c5"/>
+                <rect x="210" y="112" width="18" height="22" rx="4" fill="#9dc3c5"/><rect x="235" y="112" width="18" height="22" rx="4" fill="#9dc3c5"/>
+                <rect x="73" y="164" width="188" height="7" rx="4" fill="#b5c7a8"/>
+              </g>
+              <g class="city-block" filter="url(#softShadow)">
+                <rect x="623" y="34" width="240" height="142" rx="24" fill="#c6d9bd"/>
+                <rect x="644" y="51" width="194" height="109" rx="16" fill="url(#buildingRose)"/>
+                <path d="M634 61 741 22 851 61" fill="#b87a71"/>
+                <rect x="665" y="77" width="36" height="31" rx="5" fill="#a8c7c5"/><rect x="715" y="77" width="36" height="31" rx="5" fill="#a8c7c5"/><rect x="765" y="77" width="36" height="31" rx="5" fill="#a8c7c5"/>
+                <rect x="720" y="119" width="42" height="41" rx="7" fill="#a47767"/>
+              </g>
+              <g class="city-block" filter="url(#softShadow)">
+                <rect x="36" y="448" width="246" height="137" rx="24" fill="#c6d9bd"/>
+                <rect x="56" y="465" width="205" height="101" rx="16" fill="#f5e5bb"/>
+                <path d="M47 475 157 433 271 475" fill="#d49a5e"/>
+                <rect x="76" y="489" width="56" height="45" rx="7" fill="#9fc2c4"/><path d="M104 489v45M76 511h56" stroke="#f7f0dd" stroke-width="4"/>
+                <rect x="163" y="489" width="71" height="77" rx="8" fill="#b77c5c"/><rect x="177" y="503" width="42" height="25" rx="4" fill="#f4d78c"/>
+              </g>
+              <g class="city-block" filter="url(#softShadow)">
+                <rect x="623" y="448" width="240" height="137" rx="24" fill="#c6d9bd"/>
+                <rect x="645" y="465" width="194" height="101" rx="16" fill="#d8e8e4"/>
+                <path d="M635 475 741 433 850 475" fill="#779d99"/>
+                <rect x="666" y="489" width="34" height="30" rx="5" fill="#9fc2c4"/><rect x="715" y="489" width="34" height="30" rx="5" fill="#9fc2c4"/><rect x="764" y="489" width="34" height="30" rx="5" fill="#9fc2c4"/>
+                <rect x="715" y="530" width="43" height="36" rx="6" fill="#8aab9f"/>
+                <path d="M735 534v28M721 548h28" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+              </g>
+
+              <!-- Sidewalks under the roads -->
+              <path d="M0 194H900V426H0Z M336 0H564V620H336Z" fill="#d9d7c8"/>
+              <path d="M0 207H900V413H0Z M349 0H551V620H349Z" fill="url(#asphalt)"/>
+              <path d="M0 207H900V413H0Z M349 0H551V620H349Z" fill="none" stroke="#f3f0df" stroke-width="4"/>
+
+              <!-- Road edge kerbs -->
+              <path d="M0 194H900 M0 426H900 M336 0V620 M564 0V620" stroke="#b4b9a9" stroke-width="5" fill="none"/>
+              <path d="M0 207H900 M0 413H900 M349 0V620 M551 0V620" stroke="#73817d" stroke-width="2" fill="none" opacity=".8"/>
+
+              <!-- Lane dividers and stop bars -->
+              <path d="M449 0V174 M449 446V620 M0 309H324 M576 309H900" stroke="#d9d7c5" stroke-width="3" stroke-dasharray="18 15" opacity=".8"/>
+              <path d="M359 187H541 M359 433H541 M337 222V398 M563 222V398" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".95"/>
+
+              <!-- Zebra crossings -->
+              <g fill="#f7f3e7" opacity=".96">
+                <rect x="365" y="193" width="10" height="15" rx="2"/><rect x="387" y="193" width="10" height="15" rx="2"/><rect x="409" y="193" width="10" height="15" rx="2"/><rect x="431" y="193" width="10" height="15" rx="2"/><rect x="453" y="193" width="10" height="15" rx="2"/><rect x="475" y="193" width="10" height="15" rx="2"/><rect x="497" y="193" width="10" height="15" rx="2"/><rect x="519" y="193" width="10" height="15" rx="2"/>
+                <rect x="365" y="412" width="10" height="15" rx="2"/><rect x="387" y="412" width="10" height="15" rx="2"/><rect x="409" y="412" width="10" height="15" rx="2"/><rect x="431" y="412" width="10" height="15" rx="2"/><rect x="453" y="412" width="10" height="15" rx="2"/><rect x="475" y="412" width="10" height="15" rx="2"/><rect x="497" y="412" width="10" height="15" rx="2"/><rect x="519" y="412" width="10" height="15" rx="2"/>
+                <rect x="340" y="228" width="15" height="10" rx="2"/><rect x="340" y="250" width="15" height="10" rx="2"/><rect x="340" y="272" width="15" height="10" rx="2"/><rect x="340" y="294" width="15" height="10" rx="2"/><rect x="340" y="316" width="15" height="10" rx="2"/><rect x="340" y="338" width="15" height="10" rx="2"/><rect x="340" y="360" width="15" height="10" rx="2"/><rect x="340" y="382" width="15" height="10" rx="2"/>
+                <rect x="545" y="228" width="15" height="10" rx="2"/><rect x="545" y="250" width="15" height="10" rx="2"/><rect x="545" y="272" width="15" height="10" rx="2"/><rect x="545" y="294" width="15" height="10" rx="2"/><rect x="545" y="316" width="15" height="10" rx="2"/><rect x="545" y="338" width="15" height="10" rx="2"/><rect x="545" y="360" width="15" height="10" rx="2"/><rect x="545" y="382" width="15" height="10" rx="2"/>
+              </g>
+
+              <!-- Direction arrows -->
+              <g fill="none" stroke="#e8e5d6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".8">
+                <path d="M399 113v27m-9-9 9 9 9-9"/><path d="M501 505v-27m-9 9 9-9 9 9"/>
+                <path d="M123 284h27m-9-9 9 9-9 9"/><path d="M777 336h-27m9-9-9 9 9 9"/>
+              </g>
+
+              <!-- Trees, planters and street furniture -->
+              <g class="tree" filter="url(#softShadow)"><rect x="292" y="85" width="8" height="27" rx="3" fill="#8e7153"/><circle cx="296" cy="76" r="19" fill="#78a978"/><circle cx="284" cy="83" r="12" fill="#8ab887"/><circle cx="307" cy="85" r="11" fill="#66986e"/></g>
+              <g class="tree" filter="url(#softShadow)"><rect x="595" y="87" width="8" height="27" rx="3" fill="#8e7153"/><circle cx="599" cy="77" r="19" fill="#78a978"/><circle cx="587" cy="84" r="12" fill="#8ab887"/><circle cx="610" cy="86" r="11" fill="#66986e"/></g>
+              <g class="tree" filter="url(#softShadow)"><rect x="296" y="500" width="8" height="27" rx="3" fill="#8e7153"/><circle cx="300" cy="491" r="19" fill="#78a978"/><circle cx="288" cy="498" r="12" fill="#8ab887"/><circle cx="311" cy="500" r="11" fill="#66986e"/></g>
+              <g class="tree" filter="url(#softShadow)"><rect x="594" y="500" width="8" height="27" rx="3" fill="#8e7153"/><circle cx="598" cy="491" r="19" fill="#78a978"/><circle cx="586" cy="498" r="12" fill="#8ab887"/><circle cx="609" cy="500" r="11" fill="#66986e"/></g>
+
+              <g class="place-label"><rect x="76" y="179" width="92" height="22" rx="11"/><text x="122" y="194">COMMUNITY</text></g>
+              <g class="place-label"><rect x="729" y="179" width="82" height="22" rx="11"/><text x="770" y="194">LIBRARY</text></g>
+              <g class="place-label"><rect x="85" y="430" width="78" height="22" rx="11"/><text x="124" y="445">CAFÉ</text></g>
+              <g class="place-label"><rect x="723" y="430" width="92" height="22" rx="11"/><text x="769" y="445">CLINIC</text></g>
+
+              <!-- Traffic signals -->
+              <g id="signal-north" class="signal" transform="translate(581 142)"><rect x="-13" y="-4" width="26" height="78" rx="13" class="signal-case"/><circle class="lamp lamp-red" cy="12" r="8"/><circle class="lamp lamp-amber" cy="35" r="8"/><circle class="lamp lamp-green" cy="58" r="8"/><path d="M0 74v16" class="signal-post"/></g>
+              <g id="signal-south" class="signal" transform="translate(319 470)"><rect x="-13" y="-4" width="26" height="78" rx="13" class="signal-case"/><circle class="lamp lamp-red" cy="12" r="8"/><circle class="lamp lamp-amber" cy="35" r="8"/><circle class="lamp lamp-green" cy="58" r="8"/><path d="M0 74v16" class="signal-post"/></g>
+              <g id="signal-east" class="signal" transform="translate(690 434)"><rect x="-13" y="-4" width="26" height="78" rx="13" class="signal-case"/><circle class="lamp lamp-red" cy="12" r="8"/><circle class="lamp lamp-amber" cy="35" r="8"/><circle class="lamp lamp-green" cy="58" r="8"/><path d="M0 74v16" class="signal-post"/></g>
+              <g id="signal-west" class="signal" transform="translate(210 112)"><rect x="-13" y="-4" width="26" height="78" rx="13" class="signal-case"/><circle class="lamp lamp-red" cy="12" r="8"/><circle class="lamp lamp-amber" cy="35" r="8"/><circle class="lamp lamp-green" cy="58" r="8"/><path d="M0 74v16" class="signal-post"/></g>
+
+              <g id="vehicle-layer" aria-hidden="true"></g>
+              <g id="pedestrian-layer" aria-hidden="true"></g>
+            </svg>
+            <div class="map-compass" aria-hidden="true"><span>N</span><i>↑</i></div>
+          </div>
+
+          <div class="map-legend" aria-label="Map legend">
+            <span><i class="legend-dot legend-green"></i> Green: move</span>
+            <span><i class="legend-dot legend-red"></i> Red: stop</span>
+            <span><i class="legend-stripe"></i> Pedestrian crossing</span>
+          </div>
+        </section>
+
+        <aside class="control-column" aria-label="Traffic control and mission">
+          <section class="mission-card" aria-labelledby="mission-title">
+            <div class="mission-topline"><span class="section-kicker">CURRENT MISSION</span><span id="mission-number" class="mission-number">01 / 05</span></div>
+            <div class="mission-progress" aria-label="Mission progress"><span id="mission-progress-fill"></span></div>
+            <p id="mission-tag" class="mission-tag">SIGNAL BASICS</p>
+            <h2 id="mission-title">Your first green light</h2>
+            <p id="mission-description" class="mission-description">Clear the waiting cars. Choose one safe direction at a time.</p>
+            <div class="mission-objective"><span class="objective-icon" aria-hidden="true">◎</span><p id="mission-objective">Use a green signal to let traffic pass. Every wave moves one vehicle from each open approach.</p></div>
+          </section>
+
+          <section class="traffic-controls" aria-labelledby="controls-title">
+            <div class="panel-heading"><div><p class="section-kicker">JUNCTION CONTROLS</p><h2 id="controls-title">Choose a green light</h2></div><span class="control-icon" aria-hidden="true">◉</span></div>
+            <div class="phase-buttons">
+              <button type="button" class="phase-button" id="phase-ns" data-phase="ns" aria-pressed="false">
+                <span class="phase-lights" aria-hidden="true"><i></i><i class="on"></i></span>
+                <span><strong>North + South</strong><small>Vertical road</small></span><span class="phase-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="phase-button" id="phase-ew" data-phase="ew" aria-pressed="false">
+                <span class="phase-lights phase-lights-ew" aria-hidden="true"><i></i><i class="on"></i></span>
+                <span><strong>East + West</strong><small>Horizontal road</small></span><span class="phase-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+            <div class="wave-action">
+              <div class="wave-copy"><strong>Ready for a safe wave?</strong><small id="wave-help">Choose a green phase first.</small></div>
+              <button type="button" class="send-button" id="send-wave" disabled><span aria-hidden="true">▶</span> Release wave</button>
+            </div>
+            <div class="queue-summary" aria-label="Vehicles waiting by direction">
+              <div><span class="queue-arrow">↑</span><span>North</span><strong id="count-north">0</strong></div>
+              <div><span class="queue-arrow">↓</span><span>South</span><strong id="count-south">0</strong></div>
+              <div><span class="queue-arrow">→</span><span>West</span><strong id="count-west">0</strong></div>
+              <div><span class="queue-arrow">←</span><span>East</span><strong id="count-east">0</strong></div>
+            </div>
+            <p id="traffic-status" class="status-message" role="status" aria-live="polite">All signals are red. Choose a direction to begin.</p>
+          </section>
+
+          <section id="pedestrian-panel" class="pedestrian-panel" hidden aria-labelledby="pedestrian-title">
+            <div><p class="section-kicker">PEDESTRIAN SAFETY</p><h3 id="pedestrian-title">People are waiting to cross</h3><p id="pedestrian-help">Stop all vehicles before giving pedestrians a walk signal.</p></div>
+            <div class="pedestrian-row"><span class="people-icon" aria-hidden="true">● ● ● ●</span><strong id="pedestrian-count">8 waiting</strong></div>
+            <button type="button" class="walk-button" id="walk-button">Stop traffic &amp; start crossing</button>
+          </section>
+
+          <section id="math-check" class="math-card" hidden aria-labelledby="math-title">
+            <div class="math-card-top"><span class="math-star" aria-hidden="true">✦</span><span class="section-kicker">MATHS MOMENT</span></div>
+            <h3 id="math-title">Let's think it through</h3>
+            <p id="math-question"></p>
+            <div id="math-answers" class="answer-grid"></div>
+            <p id="math-feedback" class="math-feedback" role="status" aria-live="polite"></p>
+            <button type="button" id="next-mission" class="next-button" hidden>Next mission <span aria-hidden="true">→</span></button>
+          </section>
+        </aside>
+      </div>
+
+      <section class="bottom-strip" aria-label="Learning goals">
+        <div><span class="bottom-icon">01</span><span><strong>Think safely</strong><small>One direction at a time</small></span></div>
+        <div><span class="bottom-icon">02</span><span><strong>Use your maths</strong><small>Count, add, subtract and divide</small></span></div>
+        <div><span class="bottom-icon">03</span><span><strong>Go at your pace</strong><small>No timer and no penalty</small></span></div>
+      </section>
+    </main>
+    <footer class="footer-note">A practice city. Mistakes are part of learning. You can reset any mission whenever you like.</footer>
+  </div>
+</body>
+</html>
