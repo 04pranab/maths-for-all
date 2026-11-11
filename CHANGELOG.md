@@ -1,5 +1,32 @@
 # Changelog
 
+## Unreleased · Player progression, Player HQ and privacy hardening
+
+### Competition and progression
+- Replaced fixed per-game and global point ceilings with cumulative lifetime points and XP.
+- Added unbounded player levels with an increasing XP requirement for each next level.
+- Added difficulty-weighted game awards, logarithmic challenge-level progression, and hint/mistake penalties.
+- Added per-game lifetime progress, durable achievement milestones, and game-tile badge indicators.
+- Redesigned Player HQ around player level, XP progress, lifetime totals, per-game achievements, and player-wide milestones.
+- Redesigned the leaderboard with global/per-game lifetime standings, a highlighted signed-in player, personal rank, and nearby competitors.
+- Kept legacy best-score tables for compatibility; new rankings use cumulative progression tables.
+- Documented the current limitation: client-reported completion metrics are not cheat-proof.
+
+### Research privacy
+- Rewrote the full Markdown and HTML research policy.
+- Created ten separate daily aggregate research tables, one per active game.
+- Made the Worker fail closed unless its server-side research feature flag is explicitly enabled.
+- Made the browser consent gate research-OFF while verifiable adult/parent/lawful-guardian permission is unavailable.
+- Clarified that account creation, sign-in, scoring and leaderboard participation are not research consent.
+- Documented that school and parent/guardian names are not collected.
+- Added child/guardian safeguards and the phased India DPDP Act/Rules context.
+
+### Documentation and tests
+- Updated leaderboard API, architecture, database, Worker and README documentation.
+- Added tests for endless scoring, level progression, achievement milestones, personal rank, and fail-closed research ingestion.
+
+**Release status:** awaiting CI, migration application and production verification. Research collection must remain OFF.
+
 ## Unreleased
 
 ### Project status correction
