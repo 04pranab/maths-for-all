@@ -17,10 +17,10 @@ test("research endpoint fails closed while guardian verification is unavailable"
  const response=await worker.fetch(new Request("https://api.example.test/api/research/events",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({consent:true,events:[{category:"sudoku",action:"puzzle_solved"}]})}),{DB,RESEARCH_COLLECTION_ENABLED:"false"});
  assert.equal(response.status,503);assert.equal(touched,0);
 });
-test("research endpoint rejects No or missing consent before database access",async()=>{
+test("research endpoint stays disabled even when a client claims consent and the flag is enabled",async()=>{
  let touched=0;const DB={prepare(){touched++;return{run:async()=>({meta:{changes:1}})}}};
- const response=await worker.fetch(new Request("https://api.example.test/api/research/events",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({consent:false,events:[{category:"sudoku",action:"puzzle_solved"}]})}),{DB,RESEARCH_COLLECTION_ENABLED:"true"});
- assert.equal(response.status,403);assert.equal(touched,0);
+ const response=await worker.fetch(new Request("https://api.example.test/api/research/events",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({consent:true,events:[{category:"sudoku",action:"puzzle_solved"}]})}),{DB,RESEARCH_COLLECTION_ENABLED:"true"});
+ assert.equal(response.status,503);assert.equal(touched,0);
 });
 
 class MemoryD1{
