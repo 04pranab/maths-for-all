@@ -8,6 +8,19 @@
 **Research milestone:** `v3.0.0`  
 **Last updated:** 11 November 2026
 
+## Current production status · 11 November 2026
+
+This section supersedes older status notes below where they conflict.
+
+- Optional Cloudflare D1 accounts, saved player progress, lifetime points/XP, achievements and leaderboards are part of the current backend. Guest play remains available.
+- Player-service data is retained only to operate accounts and competition: username, private email, password hash, sessions, completed attempts, points, XP, levels, per-game progress, badges and leaderboard totals.
+- Research collection is OFF and absent from the production data flow. The browser does not record, queue or upload research events. The Worker research endpoint always returns HTTP 503 without writing to D1.
+- Migration 0005 adds player progression and removes the legacy research aggregate table and its historical rows. It does not create research tables.
+- Account creation, sign-in and leaderboard participation are not research consent. School names, parent/guardian names, disability/medical details and research answer histories are not collected.
+- The current account flow still lacks verifiable parent/lawful-guardian onboarding for child accounts. Do not claim full legal compliance or enable a child-account rollout that requires such safeguards until this is reviewed and implemented.
+- Client-reported completion metrics are not cheat-proof. Server-verifiable challenge proofs remain future work.
+
+
 **Current quality gate:** keep the `main` branch CI green; complete physical learner/educator and assistive-technology review for active games. The latest recorded `main` Tests and Pages deployment runs both passed on 31 October 2026. Physical-device review is not implied by headless CI.
 
 ## The spirit of this work
@@ -34,7 +47,7 @@ The release retains:
 
 - keyboard-friendly controls and visible focus states;
 - game-specific help and Escape handling for dismissible overlays;
-- explicit research consent;
+- research collection disabled by default and hard-blocked in the current release;
 - privacy/data policy access without login;
 - no external decorative image library; game-specific SVG artwork is generated inline where it is part of the interaction;
 - browser smoke/stress, authentication, PostgreSQL, and research-gateway checks.
@@ -103,20 +116,9 @@ Headless automation does not replace real assistive-technology testing or physic
 
 ## 4. Responsibility and privacy boundary
 
-Research collection remains strictly opt-in.
-
-Login or account creation is not research consent.
-
-If the learner chooses No:
-
-- research events are blocked;
-- locally stored research events are removed;
-- ordinary educational gameplay continues;
-- the preference can be reviewed and changed later.
+Research collection is not implemented in the current release. The browser does not record, queue or upload research events, and the Worker endpoint always rejects research requests without touching D1. Migration 0005 removes the legacy research aggregate store. Normal player progress, points, XP, achievements and leaderboards remain separate service functionality. Account creation is not research consent.
 
 The privacy and research-data policy remains available without login.
-
-The current physical-testing prototype does not represent its authentication shell as production authentication. Production authentication remains a later milestone.
 
 The responsible-use license requires operators who enable research collection to follow the published research-data policy.
 
@@ -246,8 +248,8 @@ The feature branch `feat/number-maze-unlimited-boards` implements the next game 
 - **Active learner menu:** Arithmetic Quiz, Math Racing, Sudoku, Shape Fitting, Shape Architect, Fraction Bakery, Slab Maths, Little Shop and Number Maze.
 - **Probability Machine:** implemented in the repository, but its learner-menu card remains hidden.
 - **Math Court:** shelved at the project owner's direction. Its code, styles, catalogue and regression tests remain in the repository, but it is not an active learner-menu game.
-- **Authentication:** learner-facing account/authentication controls remain disabled. Backend authentication modules, PostgreSQL migrations and API tests are present; deployment/production readiness must be verified separately.
-- **Research:** explicit consent and the research gateway are implemented as code and tested, but no production research programme or live collection deployment is claimed.
+- **Authentication:** optional Cloudflare D1 account sign-in, player progression and leaderboard features are present; guest play remains available.
+- **Research:** collection is disabled and not stored. The browser gateway and Worker endpoint are hard-blocked; the legacy aggregate table is removed by migration 0005.
 - **CI:** the latest recorded `main` Tests workflow and Pages deployment both completed successfully on 31 October 2026. This is the latest recorded run visible during this review, not a claim of a fresh run on 10 November.
 
 ## 12. Repository formatting status
@@ -266,7 +268,7 @@ The proposed competition model uses cumulative lifetime points and XP, not cappe
 - Per-game progress, persistent badges, and player-wide level milestones.
 - Player HQ and prominent game-tile badges.
 - Global/per-game standings with personal position and nearby competitors.
-- Ten isolated research aggregate tables, one per active game.
+- No research storage tables or research collection endpoint writes.
 - Rewritten research policy in Markdown and HTML.
 
 **Privacy gate:** research remains disabled in production until verifiable adult/parent/lawful-guardian consent is available. A profile or login never means research consent. School and parent/guardian names are not collected.
