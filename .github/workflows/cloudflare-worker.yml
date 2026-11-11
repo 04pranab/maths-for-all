@@ -8,6 +8,8 @@ on:
   push:
     branches:
       - main
+      - "feature/**"
+      - "fix/**"
     paths:
       - "cloudflare/worker/**"
       - ".github/workflows/cloudflare-worker.yml"
