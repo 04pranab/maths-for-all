@@ -85,9 +85,9 @@ const ResearchConsent = (function () {
               <li>Game/module and event type</li>
               <li>Difficulty and learning state</li>
               <li>Correct/incorrect result and attempt count</li>
-              <li>Response/event timing</li>
+              <li>Coarse response-time band (under 10s, 10–30s, 30–120s, or over 120s), not an exact timestamp</li>
               <li>Game progress and completion events</li>
-              <li>Technical event timestamp</li>
+              <li>UTC day bucket only, not an exact timestamp</li>
             </ul>
           </section>
           <section>
@@ -103,13 +103,13 @@ const ResearchConsent = (function () {
           </section>
         </div>
 
-        <p class="consent-note"><strong>No means no.</strong> If you choose No, research events are rejected and locally stored research events are removed. The games continue to work normally.</p>
+        <p class="consent-note"><strong>No means no.</strong> If you choose No, research events are rejected and locally stored research events are removed. The games continue to work normally. Uploaded research is stored only as anonymous daily totals, not as individual histories. Once combined into a shared total, an individual contribution cannot be separated back out.</p>
         <p class="consent-note">You can change this preference at any time from <strong>Privacy &amp; research</strong>.</p>
         <div class="consent-actions">
           <button class="consent-btn primary" onclick="ResearchConsent.choose('yes')">✓ Allow research data collection</button>
           <button class="consent-btn secondary" onclick="ResearchConsent.choose('no')">✕ Do not allow research data collection</button>
         </div>
-        <a class="consent-policy" href="docs/v3/research-data-policy.html" target="_blank" rel="noopener">Read the full research data and collection policy</a>
+        <a class="consent-policy" href="${window.location.pathname.includes("/games/traffic-control/") ? "../../docs/v3/research-data-policy.html" : "docs/v3/research-data-policy.html"}" target="_blank" rel="noopener">Read the full research data and collection policy</a>
       </div>`;
   }
 
