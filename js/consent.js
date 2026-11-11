@@ -87,7 +87,7 @@ const ResearchConsent = (function () {
               <li>Correct/incorrect result and attempt count</li>
               <li>Coarse response-time band (under 10s, 10–30s, 30–120s, or over 120s), not an exact timestamp</li>
               <li>Game progress and completion events</li>
-              <li>Technical event timestamp</li>
+              <li>UTC day bucket only, not an exact timestamp</li>
             </ul>
           </section>
           <section>
@@ -109,7 +109,7 @@ const ResearchConsent = (function () {
           <button class="consent-btn primary" onclick="ResearchConsent.choose('yes')">✓ Allow research data collection</button>
           <button class="consent-btn secondary" onclick="ResearchConsent.choose('no')">✕ Do not allow research data collection</button>
         </div>
-        <a class="consent-policy" href="docs/v3/research-data-policy.html" target="_blank" rel="noopener">Read the full research data and collection policy</a>
+        <a class="consent-policy" href="${window.location.pathname.includes("/games/traffic-control/") ? "../../docs/v3/research-data-policy.html" : "docs/v3/research-data-policy.html"}" target="_blank" rel="noopener">Read the full research data and collection policy</a>
       </div>`;
   }
 
