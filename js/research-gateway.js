@@ -37,7 +37,7 @@ const ResearchEventGateway = (() => {
     return true;
   }
   async function flush() {
-    if(!consentAllowed()||flushing)return false;
+    if(!consentAllowed() || typeof window === "undefined" || window.location.origin !== "https://04pranab.github.io" || flushing)return false;
     const list=load(); if(!list.length)return true;
     flushing=true;
     const batch=list.slice(0,50);
