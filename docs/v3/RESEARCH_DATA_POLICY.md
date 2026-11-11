@@ -45,6 +45,8 @@ An account exists to save a player's username, points, XP, level, game achieveme
 
 The current account system stores an email address for account identity, a username, a password hash, account timestamps, and hashed session-token records. The public leaderboard displays the username and earned competition points. It does not display email addresses or passwords.
 
+**Child-account limitation:** the current account flow does not yet provide verifiable age or parent/lawful-guardian onboarding. Therefore this project does not claim that account processing is fully DPDP-compliant for under-18 learners. Before enabling child accounts for a deployment where the relevant child-data rules apply, the project must implement verifiable parent/lawful-guardian permission for the account purpose itself, or keep that learner in guest mode / a properly parent-managed account flow until the safeguard is available. Research consent cannot substitute for account consent.
+
 ## 3. Research collection status and consent
 
 ### Current production behaviour
