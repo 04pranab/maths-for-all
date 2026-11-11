@@ -88,37 +88,11 @@ If a person declines, does not answer, closes the prompt, or has no recorded val
 
 The game must continue normally. Declining research must never reduce points, XP, levels, badges, game access, or leaderboard eligibility.
 
-## 4. Research data model is not implemented
+## 4. No research data model is active
 
-There is no research event storage in this release. No per-game research tables are created. A future research proposal would need a new, separately reviewed data model and explicit release approval before any collection begins.
+There is no research event storage in this release. No research tables are created, and no research event fields are collected. Migration 0005 removes the legacy aggregate research table and its historical rows.
 
-If a future design is approved, it must use data minimization and logical separation. The following dimensions are examples for a future proposal only, not fields currently collected:
-
-- `research_arithmetic_quiz`
-- `research_math_racing`
-- `research_sudoku`
-- `research_shape_fitting`
-- `research_slab_maths`
-- `research_shape_architect`
-- `research_fraction_bakery`
-- `research_little_shop`
-- `research_number_maze`
-- `research_traffic_control`
-
-Each row is a daily count bucket. The allowed aggregate dimensions are:
-
-| Field | Purpose |
-|---|---|
-| UTC day | Daily trend analysis; not an exact event time |
-| Game | Which game generated the event |
-| Action | A small allowlist such as game opened, answer, hint, retry, or completion |
-| Difficulty | A broad game difficulty label |
-| Outcome | Correct, incorrect, completed, or unspecified |
-| Level band | A broad range, never a precise personal learning history |
-| Duration band | Under 10s, 10–30s, 30–120s, over 120s, or unspecified |
-| Event count | Number of events in that aggregate bucket |
-
-No such table currently exists, and no such fields are currently collected. Any future implementation must be reviewed for necessity, re-identification risk, access, retention and legal basis before deployment.
+A future research proposal, if one is ever needed, must start with a new data-minimization review, a plain-language notice, a lawful basis and verifiable adult/parent/lawful-guardian permission where applicable. It must be separately approved and deployed. This policy does not pre-authorize any future research collection or define a live research schema.
 
 ## 5. Data that is not collected for research
 
