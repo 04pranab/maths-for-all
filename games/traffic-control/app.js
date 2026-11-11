@@ -3,6 +3,7 @@ import { MISSIONS } from "./missions.js";
 const SVG_NS = "http://www.w3.org/2000/svg";
 const $ = (selector) => document.querySelector(selector);
 const vehicleLayer = $("#vehicle-layer");
+const pedestrianLayer = $("#pedestrian-layer");
 const signalIds = { north: "signal-north", south: "signal-south", east: "signal-east", west: "signal-west" };
 const vehiclePalette = ["#e5a34d", "#6d9fc0", "#d66f68", "#7caa83", "#a18bc1", "#e2c76b"];
 const vehicleKinds = { north: ["car", "taxi", "bus", "car"], south: ["van", "car", "car", "bus"], east: ["bike", "car", "van", "taxi"], west: ["bus", "car", "taxi", "car"] };
@@ -41,6 +42,21 @@ function animateVehicle(group, direction, start, delay = 0) {
     if (now < started) { requestAnimationFrame(frame); return; }
     const t = Math.min(1, (now - started) / duration), ease = 1 - Math.pow(1 - t, 3);
     group.setAttribute("transform", "translate(" + (start.x + (end.x-start.x)*ease) + " " + (start.y + (end.y-start.y)*ease) + ") rotate(" + start.angle + ") scale(.58)");
+    if (t < 1) requestAnimationFrame(frame); else group.remove();
+  }
+  requestAnimationFrame(frame);
+}
+function makePedestrian(index) {
+  const group = svgNode("g", { class: "pedestrian", transform: "translate(366 " + (197 + index * 7) + ")", "aria-hidden": "true" });
+  const shirts = ["#6d91bd", "#d58a69", "#8aab76", "#a48ac1"];
+  group.innerHTML = '<circle class="pedestrian-head" cx="0" cy="-8" r="4.5"/><path class="pedestrian-body" d="M-5 -2Q0 -6 5 -2L4 9H-4Z" fill="' + shirts[index % shirts.length] + '"/><path class="pedestrian-leg" d="M-2 8 -4 16 M2 8 5 16"/>';
+  return group;
+}
+function animatePedestrian(group, index) {
+  const startY = 197 + index * 7, duration = reducedMotion ? 40 : 760, started = performance.now();
+  function frame(now) {
+    const t = Math.min(1, (now - started) / duration);
+    group.setAttribute("transform", "translate(" + (366 + 169 * t) + " " + startY + ")");
     if (t < 1) requestAnimationFrame(frame); else group.remove();
   }
   requestAnimationFrame(frame);
@@ -134,7 +150,7 @@ function startMission(index) {
   $("#next-mission").hidden = true;
   $("#math-feedback").textContent = "";
   for (const d of ["north","south","east","west"]) setSignal(d,false);
-  renderQueues(); updateMathData();
+  renderQueues(); pedestrianLayer.replaceChildren(); updateMathData();
   setStatus("Plan the green-time split before changing the signals. Your schedule will control how many vehicles move.");
 }
 function runPlan() {
@@ -150,18 +166,34 @@ function runPlan() {
     }
   }
   const nsGreen = plan.nsTime > 0, ewGreen = plan.ewTime > 0;
-  for (const d of ["north","south"]) setSignal(d,nsGreen);
-  for (const d of ["east","west"]) setSignal(d,ewGreen);
+  const pedestrianDuration = m.pedestrianReserve ? (reducedMotion ? 40 : 800) : 0;
+  for (const d of ["north","south","east","west"]) setSignal(d,false);
   renderQueues();
-  moving.forEach((v,i) => {
-    const node = makeVehicle(v.d,0,v.kind);
-    vehicleLayer.append(node);
-    animateVehicle(node,v.d,v.start,reducedMotion?0:i*85);
-  });
+  pedestrianLayer.replaceChildren();
+  if (m.pedestrianReserve) {
+    setStatus("Pedestrian phase first: " + m.pedestrianReserve + " seconds are reserved. All vehicle signals stay red.");
+    for (let i=0; i<4; i++) {
+      const person = makePedestrian(i);
+      pedestrianLayer.append(person);
+      animatePedestrian(person,i);
+    }
+  }
+  const startVehicleWave = () => {
+    for (const d of ["north","south"]) setSignal(d,nsGreen);
+    for (const d of ["east","west"]) setSignal(d,ewGreen);
+    moving.forEach((v,i) => {
+      const node = makeVehicle(v.d,0,v.kind);
+      vehicleLayer.append(node);
+      animateVehicle(node,v.d,v.start,reducedMotion?0:i*85);
+    });
+    setStatus("Your " + plan.nsTime + "s / " + plan.ewTime + "s vehicle schedule is running. Watch the queues change.");
+  };
   cleared += plan.moved; score += plan.points;
-  const duration = reducedMotion ? 90 : 1550 + Math.max(0,moving.length-1)*85;
-  setStatus("Your " + plan.nsTime + "s / " + plan.ewTime + "s schedule is running. Watch the queues change.");
+  const duration = pedestrianDuration + (reducedMotion ? 90 : 1550 + Math.max(0,moving.length-1)*85);
+  if (pedestrianDuration) window.setTimeout(startVehicleWave,pedestrianDuration);
+  else startVehicleWave();
   window.setTimeout(() => {
+    pedestrianLayer.replaceChildren();
     busy = false;
     for (const d of ["north","south","east","west"]) setSignal(d,false);
     updateQueueDisplay(); updateMathData();
