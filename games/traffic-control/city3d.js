@@ -6,19 +6,15 @@ const VEHICLE={bike:{length:1.35,width:.62,height:1.15,gap:.9},car:{length:2.55,
 const mat=(color,roughness=.82,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 export class TrafficCity3D{
  constructor(host,{reducedMotion=false}={}){
-  this.host=host;this.reducedMotion=reducedMotion;this.vehicles=new Map();this.signals={};this.level="easy";this.disposed=false;this.drag=null;this.elapsed=0;
+  this.host=host;this.reducedMotion=reducedMotion;this.vehicles=new Map();this.signals={};this.level="easy";this.disposed=false;this.elapsed=0;
   host.innerHTML="";
   if(!THREE){host.innerHTML='<div class="city-fallback">The 3D city could not load. Check your internet connection and reload the game.</div>';return}
   this.scene=new THREE.Scene();this.scene.background=new THREE.Color(0xb8cbd0);this.scene.fog=new THREE.Fog(0xb8cbd0,48,100);
-  this.camera=new THREE.PerspectiveCamera(42,1,.1,260);this.camera.position.set(0,72,34);this.camera.lookAt(0,0,0);
+  this.camera=new THREE.PerspectiveCamera(38,1,.1,260);this.camera.position.set(0,66,31);this.camera.lookAt(0,0,0);
   try{this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:false})}catch(error){console.error("WebGL is unavailable:",error);host.innerHTML='<div class="city-fallback">This browser could not start the 3D city. Please enable hardware acceleration or try a browser with WebGL support.</div>';return}this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.8));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;this.renderer.outputColorSpace=THREE.SRGBColorSpace;this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.15;host.append(this.renderer.domElement);
   this.scene.add(new THREE.HemisphereLight(0xe9f6ff,0x71816b,2.1));const sun=new THREE.DirectionalLight(0xffe4bd,3.1);sun.position.set(-18,30,15);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-38;sun.shadow.camera.right=38;sun.shadow.camera.top=38;sun.shadow.camera.bottom=-38;this.scene.add(sun);
   this.city=new THREE.Group();this.scene.add(this.city);this.vehicleGroup=new THREE.Group();this.scene.add(this.vehicleGroup);this.buildCity();this.buildSignals();this.resize();
   this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(host);
-  this.onPointerDown=()=>{};
-  this.azimuth=0;this.elevation=Math.atan2(72,34);this.distance=Math.hypot(72,34);
-  this.onPointerMove=()=>{};
-  this.onPointerUp=()=>{this.drag=null};
   host.style.cursor="default";
   this.placeCamera();this.animate();
  }
@@ -109,7 +105,7 @@ export class TrafficCity3D{
   const tick=()=>{if(!animations.length){onDone?.();return}const now=performance.now();for(let i=animations.length-1;i>=0;i--){const a=animations[i];const t=THREE.MathUtils.clamp((now-a.start)/a.duration,0,1),e=1-Math.pow(1-t,3);a.g.position.x=THREE.MathUtils.lerp(a.from.x,a.to.x,e);a.g.position.z=THREE.MathUtils.lerp(a.from.z,a.to.z,e);if(t>=1){this.vehicleGroup.remove(a.g);animations.splice(i,1)}}if(animations.length)requestAnimationFrame(tick);else onDone?.()};requestAnimationFrame(tick)
  }
  resize(){if(!this.renderer)return;const w=Math.max(1,this.host.clientWidth),h=Math.max(1,this.host.clientHeight);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.renderer.setSize(w,h,false)}
- placeCamera(){if(!this.camera)return;this.camera.position.set(0,72,34);this.camera.lookAt(0,0,0)}
+ placeCamera(){if(!this.camera)return;this.camera.position.set(0,66,31);this.camera.lookAt(0,0,0)}
  animate(){if(this.disposed||!this.renderer)return;this.frame=requestAnimationFrame(()=>this.animate());this.renderer.render(this.scene,this.camera)}
  dispose(){this.disposed=true;cancelAnimationFrame(this.frame);this.resizeObserver?.disconnect();this.renderer?.dispose()}
 }
