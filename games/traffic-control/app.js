@@ -2,6 +2,9 @@ import { LEVELS } from "./missions.js?v=20261112a";
 import { TrafficCity3D } from "./city3d.js?v=20261111-fixed-north-up-zoom-slider-r2";
 const $=s=>document.querySelector(s);
 const DIRS=["north","south","east","west"],TIMES={bike:5,car:10,truck:15};
+const PROGRESS_KEY="mfa-traffic-control-progress-v1";
+function readProgress(){try{return JSON.parse(localStorage.getItem(PROGRESS_KEY)||"{}")}catch{return {}}}
+function saveProgress(data){try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(data))}catch(error){console.warn("Could not save challenge progress:",error.message)}}
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
 let level="easy",round=0,queues={},busy=false,runId=0,nsSeconds=30,cleared=0,score=0,cycles=0,optimalScore=0,missionStartedAt=Date.now(),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const city=new TrafficCity3D($("#city3d"),{reducedMotion:reduced});
@@ -33,12 +36,23 @@ function setLevelUI(){
 function startRound(index=0){
  runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;missionStartedAt=Date.now();
  const m=mission();queues=Object.fromEntries(dirs().map(d=>[d,[...m.queues[d]]]));nsSeconds=Math.round(budget()/2/cfg().step)*cfg().step;
- $("#mission-number").textContent=String(round+1).padStart(2,"0")+" / 03";$("#mission-progress-fill").style.width=((round+1)/3*100)+"%";$("#mission-tag").textContent=cfg().label;$("#challenge-tag").textContent=level.toUpperCase();$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
+ const challengeCount=cfg().rounds.length;
+ $("#mission-number").textContent=String(round+1).padStart(2,"0")+" / "+challengeCount;
+ $("#mission-progress-fill").style.width=((round+1)/challengeCount*100)+"%";
+ $("#mission-tag").textContent=cfg().label;
+ $("#challenge-tag").textContent=level.toUpperCase()+" · "+String(round+1).padStart(2,"0")+" / "+challengeCount;
+ $("#challenge-complete").hidden=true;$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
  for(const d of DIRS)setSignal(d,false);
  $("#traffic-status").textContent="Study the queues, calculate your plan and run the signal.";
  renderVehicles();updateMath();
 }
-function setLevel(next){level=next;round=0;setLevelUI();startRound(0)}
+function setLevel(next){
+ level=next;
+ const unlocked=Number(readProgress()[next]||0);
+ round=Math.min(Math.max(0,unlocked),cfg().rounds.length-1);
+ setLevelUI();
+ startRound(round);
+}
 function runPlan(){
  if(busy||!total())return;
  const id=++runId,p=planAt(nsSeconds),best=bestPlan(),moving=[];
@@ -71,7 +85,10 @@ function finish(){
  window.ResearchEventGateway?.record("traffic-control","mission_complete",{difficulty:level,level:round+1,completed:true,correct:true,seconds:durationSeconds});
 }
 $("#ns-seconds").addEventListener("input",e=>{nsSeconds=Number(e.target.value);updateMath()});
-$("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>startRound((round+1)%3));
+$("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>{
+ if(round>=cfg().rounds.length-1)startRound(0);
+ else startRound(round+1);
+});
 document.querySelectorAll(".level-tab").forEach(b=>b.addEventListener("click",()=>setLevel(b.dataset.level)));
 $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.body.classList.toggle("reduce-motion",reduced)});
 $("#text-size-toggle")?.addEventListener("click",()=>document.body.classList.toggle("large-type"));
