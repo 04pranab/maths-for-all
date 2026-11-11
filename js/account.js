@@ -74,7 +74,9 @@
       if (detail.correct) quizCorrect += 1;
       if (quizTotal >= 10) {
         const accuracy = (quizCorrect / quizTotal) * 100;
-        submitAttempt("arithmetic-quiz", accuracy, Math.max(1, Math.round((Date.now() - quizStartedAt) / 1000)))
+        const elapsed = Math.max(1, Math.round((Date.now() - quizStartedAt) / 1000));
+        quizCorrect = 0; quizTotal = 0; quizStartedAt = 0;
+        submitAttempt("arithmetic-quiz", accuracy, elapsed)
           .catch(error => console.warn("Could not save quiz score:", error.message));
       }
       return;
@@ -102,12 +104,13 @@
     $("leaderboard-modal").classList.remove("hidden");
     $("leaderboard-content").textContent = "Loading the leaderboard…";
     try {
-      const result = await request("/leaderboards/global?limit=50");
+      const gameId = $("leaderboard-game-select")?.value || "global";
+      const result = await request(gameId === "global" ? "/leaderboards/global?limit=50" : "/leaderboards/games/" + encodeURIComponent(gameId) + "?limit=50");
       if (!result.entries.length) {
-        $("leaderboard-content").innerHTML = "<p>No scores yet. Be the first to complete a challenge!</p>";
+        $("leaderboard-content").innerHTML = "<p>No scores here yet. Complete a challenge to start this leaderboard!</p>";
         return;
       }
-      $("leaderboard-content").innerHTML = "<ol class='account-ranking'>" + result.entries.map(e => "<li><span>" + e.rank + ". " + escapeHtml(e.username) + "</span><strong>" + e.points + " pts</strong><small>" + e.gamesPlayed + " games</small></li>").join("") + "</ol><p class='account-footnote'>Maximum: " + result.maximumPoints + " points. Only public usernames and scores appear here.</p>";
+      $("leaderboard-content").innerHTML = "<ol class='account-ranking'>" + result.entries.map(e => "<li><span>" + e.rank + ". " + escapeHtml(e.username) + "</span><strong>" + e.points + " pts</strong><small>" + (e.gamesPlayed !== undefined ? e.gamesPlayed + " games" : "Best game score") + "</small></li>").join("") + "</ol>" + (result.maximumPoints ? "<p class='account-footnote'>Maximum: " + result.maximumPoints + " points. Only public usernames and scores appear here.</p>" : "");
     } catch (e) { $("leaderboard-content").textContent = e.message; }
   }
   async function logout() {
@@ -130,6 +133,7 @@
   };
   document.addEventListener("DOMContentLoaded", () => {
     $("auth-mode-toggle")?.addEventListener("click", () => setMode(mode === "login" ? "register" : "login"));
+    $("leaderboard-game-select")?.addEventListener("change", openLeaderboard);
     $("auth-form")?.addEventListener("submit", async event => {
       event.preventDefault();
       const message = $("auth-message");
