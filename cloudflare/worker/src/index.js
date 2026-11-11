@@ -194,9 +194,11 @@ async function collectResearch(request, env) {
     const outcome = typeof detail.correct === "boolean" ? (detail.correct ? "correct" : "incorrect") : (action.includes("complete") || action === "puzzle_solved" ? "completed" : "unspecified");
     const level = Number.isInteger(detail.level) ? detail.level : 0;
     const levelBand = level <= 0 ? "unspecified" : level <= 10 ? "1-10" : level <= 30 ? "11-30" : "31+";
-    statements.push(env.DB.prepare(`INSERT INTO research_aggregates(day,game_id,action,difficulty,outcome,level_band,event_count)
-      VALUES(?,?,?,?,?,?,1) ON CONFLICT(day,game_id,action,difficulty,outcome,level_band)
-      DO UPDATE SET event_count=event_count+1`).bind(day,gameId,action,difficulty,outcome,levelBand));
+    const duration = Number(detail.durationMs ?? detail.timeMs ?? (Number(detail.seconds || detail.timer || 0) * 1000));
+    const durationBand = duration <= 0 ? "unspecified" : duration < 10000 ? "under-10s" : duration < 30000 ? "10-30s" : duration < 120000 ? "30-120s" : "over-120s";
+    statements.push(env.DB.prepare(`INSERT INTO research_aggregates(day,game_id,action,difficulty,outcome,level_band,duration_band,event_count)
+      VALUES(?,?,?,?,?,?,?,1) ON CONFLICT(day,game_id,action,difficulty,outcome,level_band,duration_band)
+      DO UPDATE SET event_count=event_count+1`).bind(day,gameId,action,difficulty,outcome,levelBand,durationBand));
   }
   if (statements.length) {
     await env.DB.batch(statements);
