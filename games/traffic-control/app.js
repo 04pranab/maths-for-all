@@ -124,8 +124,6 @@ function updateMathData() {
     if (node) node.textContent = queues[d].length + (queues[d].length === 1 ? " vehicle" : " vehicles");
     if (waitNode) waitNode.textContent = m.waitMinutes[d] + " min";
   }
-  $("#cycle-budget").textContent = m.budget + " s";
-  $("#pedestrian-reserve").textContent = m.pedestrianReserve + " s";
   $("#vehicle-budget").innerHTML = availableBudget() + ' <small>seconds</small>';
   $("#reserve-note").textContent = m.pedestrianReserve ? m.pedestrianReserve + " seconds reserved for pedestrians" : "No pedestrian reserve this round";
   $("#planner-question").textContent = "You have " + availableBudget() + " seconds of green time. How will you split it to move the most vehicles and earn the highest score?";
@@ -145,6 +143,7 @@ function startMission(index) {
   $("#mission-number").textContent = String(index+1).padStart(2,"0") + " / " + String(MISSIONS.length).padStart(2,"0");
   $("#mission-progress-fill").style.width = ((index+1)/MISSIONS.length*100) + "%";
   $("#mission-tag").textContent = m.tag;
+  $("#challenge-tag").textContent = m.tag;
   $("#mission-title").textContent = m.title;
   $("#mission-description").textContent = m.description;
   $("#mission-objective").textContent = m.objective;
