@@ -243,3 +243,27 @@ test("research ingestion rejects missing consent without touching D1", async () 
   }), {});
   assert.equal(response.status,403);
 });
+
+test("consented research events are reduced to non-identifying daily aggregates", async () => {
+  const captured = [];
+  const DB = {
+    prepare(sql) {
+      let values = [];
+      const statement = { bind(...args) { values=args; return statement; }, async run() { return {meta:{changes:1}}; } };
+      statement.snapshot = () => ({sql,values});
+      return statement;
+    },
+    async batch(statements) { captured.push(...statements.map(s=>s.snapshot())); return []; }
+  };
+  const response = await worker.fetch(new Request("https://api.example.test/api/research/events", {
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({consent:true,events:[{category:"sudoku",action:"puzzle_solved",detail:{difficulty:"hard",correct:true,level:9,seconds:75,email:"private@example.com",answer:"123456789"}}]})
+  }), {DB});
+  assert.equal(response.status,200);
+  assert.deepEqual(await response.json(),{accepted:1,rejected:0});
+  assert.equal(captured.length,1);
+  assert.match(captured[0].sql,/research_aggregates/);
+  assert.deepEqual(captured[0].values.slice(1),["sudoku","puzzle_solved","hard","completed","1-10","30-120s"]);
+  assert.equal(JSON.stringify(captured).includes("private@example.com"),false);
+  assert.equal(JSON.stringify(captured).includes("123456789"),false);
+});
