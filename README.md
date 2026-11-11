@@ -117,7 +117,7 @@ For Shape Architect, the instructions explain the reference picture, build canva
 
 Escape closes dismissible overlays and returns to the underlying state.
 
-The initial mandatory research-consent prompt remains non-dismissible with Escape until an explicit Yes or No choice is made.
+After sign-in, the privacy notice explains that research sharing is currently OFF. The notice cannot be dismissed with Escape until the learner acknowledges that research remains off.
 
 Visible focus states and keyboard controls are retained across the application.
 
@@ -127,16 +127,11 @@ Each playable game has a stable hash URL, such as `index.html#little-shop`. Open
 
 ## Privacy by design
 
-Research collection is **opt-in**.
+Research collection is **currently disabled in production**. The application is designed for children and inclusive learning. The browser refuses to queue research events and the Worker rejects uploads until a verifiable adult/parent/lawful-guardian consent process is implemented and reviewed.
 
-Logging in or creating an account is not research consent. The application must receive an explicit Yes before research events can be recorded.
+Account creation, sign-in, saving scores, and competing on leaderboards never imply research consent. The learner can continue playing normally. No research events are saved or uploaded.
 
-If a learner chooses No:
-
-- research events are blocked;
-- locally stored research events are removed;
-- normal educational gameplay continues;
-- the preference can be reviewed and changed later.
+The planned database contains ten separate per-game aggregate tables, but those tables are not currently populated by the official production application. School and parent/guardian names are not collected in player profiles.
 
 The full policy is available at `docs/v3/research-data-policy.html`.
 
