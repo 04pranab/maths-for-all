@@ -33,6 +33,7 @@ class MemoryD1{
     if(q.startsWith("SELECT hits, window_started FROM auth_rate_limits"))return db.rates.get(args[0])||null;
     if(q.startsWith("SELECT id,username,email,password_hash,created_at FROM users"))return[...db.users.values()].find(u=>u.username===args[0]||u.email===args[1])||null;
     if(q.startsWith("SELECT u.id,u.username,u.created_at FROM sessions")){const s=db.sessions.get(args[0]);if(!s||s.expires_at<=args[1])return null;const u=db.users.get(s.user_id);return u?{id:u.id,username:u.username,created_at:u.created_at}:null;}
+    if(q.startsWith("SELECT user_id,game_id,points FROM player_game_attempts")){const a=db.playerAttempts.get(args[0]);return a?{user_id:a.user_id,game_id:a.game_id,points:a.points}:null;}
     if(q.startsWith("SELECT total_xp FROM player_progress")){const p=db.playerProgress.get(args[0]);return p?{total_xp:p.total_xp}:null;}
     if(q.startsWith("SELECT * FROM player_game_progress"))return db.gameProgress.get(args[0]+"|"+args[1])||null;
     if(q.startsWith("WITH ranked AS")&&q.includes("FROM player_progress")){const rows=[...db.playerProgress].map(([id,p])=>({id,username:db.users.get(id)?.username,points:p.total_points})).filter(x=>x.points>0).sort((a,b)=>b.points-a.points);const i=rows.findIndex(x=>x.id===args[0]);return i<0?null:{rank:i+1,points:rows[i].points,total_players:rows.length};}
