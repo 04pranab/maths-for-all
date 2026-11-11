@@ -732,6 +732,31 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("Math For All – ready. गणित सबके लिए");
 });
 
+/* =============================================================
+   PRIMARY NAVIGATION
+   Responsive menu and direct navigation actions.
+   ============================================================= */
+const Navigation = (() => {
+  function closeMenu() {
+    const menu=document.getElementById("nav-links"),button=document.getElementById("nav-menu-toggle");
+    menu?.classList.remove("open");
+    button?.setAttribute("aria-expanded","false");
+    button?.setAttribute("aria-label","Open navigation menu");
+  }
+  function toggleMenu() {
+    const menu=document.getElementById("nav-links"),button=document.getElementById("nav-menu-toggle");
+    if(!menu)return;
+    const open=!menu.classList.contains("open");
+    menu.classList.toggle("open",open);
+    button?.setAttribute("aria-expanded",String(open));
+    button?.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");
+  }
+  function home(){closeMenu();Game.goHome();}
+  function progress(){closeMenu();Progress.open();}
+  return{toggleMenu,home,progress,closeMenu};
+})();
+window.Navigation=Navigation;
+
 /* ---------- Shared Escape handling ----------
    Overlays close first; then local selections clear; otherwise Escape
    returns to the menu. Text fields blur without losing their contents. */
