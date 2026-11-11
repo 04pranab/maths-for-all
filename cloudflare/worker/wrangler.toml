@@ -1,0 +1,12 @@
+name = "maths-for-all-api"
+main = "src/index.js"
+compatibility_date = "2026-11-11"
+
+# Intentionally no D1 binding yet.
+# The database provider and migration plan will be added after the owner confirms
+# the database choice. Do not create or bind a production database from this file.
+
+[vars]
+SERVICE_ENV = "development"
+# Set ALLOWED_ORIGIN as a deployment secret/variable after deciding the final
+# frontend origin. Do not use a wildcard when account cookies are introduced.

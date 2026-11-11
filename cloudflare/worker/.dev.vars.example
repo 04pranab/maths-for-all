@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local development.
+# This scaffold does not require secrets until an email/database provider is chosen.
+ALLOWED_ORIGIN = "http://localhost:8788"
+SERVICE_ENV = "development"
