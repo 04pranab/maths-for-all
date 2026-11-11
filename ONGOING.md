@@ -4,9 +4,9 @@
 **Author:** Om Pranab Mohanty  
 **Current stable release:** `v2.0.4`  
 **Current focus:** stabilize the active learner-facing games; complete supervised review of Fraction Bakery and Little Shop; keep Number Maze under learner/educator evaluation  
-**Authentication:** temporarily disabled for prototype testing  
+**Authentication:** optional Cloudflare D1 accounts and leaderboard are active; guest play remains available  
 **Research milestone:** `v3.0.0`  
-**Last updated:** 10 November 2026
+**Last updated:** 11 November 2026
 
 **Current quality gate:** keep the `main` branch CI green; complete physical learner/educator and assistive-technology review for active games. The latest recorded `main` Tests and Pages deployment runs both passed on 31 October 2026. Physical-device review is not implied by headless CI.
 
@@ -253,3 +253,22 @@ The feature branch `feat/number-maze-unlimited-boards` implements the next game 
 ## 12. Repository formatting status
 
 The repository's `.editorconfig` already specifies UTF-8, LF endings, a final newline, spaces and a two-space indentation baseline. That does not mean every existing CSS and JavaScript file has been reformatted. A repository-wide formatter pass and diff review are still required; do not treat a formatting policy as proof that legacy one-line declarations/functions have been expanded.
+
+
+---
+
+## Player progression and research privacy work · 11 November 2026
+
+The proposed competition model uses cumulative lifetime points and XP, not capped best-score totals.
+
+- No maximum lifetime points or final player level.
+- Game-weighted awards with difficulty, level, hint and mistake adjustments.
+- Per-game progress, persistent badges, and player-wide level milestones.
+- Player HQ and prominent game-tile badges.
+- Global/per-game standings with personal position and nearby competitors.
+- Ten isolated research aggregate tables, one per active game.
+- Rewritten research policy in Markdown and HTML.
+
+**Privacy gate:** research remains disabled in production until verifiable adult/parent/lawful-guardian consent is available. A profile or login never means research consent. School and parent/guardian names are not collected.
+
+**Release gates:** full CI and browser stress checks; apply migration 0005 to production D1; verify every new table and migration ledger entry; deploy the Worker with research disabled; verify account/profile/leaderboard flows and game-tile badges on desktop and mobile. Do not merge or deploy if tests fail. Do not claim cheat-proof scoring until server-verifiable challenge proofs exist.
