@@ -6,7 +6,7 @@ const ResearchEventGateway = (() => {
   const MAX_EVENTS = 1500;
   let events = null, flushing = false;
   const CATEGORIES = new Set(["quiz","race","sudoku","shape","slab","shape_architect","fraction_bakery","little_shop","number_maze","traffic-control"]);
-  const ACTIONS = new Set(["game_opened","answer","hint_requested","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
+  const ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
   const DETAIL_KEYS = new Set(["difficulty","correct","level","attempts","hintsUsed","mistakes","completed","durationMs"]);
   function consentAllowed() { return typeof ResearchConsent !== "undefined" && ResearchConsent.isAllowed(); }
   function load() {
