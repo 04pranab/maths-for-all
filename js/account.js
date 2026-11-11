@@ -31,6 +31,7 @@
     if (button) button.onclick = () => currentUser ? openProfile() : Auth.open();
   }
   async function refreshSession() {
+    if (window.location.origin !== "https://04pranab.github.io") { currentUser = null; renderNav(); return; }
     try {
       const result = await request("/auth/me");
       currentUser = result.authenticated ? result.user : null;
