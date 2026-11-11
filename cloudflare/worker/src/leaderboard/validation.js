@@ -7,7 +7,7 @@ export function validateAttempt(input){
  if(typeof attemptId!=="string"||!/^[a-zA-Z0-9_-]{12,80}$/.test(attemptId))return{ok:false,error:"A valid unique attemptId is required."};
  if(typeof durationSeconds!=="number"||!Number.isInteger(durationSeconds)||durationSeconds<3||durationSeconds>MAX_DURATION_SECONDS)return{ok:false,error:"durationSeconds must be an integer from 3 to 14400."};
  const difficulty=typeof input.difficulty==="string"?input.difficulty.toLowerCase():"easy";
- const level=Number.isSafeInteger(input.level)?Math.min(1_000_000_000,Math.max(1,input.level)):1;
+ const level=Number.isSafeInteger(input.level)?Math.max(1,input.level):1;
  const hintsUsed=Number.isInteger(input.hintsUsed)?Math.min(20,Math.max(0,input.hintsUsed)):0;
  const mistakes=Number.isInteger(input.mistakes)?Math.min(40,Math.max(0,input.mistakes)):0;
  try{const points=calculateAttemptPoints({gameId,scorePercent,difficulty,level,hintsUsed,mistakes});return{ok:true,value:{gameId,attemptId,scorePercent,points,durationSeconds,difficulty,level,hintsUsed,mistakes}};}
