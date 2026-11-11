@@ -190,7 +190,7 @@ async function submitAttempt(request, env, user, gameId) {
 async function globalLeaderboard(env, limit) {
   const result = await env.DB.prepare(`SELECT u.id,u.username,p.total_points AS points,COUNT(g.game_id) AS games_played
     FROM player_progress p JOIN users u ON u.id=p.user_id LEFT JOIN player_game_progress g ON g.user_id=u.id AND g.attempts>0
-    WHERE p.total_points>0 ORDER BY p.total_points DESC,p.updated_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
+    WHERE p.total_points>0 GROUP BY u.id,u.username,p.total_points,p.updated_at ORDER BY p.total_points DESC,p.updated_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
   return result.results || [];
 }
 const RESEARCH_GAMES = Object.freeze({
