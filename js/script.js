@@ -634,6 +634,21 @@ const CompletionOverlay = (() => {
     const message = document.getElementById("game-completion-message");
     const action = document.getElementById("game-completion-continue");
     if (!title || !message || !action) return;
+    // Reuse the active game's own theme tokens so the shared dialog follows
+    // each game's established palette without changing any game behaviour.
+    const activeScreen = document.querySelector(".screen.active");
+    const theme = activeScreen ? getComputedStyle(activeScreen) : null;
+    const themeTokens = {
+      "--completion-accent": "--game-accent",
+      "--completion-wash": "--game-wash",
+      "--completion-border": "--game-border",
+      "--completion-ink": "--game-ink",
+    };
+    Object.entries(themeTokens).forEach(([target, source]) => {
+      const value = theme?.getPropertyValue(source).trim();
+      if (value) overlay.style.setProperty(target, value);
+      else overlay.style.removeProperty(target);
+    });
     previousFocus = document.activeElement;
     continueAction = typeof options.onContinue === "function" ? options.onContinue : null;
     title.textContent = options.title || "Level complete!";
