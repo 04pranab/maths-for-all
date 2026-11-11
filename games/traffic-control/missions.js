@@ -1,47 +1,26 @@
-export const MISSIONS = [
-  {
-    id: 1, tag: "ADDITION & SUBTRACTION", title: "The school-run rush",
-    description: "Four approaches are filling up as school begins. You have one 40-second signal cycle to move as many vehicles as possible.",
-    objective: "Add the queues, work out how many vehicles each road can serve, and split the green time.",
-    queues: { north: 3, south: 2, east: 2, west: 1 },
-    waitMinutes: { north: 2, south: 2, east: 2, west: 2 },
-    budget: 40, serviceSeconds: 10, step: 5, pedestrianReserve: 0,
-    lesson: "Each 10 seconds lets one vehicle from each approach on that road move. The two opposite approaches move together."
-  },
-  {
-    id: 2, tag: "MULTIPLICATION", title: "The growing rush hour",
-    description: "The library road has been waiting longer. A longer queue is not always the most urgent: waiting time matters too.",
-    objective: "Multiply each approach's queue by its waiting-time weight, then choose a time split that serves the greatest pressure.",
-    queues: { north: 4, south: 3, east: 3, west: 2 },
-    waitMinutes: { north: 2, south: 3, east: 5, west: 4 },
-    budget: 60, serviceSeconds: 10, step: 5, pedestrianReserve: 0,
-    lesson: "Pressure points = vehicles served × waiting-time weight. A vehicle waiting longer earns more priority points."
-  },
-  {
-    id: 3, tag: "DIVISION & RATIOS", title: "Share the green time",
-    description: "A delivery rush hits the junction. Divide a 60-second cycle fairly, but remember that the best split is not always 30–30.",
-    objective: "Use division to estimate how many vehicles fit into each green phase. Then test your time allocation.",
-    queues: { north: 5, south: 4, east: 2, west: 2 },
-    waitMinutes: { north: 3, south: 3, east: 2, west: 2 },
-    budget: 60, serviceSeconds: 10, step: 5, pedestrianReserve: 0,
-    lesson: "Divide green seconds by 10 to find the number of vehicles each approach can release. The remainder is time for the other road."
-  },
-  {
-    id: 4, tag: "FRACTIONS & PERCENTAGES", title: "Make room for people",
-    description: "Pedestrians need a safe crossing. One quarter of the 60-second cycle is reserved for them before traffic gets any green time.",
-    objective: "Find one quarter of 60 seconds, reserve it, and divide the remaining time between the two roads.",
-    queues: { north: 4, south: 3, east: 4, west: 3 },
-    waitMinutes: { north: 4, south: 3, east: 3, west: 2 },
-    budget: 60, serviceSeconds: 10, step: 5, pedestrianReserve: 15,
-    lesson: "One quarter of 60 is 60 ÷ 4 = 15 seconds. Only 45 seconds remain for vehicle signals."
-  },
-  {
-    id: 5, tag: "OPTIMISATION", title: "The city-wide gridlock",
-    description: "Every road is busy, waiting times differ, and a clinic route is becoming urgent. Design the best signal schedule you can.",
-    objective: "Compare the points gained by serving each approach. Choose a green-time split that maximises total pressure relieved.",
-    queues: { north: 5, south: 4, east: 5, west: 3 },
-    waitMinutes: { north: 5, south: 4, east: 3, west: 2 },
-    budget: 60, serviceSeconds: 10, step: 5, pedestrianReserve: 0,
-    lesson: "There may be several reasonable schedules, but the best one maximises the total priority points relieved within the fixed time budget."
-  }
-];
+export const LEVELS = {
+ easy: {
+  label:"EASY · BEGINNER", name:"Two-way Avenue", directions:["north","south"], budget:40, step:5, serviceSeconds:10, variable:false,
+  rounds:[
+   {title:"First day on traffic duty",description:"A quiet two-way avenue has cars waiting in both directions. One green phase lets traffic move both ways safely.",objective:"Count the cars in both queues. Every 10 seconds clears one car from each direction.",queues:{north:["car","car"],south:["car"]},waitMinutes:{north:1,south:1},budget:40,lesson:"Each direction gets the same green window. 40 seconds ÷ 10 seconds per car = 4 cars per direction."},
+   {title:"The school gate",description:"More families are arriving. Work out how many cars can pass during the next signal cycle.",objective:"Add both queues and calculate how many vehicles the 30-second cycle can clear.",queues:{north:["car","car","car"],south:["car","car"]},waitMinutes:{north:2,south:2},budget:30,lesson:"30 ÷ 10 = 3 cars in each direction. Compare that capacity with the queue sizes."},
+   {title:"Clear the avenue",description:"The last rush is here. Choose a safe cycle length that clears the waiting traffic.",objective:"Use division to calculate the number of cars that can pass in each direction.",queues:{north:["car","car","car","car"],south:["car","car","car"]},waitMinutes:{north:3,south:2},budget:40,lesson:"A 40-second green phase serves up to four cars per direction. Do not confuse total cars with capacity per direction."}
+  ]
+ },
+ medium:{
+  label:"MEDIUM · CITY TRAFFIC",name:"Four-way Junction",directions:["north","south","east","west"],budget:60,step:5,serviceSeconds:10,variable:false,
+  rounds:[
+   {title:"Market Street rush",description:"Traffic arrives from all four sides. North–South and East–West must take turns.",objective:"Use the 60-second budget to decide which road needs the longer green phase.",queues:{north:["car","car","car"],south:["car","car"],east:["car","car","car"],west:["car","car"]},waitMinutes:{north:2,south:2,east:3,west:2},budget:60,lesson:"Each 10-second green interval serves one vehicle from each open approach. Compare the two road totals before choosing a split."},
+   {title:"Hospital priority",description:"The hospital approach has a growing queue and a longer wait. Your signal plan must account for urgency.",objective:"Multiply vehicles served by their waiting-time weight to maximise priority points.",queues:{north:["car","car","car","car"],south:["car","car","car"],east:["car","car","car","car"],west:["car","car"]},waitMinutes:{north:2,south:3,east:5,west:4},budget:60,lesson:"Priority points = vehicles served × waiting minutes × 10. The longest queue is not automatically the most urgent."},
+   {title:"Downtown gridlock",description:"All four approaches are packed. Make the best use of a limited signal cycle.",objective:"Calculate each road's capacity and compare the score from different green-time splits.",queues:{north:["car","car","car","car","car"],south:["car","car","car","car"],east:["car","car","car","car"],west:["car","car","car"]},waitMinutes:{north:4,south:3,east:2,west:5},budget:80,lesson:"Test several allocations. The optimal split is the one that earns the most total priority points without exceeding the cycle budget."}
+  ]
+ },
+ hard:{
+  label:"HARD · TRAFFIC ENGINEER",name:"Mixed Fleet Junction",directions:["north","south","east","west"],budget:90,step:5,serviceSeconds:10,variable:true,
+  rounds:[
+   {title:"The mixed fleet",description:"Bicycles, cars and heavy trucks share the junction. Each needs a different amount of green time to clear safely.",objective:"Add the crossing times in each queue. A cycle needs 5s, a car 10s and a truck 15s. Allocate green time to maximise priority.",queues:{north:["bike","car","truck","bike"],south:["car","bike","truck"],east:["truck","car","bike","car"],west:["bike","truck","car"]},waitMinutes:{north:3,south:2,east:4,west:3},budget:90,lesson:"Capacity is no longer queue size ÷ 10. Add each vehicle's service time in order: bicycle 5s, car 10s, truck 15s. A queue clears only when its cumulative time fits the green phase."},
+   {title:"Heavy vehicle corridor",description:"Large delivery trucks are slowing the junction. Bicycles clear quickly, but trucks need longer protected green time.",objective:"Calculate the cumulative service time for each approach, then compare priority points for each possible split.",queues:{north:["truck","truck","car","bike"],south:["bike","car","truck","car"],east:["truck","car","truck"],west:["bike","bike","car","truck"]},waitMinutes:{north:5,south:3,east:4,west:2},budget:100,lesson:"For each approach, add service times in queue order. Do not count a vehicle if its full crossing time would exceed the green phase."},
+   {title:"Rush-hour optimisation",description:"The entire city is moving. Your job is to clear the highest-priority traffic with a fixed 120-second signal budget.",objective:"Find the best green split by considering queue order, vehicle type, service time and waiting-time priority.",queues:{north:["truck","car","bike","truck","car"],south:["bike","car","truck","bike"],east:["car","truck","truck","bike"],west:["truck","bike","car","car"]},waitMinutes:{north:5,south:3,east:4,west:5},budget:120,lesson:"Optimise the schedule: cumulative service time determines how many vehicles fit; waiting-time weights determine the score. A good plan balances both."}
+  ]
+ }
+};
