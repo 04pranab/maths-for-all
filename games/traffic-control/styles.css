@@ -344,3 +344,80 @@ body { background:#f3f5fb; color:var(--ink); }
 @media(max-width:1100px) { .game-layout{grid-template-columns:minmax(0,1.2fr) minmax(360px,.9fr);gap:14px} }
 @media(max-width:850px) { .game-layout{grid-template-columns:1fr} .control-column{display:grid;grid-template-columns:1fr 1fr} .mission-card{grid-column:1/-1} .planner-card{grid-column:1} .traffic-controls{grid-column:2;grid-row:2} .math-card{grid-column:1/-1} }
 @media(max-width:560px) { .app-shell{width:calc(100% - 18px)} .control-column{display:flex;flex-direction:column} .approach-math{grid-template-columns:repeat(2,minmax(0,1fr))} .planner-card{padding:15px} .challenge-question{font-size:.83rem} }
+
+/* Metro city redesign and difficulty progression */
+:root{--ink:#172b3d;--muted:#687b8d;--canvas:#eaf0f5;--line:#d6e0e9;--teal:#087f8c;--coral:#f07862;--gold:#f0b64e;--purple:#7969c6}
+body{background:radial-gradient(ellipse at 12% 0%,#f9fbfd 0,#eaf0f5 55%,#e3eaf1 100%);color:var(--ink)}
+.app-shell{width:min(1900px,100%);padding:0 32px 30px}
+.topbar{min-height:68px;border-bottom:1px solid #d8e2ea}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:30px 4px 24px}
+.hero h1{margin:0;font-size:clamp(2rem,3vw,3.3rem);letter-spacing:-.055em;line-height:1.02;color:#172b3d}
+.hero h1 span{color:#07828b}
+.hero .intro-copy{margin:10px 0 0;color:#667b8b;font-size:.98rem}
+.hero-stat{display:flex;align-items:center;gap:12px;padding:15px 20px;border-radius:18px;background:#172f47;color:#fff;box-shadow:0 12px 28px #1c3d5428}
+.hero-stat strong{font-size:2.2rem;color:#f3bd54}.hero-stat span{font-size:.65rem;font-weight:900;letter-spacing:.12em;line-height:1.45}
+.level-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 20px}
+.level-tab{display:flex;align-items:center;gap:13px;min-height:78px;padding:12px 16px;border:1px solid #d6e0e9;border-radius:17px;background:#fff;text-align:left;cursor:pointer;box-shadow:0 5px 16px #1e38500b;transition:.2s}
+.level-tab:hover{transform:translateY(-2px);box-shadow:0 10px 22px #1e385018}
+.level-tab.active{border:2px solid #07828b;background:linear-gradient(120deg,#e8f8f5,#fff);box-shadow:0 9px 24px #087f8c20}
+.level-number{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:#edf1f7;color:#536a80;font-size:.95rem;font-weight:950}
+.level-tab.active .level-number{background:#087f8c;color:white}
+.level-tab strong,.level-tab small{display:block}.level-tab strong{font-size:.95rem;color:#20384d}.level-tab small{margin-top:3px;color:#7b8d9c;font-size:.7rem}
+.level-tab i{margin-left:auto;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#e6edf3;color:transparent;font-style:normal;font-weight:900}
+.level-tab.active i{background:#087f8c;color:white}
+.game-layout{grid-template-columns:minmax(0,1.75fr) minmax(420px,.85fr);gap:22px;align-items:start}
+.city-card,.mission-card,.planner-card,.traffic-controls,.math-card{border:1px solid #d5e0e9;box-shadow:0 14px 36px #1a344b12}
+.city-card{border-radius:22px;overflow:hidden}
+.city-card-head{padding:18px 22px;background:#fff}
+.city-card-head h2{font-size:1.05rem;color:#20384d}
+.city-stage{background:#cbdccf;min-height:400px}
+#city-map{display:block;width:100%;height:auto;min-height:420px;max-height:76vh;object-fit:cover}
+#city-map .block{transition:opacity .25s}
+#city-map .street-names text{fill:#d9e3e9;font-size:15px;font-weight:900;letter-spacing:4px}
+#city-map .map-labels rect{fill:#fff;stroke:#d8e2e8;stroke-width:2}
+#city-map .map-labels text{fill:#41596a;font-size:13px;font-weight:900;letter-spacing:1.4px;text-anchor:middle}
+#city-map .signal-case{fill:#182d3b;stroke:#9bb1b7;stroke-width:3}
+#city-map .signal-post{stroke:#263c48;stroke-width:7;stroke-linecap:round}
+#city-map .lamp{fill:#465b61;stroke:#1b303b;stroke-width:2}
+#city-map .lamp-red.active{fill:#ff5d59;filter:drop-shadow(0 0 6px #ff655d)}
+#city-map .lamp-green.active{fill:#55df91;filter:drop-shadow(0 0 7px #55df91)}
+#city-map .lamp-amber.active{fill:#ffca54}
+#city-map .vehicle{filter:drop-shadow(0 4px 3px #172b3d66)}
+#city-map .vehicle-body{stroke:#263746;stroke-width:2}
+#city-map .vehicle-glass{fill:#bfe0e9;stroke:#fff;stroke-width:1.5}
+#city-map .vehicle-wheel{fill:#17232d}
+#city-map .bicycle-wheel{fill:none;stroke:#202f3a;stroke-width:4}
+#city-map .bicycle-frame{fill:none;stroke:#f2b84e;stroke-width:3}
+#city-map .easy-road{display:none}
+#city-map.easy-mode .road-network,#city-map.easy-mode .crosswalks,#city-map.easy-mode .street-names,#city-map.easy-mode .traffic-signals #signal-east,#city-map.easy-mode .traffic-signals #signal-west,#city-map.easy-mode .map-labels{display:none}
+#city-map.easy-mode .easy-road{display:block}
+#city-map.easy-mode .block{opacity:.85}
+#city-map.easy-mode .traffic-signals #signal-north{transform:translate(755px,295px)}
+#city-map.easy-mode .traffic-signals #signal-south{transform:translate(445px,500px)}
+.control-column{gap:14px}
+.mission-card{padding:19px;border-radius:19px;background:linear-gradient(145deg,#fff,#f3f7fb)}
+.mission-tag{color:#b26a29;font-weight:950;letter-spacing:.1em}
+.planner-card{padding:20px;border-radius:20px;background:linear-gradient(145deg,#fff,#eef5fb 70%,#e9f7f5)}
+.challenge-icon{background:linear-gradient(135deg,#087f8c,#39b5ae);color:white}
+.challenge-question{background:#fff0ed;border-left:4px solid var(--coral);color:#34485a}
+.challenge-budget{background:linear-gradient(110deg,#172e49,#24516a)}
+.approach-chip{background:white!important;border:1px solid #dce5ed!important;border-radius:13px!important}
+.schedule-inputs{border:1px solid #dce5ed;background:#fff;border-radius:15px}
+#ns-seconds{accent-color:#087f8c}
+.schedule-track span:first-child{background:linear-gradient(90deg,#087f8c,#43b9ae)}
+.schedule-track span:last-child{background:linear-gradient(90deg,#f0b64e,#f07862)}
+.prediction-card{background:#e7f7f3;border:1px solid #cdebe3}.points-card{background:#fff5e5;border-color:#f2dfbb}
+.plan-button{background:linear-gradient(100deg,#087f8c,#246d99);border-radius:13px;min-height:52px}
+.fleet-legend{display:none;flex-wrap:wrap;gap:7px;margin:10px 0 0}
+.fleet-legend span{padding:6px 9px;border-radius:9px;background:#fff;border:1px solid #dce5ed;color:#50667b;font-size:.68rem;font-weight:800}
+body.hard-level .fleet-legend{display:flex}
+body.easy-level .approach-chip.east-chip,body.easy-level .approach-chip.west-chip{display:none}
+body.easy-level .approach-math{grid-template-columns:repeat(2,minmax(0,1fr))}
+body.easy-level #schedule-inputs{display:none}
+body.easy-level .mission-card .mission-number{color:#07828b}
+.traffic-controls{background:#fff;border-radius:18px;padding:18px}
+.queue-summary>div{background:#f0f4f8;border:1px solid #e0e7ed;border-radius:12px}
+.bottom-strip{border:1px solid #d9e2ea;border-radius:17px;background:#fff}
+@media(max-width:1050px){.game-layout{grid-template-columns:minmax(0,1.25fr) minmax(360px,.9fr)}.app-shell{padding-inline:18px}}
+@media(max-width:800px){.game-layout{grid-template-columns:1fr}.level-picker{gap:8px}.level-tab{padding:10px}.level-tab small{font-size:.62rem}.hero-stat{display:none}#city-map{max-height:none}}
+@media(max-width:540px){.app-shell{padding-inline:10px}.hero{padding:20px 2px}.level-picker{grid-template-columns:1fr}.level-tab{min-height:62px}.city-stage{min-height:250px}.planner-card{padding:14px}}
