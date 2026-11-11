@@ -49,6 +49,6 @@ const ResearchEventGateway = (() => {
   }
   function read() { return consentAllowed()?load().slice():[]; }
   function clear() { events=[];try{localStorage.removeItem(KEY);}catch{} }
-  window.addEventListener("pagehide",()=>{if(consentAllowed())flush();});
+  if (typeof window !== "undefined") window.addEventListener("pagehide",()=>{if(consentAllowed())flush();});
   return {record,read,clear,flush};
 })();
