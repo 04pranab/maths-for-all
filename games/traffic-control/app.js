@@ -23,10 +23,10 @@ const vehicleKinds = {
   west: ["bus", "car", "taxi", "car"]
 };
 const directionLayout = {
-  north: { x: 405, y: 164, dx: 0, dy: -43, angle: 180, exit: { x: 405, y: 690 } },
-  south: { x: 495, y: 456, dx: 0, dy: 43, angle: 0, exit: { x: 495, y: -75 } },
-  east: { x: 602, y: 315, dx: 43, dy: 0, angle: -90, exit: { x: -90, y: 315 } },
-  west: { x: 298, y: 285, dx: -43, dy: 0, angle: 90, exit: { x: 990, y: 285 } }
+  north: { x: 405, y: 164, dx: 0, dy: -58, angle: 180, exit: { x: 405, y: 690 } },
+  south: { x: 495, y: 456, dx: 0, dy: 58, angle: 0, exit: { x: 495, y: -75 } },
+  east: { x: 602, y: 315, dx: 58, dy: 0, angle: -90, exit: { x: -90, y: 315 } },
+  west: { x: 298, y: 285, dx: -58, dy: 0, angle: 90, exit: { x: 990, y: 285 } }
 };
 
 let missionIndex = 0;
@@ -69,7 +69,7 @@ function makeVehicle(direction, index, kind) {
   const position = vehiclePosition(direction, index);
   const group = svgNode("g", {
     class: "vehicle",
-    transform: "translate(" + position.x + " " + position.y + ") rotate(" + position.angle + ")",
+    transform: "translate(" + position.x + " " + position.y + ") rotate(" + position.angle + ") scale(.78)",
     "aria-hidden": "true"
   });
   const color = vehiclePalette[(index + ["north", "south", "east", "west"].indexOf(direction) * 2) % vehiclePalette.length];
@@ -152,6 +152,7 @@ function renderQueues() {
     });
   });
   updateQueueDisplay();
+  updateMathBriefing();
 }
 
 function queueTotal(phase) {
@@ -215,18 +216,55 @@ function startMission(index) {
   pedestrianLayer.replaceChildren();
   updateProgress();
   renderQueues();
+  updateMathBriefing();
+  $("#math-hint").textContent = "Calculate each road pressure, then choose the larger score before releasing traffic.";
   updateSignals();
   updateControls();
   setStatus("All signals are red. Choose a direction to begin.");
 }
 
+function phasePressure(phase) {
+  const waits = MISSIONS[missionIndex].waitMinutes;
+  return queueDirections[phase].reduce((sum, direction) => sum + queues[direction].length * waits[direction], 0);
+}
+
+function bestPhase() {
+  const ns = phasePressure("ns");
+  const ew = phasePressure("ew");
+  if (ns === ew) return queueTotal("ns") >= queueTotal("ew") ? "ns" : "ew";
+  return ns > ew ? "ns" : "ew";
+}
+
+function updateMathBriefing() {
+  const mission = MISSIONS[missionIndex];
+  ["north", "south", "east", "west"].forEach((direction) => {
+    const node = $("#math-" + direction);
+    if (node) node.textContent = queues[direction].length + " × " + mission.waitMinutes[direction] + " min";
+  });
+  $("#pressure-ns").textContent = phasePressure("ns") + " points";
+  $("#pressure-ew").textContent = phasePressure("ew") + " points";
+  $("#phase-ns .phase-count").textContent = queueTotal("ns") + " vehicles";
+  $("#phase-ew .phase-count").textContent = queueTotal("ew") + " vehicles";
+}
+
 function choosePhase(phase) {
   if (busy || !$("#math-check").hidden || queueTotal(phase) === 0) return;
+  if (phase !== bestPhase()) {
+    activePhase = null;
+    updateSignals();
+    updateControls();
+    setStatus("Not the best choice yet. Multiply each queue by its waiting time, then compare the two road totals.");
+    $("#math-hint").textContent = "Try again: pressure = vehicles waiting × waiting minutes. Choose the larger total.";
+    return;
+  }
   activePhase = phase;
+  $("#math-hint").textContent = "Correct strategy. This road has the greater waiting-time pressure. Release its green wave.";
+
   updateSignals();
   updateControls();
   const label = phase === "ns" ? "North and South" : "East and West";
-  setStatus(label + " now has a green signal. Release a wave when you are ready.");
+  updateMathBriefing();
+  setStatus(label + " has the higher pressure score. Release one safe wave.");
 }
 
 function releaseWave() {
