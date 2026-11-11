@@ -27,6 +27,8 @@
     $("auth-submit").textContent = mode === "login" ? "Sign in" : "Create account";
     $("auth-mode-toggle").textContent = mode === "login" ? "New here? Create an account" : "Already have an account? Sign in";
     $("auth-password").autocomplete = mode === "login" ? "current-password" : "new-password";
+    $("auth-username").maxLength = mode === "login" ? 254 : 30;
+    $("auth-username").minLength = mode === "login" ? 1 : 3;
     $("auth-message").textContent = "";
   }
   function renderNav() {
@@ -138,6 +140,7 @@
       event.preventDefault();
       const message = $("auth-message");
       message.textContent = "Please wait…";
+      $("auth-submit").disabled = true;
       const username = $("auth-username").value.trim();
       const password = $("auth-password").value;
       try {
@@ -149,7 +152,13 @@
         sessionStorage.setItem("mfa_session_token", sessionToken);
         currentUser = result.user; renderNav(); Auth.close(); $("auth-form").reset();
         if (mode === "register") setMode("login");
-      } catch (e) { message.textContent = e.message; }
+      } catch (e) {
+        message.textContent = e.message === "Failed to fetch"
+          ? "Cannot reach the account service. Check your connection and try again."
+          : (e.message || "Something went wrong. Please try again.");
+      } finally {
+        $("auth-submit").disabled = false;
+      }
     });
     refreshSession();
   });
