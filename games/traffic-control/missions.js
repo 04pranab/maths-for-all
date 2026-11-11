@@ -1,4 +1,4 @@
-export const LEVELS = {
+const LEVELS_BASE = {
  easy: {
   label:"EASY · BEGINNER", name:"Two-way Avenue", directions:["north","south"], budget:40, step:5, serviceSeconds:10, variable:false,
   rounds:[
@@ -24,3 +24,120 @@ export const LEVELS = {
   ]
  }
 };
+
+
+// Keep the original first three scenarios, then generate 47 deterministic
+// scenarios per difficulty. Each generated round has its own queues, waits,
+// cycle budget and vehicle order, so the 50 challenges are not repeats.
+const CHALLENGE_THEMES = [
+  "Morning commute","School-zone traffic","Market delivery rush","Rainy-day junction",
+  "Bus-stop bottleneck","Library crossing","Stadium traffic","Shopping street",
+  "Construction detour","Station approach","Weekend visitors","Office-hour flow",
+  "Museum avenue","Bridge approach","Park entrance","Community fair",
+  "Roadwork diversion","Late-morning traffic","Sports-day arrivals","Festival route",
+  "Narrow-lane queue","Delivery corridor","Evening commute","Tourist district",
+  "Emergency access","Residential avenue","College crossing","Town-centre rush",
+  "One-way diversion","Busy roundabout","Railway crossing","Harbour road",
+  "Airport approach","Food-market lane","Concert traffic","Pedestrian zone",
+  "Factory shift change","Rain-soaked boulevard","Expressway exit","Old-town junction",
+  "Public-holiday traffic","Hospital approach","Shopping-centre exit","Greenway crossing",
+  "Night-market route","Coach-terminal queue","Cycling corridor","High-street bottleneck",
+  "Festival departure","Final city-wide rush"
+];
+
+function makeChallengeRandom(seed) {
+  let state = seed >>> 0;
+  return max => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state % max;
+  };
+}
+
+function generatedRounds(levelKey, originalRounds) {
+  const rounds = [...originalRounds];
+  const levelOffset = levelKey === "easy" ? 1103 : levelKey === "medium" ? 2207 : 3301;
+  const directions = LEVELS_BASE[levelKey].directions;
+  const themes = CHALLENGE_THEMES;
+
+  for (let i = rounds.length; i < 50; i++) {
+    const number = i + 1;
+    const random = makeChallengeRandom(levelOffset + number * 7919);
+    const base = levelKey === "easy"
+      ? 2 + Math.floor(i / 12)
+      : levelKey === "medium"
+        ? 2 + Math.floor(i / 12)
+        : 2 + Math.floor(i / 12);
+    const queues = {};
+    const waitMinutes = {};
+    let easyLayoutCode = i + 3;
+    for (const reservedCode of [1, 12, 23]) {
+      if (easyLayoutCode >= reservedCode) easyLayoutCode++;
+    }
+
+    for (const direction of directions) {
+      const variation = random(5) - 2;
+      const directionIndex = directions.indexOf(direction);
+      const size = levelKey === "easy"
+        ? (direction === "north" ? 1 + (easyLayoutCode % 10) : 1 + Math.floor(easyLayoutCode / 10))
+        : levelKey === "medium"
+          ? 1 + (Math.floor(i / Math.pow(6, directionIndex)) % 6)
+          : 2 + (Math.floor(i / Math.pow(6, directionIndex)) % 6);
+      queues[direction] = [];
+      for (let vehicle = 0; vehicle < size; vehicle++) {
+        if (levelKey === "hard") {
+          const fleet = ["bike", "car", "truck"];
+          queues[direction].push(fleet[random(fleet.length)]);
+        } else {
+          queues[direction].push("car");
+        }
+      }
+      waitMinutes[direction] = 1 + random(5);
+    }
+
+    const budget = levelKey === "easy"
+      ? 40 + (i % 7) * 5
+      : levelKey === "medium"
+        ? 60 + (i % 7) * 5
+        : 90 + (i % 7) * 10;
+    const theme = themes[i % themes.length];
+    const totalVehicles = Object.values(queues).reduce((sum, queue) => sum + queue.length, 0);
+    const fleetTimes = { bike: 5, car: 10, truck: 15 };
+    const crossingTime = Object.values(queues).reduce(
+      (sum, queue) => sum + queue.reduce((subtotal, kind) => subtotal + (fleetTimes[kind] || 10), 0), 0
+    );
+
+    let objective, lesson;
+    if (levelKey === "easy") {
+      objective = `Split the ${budget}-second cycle between northbound and southbound traffic. Work out how many cars each green phase can clear.`;
+      lesson = `There are ${totalVehicles} cars waiting. Each car needs 10 seconds, so compare the queue sizes with your two green phases and use the full ${budget}-second budget carefully.`;
+    } else if (levelKey === "medium") {
+      objective = `Allocate the ${budget}-second cycle between North–South and East–West. Prioritise the approaches with the greatest waiting-time score.`;
+      lesson = `Each open approach can clear one car per 10 seconds. Compare the queues and waiting-time weights before choosing how to divide the ${budget} seconds.`;
+    } else {
+      objective = `Add the crossing times for all four queues. Bikes need 5s, cars 10s and trucks 15s. Use the ${budget}-second budget to maximise priority points.`;
+      lesson = `The queues contain ${totalVehicles} vehicles and need ${crossingTime} seconds in total if served one after another. Add service times in queue order, then balance capacity against waiting-time priority.`;
+    }
+
+    rounds.push({
+      title: `Challenge ${String(number).padStart(2, "0")} · ${theme}`,
+      description: levelKey === "easy"
+        ? `A new two-way traffic pattern has formed near ${theme.toLowerCase()}. Read both queues and plan a safe northbound/southbound split.`
+        : levelKey === "medium"
+          ? `Traffic is building around ${theme.toLowerCase()}. Compare all four approaches and choose the best two-phase signal plan.`
+          : `A mixed fleet is approaching the ${theme.toLowerCase()}. Account for every bicycle, car and truck before allocating green time.`,
+      objective,
+      queues,
+      waitMinutes,
+      budget,
+      lesson
+    });
+  }
+  return rounds;
+}
+
+export const LEVELS = Object.fromEntries(
+  Object.entries(LEVELS_BASE).map(([key, config]) => [
+    key,
+    { ...config, rounds: generatedRounds(key, config.rounds) }
+  ])
+);
