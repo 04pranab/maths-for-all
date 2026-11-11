@@ -1,0 +1,128 @@
+/* Site-wide responsive safety layer.
+   Keep each game's visual identity; let its layout adapt to the space available. */
+
+:root {
+  --mfa-page-gutter: clamp(12px, 2.4vw, 32px);
+  --mfa-control-min: 44px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { width: 100%; min-width: 320px; overflow-x: clip; }
+body { width: 100%; min-width: 320px; max-width: 100%; overflow-x: clip; }
+img, svg, canvas, video, iframe { max-width: 100%; }
+button, input, select, textarea { max-width: 100%; }
+button, [role="button"], input[type="button"], input[type="submit"] { touch-action: manipulation; }
+:where(.screen, main, section, article, aside, header, footer, nav, form, fieldset, .card, .panel, .game-layout, .game-shell, .game-content) {
+  min-width: 0;
+}
+:where(.screen, .game-shell, .app-shell) { max-width: 100%; }
+:where(.screen, .game-shell) :where(img, svg, canvas, video) { height: auto; }
+:where(.screen, .game-shell) :where(p, h1, h2, h3, h4, label, button, a, strong, span) {
+  overflow-wrap: anywhere;
+}
+:where(.screen, .game-shell) :where(button, input, select, textarea) {
+  min-height: max(var(--mfa-control-min), 2.5rem);
+}
+:where(.screen, .game-shell) :where(input, select, textarea) { min-width: 0; }
+:where(.screen, .game-shell) :where(.game-layout, .play-layout, .sudoku-layout, .architect-layout, .architect-workspace, .bakery-layout, .shop-layout, .nm-game-layout, .nm-play-layout, .tc-game-layout) {
+  min-width: 0;
+}
+#screen-menu, #screen-menu .menu-grid { min-width: 0; }
+#screen-menu .menu-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr)); }
+#screen-menu .menu-card { min-width: 0; width: 100%; }
+
+@media (max-width: 1100px) {
+  .site-nav { flex-wrap: wrap; }
+  .nav-links, .nav-right { min-width: 0; }
+  :where(#screen-quiz, #screen-racing, #screen-sudoku, #screen-shape, #screen-slabmath,
+    #screen-shape-architect, #screen-fraction-bakery, #screen-little-shop, #screen-number-maze) {
+    min-width: 0;
+  }
+  :where(#screen-quiz, #screen-racing, #screen-sudoku, #screen-shape, #screen-slabmath,
+    #screen-shape-architect, #screen-fraction-bakery, #screen-little-shop, #screen-number-maze)
+    :where(.game-layout, .play-layout, .sudoku-layout, .architect-workspace, .bakery-layout, .shop-layout) {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .site-header, .site-nav { max-width: 100%; }
+  .site-nav { gap: 10px; padding-inline: var(--mfa-page-gutter); }
+  .nav-links { flex-wrap: wrap; }
+  .nav-right { flex-wrap: wrap; }
+  :where(#screen-quiz, #screen-racing, #screen-sudoku, #screen-shape, #screen-slabmath,
+    #screen-shape-architect, #screen-fraction-bakery, #screen-little-shop, #screen-number-maze)
+    :where(.game-layout, .play-layout, .sudoku-layout, .architect-workspace, .bakery-layout, .shop-layout) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  :where(#screen-quiz, #screen-racing, #screen-sudoku, #screen-shape, #screen-slabmath,
+    #screen-shape-architect, #screen-fraction-bakery, #screen-little-shop, #screen-number-maze)
+    :where(.side-panel, .control-panel, .control-column, .game-sidebar, .game-aside, .instructions-panel) {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  :where(#screen-quiz, #screen-racing, #screen-sudoku, #screen-shape, #screen-slabmath,
+    #screen-shape-architect, #screen-fraction-bakery, #screen-little-shop, #screen-number-maze)
+    :where(.game-board, .board, .game-stage, .play-area, .canvas-wrap) {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  :root { --mfa-page-gutter: 12px; }
+  .site-nav { align-items: center; }
+  .nav-links, .nav-right { width: 100%; }
+  .nav-links { gap: 6px; }
+  .nav-right { justify-content: flex-start; gap: 8px; }
+  .game-topbar { flex-wrap: wrap; gap: 8px; }
+  .game-topbar .topbar-title { flex: 1 1 100%; order: 2; }
+  .game-topbar .btn-back { order: 1; }
+  .game-topbar .btn-help, .game-topbar .score-box { order: 3; }
+  :where(.screen, .game-shell) :where(.answer-row, .quiz-actions, .game-actions, .action-row) {
+    flex-wrap: wrap;
+  }
+  :where(.screen, .game-shell) :where(.answer-row > *, .quiz-actions > *, .game-actions > *, .action-row > *) {
+    min-width: 0;
+    flex: 1 1 140px;
+  }
+  #screen-menu .menu-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 380px) {
+  :root { --mfa-page-gutter: 10px; }
+  .game-topbar { padding-inline: 10px; }
+  :where(.screen, .game-shell) :where(.panel, .card, .game-card, .play-panel) {
+    padding-inline: 12px;
+  }
+  :where(.screen, .game-shell) :where(.button-row, .toolbar, .game-toolbar) { gap: 6px; }
+}
+
+/* Short and landscape viewports: avoid forcing the playfield to consume the screen. */
+@media (max-height: 700px) {
+  :where(.screen, .game-shell) :where(.game-stage, .city-stage, .city-stage-3d, .playfield, .game-board-wrap) {
+    max-height: min(68vh, 620px);
+  }
+  :where(.screen, .game-shell) :where(.game-topbar, .game-header) {
+    margin-block: 6px;
+  }
+}
+@media (orientation: landscape) and (max-height: 560px) {
+  .site-header { position: relative; }
+  :where(.screen, .game-shell) :where(.game-layout, .play-layout, .sudoku-layout, .architect-workspace, .bakery-layout, .shop-layout) {
+    gap: 12px;
+  }
+  :where(.screen, .game-shell) :where(.game-stage, .city-stage, .city-stage-3d, .playfield, .game-board-wrap) {
+    max-height: 58vh;
+    overflow: auto;
+  }
+}
+
+/* Respect user zoom and text enlargement: never lock a panel to a fixed width. */
+@media (min-width: 601px) {
+  :where(.screen, .game-shell) :where(.panel, .card, .game-card, .play-panel, .control-column) {
+    max-width: 100%;
+  }
+}
