@@ -253,3 +253,22 @@ The feature branch `feat/number-maze-unlimited-boards` implements the next game 
 ## 12. Repository formatting status
 
 The repository's `.editorconfig` already specifies UTF-8, LF endings, a final newline, spaces and a two-space indentation baseline. That does not mean every existing CSS and JavaScript file has been reformatted. A repository-wide formatter pass and diff review are still required; do not treat a formatting policy as proof that legacy one-line declarations/functions have been expanded.
+
+
+---
+
+## Player progression and research privacy work · 11 November 2026
+
+A dedicated branch is being prepared for review. It changes the competition model from capped best-score totals to cumulative lifetime points and XP.
+
+- No maximum lifetime points or final player level.
+- Game-weighted awards with difficulty, level, hint and mistake adjustments.
+- Per-game progress, persistent badges, and player-wide level milestones.
+- Player HQ and game-tile badge display.
+- Global/per-game standings with a personal position and nearby competitors.
+- Ten isolated research aggregate tables, one per active game.
+- Rewritten research policy in Markdown and HTML.
+
+**Privacy gate:** research remains disabled in production until verifiable adult/parent/lawful-guardian consent is available. A profile or login never means research consent. School and parent/guardian names are not collected.
+
+**Remaining release gates:** run full CI and browser stress checks; apply migration 0005 to production D1; verify every new table and migration ledger entry; deploy the Worker with research disabled; verify account/profile/leaderboard flows and game-tile badges on desktop and mobile. Do not merge or deploy if the Worker or browser tests fail. Do not claim cheat-proof scoring until server-verifiable challenge proofs are implemented.
