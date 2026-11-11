@@ -7,7 +7,9 @@
   <meta name="description" content="A calm, interactive traffic-junction game that teaches Class 3–4 mathematics through safe traffic decisions.">
   <title>Metro Traffic Engineer · Maths for All</title>
   <link rel="stylesheet" href="./styles.css?v=20261112-fixed-zoom-easy-slider">
-  <script src="../../js/account.js?v=20261111-auth-repair-2"></script>
+  <script src="../../js/research-gateway.js?v=20261111-aggregate-2"></script>
+  <script src="../../js/consent.js?v=20261111-aggregate-3"></script>
+  <script src="../../js/account.js?v=20261111-profile-badges-2"></script>
   <script type="module" src="./app.js?v=20261112-fixed-zoom-easy-slider"></script>
 </head>
 <body>
@@ -25,6 +27,7 @@
       </div>
       <div class="top-actions">
         <button class="utility-button" id="text-size-toggle" type="button" aria-pressed="false" title="Make text larger">A+</button>
+        <button class="utility-button" type="button" onclick="ResearchConsent.open()">Privacy &amp; data</button>
         <button class="utility-button motion-button" id="motion-toggle" type="button" aria-pressed="false">
           <span aria-hidden="true">◌</span><span class="utility-label">Reduce motion</span>
         </button>
@@ -67,5 +70,6 @@
     </main>
     <footer class="footer-note">A practice city. Mistakes are part of learning. You can reset any mission whenever you like.</footer>
   </div>
+  <div id="research-consent-modal" class="modal-overlay hidden"></div>
 </body>
 </html>

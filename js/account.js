@@ -46,26 +46,44 @@
     } catch { currentUser = null; sessionToken = ""; sessionStorage.removeItem("mfa_session_token"); }
     renderNav();
   }
+  const GAME_NAMES = {
+    "arithmetic-quiz":"Arithmetic Quiz","math-racing":"Math Racing","sudoku":"Sudoku",
+    "shape-fitting":"Shape Fitting","slab-maths":"Slab Maths","shape-architect":"Shape Architect",
+    "fraction-bakery":"Fraction Bakery","little-shop":"Little Shop","number-maze":"Number Maze",
+    "traffic-control":"Traffic Control Centre"
+  };
   async function openProfile() {
     if (!currentUser) return Auth.open();
-    $("account-profile-copy").textContent = "Signed in as " + currentUser.username + ". Your email address is private.";
-    $("account-profile-stats").textContent = "Loading your saved scores…";
+    $("account-profile-copy").textContent = "Your public name is " + currentUser.username + ". Your email and account details stay private.";
+    $("account-profile-stats").innerHTML = "<p class='profile-loading'>Loading your player card…</p>";
     $("account-profile-modal").classList.remove("hidden");
     try {
       const stats = await request("/players/me/stats");
-      const rows = stats.scores.map(s => "<li>" + escapeHtml(s.game_id) + ": <strong>" + s.points + "/1000</strong></li>").join("");
-      $("account-profile-stats").innerHTML = "<p><strong>" + stats.totalPoints + " / " + stats.maximumPoints + "</strong> total points</p><ul>" + (rows || "<li>No saved scores yet. Complete a game to begin.</li>") + "</ul>";
+      const earned = (stats.badges || []).reduce((n, game) => n + game.earned.length, 0);
+      const gameCards = (stats.badges || []).map(game => {
+        const ratio = game.maximum ? Math.min(100, Math.round(game.points / game.maximum * 100)) : 0;
+        const medals = game.earned.length
+          ? game.earned.map(b => "<span class='profile-badge' title='" + escapeHtml(b.description) + "'><i>" + b.icon + "</i><span>" + escapeHtml(b.title) + "</span></span>").join("")
+          : "<span class='profile-locked'>Complete a challenge to earn your first badge</span>";
+        return "<article class='profile-game-card'><div class='profile-game-head'><strong>" + escapeHtml(game.gameName) + "</strong><b>" + game.points + " / " + game.maximum + "</b></div><div class='profile-meter' role='progressbar' aria-label='" + escapeHtml(game.gameName) + " mastery' aria-valuenow='" + ratio + "' aria-valuemin='0' aria-valuemax='100'><span style='width:" + ratio + "%'></span></div><small>" + game.attempts + " recorded attempts · " + ratio + "% mastery</small><div class='profile-badges'>" + medals + "</div></article>";
+      }).join("");
+      $("account-profile-stats").innerHTML =
+        "<section class='profile-hero'><div><span class='profile-kicker'>PLAYER PROFILE</span><h3>" + escapeHtml(currentUser.username) + "</h3><p>Learning is the achievement. Points are the record.</p></div><div class='profile-avatar' aria-hidden='true'>" + escapeHtml(currentUser.username.slice(0,1).toUpperCase()) + "</div></section>" +
+        "<section class='profile-summary'><div><strong>" + stats.totalPoints.toLocaleString() + "</strong><span>Total points</span></div><div><strong>" + stats.gamesPlayed + " / 10</strong><span>Games played</span></div><div><strong>" + earned + "</strong><span>Badges earned</span></div></section>" +
+        "<div class='profile-section-title'><h3>Game mastery</h3><p>Each game has its own challenge-weighted points.</p></div>" +
+        "<div class='profile-game-grid'>" + (gameCards || "<p>Complete a game to start building your profile.</p>") + "</div>" +
+        "<p class='profile-privacy-note'>Only your username, best scores and earned badges appear on public leaderboards. Email and research data are not shown on this profile.</p>";
     } catch (e) { $("account-profile-stats").textContent = e.message; }
   }
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   }
-  async function submitAttempt(gameId, scorePercent, durationSeconds, attemptId) {
+  async function submitAttempt(gameId, scorePercent, durationSeconds, attemptId, meta = {}) {
     if (!currentUser) return { saved: false, reason: "guest" };
     const id = attemptId || (crypto.randomUUID ? crypto.randomUUID() : "attempt_" + Date.now() + "_" + Math.random().toString(36).slice(2));
     return request("/games/" + encodeURIComponent(gameId) + "/attempts", {
       method: "POST",
-      body: JSON.stringify({ attemptId: id, scorePercent, durationSeconds }),
+      body: JSON.stringify({ attemptId: id, scorePercent, durationSeconds: Math.max(3, Math.round(durationSeconds || 3)), ...meta }),
     });
   }
   function onGameEvent(category, action, detail = {}) {
@@ -76,31 +94,30 @@
       if (detail.correct) quizCorrect += 1;
       if (quizTotal >= 10) {
         const accuracy = (quizCorrect / quizTotal) * 100;
-        const elapsed = Math.max(1, Math.round((Date.now() - quizStartedAt) / 1000));
+        const elapsed = Math.max(3, Math.round((Date.now() - quizStartedAt) / 1000));
         quizCorrect = 0; quizTotal = 0; quizStartedAt = 0;
-        submitAttempt("arithmetic-quiz", accuracy, elapsed)
-          .catch(error => console.warn("Could not save quiz score:", error.message));
+        submitAttempt("arithmetic-quiz", accuracy, elapsed, null, { difficulty: detail.difficulty || "easy" })
+          .then(openProfile).catch(error => console.warn("Could not save quiz score:", error.message));
       }
       return;
     }
+    const level = Math.max(1, Math.min(100, Number(detail.level || detail.round || detail.customerNumber || 1)));
     const map = {
-      "race:round_complete": { game: "math-racing", score: () => {
-        const total = Number(detail.correct || 0) + Number(detail.wrong || 0);
-        return total ? (Number(detail.correct || 0) / total) * 100 : 0;
-      }, duration: () => Number(detail.timer || 1) },
-      "sudoku:puzzle_solved": { game: "sudoku", score: () => 100, duration: () => 1 },
-      "shape:level_complete": { game: "shape-fitting", score: () => 100, duration: () => Number(detail.seconds || 1) },
-      "slab:round_complete": { game: "slab-maths", score: () => 100, duration: () => 1 },
-      "shape_architect:complete": { game: "shape-architect", score: () => 100, duration: () => Number(detail.time || 1) },
-      "fraction_bakery:level_complete": { game: "fraction-bakery", score: () => 100, duration: () => Math.max(1, Math.round(Number(detail.timeMs || 1000) / 1000)) },
-      "number_maze:complete": { game: "number-maze", score: () => 100, duration: () => 1 },
-      "little_shop:sale_complete": { game: "little-shop", score: () => Math.min(100, Math.max(0, Number(detail.customerNumber || 1))), duration: () => 1 },
+      "race:round_complete": { game:"math-racing", score:() => { const total=Number(detail.correct||0)+Number(detail.wrong||0); return total?(Number(detail.correct||0)/total)*100:0; }, duration:() => Number(detail.timer||3), difficulty:detail.difficulty||"easy" },
+      "sudoku:puzzle_solved": { game:"sudoku", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:detail.difficulty||"easy", hintsUsed:Number(detail.hintsUsed||0) },
+      "shape:level_complete": { game:"shape-fitting", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:level>=70?"hard":level>=30?"medium":"easy", level },
+      "slab:round_complete": { game:"slab-maths", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:level>=20?"hard":level>=8?"medium":"easy", level, hintsUsed:Number(detail.hintsUsed||0) },
+      "shape_architect:complete": { game:"shape-architect", score:() => 100, duration:() => Number(detail.time||3), difficulty:level>=70?"hard":level>=30?"medium":"easy", level, hintsUsed:Number(detail.hints||0) },
+      "fraction_bakery:level_complete": { game:"fraction-bakery", score:() => 100, duration:() => Math.max(3,Math.round(Number(detail.timeMs||3000)/1000)), difficulty:level>=70?"hard":level>=25?"medium":"easy", level },
+      "number_maze:complete": { game:"number-maze", score:() => 100, duration:() => Number(detail.seconds||3), difficulty:detail.difficulty||"gentle", level, hintsUsed:Number(detail.hints||0) },
+      "little_shop:sale_complete": { game:"little-shop", score:() => Math.min(100,Math.max(0,Number(detail.accuracy||100))), duration:() => Number(detail.seconds||3), difficulty:level>=20?"hard":level>=8?"medium":"easy", level },
     };
     const item = map[category + ":" + action];
     if (!item) return;
-    submitAttempt(item.game, item.score(), Math.min(14400, Math.max(1, Math.round(item.duration()))))
+    const meta = { difficulty:item.difficulty, level:item.level||level, hintsUsed:item.hintsUsed||0, mistakes:Number(detail.mistakes||0) };
+    submitAttempt(item.game,item.score(),Math.min(14400,Math.max(3,Math.round(item.duration()))),null,meta)
       .then(() => { if (item.game === "math-racing") openLeaderboard(); })
-      .catch(error => console.warn("Could not save Maths For All score:", error.message));
+      .catch(error => console.warn("Could not save Maths For All score:",error.message));
   }
   async function openLeaderboard() {
     $("leaderboard-modal").classList.remove("hidden");
@@ -130,7 +147,7 @@
     close() { $("auth-modal").classList.add("hidden"); },
   };
   window.MfaAccounts = {
-    openLeaderboard, closeLeaderboard() { $("leaderboard-modal").classList.add("hidden"); },
+    openLeaderboard, closeLeaderboard() { $("leaderboard-modal").classList.add("hidden"); }, closeProfile() { $("account-profile-modal").classList.add("hidden"); },
     logout, deleteAccount, submitAttempt, onGameEvent, refreshSession,
   };
   document.addEventListener("DOMContentLoaded", () => {

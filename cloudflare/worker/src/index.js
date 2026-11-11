@@ -1,5 +1,5 @@
 import { jsonResponse, handleCorsPreflight, withCors } from "./http.js";
-import { ACTIVE_GAME_IDS, normalizeScore, MAX_GLOBAL_POINTS } from "./leaderboard/scoring.js";
+import { ACTIVE_GAME_IDS, GAME_RULES, MAX_GLOBAL_POINTS } from "./leaderboard/scoring.js";
 import { validateAttempt } from "./leaderboard/validation.js";
 
 const SESSION_SECONDS = 60 * 60 * 24 * 30;
@@ -172,12 +172,48 @@ async function globalLeaderboard(env, limit) {
     ORDER BY points DESC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all();
   return result.results || [];
 }
+const RESEARCH_GAMES = Object.freeze({
+  quiz: "arithmetic-quiz", race: "math-racing", sudoku: "sudoku", shape: "shape-fitting",
+  slab: "slab-maths", shape_architect: "shape-architect", fraction_bakery: "fraction-bakery",
+  little_shop: "little-shop", number_maze: "number-maze", "traffic-control": "traffic-control",
+});
+const RESEARCH_ACTIONS = new Set(["game_opened","answer","hint_requested","hint_used","retry","round_complete","level_complete","puzzle_solved","sale_complete","mission_complete"]);
+async function collectResearch(request, env) {
+  const input = await body(request);
+  if (input.consent !== true) return error("Explicit research consent is required.", 403);
+  if (!Array.isArray(input.events) || input.events.length < 1 || input.events.length > 50) return error("Submit between 1 and 50 research events.");
+  const day = new Date().toISOString().slice(0,10);
+  const statements = [];
+  for (const event of input.events) {
+    if (!event || typeof event !== "object" || Array.isArray(event)) continue;
+    const gameId = RESEARCH_GAMES[String(event.category || "")];
+    const action = String(event.action || "");
+    if (!gameId || !RESEARCH_ACTIONS.has(action)) continue;
+    const detail = event.detail && typeof event.detail === "object" && !Array.isArray(event.detail) ? event.detail : {};
+    const difficulty = ["easy","medium","hard","gentle","steady","stretch","starter","growing","champion"].includes(String(detail.difficulty || "").toLowerCase()) ? String(detail.difficulty).toLowerCase() : "unspecified";
+    const outcome = action.includes("complete") || action === "puzzle_solved" ? "completed" : (typeof detail.correct === "boolean" ? (detail.correct ? "correct" : "incorrect") : "unspecified");
+    const level = Number.isInteger(detail.level) ? detail.level : 0;
+    const levelBand = level <= 0 ? "unspecified" : level <= 10 ? "1-10" : level <= 30 ? "11-30" : "31+";
+    const duration = Number(detail.durationMs ?? detail.timeMs ?? (Number(detail.seconds || detail.timer || 0) * 1000));
+    const durationBand = duration <= 0 ? "unspecified" : duration < 10000 ? "under-10s" : duration < 30000 ? "10-30s" : duration < 120000 ? "30-120s" : "over-120s";
+    statements.push(env.DB.prepare(`INSERT INTO research_aggregates(day,game_id,action,difficulty,outcome,level_band,duration_band,event_count)
+      VALUES(?,?,?,?,?,?,?,1) ON CONFLICT(day,game_id,action,difficulty,outcome,level_band,duration_band)
+      DO UPDATE SET event_count=event_count+1`).bind(day,gameId,action,difficulty,outcome,levelBand,durationBand));
+  }
+  if (statements.length) {
+    await env.DB.batch(statements);
+    await env.DB.prepare("DELETE FROM research_aggregates WHERE day < date('now','-90 days')").run();
+  }
+  return jsonResponse({ accepted: statements.length, rejected: input.events.length - statements.length });
+}
+
 async function route(request, env) {
   const url = new URL(request.url), path = url.pathname, method = request.method;
   if (path === "/health" || path === "/api/health") {
     const count = await env.DB.prepare("SELECT COUNT(*) AS count FROM users").first();
     return jsonResponse({ status: "ok", service: "maths-for-all-api", database: "connected", features: { accounts: true, leaderboards: true }, accounts: count.count });
   }
+  if (method === "POST" && path === "/api/research/events") return collectResearch(request, env);
   if (method === "POST" && path === "/api/auth/register") return register(request, env);
   if (method === "POST" && path === "/api/auth/login") return login(request, env);
   if (method === "POST" && path === "/api/auth/logout") {
@@ -207,7 +243,7 @@ async function route(request, env) {
     const result = gameId === "traffic-control"
       ? await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM traffic_control_best_scores b JOIN users u ON u.id=b.user_id ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(limit).all()
       : await env.DB.prepare(`SELECT u.username,b.points,b.duration_seconds FROM best_game_scores b JOIN users u ON u.id=b.user_id WHERE b.game_id=? ORDER BY b.points DESC,b.achieved_at ASC,u.username COLLATE NOCASE ASC LIMIT ?`).bind(gameId, limit).all();
-    return jsonResponse({ gameId, entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,durationSeconds:r.duration_seconds})) });
+    return jsonResponse({ gameId, maximumPoints: GAME_RULES[gameId].maximum, entries:(result.results||[]).map((r,i)=>({rank:i+1,username:r.username,points:r.points,durationSeconds:r.duration_seconds})) });
   }
   if (method === "GET" && path === "/api/players/me/stats") {
     const user = await currentUser(request, env);
@@ -215,8 +251,23 @@ async function route(request, env) {
     const scores = await env.DB.prepare(`SELECT game_id,points,duration_seconds,achieved_at FROM best_game_scores WHERE user_id=?
       UNION ALL SELECT 'traffic-control' AS game_id,points,duration_seconds,achieved_at FROM traffic_control_best_scores WHERE user_id=?
       ORDER BY game_id`).bind(user.id,user.id).all();
+    const attempts = await env.DB.prepare(`SELECT game_id,COUNT(*) AS attempts FROM game_attempts WHERE user_id=? GROUP BY game_id
+      UNION ALL SELECT 'traffic-control' AS game_id,COUNT(*) AS attempts FROM traffic_control_attempts WHERE user_id=? GROUP BY user_id`).bind(user.id,user.id).all();
+    const attemptCounts = Object.fromEntries((attempts.results||[]).map(r=>[r.game_id,r.attempts]));
+    const scoreByGame = Object.fromEntries((scores.results||[]).map(r=>[r.game_id,r.points]));
+    const badges = ACTIVE_GAME_IDS.map(gameId => {
+      const points = Number(scoreByGame[gameId] || 0), maximum = GAME_RULES[gameId].maximum;
+      const count = Number(attemptCounts[gameId] || 0), ratio = maximum ? points / maximum : 0;
+      const earned = [];
+      if (count > 0) earned.push({ id: gameId + "-first-clear", title: "First Steps", tier: "starter", icon: "🌱", description: "Completed a recorded challenge" });
+      if (ratio >= 0.25) earned.push({ id: gameId + "-bronze", title: "Bronze Explorer", tier: "bronze", icon: "🥉", description: "Earned 25% of this game's mastery points" });
+      if (ratio >= 0.5) earned.push({ id: gameId + "-silver", title: "Silver Solver", tier: "silver", icon: "🥈", description: "Earned 50% of this game's mastery points" });
+      if (ratio >= 0.75) earned.push({ id: gameId + "-gold", title: "Gold Strategist", tier: "gold", icon: "🥇", description: "Earned 75% of this game's mastery points" });
+      if (ratio >= 0.9) earned.push({ id: gameId + "-master", title: "Game Master", tier: "master", icon: "🏆", description: "Earned 90% of this game's mastery points" });
+      return { gameId, gameName: GAME_RULES[gameId].label, points, maximum, attempts: count, earned };
+    });
     const total = (scores.results||[]).reduce((n,r)=>n+r.points,0);
-    return jsonResponse({ user:cleanUser(user), scores:scores.results||[], totalPoints:total, maximumPoints:MAX_GLOBAL_POINTS });
+    return jsonResponse({ user:cleanUser(user), scores:scores.results||[], badges, totalPoints:total, maximumPoints:MAX_GLOBAL_POINTS, gamesPlayed:Object.keys(scoreByGame).length });
   }
   if (method === "DELETE" && path === "/api/players/me") {
     const user = await currentUser(request, env);

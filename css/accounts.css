@@ -1,3 +1,26 @@
 .auth-card{position:relative;max-width:460px;width:min(92vw,460px);max-height:88vh;overflow:auto;padding:1.5rem}.account-close{position:absolute;right:1rem;top:.75rem;border:0;background:transparent;font-size:1.8rem;cursor:pointer}.auth-card form{display:grid;gap:.55rem}.auth-card input{width:100%;min-height:44px;padding:.65rem;border:1px solid #9aa99b;border-radius:9px;font:inherit}.auth-card button[type=submit],.auth-card>button:not(.account-close){min-height:42px;padding:.6rem .9rem;border-radius:9px;cursor:pointer}.account-link{margin-top:.75rem;border:0;background:transparent;text-decoration:underline}.account-message{min-height:1.4em;color:#8a3e26}.account-ranking{padding-left:1.5rem}.account-ranking li{display:grid;grid-template-columns:1fr auto;gap:.15rem .8rem;padding:.65rem 0;border-bottom:1px solid #d8dfd8}.account-ranking small{grid-column:1/-1;color:#59665b}.account-footnote{font-size:.9rem;color:#59665b}.account-danger{margin-top:.6rem;border:1px solid #a44;color:#8c2929;background:transparent}.leaderboard-card{max-width:560px}.auth-card [hidden]{display:none!important}
 .auth-card .account-message{overflow-wrap:anywhere;line-height:1.45}.auth-card form label{font-weight:650;margin-top:.25rem}.auth-card input:focus-visible,.auth-card button:focus-visible,.account-link:focus-visible{outline:3px solid #23798b;outline-offset:2px}
 .leaderboard-game-select{display:block;width:100%;min-height:44px;margin:.5rem 0 1rem;padding:.6rem;border:1px solid #9aa99b;border-radius:9px;background:#fff;font:inherit;color:inherit}
+/* Player profile: a dedicated, responsive player-card window. */
+#account-profile-modal .profile-window{width:min(1040px,94vw);max-width:1040px;max-height:90vh;overflow:auto;padding:clamp(1rem,3vw,2rem);background:#fffdf8;border:1px solid #d9dfd4;border-radius:22px;box-shadow:0 24px 80px #17251d35}
+.profile-hero{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.4rem;border-radius:18px;background:linear-gradient(120deg,#f5efd9,#eaf3e9 55%,#e8f1f4)}
+.profile-kicker{font-size:.72rem;font-weight:800;letter-spacing:.13em;color:#637866}
+.profile-hero h3{font-size:clamp(1.6rem,4vw,2.4rem);margin:.25rem 0;color:#283b30;overflow-wrap:anywhere}
+.profile-hero p{margin:.2rem 0;color:#526456}
+.profile-avatar{flex:0 0 68px;width:68px;height:68px;display:grid;place-items:center;border-radius:22px;background:#fff;color:#5b4778;font-size:2rem;font-weight:850;border:2px solid #d9cfea}
+.profile-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:1rem 0}
+.profile-summary>div{display:grid;gap:.2rem;padding:1rem;border:1px solid #e0e5dc;border-radius:14px;background:#fff}
+.profile-summary strong{font-size:1.65rem;color:#344d3a;font-variant-numeric:tabular-nums}
+.profile-summary span,.profile-game-card small{font-size:.84rem;color:#667268}
+.profile-section-title{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin:1.4rem 0 .75rem}
+.profile-section-title h3{margin:0;color:#334637}.profile-section-title p{margin:0;color:#667268;font-size:.86rem}
+.profile-game-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+.profile-game-card{min-width:0;padding:1rem;border:1px solid #dfe5dc;border-radius:15px;background:#fff}
+.profile-game-head{display:flex;justify-content:space-between;gap:.7rem;align-items:baseline}.profile-game-head strong{color:#344637}.profile-game-head b{white-space:nowrap;font-variant-numeric:tabular-nums;color:#5b4778}
+.profile-meter{height:9px;margin:.7rem 0 .35rem;overflow:hidden;border-radius:99px;background:#edf0e9}.profile-meter span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#80a77d,#4d8061)}
+.profile-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.65rem}
+.profile-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .55rem;border:1px solid #e4dfcb;border-radius:999px;background:#fbf8ed;font-size:.76rem;color:#554b30}
+.profile-badge i{font-style:normal;font-size:1rem}.profile-locked{font-size:.78rem;color:#788178}
+.profile-privacy-note{margin:1rem 0 0;padding:.75rem 1rem;border-radius:12px;background:#f2f5ef;color:#536354;font-size:.83rem;line-height:1.5}
+.profile-loading{padding:2rem;text-align:center;color:#667268}
+@media(max-width:650px){.profile-summary{gap:.45rem}.profile-summary>div{padding:.7rem}.profile-summary strong{font-size:1.25rem}.profile-game-grid{grid-template-columns:1fr}.profile-section-title{display:block}.profile-section-title p{margin-top:.25rem}}
