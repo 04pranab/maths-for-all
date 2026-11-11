@@ -3,7 +3,9 @@ import { ACTIVE_GAME_IDS, normalizeScore, MAX_GLOBAL_POINTS } from "./leaderboar
 import { validateAttempt } from "./leaderboard/validation.js";
 
 const SESSION_SECONDS = 60 * 60 * 24 * 30;
-const PASSWORD_ITERATIONS = 310000;
+// Cloudflare Workers WebCrypto currently supports PBKDF2 up to 100,000 iterations.
+// Keep the registration and verification derivation within that runtime limit.
+const PASSWORD_ITERATIONS = 100000;
 const COOKIE = "mfa_session";
 const USERNAME_RE = /^[a-z0-9_]{3,30}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
