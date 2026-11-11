@@ -21,7 +21,7 @@ function cookie(request, name) {
   return item ? decodeURIComponent(item.slice(name.length + 1)) : "";
 }
 function cookieHeader(token, maxAge = SESSION_SECONDS) {
-  return `${COOKIE}=${encodeURIComponent(token)}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax`;
+  return `${COOKIE}=${encodeURIComponent(token)}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=None`;
 }
 async function digest(value) {
   const bytes = await crypto.subtle.digest("SHA-256", encoder.encode(value));
