@@ -232,3 +232,51 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
 @media (max-width:1050px) { .app-shell { width:calc(100% - 28px); } .game-layout { grid-template-columns:minmax(0,1.2fr) minmax(330px,.9fr); } }
 @media (max-width:820px) { .game-layout { grid-template-columns:minmax(0,1fr); } .pressure-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
 @media (max-width:560px) { .app-shell { width:calc(100% - 20px); } .pressure-grid span { font-size:.58rem; } }
+
+/* Traffic Engineering Mode */
+.app-shell { width:min(1840px,calc(100% - 36px)); }
+.game-layout { grid-template-columns:minmax(0,1.65fr) minmax(390px,.85fr); gap:22px; }
+.city-stage { padding:0 8px; }
+#city-map { width:100%; max-height:820px; }
+.planner-card { padding:20px; border:1px solid #d4e5d2; background:linear-gradient(145deg,#fbfff8,#edf6e9); }
+.briefing-heading { display:flex; align-items:center; gap:12px; }
+.briefing-icon { width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:#dceedd;color:#34724f;font-size:1.6rem;font-weight:900; }
+.briefing-heading h2 { margin:4px 0 0;font-size:1.15rem;letter-spacing:-.03em; }
+.briefing-rule { margin:13px 0 12px;color:#596f60;font-size:.83rem;line-height:1.5; }
+.formula-banner { padding:11px 13px;border-radius:12px;background:#294f40;color:#fff;text-align:center;font-size:.82rem;font-weight:850;line-height:1.4; }
+.planner-stats { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px; }
+.planner-stats div,.approach-math div { padding:9px 10px;border:1px solid #e1eadc;border-radius:11px;background:#fff; }
+.planner-stats span,.planner-stats strong,.approach-math strong,.approach-math span { display:block; }
+.planner-stats span { color:#75877b;font-size:.67rem; }
+.planner-stats strong { margin-top:3px;color:#315f46;font-size:1rem; }
+.approach-math { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:9px; }
+.approach-math div { padding:8px 5px;text-align:center; }
+.approach-math strong { color:#476c51;font-size:.72rem; }
+.approach-math span { margin-top:4px;color:#77867b;font-size:.61rem;font-weight:700;white-space:nowrap; }
+.schedule-inputs { margin-top:15px;padding:13px;border:1px solid #dce8d9;border-radius:13px;background:#fff; }
+.schedule-inputs label { display:flex;justify-content:space-between;gap:10px;color:#405d4b;font-size:.76rem;font-weight:800; }
+.schedule-inputs output { color:#2f714b;font-size:.95rem; }
+#ns-seconds { width:100%;margin:15px 0 7px;accent-color:#3d805b;cursor:pointer; }
+.schedule-split { display:flex;justify-content:space-between;color:#748477;font-size:.7rem; }
+.schedule-split strong { color:#345f46; }
+.schedule-track { display:flex;height:11px;overflow:hidden;margin-top:8px;border-radius:99px;background:#e6ece3; }
+.schedule-track span:first-child { background:#4e9669;transition:width .15s; }
+.schedule-track span:last-child { flex:1;background:#e3b45f;transition:width .15s; }
+.plan-prediction { display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px; }
+.plan-prediction .section-kicker { grid-column:1/-1; }
+.plan-prediction div { padding:9px;border:1px solid #e1eadc;border-radius:10px;background:#f8fbf5; }
+.plan-prediction span,.plan-prediction strong { display:block; }
+.plan-prediction span { color:#77867b;font-size:.65rem; }
+.plan-prediction strong { margin-top:4px;color:#2f704b;font-size:1.05rem; }
+.plan-button { width:100%;margin-top:12px;min-height:48px;font-size:.84rem; }
+.plan-button:disabled { opacity:.45;cursor:not-allowed; }
+.math-hint { margin:10px 0 0;padding:10px 11px;border-radius:10px;background:#e6f1e3;color:#4f7059;font-size:.72rem;line-height:1.5; }
+.live-results { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:12px; }
+.live-results div { padding:9px 5px;border:1px solid #e8eee5;border-radius:10px;background:#fafcf8;text-align:center; }
+.live-results span,.live-results strong { display:block; }
+.live-results span { color:#829087;font-size:.61rem; }
+.live-results strong { margin-top:4px;color:#37694d;font-size:1.1rem; }
+.traffic-controls .restart-button { display:block; }
+@media(max-width:1100px) { .app-shell{width:calc(100% - 26px)} .game-layout{grid-template-columns:minmax(0,1.2fr) minmax(350px,.9fr);gap:14px} }
+@media(max-width:850px) { .game-layout{grid-template-columns:minmax(0,1fr)} .control-column{grid-template-columns:1fr 1fr;align-items:start} .mission-card{grid-column:1/-1} .planner-card{grid-column:1} .traffic-controls{grid-column:2;grid-row:2} .math-card{grid-column:1/-1} }
+@media(max-width:560px) { .app-shell{width:calc(100% - 18px);padding:0 2px 20px} .control-column{grid-template-columns:1fr} .mission-card,.planner-card,.traffic-controls,.math-card{grid-column:auto} .approach-math span{font-size:.56rem} .planner-card{padding:14px} }
