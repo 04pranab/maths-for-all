@@ -394,14 +394,14 @@ function finish(){
   ?"You have completed every challenge in this level. Replay the level or choose another difficulty."
   :"Great work. Your next challenge is now unlocked.";
  $("#next-mission").hidden=false;
- $("#next-mission").textContent=lastChallenge?"Replay this level ↻":"Next challenge →";
+ $("#next-mission").textContent="Choose another level →";
  $("#math-check").hidden=false;$("#math-title").textContent="Junction cleared! Excellent engineering.";$("#math-question").textContent="You moved "+cleared+" vehicles in "+cycles+" cycles and earned "+score+" priority points.";$("#math-feedback").textContent=m.lesson;
  $("#traffic-status").textContent="All queues cleared. Level challenge complete.";
  window.CompletionOverlay?.show({
   title:lastChallenge?"Level completed!":"Junction cleared!",
   message:lastChallenge?"You completed all 50 challenges in this city level. Choose another level or replay this one.":"You cleared the traffic queues. Your next challenge is ready.",
-  actionLabel:lastChallenge?"Replay level":"Next challenge",
-  onContinue:()=>lastChallenge?startRound(0):startRound(round+1)
+  actionLabel:"Choose another level",
+  onContinue:()=>showLevelsView(level)
 });
  const scorePercent=optimalScore>0?Math.max(0,Math.min(100,(score/optimalScore)*100)):0,durationSeconds=Math.max(1,Math.min(14400,Math.round((Date.now()-missionStartedAt)/1000))),accounts=window.MfaAccounts;
  if(accounts?.refreshSession&&accounts?.submitAttempt)accounts.refreshSession().then(()=>accounts.submitAttempt("traffic-control",scorePercent,durationSeconds,null,{difficulty:level,level:round+1})).catch(error=>console.warn("Could not save Traffic Control Centre score:",error.message));
