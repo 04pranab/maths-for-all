@@ -2700,7 +2700,8 @@
   line-height: 1.5;
 }
 #screen-math-court .mc-active-stage .mc-story-text {
-  font-size: 1.1rem !important;
+  /* Keep story copy at 18px minimum even at the 90% accessibility setting. */
+  font-size: max(1.2rem, 18px) !important;
   line-height: 1.62 !important;
 }
 #screen-math-court .mc-active-stage .mc-panel p {
