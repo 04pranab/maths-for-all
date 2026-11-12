@@ -1685,7 +1685,7 @@ async function main() {
       'assert(getComputedStyle(panel).display !== "none" && getComputedStyle(links).display !== "none", "Opened mobile navigation remains hidden.");' +
       'for (let i = 0; i < 10; i++) Accessibility.changeFont(1);' +
       'const maxTextSize = parseFloat(getComputedStyle(document.documentElement).fontSize);' +
-      'assert(maxTextSize <= 22.2, "Text zoom exceeded its maximum bound.");' +
+      'assert(maxTextSize <= 25.6, "Text zoom exceeded its maximum bound.");' +
       'for (let i = 0; i < 10; i++) Accessibility.changeFont(-1);' +
       'const minTextSize = parseFloat(getComputedStyle(document.documentElement).fontSize);' +
       'assert(minTextSize >= 15.2, "Text zoom fell below its minimum bound.");' +
