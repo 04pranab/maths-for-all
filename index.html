@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="css/game-themes.css?v=20261110-game-assets-2" />
     <link rel="stylesheet" href="css/arithmetic-quiz.css?v=20261110-game-assets-2" />
     <link rel="stylesheet" href="css/math-racing.css?v=20261110-game-assets-2" />
-    <link rel="stylesheet" href="css/traffic-control.css?v=20261112-assets-root-r2" />
+    <link rel="stylesheet" href="css/traffic-control.css?v=20261112-native-single-file-r1" />
     <link rel="stylesheet" href="css/interactions.css?v=20261110-game-assets-2" />
     <link rel="stylesheet" href="css/responsive-overrides.css?v=20261112-wiki-align-r1" />
   </head>
@@ -1019,7 +1019,7 @@
       </div>
     </section>
 
-    <section id="screen-traffic-control" class="screen traffic-screen" aria-label="Traffic Control Centre">
+    <section id="screen-traffic-control" class="screen traffic-screen app-shell" aria-label="Traffic Control Centre">
       <header class="tc-shell-bar">
         <button type="button" class="tc-shell-back" onclick="TrafficControlIntegration.requestExit()">← Games</button>
         <div class="tc-shell-brand"><span class="tc-shell-kicker">MATHS FOR ALL · CITY SYSTEMS</span><strong>🚦 Traffic Control Centre</strong></div>
@@ -1028,7 +1028,61 @@
           <button type="button" onclick="TrafficControlIntegration.pause()" aria-label="Pause Traffic Control Centre">Ⅱ Pause</button>
         </div>
       </header>
-      <div class="tc-frame-wrap"><iframe id="traffic-control-frame" title="Traffic Control Centre game" loading="eager" src="games/traffic-control/index.html?embedded=1" allow="fullscreen"></iframe></div>
+      <main id="game-main">
+
+    <nav class="level-picker" aria-label="Choose difficulty">
+      <button class="level-tab active" data-level="easy" type="button" aria-pressed="true"><span class="level-number">01</span><span><strong>Easy</strong><small>Beginner · 2-way road</small></span><i>✓</i></button>
+      <button class="level-tab" data-level="medium" type="button" aria-pressed="false"><span class="level-number">02</span><span><strong>Medium</strong><small>City traffic · 4-way</small></span><i>✓</i></button>
+      <button class="level-tab" data-level="hard" type="button" aria-pressed="false"><span class="level-number">03</span><span><strong>Hard</strong><small>Traffic engineer · mixed fleet</small></span><i>✓</i></button>
+    </nav>
+    <div class="game-layout">
+      <section class="city-card" aria-label="3D traffic city">
+        <div class="city-stage city-stage-3d">
+          <div id="city3d" class="city3d" role="img" aria-label="Static 3D north-up city view with roads, vehicles, buildings and traffic lights"></div>
+          <div class="map-compass"><span>N</span><i>↑</i></div>
+        </div>
+      </section>
+      <aside class="control-column">
+        <section class="planner-card math-briefing">
+          <div class="challenge-top"><span class="challenge-icon" aria-hidden="true">✦</span><div><p class="challenge-kicker">TRAFFIC ENGINEER'S BRIEF</p><span id="challenge-tag" class="challenge-tag">EASY</span></div></div>
+          <h2 id="math-briefing-title">Solve the traffic challenge</h2>
+          <p id="planner-question" class="challenge-question"></p>
+          <div class="challenge-budget"><span>TIME AVAILABLE</span><strong id="vehicle-budget">40 <small>seconds</small></strong><span id="reserve-note" hidden></span></div>
+          <div class="approach-math">
+            <div class="approach-chip north-chip"><span class="direction">↑ NORTH</span><strong id="math-north">0 vehicles</strong><small>Wait <b id="wait-north">0 min</b></small></div>
+            <div class="approach-chip south-chip"><span class="direction">↓ SOUTH</span><strong id="math-south">0 vehicles</strong><small>Wait <b id="wait-south">0 min</b></small></div>
+            <div class="approach-chip east-chip"><span class="direction">← EAST</span><strong id="math-east">0 vehicles</strong><small>Wait <b id="wait-east">0 min</b></small></div>
+            <div class="approach-chip west-chip"><span class="direction">→ WEST</span><strong id="math-west">0 vehicles</strong><small>Wait <b id="wait-west">0 min</b></small></div>
+          </div>
+          <div class="schedule-inputs" id="schedule-inputs">
+            <div class="slider-heading"><label id="slider-label" for="ns-seconds">Green time for North + South</label><output id="ns-output" for="ns-seconds">20 sec</output></div>
+            <input id="ns-seconds" type="range" min="0" max="40" step="5" value="20">
+            <div class="schedule-split"><span><b id="ns-side-label">North + South</b> <strong id="ns-preview">20 sec</strong></span><span><b id="ew-side-label">East + West</b> <strong id="ew-preview">20 sec</strong></span></div>
+            <div class="schedule-track"><span id="ns-track"></span><span id="ew-track"></span></div>
+          </div>
+          <div class="fleet-legend" id="fleet-legend"><span>🚲 Cycle · 5s</span><span>🚗 Car · 10s</span><span>🚚 Truck · 15s</span></div>
+          <div class="prediction-row"><div class="prediction-card"><span>VEHICLES MOVING</span><strong id="predicted-vehicles">—</strong></div><div class="prediction-card points-card"><span>PRIORITY POINTS</span><strong id="predicted-score">—</strong></div></div>
+          <button id="run-plan" class="send-button plan-button" type="button">Run my signal plan →</button>
+          <div id="challenge-complete" class="challenge-complete" hidden>
+            <strong id="challenge-complete-title">Challenge complete!</strong>
+            <p id="challenge-complete-text">Your next challenge is unlocked.</p>
+            <button id="next-mission" class="send-button next-challenge-button" type="button" hidden>Next challenge →</button>
+          </div>
+
+          <p id="math-hint" class="math-hint" role="status"></p>
+        </section>
+      </aside>
+    </div>
+    <div class="logic-hooks" aria-hidden="true">
+      <span id="city-heading"></span><span id="mission-number"></span><span id="mission-progress-fill"></span>
+      <span id="mission-tag"></span><span id="mission-title"></span><span id="mission-description"></span>
+      <span id="mission-objective"></span><button id="restart-mission" type="button"></button>
+      <span id="count-north"></span><span id="count-south"></span><span id="count-east"></span><span id="count-west"></span>
+      <span id="cleared-count"></span><span id="total-score"></span><span id="cycles-used"></span>
+      <span id="traffic-status"></span><section id="math-check" hidden><span id="math-title"></span><span id="math-question"></span><span id="math-feedback"></span></section>
+    </div>
+  
+</main>
     </section>
     <section id="traffic-exit-overlay" class="tc-shell-overlay" hidden aria-labelledby="traffic-exit-title">
       <div class="tc-shell-dialog" role="dialog" aria-modal="true" aria-labelledby="traffic-exit-title" aria-describedby="traffic-exit-copy">
@@ -1052,6 +1106,7 @@
         </div>
       </div>
     </section>
+
 
     <!-- ===================================================
        MODAL: BRAIN BREAK (shown before PIN)
@@ -1255,7 +1310,6 @@
     <script src="js/number-maze.js?v=20261110-reset-completion-1"></script>
     
     <script src="js/math-court.js?v=20261110-single-file-1"></script>
-    <script src="js/traffic-control-integration.js?v=20261112-assets-root-r2"></script>
     
     <section id="screen-little-shop" class="screen" aria-labelledby="little-shop-title">
       <div class="ls-shell">
@@ -1698,6 +1752,7 @@
     </section>
 
     <script type="module" src="js/little-shop.js?v=20261110-completion-overlay-1"></script>
+    <script type="module" src="js/traffic-control.js?v=20261112-native-single-file-r1"></script>
     <script src="js/consent.js?v=20261111-guardian-gate-5"></script>
     <script>
 
