@@ -84,7 +84,11 @@ const Accessibility = (function () {
       const raw = localStorage.getItem(KEY);
       if (raw) {
         const data = JSON.parse(raw);
-        idx = Math.min(SCALES.length - 1, Math.max(0, data.idx || 0));
+        const storedIndex = Number.isInteger(data.idx) ? data.idx : 0;
+        // Older saves used four scales. Shift their index so existing learners
+        // keep the same text size after the new zoom-out step is introduced.
+        const migrationOffset = data.version === 2 ? 0 : 1;
+        idx = Math.min(SCALES.length - 1, Math.max(0, storedIndex + migrationOffset));
       }
     } catch (e) {
       /* ignore corrupt storage */
@@ -92,7 +96,7 @@ const Accessibility = (function () {
   }
   function save() {
     try {
-      localStorage.setItem(KEY, JSON.stringify({ idx }));
+      localStorage.setItem(KEY, JSON.stringify({ idx, version: 2 }));
     } catch (e) {}
   }
   function apply() {
