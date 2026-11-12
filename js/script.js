@@ -99,6 +99,7 @@ const Accessibility = (function () {
   }
   function apply() {
     document.documentElement.style.setProperty("--font-scale", SCALES[idx]);
+    window.TrafficControlIntegration?.setFontScale(SCALES[idx]);
   }
   function changeFont(dir) {
     idx = Math.min(SCALES.length - 1, Math.max(0, idx + dir));
@@ -313,7 +314,9 @@ const Analytics = (function () {
     architect: "Shape Architect",
     probability_carnival: "Probability Carnival",
     fraction_bakery: "Fraction Bakery",
+    traffic_control: "Traffic Control Centre",
     number_maze: "Number Maze",
+    traffic_control: "Traffic Control Centre",
   };
 
   function events() {
