@@ -195,6 +195,7 @@ button, [role="button"], input[type="button"], input[type="submit"] { touch-acti
   .nav-menu-panel {
     display: none;
     flex: 1 0 100%;
+    order: 3;
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
