@@ -1698,6 +1698,16 @@ async function main() {
     throw new Error("Mobile navigation audit did not complete.");
 
   await cdp("Emulation.setDeviceMetricsOverride", {
+    width: 1024,
+    height: 768,
+    deviceScaleFactor: 1,
+    mobile: false,
+  });
+  const compactNavigationAudit = await evaluate(
+    '(() => { const toggle=document.getElementById("nav-menu-toggle"); const panel=document.getElementById("nav-menu-panel"); if (!toggle || !panel) throw new Error("Compact navigation controls are missing."); if (getComputedStyle(toggle).display === "none") throw new Error("Hamburger is hidden at 1024px."); if (getComputedStyle(panel).display !== "none") throw new Error("Navigation actions should be collapsed behind the hamburger at 1024px."); toggle.click(); if (getComputedStyle(panel).display === "none") throw new Error("Hamburger did not reveal the navigation actions at 1024px."); return { width: innerWidth, hamburgerVisible: true, menuExpandable: true }; })()',
+  );
+  if (!compactNavigationAudit?.menuExpandable) throw new Error("Compact navigation audit did not complete.");
+  await cdp("Emulation.setDeviceMetricsOverride", {
     width: 1366,
     height: 768,
     deviceScaleFactor: 1,
