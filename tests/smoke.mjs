@@ -1689,6 +1689,8 @@ async function main() {
       'for (let i = 0; i < 10; i++) Accessibility.changeFont(-1);' +
       'const minTextScale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font-scale"));' +
       'assert(minTextScale >= 0.9, "Text zoom fell below its 90% minimum bound.");' +
+      'Accessibility.changeFont(1);' +
+      'assert(parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font-scale")) === 1, "Zoom smoke test did not restore the default 100% scale.");' +
       "toggle.click();" +
       'assert(toggle.getAttribute("aria-expanded") === "false" && !panel.classList.contains("open"), "Mobile menu button did not close the navigation panel.");' +
       "return { openCloseChecked:true, expandedStateSynchronized:true, zoomControlsGrouped:true, zoomBoundsChecked:true };" +
