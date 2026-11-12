@@ -78,7 +78,7 @@ const Accessibility = (function () {
   // Keep display scaling within a comfortable 90%–150% range.
   const MIN_SCALE = 0.9;
   const MAX_SCALE = 1.5;
-  const SCALES = [MIN_SCALE, 1.1, 1.3, MAX_SCALE];
+  const SCALES = [MIN_SCALE, 1, 1.25, MAX_SCALE];
   let idx = 0;
 
   function load() {
