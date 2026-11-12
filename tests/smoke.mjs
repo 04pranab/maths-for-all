@@ -980,6 +980,45 @@ async function main() {
     return { levels:100, stages:8, randomizedOrders:randomSignatures.size };
   })()`);
 
+  const trafficSelectionResult = await evaluate(`(async () => {
+    const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    const screen = document.getElementById("screen-traffic-control");
+    localStorage.setItem("mfa-traffic-control-progress-v1", JSON.stringify({ easy: 4, medium: 0, hard: 0 }));
+    Game.goHome();
+    Game.startTrafficControl();
+    assert(screen.classList.contains("active"), "Traffic Control did not open.");
+    assert(!document.getElementById("tc-difficulty-view").hidden, "A fresh visit must begin with difficulty selection.");
+    assert(document.getElementById("tc-level-view").hidden && document.getElementById("tc-game-view").hidden, "The level grid and game must stay hidden before difficulty selection.");
+    document.querySelector('[data-difficulty="medium"]').click();
+    const levelView = document.getElementById("tc-level-view"), grid = document.getElementById("tc-level-grid");
+    assert(!levelView.hidden && document.getElementById("tc-difficulty-view").hidden, "Choosing a difficulty must reveal the level grid only.");
+    assert(grid.querySelectorAll(".tc-level-tile").length === 50, "Every difficulty must show all 50 level buttons.");
+    assert(Array.from(grid.querySelectorAll("button")).every(button => !button.disabled), "Levels must not be locked behind sequential progression.");
+    grid.querySelector('[data-level-index="36"]').click();
+    assert(!document.getElementById("tc-game-view").hidden && levelView.hidden, "Choosing a level must show the game without the level picker.");
+    assert(document.getElementById("challenge-tag").textContent.includes("MEDIUM · 37 / 50"), "A non-first medium level must load directly.");
+    document.querySelector("#tc-game-view .tc-shell-back").click();
+    assert(!levelView.hidden && document.getElementById("tc-game-view").hidden, "The Levels control must return to the same difficulty's grid.");
+    document.querySelector("#tc-level-view .tc-shell-back").click();
+    assert(!document.getElementById("tc-difficulty-view").hidden && levelView.hidden, "The Difficulty control must return to difficulty selection.");
+    document.querySelector('[data-difficulty="easy"]').click();
+    assert(grid.querySelectorAll(".tc-level-tile.completed").length === 4, "Older sequential progress must migrate to individually marked completed levels.");
+    assert(!grid.querySelector('[data-level-index="49"]').classList.contains("completed"), "Unplayed levels must not be marked completed when jumping ahead.");
+    grid.querySelector('[data-level-index="49"]').click();
+    assert(document.getElementById("challenge-tag").textContent.includes("EASY · 50 / 50"), "The final level must be directly selectable.");
+    document.querySelector("#tc-game-view .tc-shell-back").click();
+    document.querySelector("#tc-level-view .tc-shell-back").click();
+    document.querySelector('[data-difficulty="hard"]').click();
+    grid.querySelector('[data-level-index="49"]').click();
+    assert(document.getElementById("challenge-tag").textContent.includes("HARD · 50 / 50"), "Any level in any difficulty must be directly selectable.");
+    Game.goHome();
+    Game.startTrafficControl();
+    assert(!document.getElementById("tc-difficulty-view").hidden, "Re-entering Traffic Control must begin at difficulty selection.");
+    assert(document.getElementById("tc-game-view").hidden, "Re-entering must not reopen a previous challenge automatically.");
+    Game.goHome();
+    return { difficulties: 3, levelsPerDifficulty: 50, freeChoice: true, legacyProgressMigrated: true };
+  })()`);
+
   const malformedInputResult = await evaluate(
     "(async () => {" +
       "const assert = (condition, message) => { if (!condition) throw new Error(message); };" +
@@ -1004,6 +1043,7 @@ async function main() {
   );
 
   if (!malformedInputResult) throw new Error("Malformed-input stress did not complete.");
+  if (!trafficSelectionResult?.freeChoice) throw new Error("Traffic Control free level-selection audit failed.");
 
   if (!fractionResult?.levels) throw new Error("Fraction Bakery validation did not complete.");
 
@@ -1978,6 +2018,7 @@ async function main() {
         httpAudit,
         malformedInputs: malformedInputResult,
         fractionBakery: fractionResult,
+        trafficControlSelection: trafficSelectionResult,
         fractionBakeryResponsive: fractionResponsiveResults,
         littleShopResponsive: littleShopResponsiveResults,
         keyboard: keyboardAudit,

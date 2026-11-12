@@ -73,5 +73,74 @@
 /* Traffic Control Centre shell: signal teal,#screen-traffic-control warm amber and clear pause/exit sheets. */
 #screen-traffic-control{--game-accent:#087e83;--game-wash:#e3f4f1;--game-border:#b8dfd9;--game-ink:#164f55;min-height:calc(100vh - 76px);background:#eef5f4}#screen-traffic-control .tc-shell-bar{position:relative;z-index:2;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;min-height:72px;padding:10px clamp(12px,2.5vw,30px);border-bottom:3px solid #b8dfd9;background:linear-gradient(105deg,#075e67,#087e83 58%,#15958c);color:#fff}#screen-traffic-control .tc-shell-back,#screen-traffic-control .tc-shell-actions button{min-height:44px;padding:9px 13px;border:1px solid #ffffff70;border-radius:12px;background:#ffffff18;color:#fff;font:inherit;font-weight:800;cursor:pointer}#screen-traffic-control .tc-shell-brand{min-width:0;text-align:center}#screen-traffic-control .tc-shell-kicker{display:block;margin-bottom:3px;color:#c4f1e8;font-size:.62rem;font-weight:900;letter-spacing:.15em}#screen-traffic-control .tc-shell-brand strong{display:block;font-size:clamp(1rem,2vw,1.3rem);letter-spacing:-.02em}#screen-traffic-control .tc-shell-actions{display:flex;gap:8px}#screen-traffic-control .tc-shell-overlay[hidden]{display:none!important}#screen-traffic-control .tc-shell-overlay{position:fixed;z-index:11000;inset:0;display:grid;place-items:center;padding:18px;background:#102c32b8;backdrop-filter:blur(6px)}#screen-traffic-control .tc-shell-dialog{width:min(100%,480px);padding:clamp(24px,5vw,38px);border:2px solid #b8dfd9;border-radius:24px;background:#fffefa;color:#164f55;box-shadow:0 24px 80px #071f2340;text-align:center}#screen-traffic-control .tc-dialog-icon{display:grid;width:58px;height:58px;margin:0 auto 13px;place-items:center;border-radius:18px;background:#e3f4f1;font-size:1.8rem}#screen-traffic-control .tc-dialog-kicker{margin:0 0 8px;color:#087e83;font-size:.68rem;font-weight:900;letter-spacing:.15em}#screen-traffic-control .tc-shell-dialog h2{margin:0;font-size:clamp(1.55rem,4vw,2rem)}#screen-traffic-control .tc-shell-dialog>p:not(.tc-dialog-kicker){margin:12px 0 0;color:#536e6d;line-height:1.6}#screen-traffic-control .tc-dialog-actions{display:grid;gap:9px;margin-top:22px}#screen-traffic-control .tc-dialog-actions button{min-height:48px;padding:11px 16px;border-radius:12px;font:inherit;font-weight:850;cursor:pointer}#screen-traffic-control .tc-dialog-primary{border:1px solid #087e83;background:#087e83;color:#fff}#screen-traffic-control .tc-dialog-secondary{border:1px solid #c6ded9;background:#f1f8f6;color:#164f55}#screen-traffic-control.tc-dialog-open{overflow:hidden}#screen-traffic-control :focus-visible,#screen-traffic-control .tc-shell-overlay :focus-visible{outline:3px solid #f1b64d;outline-offset:3px}
 @media(max-width:650px){#screen-traffic-control .tc-shell-bar{grid-template-columns:auto minmax(0,1fr);gap:8px;padding:9px 10px}#screen-traffic-control .tc-shell-brand{grid-column:1/-1;grid-row:1}#screen-traffic-control .tc-shell-back{grid-column:1;grid-row:2}#screen-traffic-control .tc-shell-actions{grid-column:2;grid-row:2;justify-content:end}#screen-traffic-control .tc-shell-actions button{padding-inline:10px}}
+@media(max-width:650px){#screen-traffic-control .tc-level-games{grid-column:2;grid-row:2;justify-self:end}}
 @media(prefers-reduced-motion:reduce){#screen-traffic-control .tc-shell-overlay *,#screen-traffic-control *{scroll-behavior:auto!important;transition-duration:.01ms!important}}
 @media(forced-colors:active){#screen-traffic-control .tc-shell-dialog{border:2px solid CanvasText;background:Canvas;color:CanvasText}#screen-traffic-control .tc-dialog-primary,#screen-traffic-control .tc-dialog-secondary{border:1px solid ButtonText;background:ButtonFace;color:ButtonText}}
+
+
+/* Difficulty-first navigation and open level grid. */
+#screen-traffic-control .tc-selection-view[hidden],
+#screen-traffic-control #tc-game-view[hidden] { display: none !important; }
+#screen-traffic-control .tc-selection-view { min-height: calc(100vh - 76px); background: #eef5f4; }
+#screen-traffic-control .tc-selection-spacer { width: 88px; }
+#screen-traffic-control .tc-selection-main { width: min(1120px, 100%); margin: 0 auto; padding: clamp(28px, 6vh, 64px) clamp(16px, 3vw, 34px) 48px; }
+#screen-traffic-control .tc-selection-kicker { margin: 0 0 9px; color: #087e83; font-size: .72rem; font-weight: 950; letter-spacing: .16em; }
+#screen-traffic-control .tc-selection-main h1 { margin: 0; color: #173f46; font-size: clamp(2rem, 5vw, 3.15rem); line-height: 1.08; letter-spacing: -.045em; }
+#screen-traffic-control .tc-selection-copy { max-width: 680px; margin: 12px 0 0; color: #587176; font-size: 1rem; line-height: 1.65; }
+#screen-traffic-control .tc-difficulty-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 34px; }
+#screen-traffic-control .tc-difficulty-card { display: flex; min-height: 270px; flex-direction: column; align-items: flex-start; padding: 25px; border: 2px solid #c9dfda; border-radius: 22px; background: #fff; color: #173f46; text-align: left; cursor: pointer; box-shadow: 0 8px 22px #173f4610; transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
+#screen-traffic-control .tc-difficulty-card:hover { transform: translateY(-4px); border-color: #087e83; box-shadow: 0 16px 34px #173f461c; }
+#screen-traffic-control .tc-difficulty-card:focus-visible,
+#screen-traffic-control .tc-level-tile:focus-visible { outline: 4px solid #f0b64e; outline-offset: 3px; }
+#screen-traffic-control .tc-difficulty-number { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 13px; background: #e4f4f0; color: #087e83; font-size: .9rem; font-weight: 950; }
+#screen-traffic-control .tc-difficulty-name { margin-top: 22px; font-size: 1.8rem; font-weight: 950; letter-spacing: -.03em; }
+#screen-traffic-control .tc-difficulty-detail { margin-top: 5px; color: #60777a; font-size: .88rem; line-height: 1.45; }
+#screen-traffic-control .tc-difficulty-count { margin-top: 17px; padding: 6px 10px; border-radius: 99px; background: #edf6f3; color: #17635e; font-size: .76rem; font-weight: 850; }
+#screen-traffic-control .tc-difficulty-action { margin-top: auto; padding-top: 22px; color: #087e83; font-weight: 900; }
+#screen-traffic-control .tc-difficulty-card.medium .tc-difficulty-number { background: #fff2dc; color: #98611c; }
+#screen-traffic-control .tc-difficulty-card.medium .tc-difficulty-count { background: #fff5e7; color: #865719; }
+#screen-traffic-control .tc-difficulty-card.medium .tc-difficulty-action { color: #98611c; }
+#screen-traffic-control .tc-difficulty-card.hard .tc-difficulty-number { background: #f2eafa; color: #73518f; }
+#screen-traffic-control .tc-difficulty-card.hard .tc-difficulty-count { background: #f6f0fa; color: #67457f; }
+#screen-traffic-control .tc-difficulty-card.hard .tc-difficulty-action { color: #73518f; }
+#screen-traffic-control .tc-levels-main { width: min(1240px, 100%); }
+#screen-traffic-control .tc-level-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
+#screen-traffic-control .tc-level-heading .tc-selection-copy { margin-top: 9px; }
+#screen-traffic-control .tc-level-progress { display: grid; min-width: 112px; padding: 12px 16px; border: 1px solid #c9dfda; border-radius: 15px; background: #fff; text-align: center; }
+#screen-traffic-control .tc-level-progress strong { color: #087e83; font-size: 1.35rem; font-weight: 950; font-variant-numeric: tabular-nums; }
+#screen-traffic-control .tc-level-progress span { margin-top: 2px; color: #60777a; font-size: .72rem; font-weight: 800; }
+#screen-traffic-control .tc-level-grid { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 10px; margin-top: 27px; }
+#screen-traffic-control .tc-level-tile { display: flex; min-width: 0; min-height: 92px; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 11px 12px; border: 1.5px solid #cbded9; border-radius: 14px; background: #fff; color: #21484b; text-align: left; cursor: pointer; box-shadow: 0 3px 10px #173f4609; transition: transform .14s ease, border-color .14s ease, background .14s ease; }
+#screen-traffic-control .tc-level-tile:hover { transform: translateY(-2px); border-color: #087e83; background: #f7fcfa; }
+#screen-traffic-control .tc-level-tile.completed { border-color: #70a88a; background: #edf7ef; }
+#screen-traffic-control .tc-level-number { color: #087e83; font-size: 1.25rem; font-weight: 950; font-variant-numeric: tabular-nums; }
+#screen-traffic-control .tc-level-name { display: -webkit-box; width: 100%; overflow: hidden; color: #36585b; font-size: .68rem; font-weight: 800; line-height: 1.25; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+#screen-traffic-control .tc-level-status { color: #819394; font-size: .61rem; font-weight: 800; }
+#screen-traffic-control .tc-level-tile.completed .tc-level-status { color: #34744f; }
+#screen-traffic-control .tc-level-games { min-width: 76px; }
+@media (max-width: 900px) {
+  #screen-traffic-control .tc-level-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  #screen-traffic-control .tc-difficulty-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 24px; }
+  #screen-traffic-control .tc-difficulty-card { min-height: 205px; padding: 20px; }
+  #screen-traffic-control .tc-difficulty-name { margin-top: 13px; }
+  #screen-traffic-control .tc-difficulty-action { padding-top: 14px; }
+  #screen-traffic-control .tc-level-heading { align-items: flex-start; }
+  #screen-traffic-control .tc-level-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; margin-top: 20px; }
+  #screen-traffic-control .tc-level-tile { min-height: 82px; padding: 8px; }
+  #screen-traffic-control .tc-level-name { font-size: .62rem; }
+  #screen-traffic-control .tc-level-status { font-size: .55rem; }
+  #screen-traffic-control .tc-level-progress { min-width: 82px; padding: 9px; }
+  #screen-traffic-control .tc-selection-main { padding-top: 28px; }
+  #screen-traffic-control .tc-selection-copy { font-size: .9rem; }
+}
+@media (max-width: 420px) {
+  #screen-traffic-control .tc-level-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #screen-traffic-control .tc-level-heading { gap: 10px; }
+  #screen-traffic-control .tc-level-progress { min-width: 72px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #screen-traffic-control .tc-difficulty-card,
+  #screen-traffic-control .tc-level-tile { transition: none; }
+}
