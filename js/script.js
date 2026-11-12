@@ -75,8 +75,10 @@ const Utils = (function () {
    ============================================================= */
 const Accessibility = (function () {
   const KEY = "mfa_a11y_v1";
-  // Bounded display scaling: 90% minimum, 150% maximum.
-  const SCALES = [0.9, 1, 1.15, 1.3, 1.5];
+  // Keep display scaling within a comfortable 100%–150% range.
+  const MIN_SCALE = 1;
+  const MAX_SCALE = 1.5;
+  const SCALES = [MIN_SCALE, 1.15, 1.3, MAX_SCALE];
   let idx = 0;
 
   function load() {
@@ -84,11 +86,7 @@ const Accessibility = (function () {
       const raw = localStorage.getItem(KEY);
       if (raw) {
         const data = JSON.parse(raw);
-        const storedIndex = Number.isInteger(data.idx) ? data.idx : 0;
-        // Older saves used four scales. Shift their index so existing learners
-        // keep the same text size after the new zoom-out step is introduced.
-        const migrationOffset = data.version === 2 ? 0 : 1;
-        idx = Math.min(SCALES.length - 1, Math.max(0, storedIndex + migrationOffset));
+        idx = Math.min(SCALES.length - 1, Math.max(0, data.idx || 0));
       }
     } catch (e) {
       /* ignore corrupt storage */
@@ -96,7 +94,7 @@ const Accessibility = (function () {
   }
   function save() {
     try {
-      localStorage.setItem(KEY, JSON.stringify({ idx, version: 2 }));
+      localStorage.setItem(KEY, JSON.stringify({ idx }));
     } catch (e) {}
   }
   function apply() {
