@@ -1,0 +1,585 @@
+:root {
+  color-scheme: light;
+  --ink: #263b37;
+  --muted: #687b73;
+  --line: #dfe9df;
+  --paper: #fffefa;
+  --canvas: #f4f7ef;
+  --green: #397b5d;
+  --green-dark: #286248;
+  --green-soft: #e7f2e8;
+  --amber: #d9943c;
+  --red: #d45e57;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; color: var(--ink); background: var(--canvas); }
+button, a { font: inherit; }
+button { color: inherit; }
+button:focus-visible, a:focus-visible { outline: 3px solid #d18b36; outline-offset: 3px; }
+.skip-link { position: absolute; z-index: 20; top: 8px; left: 8px; padding: 10px 14px; transform: translateY(-150%); background: #fff; border-radius: 10px; color: var(--ink); }
+.skip-link:focus { transform: translateY(0); }
+.app-shell { width: min(1500px, 100%); margin: 0 auto; padding: 0 30px 26px; }
+.topbar { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid #e1e9de; }
+.back-link { display: inline-flex; align-items: center; gap: 9px; color: #587267; text-decoration: none; font-size: .9rem; font-weight: 750; }
+.back-link span:first-child { font-size: 1.25rem; }
+.brand-lockup { display: flex; align-items: center; gap: 10px; color: #35694f; letter-spacing: .12em; }
+.brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; background: #e2efe1; }
+.brand-mark svg { width: 29px; height: 29px; }
+.brand-lockup strong, .brand-lockup small { display: block; line-height: 1.15; }
+.brand-lockup strong { font-size: .83rem; font-weight: 900; }
+.brand-lockup small { margin-top: 4px; color: #87968d; font-size: .56rem; font-weight: 850; letter-spacing: .2em; }
+.top-actions { display: flex; align-items: center; gap: 8px; }
+.utility-button { min-height: 40px; padding: 8px 12px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #dce7dc; border-radius: 12px; background: #fffefa; color: #526a5e; cursor: pointer; font-size: .82rem; font-weight: 750; }
+.utility-button[aria-pressed="true"] { border-color: #8eb59b; background: #e7f2e8; color: #286248; }
+.intro-row { display: flex; justify-content: space-between; align-items: end; gap: 22px; padding: 27px 2px 23px; }
+.eyebrow, .section-kicker { margin: 0; color: #779184; font-size: .67rem; font-weight: 900; letter-spacing: .16em; }
+h1 { margin: 7px 0 7px; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.1; letter-spacing: -.045em; }
+h1 span { color: #4b8968; }
+.intro-copy { max-width: 700px; margin: 0; color: var(--muted); font-size: .96rem; line-height: 1.55; }
+.captain-badge { flex: 0 0 auto; display: flex; align-items: center; gap: 11px; padding: 12px 16px; border: 1px solid #dce8d9; border-radius: 15px; background: #fffefa; }
+.badge-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; background: #fff2d9; color: #bc8230; font-size: 1.2rem; }
+.captain-badge strong, .captain-badge small { display: block; }
+.captain-badge strong { font-size: .85rem; }
+.captain-badge small { margin-top: 3px; color: var(--muted); font-size: .7rem; }
+.game-layout { display: grid; grid-template-columns: minmax(0, 1.52fr) minmax(340px, .88fr); align-items: start; gap: 18px; }
+.city-card, .mission-card, .traffic-controls, .pedestrian-panel, .math-card { border: 1px solid var(--line); border-radius: 19px; background: var(--paper); box-shadow: 0 5px 18px rgba(52, 76, 61, .045); }
+.city-card { overflow: hidden; }
+.city-card-head { min-height: 67px; display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 13px 19px; }
+.city-card-head h2 { margin: 4px 0 0; font-size: 1.12rem; letter-spacing: -.02em; }
+.live-pill { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 99px; background: #eff6ec; color: #5c8068; font-size: .61rem; font-weight: 900; letter-spacing: .12em; }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #65a36f; box-shadow: 0 0 0 3px #dceedd; }
+.city-stage { position: relative; padding: 0 11px; background: #edf4e9; }
+#city-map { display: block; width: 100%; height: auto; overflow: visible; }
+.place-label rect { fill: #f9f6e9; stroke: #d8ddca; stroke-width: 1; }
+.place-label text { fill: #73877a; font-size: 8px; font-weight: 900; text-anchor: middle; letter-spacing: .7px; }
+.signal-case { fill: #263c3b; stroke: #f6f2df; stroke-width: 2; }
+.signal-post { stroke: #455b52; stroke-width: 5; stroke-linecap: round; }
+.lamp { fill: #58615e; stroke: #344440; stroke-width: 1.5; opacity: .8; }
+.lamp-red.active { fill: #ee7066; filter: drop-shadow(0 0 4px #f0786e); opacity: 1; }
+.lamp-amber.active { fill: #f0bb56; filter: drop-shadow(0 0 4px #f0bb56); opacity: 1; }
+.lamp-green.active { fill: #78d08a; filter: drop-shadow(0 0 5px #79d38b); opacity: 1; }
+.map-compass { position: absolute; top: 13px; right: 19px; width: 33px; height: 43px; display: grid; justify-items: center; align-content: center; border: 1px solid #d8e3d6; border-radius: 10px; background: rgba(255,254,250,.9); color: #6e8878; font-size: .58rem; font-weight: 900; }
+.map-compass i { font-size: 1rem; font-style: normal; line-height: 1; }
+.map-legend { display: flex; flex-wrap: wrap; gap: 13px 19px; padding: 12px 18px 15px; border-top: 1px solid #e9eee5; color: #75857b; font-size: .69rem; font-weight: 700; }
+.map-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+.legend-green { background: #6fc47d; }.legend-red { background: #e46b63; }
+.legend-stripe { width: 14px; height: 9px; border-left: 3px solid #c2c5b7; border-right: 3px solid #c2c5b7; }
+.control-column { display: grid; gap: 13px; }
+.mission-card { padding: 17px 18px 16px; }
+.mission-topline { display: flex; align-items: center; justify-content: space-between; }
+.mission-number { color: #91a197; font-size: .69rem; font-weight: 900; letter-spacing: .1em; }
+.mission-progress { height: 5px; margin: 11px 0 14px; overflow: hidden; border-radius: 99px; background: #edf1e9; }
+.mission-progress span { display: block; width: 20%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #71a87d, #a8c77f); transition: width .25s ease; }
+.mission-tag { margin: 0 0 5px; color: #c28b42; font-size: .62rem; font-weight: 900; letter-spacing: .14em; }
+.mission-card h2 { margin: 0; font-size: 1.23rem; letter-spacing: -.035em; }
+.mission-description { margin: 7px 0 12px; color: var(--muted); font-size: .83rem; line-height: 1.5; }
+.mission-objective { display: flex; gap: 10px; align-items: flex-start; padding: 10px 11px; border: 1px solid #e6eee1; border-radius: 12px; background: #f4f8f0; }
+.objective-icon { flex: 0 0 22px; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: #e1eddd; color: #4e8762; font-size: 1rem; }
+.mission-objective p { margin: 1px 0 0; color: #536b5c; font-size: .76rem; line-height: 1.45; }
+.traffic-controls { padding: 16px 17px 14px; }
+.panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.panel-heading h2 { margin: 4px 0 0; font-size: 1.08rem; letter-spacing: -.025em; }
+.control-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; background: #f2f3e7; color: #8b9c66; font-size: 1.25rem; }
+.phase-buttons { display: grid; gap: 8px; margin-top: 13px; }
+.phase-button { min-height: 58px; display: flex; align-items: center; gap: 11px; padding: 9px 12px; border: 1px solid #e2e9e0; border-radius: 13px; background: #fff; text-align: left; cursor: pointer; transition: border-color .15s ease, background .15s ease, transform .15s ease; }
+.phase-button:hover:not(:disabled) { border-color: #9cbea2; transform: translateY(-1px); }
+.phase-button[aria-pressed="true"] { border: 2px solid #6b9f77; padding: 8px 11px; background: #edf6eb; }
+.phase-button:disabled { opacity: .48; cursor: not-allowed; }
+.phase-button strong, .phase-button small { display: block; }
+.phase-button strong { font-size: .83rem; }
+.phase-button small { margin-top: 3px; color: #819188; font-size: .68rem; }
+.phase-arrow { margin-left: auto; color: #91a398; font-size: 1.15rem; }
+.phase-lights { width: 25px; height: 38px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border-radius: 9px; background: #30433f; }
+.phase-lights i { width: 7px; height: 7px; border-radius: 50%; background: #68736e; }
+.phase-lights i:first-child { background: #e76f66; }
+.phase-lights i.on { background: #75d087; box-shadow: 0 0 6px #75d087; }
+.phase-lights-ew { transform: rotate(90deg); }
+.wave-action { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 13px; padding-top: 12px; border-top: 1px solid #edf0e9; }
+.wave-copy strong, .wave-copy small { display: block; }
+.wave-copy strong { font-size: .75rem; }
+.wave-copy small { max-width: 145px; margin-top: 3px; color: #829188; font-size: .65rem; line-height: 1.35; }
+.send-button, .walk-button, .next-button { min-height: 43px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--green); border-radius: 11px; background: var(--green); color: #fff; cursor: pointer; font-size: .76rem; font-weight: 850; transition: background .15s ease, transform .15s ease; }
+.send-button:hover:not(:disabled), .walk-button:hover:not(:disabled), .next-button:hover { background: var(--green-dark); transform: translateY(-1px); }
+.send-button:disabled, .walk-button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.queue-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 13px; }
+.queue-summary > div { min-width: 0; display: grid; justify-items: center; gap: 2px; padding: 7px 4px; border: 1px solid #edf0e9; border-radius: 10px; background: #fbfcf8; }
+.queue-summary span { color: #829188; font-size: .62rem; font-weight: 700; }
+.queue-summary .queue-arrow { color: #6d9c78; font-size: .8rem; }
+.queue-summary strong { color: #3c5749; font-size: 1rem; }
+.status-message { min-height: 34px; margin: 10px 0 0; padding: 8px 10px; border-radius: 9px; background: #f4f7f1; color: #64776b; font-size: .7rem; line-height: 1.4; }
+.pedestrian-panel { padding: 14px 16px; border-color: #f0dfbd; background: #fffaf0; }
+.pedestrian-panel h3 { margin: 4px 0 3px; font-size: .97rem; }
+.pedestrian-panel p:not(.section-kicker) { margin: 0; color: #7d7868; font-size: .73rem; line-height: 1.45; }
+.pedestrian-row { display: flex; align-items: center; justify-content: space-between; margin: 11px 0; color: #876a3d; }
+.people-icon { letter-spacing: .13em; font-size: .86rem; }
+.pedestrian-row strong { font-size: .77rem; }
+.walk-button { width: 100%; border-color: #c18c3f; background: #c18c3f; }
+.walk-button:hover:not(:disabled) { background: #a8752e; }
+.math-card { padding: 16px 17px; border-color: #e7ddc7; background: #fffdf7; }
+.math-card-top { display: flex; align-items: center; gap: 8px; }
+.math-star { color: #d39b43; font-size: 1.1rem; }
+.math-card h3 { margin: 7px 0 5px; font-size: 1.05rem; }
+.math-card > p:not(.math-feedback) { margin: 0; color: #66766c; font-size: .81rem; line-height: 1.5; }
+.answer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 13px; }
+.answer-button { min-height: 46px; border: 1px solid #e7e1d2; border-radius: 11px; background: #fff; color: #52685b; cursor: pointer; font-size: 1rem; font-weight: 850; }
+.answer-button:hover:not(:disabled) { border-color: #c49a55; background: #fff8e9; }
+.answer-button:disabled { cursor: default; opacity: .75; }
+.answer-button.correct { border-color: #77a982; background: #eaf5e9; color: #326a48; }
+.answer-button.incorrect { border-color: #dfa19a; background: #fff0ed; color: #9a5149; }
+.math-feedback { min-height: 20px; margin: 9px 0 0; color: #66806e; font-size: .73rem; line-height: 1.4; }
+.next-button { width: 100%; margin-top: 9px; }
+.bottom-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 17px; padding: 14px 18px; border: 1px solid #e1e9dd; border-radius: 16px; background: rgba(255,254,250,.8); }
+.bottom-strip > div { display: flex; align-items: center; gap: 10px; }
+.bottom-icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: #e9f1e5; color: #6b9574; font-size: .68rem; font-weight: 900; }
+.bottom-strip strong, .bottom-strip small { display: block; }
+.bottom-strip strong { font-size: .77rem; }
+.bottom-strip small { margin-top: 3px; color: #829087; font-size: .66rem; }
+.footer-note { padding: 16px 0 0; color: #93a097; text-align: center; font-size: .68rem; }
+.vehicle { filter: drop-shadow(0 3px 2px rgba(27, 39, 37, .22)); }
+.vehicle-body { stroke: rgba(32,48,44,.45); stroke-width: 1.4; }
+.vehicle-glass { fill: #b8d5d6; stroke: rgba(43,72,74,.45); stroke-width: 1; }
+.vehicle-wheel { fill: #263438; }
+.vehicle-highlight { fill: rgba(255,255,255,.36); }
+.bicycle-wheel { fill: none; stroke: #263438; stroke-width: 3; }
+.bicycle-frame { fill: none; stroke: #e7d5a4; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.pedestrian { filter: drop-shadow(0 2px 1px rgba(32,52,39,.2)); }
+.pedestrian-head { fill: #f0bf8e; stroke: #986f54; stroke-width: 1; }
+.pedestrian-body { fill: #688fba; stroke: #426c93; stroke-width: 1; }
+.pedestrian-leg { stroke: #3d5361; stroke-width: 3; stroke-linecap: round; }
+body.large-type { font-size: 18px; }
+body.large-type .intro-copy { font-size: 1.05rem; }
+body.large-type .mission-description, body.large-type .mission-objective p, body.large-type .status-message { font-size: .9rem; }
+body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+@media (max-width: 1050px) {
+  .app-shell { padding-right: 20px; padding-left: 20px; }
+  .game-layout { grid-template-columns: minmax(0, 1.2fr) minmax(320px, .9fr); gap: 13px; }
+  .utility-label { display: none; }
+}
+@media (max-width: 820px) {
+  .game-layout { grid-template-columns: minmax(0, 1fr); }
+  .control-column { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .mission-card { grid-column: 1 / -1; }
+  .traffic-controls { grid-row: span 2; }
+}
+@media (max-width: 560px) {
+  .app-shell { padding: 0 12px 20px; }
+  .topbar { min-height: 67px; gap: 8px; }
+  .back-link { gap: 5px; font-size: .75rem; }
+  .brand-lockup { gap: 6px; }
+  .brand-mark { width: 31px; height: 31px; }
+  .brand-lockup strong { font-size: .68rem; }
+  .brand-lockup small { font-size: .47rem; }
+  .top-actions { gap: 5px; }
+  .utility-button { min-width: 37px; min-height: 37px; padding: 7px; }
+  .intro-row { display: block; padding: 22px 2px 17px; }
+  h1 { font-size: 1.85rem; }
+  .intro-copy { font-size: .85rem; }
+  .captain-badge { width: fit-content; margin-top: 13px; padding: 8px 11px; }
+  .city-card-head { min-height: 59px; padding: 10px 13px; }
+  .city-card-head h2 { font-size: .98rem; }
+  .city-stage { padding: 0 3px; }
+  .map-legend { gap: 8px 12px; padding: 10px 12px; font-size: .62rem; }
+  .control-column { grid-template-columns: minmax(0, 1fr); }
+  .mission-card { grid-column: auto; }
+  .traffic-controls { grid-row: auto; }
+  .bottom-strip { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 12px 14px; }
+  .bottom-strip > div { gap: 9px; }
+  .footer-note { line-height: 1.5; }
+}
+@media (max-width: 360px) {
+  .brand-lockup small { letter-spacing: .12em; }
+  .back-link span:last-child { max-width: 58px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .queue-summary { gap: 4px; }
+  .wave-action { align-items: flex-start; flex-direction: column; }
+  .send-button { width: 100%; }
+}
+
+.restart-button { margin-top: 10px; padding: 7px 2px; border: 0; background: transparent; color: #789083; cursor: pointer; font-size: .68rem; font-weight: 800; }
+.restart-button:hover { color: #376c50; text-decoration: underline; }
+
+/* Strategy-first redesign: larger map, clearer maths and collision-free queues. */
+.app-shell { width: min(1760px, calc(100% - 32px)); padding-right: 0; padding-left: 0; }
+.game-layout { grid-template-columns: minmax(0, 1.55fr) minmax(390px, .9fr); gap: 22px; }
+.city-stage { padding: 0 8px; }
+#city-map { width: 100%; max-height: 760px; }
+.control-column { gap: 15px; }
+.math-briefing { padding: 18px; border: 1px solid #d9e7d8; border-radius: 19px; background: linear-gradient(145deg,#fbfff8,#eef6eb); box-shadow: 0 5px 18px rgba(52,76,61,.05); }
+.briefing-heading { display:flex; align-items:center; gap:12px; }
+.briefing-icon { width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#dceedd;color:#34724f;font-size:1.55rem;font-weight:900; }
+.briefing-heading h2 { margin:4px 0 0;font-size:1.1rem;letter-spacing:-.025em; }
+.briefing-rule { margin:13px 0 10px;color:#596f60;font-size:.82rem;line-height:1.5; }
+.formula-banner { padding:10px 12px;border-radius:11px;background:#294f40;color:#fff;text-align:center;font-size:.85rem;font-weight:850;letter-spacing:.01em; }
+.pressure-grid { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px; }
+.pressure-grid div,.pressure-totals div { min-width:0;padding:9px 7px;border:1px solid #e1eadc;border-radius:11px;background:#fff;text-align:center; }
+.pressure-grid strong,.pressure-grid span,.pressure-totals span,.pressure-totals strong { display:block; }
+.pressure-grid strong { color:#486a53;font-size:.73rem; }
+.pressure-grid span { margin-top:5px;color:#718176;font-size:.65rem;font-weight:750;white-space:nowrap; }
+.pressure-totals { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px; }
+.pressure-totals div { background:#f9fcf6; }
+.pressure-totals span { color:#718176;font-size:.67rem; }
+.pressure-totals strong { margin-top:4px;color:#2e6548;font-size:1.05rem; }
+.math-hint { margin:10px 0 0;padding:9px 11px;border-radius:10px;background:#e6f1e3;color:#4f7059;font-size:.73rem;line-height:1.45; }
+.phase-count { color:#63806d; }
+.phase-button[aria-pressed="true"] { box-shadow:0 0 0 3px rgba(107,159,119,.13); }
+@media (min-width:1500px) { .game-layout { grid-template-columns:minmax(0,1.65fr) minmax(420px,.85fr);gap:24px; } .city-card-head { min-height:76px; } }
+@media (max-width:1050px) { .app-shell { width:calc(100% - 28px); } .game-layout { grid-template-columns:minmax(0,1.2fr) minmax(330px,.9fr); } }
+@media (max-width:820px) { .game-layout { grid-template-columns:minmax(0,1fr); } .pressure-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+@media (max-width:560px) { .app-shell { width:calc(100% - 20px); } .pressure-grid span { font-size:.58rem; } }
+
+/* Traffic Engineering Mode */
+.app-shell { width:min(1840px,calc(100% - 36px)); }
+.game-layout { grid-template-columns:minmax(0,1.65fr) minmax(390px,.85fr); gap:22px; }
+.city-stage { padding:0 8px; }
+#city-map { width:100%; max-height:820px; }
+.planner-card { padding:20px; border:1px solid #d4e5d2; background:linear-gradient(145deg,#fbfff8,#edf6e9); }
+.briefing-heading { display:flex; align-items:center; gap:12px; }
+.briefing-icon { width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:#dceedd;color:#34724f;font-size:1.6rem;font-weight:900; }
+.briefing-heading h2 { margin:4px 0 0;font-size:1.15rem;letter-spacing:-.03em; }
+.briefing-rule { margin:13px 0 12px;color:#596f60;font-size:.83rem;line-height:1.5; }
+.formula-banner { padding:11px 13px;border-radius:12px;background:#294f40;color:#fff;text-align:center;font-size:.82rem;font-weight:850;line-height:1.4; }
+.planner-stats { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px; }
+.planner-stats div,.approach-math div { padding:9px 10px;border:1px solid #e1eadc;border-radius:11px;background:#fff; }
+.planner-stats span,.planner-stats strong,.approach-math strong,.approach-math span { display:block; }
+.planner-stats span { color:#75877b;font-size:.67rem; }
+.planner-stats strong { margin-top:3px;color:#315f46;font-size:1rem; }
+.approach-math { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:9px; }
+.approach-math div { padding:8px 5px;text-align:center; }
+.approach-math strong { color:#476c51;font-size:.72rem; }
+.approach-math span { margin-top:4px;color:#77867b;font-size:.61rem;font-weight:700;white-space:nowrap; }
+.schedule-inputs { margin-top:15px;padding:13px;border:1px solid #dce8d9;border-radius:13px;background:#fff; }
+.schedule-inputs label { display:flex;justify-content:space-between;gap:10px;color:#405d4b;font-size:.76rem;font-weight:800; }
+.schedule-inputs output { color:#2f714b;font-size:.95rem; }
+#ns-seconds { width:100%;margin:15px 0 7px;accent-color:#3d805b;cursor:pointer; }
+.schedule-split { display:flex;justify-content:space-between;color:#748477;font-size:.7rem; }
+.schedule-split strong { color:#345f46; }
+.schedule-track { display:flex;height:11px;overflow:hidden;margin-top:8px;border-radius:99px;background:#e6ece3; }
+.schedule-track span:first-child { background:#4e9669;transition:width .15s; }
+.schedule-track span:last-child { flex:1;background:#e3b45f;transition:width .15s; }
+.plan-prediction { display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px; }
+.plan-prediction .section-kicker { grid-column:1/-1; }
+.plan-prediction div { padding:9px;border:1px solid #e1eadc;border-radius:10px;background:#f8fbf5; }
+.plan-prediction span,.plan-prediction strong { display:block; }
+.plan-prediction span { color:#77867b;font-size:.65rem; }
+.plan-prediction strong { margin-top:4px;color:#2f704b;font-size:1.05rem; }
+.plan-button { width:100%;margin-top:12px;min-height:48px;font-size:.84rem; }
+.plan-button:disabled { opacity:.45;cursor:not-allowed; }
+.math-hint { margin:10px 0 0;padding:10px 11px;border-radius:10px;background:#e6f1e3;color:#4f7059;font-size:.72rem;line-height:1.5; }
+.live-results { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:12px; }
+.live-results div { padding:9px 5px;border:1px solid #e8eee5;border-radius:10px;background:#fafcf8;text-align:center; }
+.live-results span,.live-results strong { display:block; }
+.live-results span { color:#829087;font-size:.61rem; }
+.live-results strong { margin-top:4px;color:#37694d;font-size:1.1rem; }
+.traffic-controls .restart-button { display:block; }
+@media(max-width:1100px) { .app-shell{width:calc(100% - 26px)} .game-layout{grid-template-columns:minmax(0,1.2fr) minmax(350px,.9fr);gap:14px} }
+@media(max-width:850px) { .game-layout{grid-template-columns:minmax(0,1fr)} .control-column{grid-template-columns:1fr 1fr;align-items:start} .mission-card{grid-column:1/-1} .planner-card{grid-column:1} .traffic-controls{grid-column:2;grid-row:2} .math-card{grid-column:1/-1} }
+@media(max-width:560px) { .app-shell{width:calc(100% - 18px);padding:0 2px 20px} .control-column{grid-template-columns:1fr} .mission-card,.planner-card,.traffic-controls,.math-card{grid-column:auto} .approach-math span{font-size:.56rem} .planner-card{padding:14px} }
+
+/* Mission-card redesign: vivid, high-contrast engineering challenge */
+:root { --ink:#182c43; --teal:#087f8c; --coral:#f07862; --gold:#f3bd54; --violet:#7567c8; }
+body { background:#f3f5fb; color:var(--ink); }
+.app-shell { width:min(1760px,calc(100% - 48px)); }
+.topbar { border-color:#dce3ef; }
+.intro-row h1 span { color:#087f8c; }
+.game-layout { grid-template-columns:minmax(0,1.58fr) minmax(420px,.92fr); gap:22px; align-items:start; }
+.city-card,.mission-card,.traffic-controls,.math-card { border:1px solid #dce4ef; box-shadow:0 12px 32px rgba(29,47,75,.08); }
+.city-card { overflow:hidden; }
+.city-stage { background:#dfe9e4; }
+#city-map { width:100%; }
+.control-column { gap:14px; }
+.mission-card { background:linear-gradient(135deg,#fff 0%,#f4f7ff 100%); }
+.planner-card { padding:20px; border:1px solid #d8dff4; border-radius:20px; background:linear-gradient(145deg,#fff 0%,#f1f2ff 52%,#edf8fa 100%); box-shadow:0 14px 34px rgba(54,62,112,.12); }
+.challenge-top { display:flex; align-items:center; gap:12px; }
+.challenge-icon { display:grid; place-items:center; width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#087f8c,#39b5ae);color:white;font-size:1.45rem;box-shadow:0 7px 16px rgba(8,127,140,.2); }
+.challenge-kicker { margin:0 0 4px;color:#63718d;font-size:.63rem;font-weight:900;letter-spacing:.15em; }
+.challenge-tag { display:inline-block;padding:4px 8px;border-radius:99px;background:#fff0d7;color:#925b0d;font-size:.61rem;font-weight:900;letter-spacing:.07em; }
+.briefing-heading { display:none; }
+.planner-card h2 { margin:14px 0 8px;color:#182c43;font-size:1.22rem;line-height:1.2;letter-spacing:-.035em; }
+.challenge-question { margin:0;padding:14px 15px;border-left:4px solid var(--coral);border-radius:0 13px 13px 0;background:#fff0ed;color:#34465e;font-size:.9rem;font-weight:750;line-height:1.5; }
+.challenge-budget { display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;margin-top:13px;padding:12px 14px;border-radius:14px;background:linear-gradient(110deg,#172e49,#24516a);color:white; }
+.challenge-budget>span:first-child { font-size:.62rem;font-weight:900;letter-spacing:.1em;color:#b8d7e2; }
+.challenge-budget strong { grid-column:2;grid-row:1/3;color:#fff;font-size:1.55rem;line-height:1; }
+.challenge-budget strong small { font-size:.7rem;font-weight:700; }
+.challenge-budget>span:last-child { font-size:.68rem;color:#d4e6ed; }
+.approach-math { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px; }
+.approach-chip { padding:10px 12px!important;border:1px solid #e0e6f1!important;border-radius:13px!important;background:#fff!important;text-align:left!important;box-shadow:0 3px 10px rgba(25,46,72,.035); }
+.approach-chip .direction { color:#65748c;font-size:.62rem;font-weight:900;letter-spacing:.08em; }
+.approach-chip strong { margin:5px 0 2px;color:#20364f;font-size:.91rem; }
+.approach-chip small { color:#8a96a8;font-size:.67rem; }
+.approach-chip small b { color:#52647b; }
+.north-chip { border-left:4px solid #18a0a5!important; }
+.south-chip { border-left:4px solid #4e83d5!important; }
+.east-chip { border-left:4px solid #e6a63e!important; }
+.west-chip { border-left:4px solid #9678d4!important; }
+.schedule-inputs { margin-top:13px;padding:14px;border:1px solid #dfe5f0;border-radius:15px;background:#fff; }
+.slider-heading { display:flex;justify-content:space-between;align-items:center;gap:10px; }
+.slider-heading label { color:#34465e;font-size:.75rem;font-weight:850;line-height:1.35; }
+.slider-heading output { flex:none;padding:5px 9px;border-radius:9px;background:#e4f5f3;color:#087f8c;font-size:.84rem;font-weight:950; }
+#ns-seconds { margin:13px 0 8px;accent-color:#087f8c;height:8px; }
+.schedule-split { font-size:.72rem;font-weight:800; }
+.schedule-split strong { color:#20364f;font-size:.83rem; }
+.schedule-track { height:13px;border-radius:99px;background:#e9edf5; }
+.schedule-track span:first-child { background:linear-gradient(90deg,#087f8c,#3ab8ae); }
+.schedule-track span:last-child { background:linear-gradient(90deg,#f3bd54,#f07862); }
+.prediction-row { display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px; }
+.prediction-card { padding:12px;border:1px solid #d8eee9;border-radius:14px;background:#eaf8f5; }
+.prediction-card span { display:block;color:#527c78;font-size:.59rem;font-weight:900;letter-spacing:.06em; }
+.prediction-card strong { display:block;margin-top:5px;color:#087f75;font-size:1.35rem; }
+.points-card { border-color:#f4e4c6;background:#fff7e8; }
+.points-card span { color:#99743b; }
+.points-card strong { color:#b87517; }
+.plan-button { display:flex;justify-content:center;align-items:center;gap:10px;width:100%;min-height:50px;margin-top:12px;border:0;border-radius:13px;background:linear-gradient(100deg,#087f8c,#176a92);color:#fff;font-size:.88rem;font-weight:900;box-shadow:0 8px 18px rgba(8,127,140,.22);transition:transform .18s,box-shadow .18s; }
+.plan-button:hover:not(:disabled) { transform:translateY(-2px);box-shadow:0 12px 22px rgba(8,127,140,.27); }
+.math-hint { margin:10px 0 0;padding:10px 12px;border-radius:11px;background:#e9eefb;color:#536482;font-size:.7rem;line-height:1.45; }
+.traffic-controls { background:#fff; }
+.queue-summary>div { border-radius:12px;background:#f3f6fb; }
+.live-results strong { color:#087f8c; }
+.mission-tag { color:#b46b26; }
+@media(max-width:1100px) { .game-layout{grid-template-columns:minmax(0,1.2fr) minmax(360px,.9fr);gap:14px} }
+@media(max-width:850px) { .game-layout{grid-template-columns:1fr} .control-column{display:grid;grid-template-columns:1fr 1fr} .mission-card{grid-column:1/-1} .planner-card{grid-column:1} .traffic-controls{grid-column:2;grid-row:2} .math-card{grid-column:1/-1} }
+@media(max-width:560px) { .app-shell{width:calc(100% - 18px)} .control-column{display:flex;flex-direction:column} .approach-math{grid-template-columns:repeat(2,minmax(0,1fr))} .planner-card{padding:15px} .challenge-question{font-size:.83rem} }
+
+/* Metro city redesign and difficulty progression */
+:root{--ink:#172b3d;--muted:#687b8d;--canvas:#eaf0f5;--line:#d6e0e9;--teal:#087f8c;--coral:#f07862;--gold:#f0b64e;--purple:#7969c6}
+body{background:radial-gradient(ellipse at 12% 0%,#f9fbfd 0,#eaf0f5 55%,#e3eaf1 100%);color:var(--ink)}
+.app-shell{width:min(1900px,100%);padding:0 32px 30px}
+.topbar{min-height:68px;border-bottom:1px solid #d8e2ea}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:30px 4px 24px}
+.hero h1{margin:0;font-size:clamp(2rem,3vw,3.3rem);letter-spacing:-.055em;line-height:1.02;color:#172b3d}
+.hero h1 span{color:#07828b}
+.hero .intro-copy{margin:10px 0 0;color:#667b8b;font-size:.98rem}
+.hero-stat{display:flex;align-items:center;gap:12px;padding:15px 20px;border-radius:18px;background:#172f47;color:#fff;box-shadow:0 12px 28px #1c3d5428}
+.hero-stat strong{font-size:2.2rem;color:#f3bd54}.hero-stat span{font-size:.65rem;font-weight:900;letter-spacing:.12em;line-height:1.45}
+.level-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 20px}
+.level-tab{display:flex;align-items:center;gap:13px;min-height:78px;padding:12px 16px;border:1px solid #d6e0e9;border-radius:17px;background:#fff;text-align:left;cursor:pointer;box-shadow:0 5px 16px #1e38500b;transition:.2s}
+.level-tab:hover{transform:translateY(-2px);box-shadow:0 10px 22px #1e385018}
+.level-tab.active{border:2px solid #07828b;background:linear-gradient(120deg,#e8f8f5,#fff);box-shadow:0 9px 24px #087f8c20}
+.level-number{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:#edf1f7;color:#536a80;font-size:.95rem;font-weight:950}
+.level-tab.active .level-number{background:#087f8c;color:white}
+.level-tab strong,.level-tab small{display:block}.level-tab strong{font-size:.95rem;color:#20384d}.level-tab small{margin-top:3px;color:#7b8d9c;font-size:.7rem}
+.level-tab i{margin-left:auto;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#e6edf3;color:transparent;font-style:normal;font-weight:900}
+.level-tab.active i{background:#087f8c;color:white}
+.game-layout{grid-template-columns:minmax(0,1.75fr) minmax(420px,.85fr);gap:22px;align-items:start}
+.city-card,.mission-card,.planner-card,.traffic-controls,.math-card{border:1px solid #d5e0e9;box-shadow:0 14px 36px #1a344b12}
+.city-card{border-radius:22px;overflow:hidden}
+.city-card-head{padding:18px 22px;background:#fff}
+.city-card-head h2{font-size:1.05rem;color:#20384d}
+.city-stage{background:#cbdccf;min-height:400px}
+#city-map{display:block;width:100%;height:auto;min-height:420px;max-height:76vh;object-fit:cover}
+#city-map .block{transition:opacity .25s}
+#city-map .street-names text{fill:#d9e3e9;font-size:15px;font-weight:900;letter-spacing:4px}
+#city-map .map-labels rect{fill:#fff;stroke:#d8e2e8;stroke-width:2}
+#city-map .map-labels text{fill:#41596a;font-size:13px;font-weight:900;letter-spacing:1.4px;text-anchor:middle}
+#city-map .signal-case{fill:#182d3b;stroke:#9bb1b7;stroke-width:3}
+#city-map .signal-post{stroke:#263c48;stroke-width:7;stroke-linecap:round}
+#city-map .lamp{fill:#465b61;stroke:#1b303b;stroke-width:2}
+#city-map .lamp-red.active{fill:#ff5d59;filter:drop-shadow(0 0 6px #ff655d)}
+#city-map .lamp-green.active{fill:#55df91;filter:drop-shadow(0 0 7px #55df91)}
+#city-map .lamp-amber.active{fill:#ffca54}
+#city-map .vehicle{filter:drop-shadow(0 4px 3px #172b3d66)}
+#city-map .vehicle-body{stroke:#263746;stroke-width:2}
+#city-map .vehicle-glass{fill:#bfe0e9;stroke:#fff;stroke-width:1.5}
+#city-map .vehicle-wheel{fill:#17232d}
+#city-map .bicycle-wheel{fill:none;stroke:#202f3a;stroke-width:4}
+#city-map .bicycle-frame{fill:none;stroke:#f2b84e;stroke-width:3}
+#city-map .easy-road{display:none}
+#city-map.easy-mode .road-network,#city-map.easy-mode .crosswalks,#city-map.easy-mode .street-names,#city-map.easy-mode .traffic-signals #signal-east,#city-map.easy-mode .traffic-signals #signal-west,#city-map.easy-mode .map-labels{display:none}
+#city-map.easy-mode .easy-road{display:block}
+#city-map.easy-mode .block{opacity:.85}
+#city-map.easy-mode .traffic-signals #signal-north{transform:translate(755px,295px)}
+#city-map.easy-mode .traffic-signals #signal-south{transform:translate(445px,500px)}
+.control-column{gap:14px}
+.mission-card{padding:19px;border-radius:19px;background:linear-gradient(145deg,#fff,#f3f7fb)}
+.mission-tag{color:#b26a29;font-weight:950;letter-spacing:.1em}
+.planner-card{padding:20px;border-radius:20px;background:linear-gradient(145deg,#fff,#eef5fb 70%,#e9f7f5)}
+.challenge-icon{background:linear-gradient(135deg,#087f8c,#39b5ae);color:white}
+.challenge-question{background:#fff0ed;border-left:4px solid var(--coral);color:#34485a}
+.challenge-budget{background:linear-gradient(110deg,#172e49,#24516a)}
+.approach-chip{background:white!important;border:1px solid #dce5ed!important;border-radius:13px!important}
+.schedule-inputs{border:1px solid #dce5ed;background:#fff;border-radius:15px}
+#ns-seconds{accent-color:#087f8c}
+.schedule-track span:first-child{background:linear-gradient(90deg,#087f8c,#43b9ae)}
+.schedule-track span:last-child{background:linear-gradient(90deg,#f0b64e,#f07862)}
+.prediction-card{background:#e7f7f3;border:1px solid #cdebe3}.points-card{background:#fff5e5;border-color:#f2dfbb}
+.plan-button{background:linear-gradient(100deg,#087f8c,#246d99);border-radius:13px;min-height:52px}
+.fleet-legend{display:none;flex-wrap:wrap;gap:7px;margin:10px 0 0}
+.fleet-legend span{padding:6px 9px;border-radius:9px;background:#fff;border:1px solid #dce5ed;color:#50667b;font-size:.68rem;font-weight:800}
+body.hard-level .fleet-legend{display:flex}
+body.easy-level .approach-chip.east-chip,body.easy-level .approach-chip.west-chip{display:none}
+body.easy-level .approach-math{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+body.easy-level .mission-card .mission-number{color:#07828b}
+.traffic-controls{background:#fff;border-radius:18px;padding:18px}
+.queue-summary>div{background:#f0f4f8;border:1px solid #e0e7ed;border-radius:12px}
+.bottom-strip{border:1px solid #d9e2ea;border-radius:17px;background:#fff}
+@media(max-width:1050px){.game-layout{grid-template-columns:minmax(0,1.25fr) minmax(360px,.9fr)}.app-shell{padding-inline:18px}}
+@media(max-width:800px){.game-layout{grid-template-columns:1fr}.level-picker{gap:8px}.level-tab{padding:10px}.level-tab small{font-size:.62rem}.hero-stat{display:none}#city-map{max-height:none}}
+@media(max-width:540px){.app-shell{padding-inline:10px}.hero{padding:20px 2px}.level-picker{grid-template-columns:1fr}.level-tab{min-height:62px}.city-stage{min-height:250px}.planner-card{padding:14px}}
+
+/* True 3D city viewport */
+.city-stage-3d{position:relative;width:100%;height:clamp(560px,72vh,900px);min-height:560px;overflow:hidden;background:#b8cbd0;border-radius:0 0 18px 18px;isolation:isolate}
+.city3d{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:grab;overflow:hidden}
+.city3d:active{cursor:grabbing}
+.city3d canvas{display:block;width:100%;height:100%;outline:none}
+.city-camera-tip{position:absolute;left:18px;bottom:16px;z-index:3;padding:9px 13px;border:1px solid #ffffff80;border-radius:99px;background:#172b3dcc;color:#f6fbff;font-size:.63rem;font-weight:900;letter-spacing:.1em;backdrop-filter:blur(10px);pointer-events:none}
+.city-camera-tip span{padding:0 6px;color:#f0bd52}
+.city-stage-3d .map-compass{position:absolute;top:16px;right:16px;z-index:3;pointer-events:none}
+.city-fallback{display:grid;place-items:center;height:100%;padding:30px;text-align:center;color:#243b4b;font-weight:800}
+.city-card{overflow:hidden}
+.city-card-head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:20px 24px}
+.city-card-head h2{font-size:1.2rem}
+.city-card .map-legend{padding:13px 20px;background:#fff}
+.game-layout{grid-template-columns:minmax(0,1.85fr) minmax(390px,.82fr);gap:20px}
+.app-shell{width:min(2200px,100%);padding-inline:clamp(12px,2vw,34px)}
+.control-column{position:relative;z-index:2}
+@media(min-width:1500px){.city-stage-3d{height:clamp(680px,76vh,1050px)}}
+@media(max-width:1050px){.game-layout{grid-template-columns:minmax(0,1.4fr) minmax(340px,.9fr)}.city-stage-3d{height:62vh;min-height:480px}}
+@media(max-width:800px){.game-layout{grid-template-columns:1fr}.city-stage-3d{height:66vh;min-height:460px}.city-card-head{padding:15px}.control-column{display:flex;flex-direction:column}}
+@media(max-width:520px){.city-stage-3d{height:58vh;min-height:390px}.city-camera-tip{left:9px;bottom:9px;font-size:.54rem;padding:7px 9px}.city-stage-3d .map-compass{top:9px;right:9px}}
+@media(prefers-reduced-motion:reduce){.city3d{scroll-behavior:auto}}
+
+/* Critical regression fix: keep the beginner signal-allocation control visible. */
+body.easy-level #schedule-inputs { display:block !important; visibility:visible !important; }
+/* The city is a fixed 3D illustration, not a draggable map. */
+.city3d,.city3d:active { cursor:default !important; touch-action:pan-y; }
+.city3d canvas { pointer-events:none; }
+.city-stage-3d { height:clamp(700px,82vh,1120px); min-height:700px; }
+@media(max-width:1050px) { .city-stage-3d { height:70vh; min-height:560px; } }
+@media(max-width:800px) { .city-stage-3d { height:68vh; min-height:500px; } }
+@media(max-width:520px) { .city-stage-3d { height:62vh; min-height:430px; } }
+
+
+/* Final Easy-mode visibility and fixed-city presentation safeguards. */
+body.easy-level #schedule-inputs { display:block !important; visibility:visible !important; opacity:1 !important; }
+#schedule-inputs[hidden] { display:none !important; }
+.city3d, .city3d canvas { cursor:default !important; }
+.city3d { touch-action:none; }
+
+
+/* Minimal game interface: level selector, city, and the challenge planner only. */
+body { background:#edf2f6; }
+.app-shell { width:min(2200px,100%); margin:0 auto; padding:18px clamp(10px,2vw,30px) 24px; }
+.level-picker { position:relative; z-index:5; margin:0 0 14px; }
+.game-layout { grid-template-columns:minmax(0,1.7fr) minmax(390px,.83fr); gap:16px; align-items:stretch; }
+.city-card { border-radius:18px; }
+.city-stage-3d { height:clamp(620px,calc(100vh - 150px),1050px); min-height:540px; border-radius:18px; }
+.control-column { display:block; }
+.planner-card { height:100%; padding:18px; overflow:visible; }
+.planner-card h2 { margin:12px 0 8px; }
+.challenge-question { font-size:.86rem; }
+.challenge-budget,.approach-math,.schedule-inputs,.prediction-row { margin-top:11px; }
+.plan-button { margin-top:11px; }
+.math-hint,.logic-hooks,.city-camera-tip,.map-legend,.city-card-head,.topbar,.hero,.bottom-strip,.footer-note { display:none !important; }
+@media(max-width:950px) {
+ .game-layout { grid-template-columns:1fr; }
+ .city-stage-3d { height:62vh; min-height:420px; }
+ .planner-card { height:auto; }
+}
+@media(max-width:560px) {
+ .app-shell { padding:9px 8px 16px; }
+ .level-picker { gap:6px; margin-bottom:9px; }
+ .level-tab { min-height:58px; padding:8px; gap:8px; }
+ .level-number { width:32px; height:32px; }
+ .level-tab small { font-size:.58rem; }
+ .city-stage-3d { height:48vh; min-height:320px; }
+ .planner-card { padding:14px; }
+}
+
+
+/* Hide every non-game section explicitly requested for removal. */
+.topbar,
+.hero,
+.hero-stat,
+.intro-copy,
+.eyebrow,
+.utility-button,
+.brand-lockup,
+.back-link,
+.bottom-strip,
+.footer-note,
+.traffic-controls,
+.mission-card,
+.status-message,
+#reserve-note,
+#research-consent-modal,
+#math-hint,
+.learning-goals {
+  display: none !important;
+}
+/* Keep the screen focused on difficulty selection, the 3D city and planner. */
+.app-shell > header,
+.app-shell > footer,
+.app-shell > #game-main > header,
+.app-shell > #game-main > footer {
+  display: none !important;
+}
+
+
+/* Minimal game interface: level selector, city, and challenge planner only. */
+body { background:#edf2f6; }
+.app-shell { width:min(2200px,100%); margin:0 auto; padding:18px clamp(10px,2vw,30px) 24px; }
+.level-picker { position:relative; z-index:5; margin:0 0 14px; }
+.game-layout { grid-template-columns:minmax(0,1.7fr) minmax(390px,.83fr); gap:16px; align-items:stretch; }
+.city-card { border-radius:18px; }
+.city-stage-3d { height:clamp(620px,calc(100vh - 150px),1050px); min-height:540px; border-radius:18px; }
+.control-column { display:block; }
+.planner-card { height:100%; padding:18px; overflow:visible; }
+.planner-card h2 { margin:12px 0 8px; }
+.challenge-question { font-size:.86rem; }
+.challenge-budget,.approach-math,.schedule-inputs,.prediction-row { margin-top:11px; }
+.plan-button { margin-top:11px; }
+.math-hint,.logic-hooks,.city-camera-tip,.map-legend,.city-card-head,.topbar,.hero,.bottom-strip,.footer-note { display:none !important; }
+.topbar,.hero,.hero-stat,.intro-copy,.eyebrow,.utility-button,.brand-lockup,.back-link,.bottom-strip,.footer-note,.traffic-controls,.mission-card,.status-message,#reserve-note,#math-hint,.learning-goals { display:none !important; }
+.app-shell > header,.app-shell > footer { display:none !important; }
+@media(max-width:950px){.game-layout{grid-template-columns:1fr}.city-stage-3d{height:62vh;min-height:420px}.planner-card{height:auto}}
+@media(max-width:560px){.app-shell{padding:9px 8px 16px}.level-picker{gap:6px;margin-bottom:9px}.level-tab{min-height:58px;padding:8px;gap:8px}.level-number{width:32px;height:32px}.level-tab small{font-size:.58rem}.city-stage-3d{height:48vh;min-height:320px}.planner-card{padding:14px}}
+
+/* Shared research-consent sheet retained for the site's consent workflow. */
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:1rem;background:#17251d99}
+.modal-overlay.hidden{display:none}
+.consent-card{position:relative;width:min(760px,96vw);max-height:90vh;overflow:auto;padding:1.4rem;border:1px solid #d9dfd4;border-radius:18px;background:#fffdf8;color:#26352c;box-shadow:0 20px 70px #0004}
+.consent-card h2{margin:.3rem 0 .7rem}.consent-card p,.consent-card li{line-height:1.5}.consent-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.consent-columns section{padding:.8rem;border-radius:12px;background:#f2f5ef}.consent-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}.consent-btn{min-height:44px;padding:.65rem .9rem;border:1px solid #9ba99b;border-radius:10px;background:#fff;color:#26352c;font:inherit;font-weight:700}.consent-btn.primary{background:#315c42;color:#fff}.consent-policy{color:#285e72;text-decoration:underline}.consent-close{float:right;border:0;background:transparent;font-size:1.7rem}
+@media(max-width:620px){.consent-columns{grid-template-columns:1fr}.consent-card{padding:1rem}}
+
+
+/* Challenge completion and progression, shown only after clearing a queue. */
+.challenge-complete{margin-top:12px;padding:13px 14px;border:1px solid #b9dfd2;border-radius:12px;background:#eaf8f2;color:#174b3d}
+.challenge-complete[hidden],.next-challenge-button[hidden]{display:none!important}
+.challenge-complete strong{display:block;font-size:.9rem}
+.challenge-complete p{margin:5px 0 10px;font-size:.78rem;line-height:1.45;color:#496b60}
+.next-challenge-button{width:100%;margin:0}
+
+
+/* Main arcade shell integration styles */
+/* Traffic Control Centre shell: signal teal, warm amber and clear pause/exit sheets. */
+#screen-traffic-control{--game-accent:#087e83;--game-wash:#e3f4f1;--game-border:#b8dfd9;--game-ink:#164f55;min-height:calc(100vh - 76px);background:#eef5f4}
+#screen-traffic-control .tc-shell-bar{position:relative;z-index:2;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;min-height:72px;padding:10px clamp(12px,2.5vw,30px);border-bottom:3px solid #b8dfd9;background:linear-gradient(105deg,#075e67,#087e83 58%,#15958c);color:#fff}
+#screen-traffic-control .tc-shell-back,#screen-traffic-control .tc-shell-actions button{min-height:44px;padding:9px 13px;border:1px solid #ffffff70;border-radius:12px;background:#ffffff18;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+#screen-traffic-control .tc-shell-brand{min-width:0;text-align:center}
+#screen-traffic-control .tc-shell-kicker{display:block;margin-bottom:3px;color:#c4f1e8;font-size:.62rem;font-weight:900;letter-spacing:.15em}
+#screen-traffic-control .tc-shell-brand strong{display:block;font-size:clamp(1rem,2vw,1.3rem);letter-spacing:-.02em}
+#screen-traffic-control .tc-shell-actions{display:flex;gap:8px}
+#screen-traffic-control .tc-frame-wrap{width:100%;min-height:calc(100vh - 148px);background:#edf2f6}
+#screen-traffic-control #traffic-control-frame{display:block;width:100%;height:calc(100vh - 148px);min-height:620px;border:0;background:#edf2f6}
+.tc-shell-overlay[hidden]{display:none!important}
+.tc-shell-overlay{position:fixed;z-index:11000;inset:0;display:grid;place-items:center;padding:18px;background:#102c32b8;backdrop-filter:blur(6px)}
+.tc-shell-dialog{width:min(100%,480px);padding:clamp(24px,5vw,38px);border:2px solid #b8dfd9;border-radius:24px;background:#fffefa;color:#164f55;box-shadow:0 24px 80px #071f2340;text-align:center}
+.tc-dialog-icon{display:grid;width:58px;height:58px;margin:0 auto 13px;place-items:center;border-radius:18px;background:#e3f4f1;font-size:1.8rem}
+.tc-dialog-kicker{margin:0 0 8px;color:#087e83;font-size:.68rem;font-weight:900;letter-spacing:.15em}
+.tc-shell-dialog h2{margin:0;font-size:clamp(1.55rem,4vw,2rem)}
+.tc-shell-dialog>p:not(.tc-dialog-kicker){margin:12px 0 0;color:#536e6d;line-height:1.6}
+.tc-dialog-actions{display:grid;gap:9px;margin-top:22px}
+.tc-dialog-actions button{min-height:48px;padding:11px 16px;border-radius:12px;font:inherit;font-weight:850;cursor:pointer}
+.tc-dialog-primary{border:1px solid #087e83;background:#087e83;color:#fff}
+.tc-dialog-secondary{border:1px solid #c6ded9;background:#f1f8f6;color:#164f55}
+body.tc-dialog-open{overflow:hidden}
+#screen-traffic-control :focus-visible,.tc-shell-overlay :focus-visible{outline:3px solid #f1b64d;outline-offset:3px}
+@media(max-width:650px){#screen-traffic-control .tc-shell-bar{grid-template-columns:auto minmax(0,1fr);gap:8px;padding:9px 10px}#screen-traffic-control .tc-shell-brand{grid-column:1/-1;grid-row:1}#screen-traffic-control .tc-shell-back{grid-column:1;grid-row:2}#screen-traffic-control .tc-shell-actions{grid-column:2;grid-row:2;justify-content:end}#screen-traffic-control .tc-shell-actions button{padding-inline:10px}#screen-traffic-control #traffic-control-frame{height:calc(100dvh - 142px);min-height:560px}#screen-traffic-control .tc-frame-wrap{min-height:calc(100dvh - 142px)}}
+@media(prefers-reduced-motion:reduce){.tc-shell-overlay *,#screen-traffic-control *{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+@media(forced-colors:active){.tc-shell-dialog{border:2px solid CanvasText;background:Canvas;color:CanvasText}.tc-dialog-primary,.tc-dialog-secondary{border:1px solid ButtonText;background:ButtonFace;color:ButtonText}}
