@@ -261,7 +261,18 @@ class TrafficCity3D{
 const $=s=>document.querySelector(s);
 const DIRS=["north","south","east","west"],TIMES={bike:5,car:10,truck:15};
 const PROGRESS_KEY="mfa-traffic-control-progress-v1";
-function readProgress(){try{return JSON.parse(localStorage.getItem(PROGRESS_KEY)||"{}")}catch{return {}}}
+function readProgress(){
+ try{
+  const stored=JSON.parse(localStorage.getItem(PROGRESS_KEY)||"{}"),progress={};
+  for(const key of Object.keys(LEVELS_BASE)){
+   const value=stored?.[key];
+   progress[key]=Array.isArray(value)
+    ? [...new Set(value.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=50))].sort((a,b)=>a-b)
+    : Array.from({length:Math.max(0,Math.min(50,Number(value)||0))},(_,i)=>i+1);
+  }
+  return progress;
+ }catch{return{easy:[],medium:[],hard:[]}}
+}
 function saveProgress(data){try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(data))}catch(error){console.warn("Could not save challenge progress:",error.message)}}
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
 let level="easy",round=0,queues={},busy=false,paused=false,runId=0,nsSeconds=30,cleared=0,score=0,cycles=0,optimalScore=0,missionStartedAt=Date.now(),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -287,9 +298,12 @@ function updateMath(){
  $("#math-hint").textContent=m.lesson;$("#run-plan").disabled=busy||paused||total()===0;$("#ns-seconds").disabled=paused||busy;
 }
 function setLevelUI(){
- document.getElementById("screen-traffic-control").classList.toggle("easy-level",level==="easy");document.getElementById("screen-traffic-control").classList.toggle("hard-level",level==="hard");city.setLevel(level);
- document.querySelectorAll(".level-tab").forEach(b=>{const on=b.dataset.level===level;b.classList.toggle("active",on);b.setAttribute("aria-pressed",String(on))});
+ document.getElementById("screen-traffic-control").classList.toggle("easy-level",level==="easy");
+ document.getElementById("screen-traffic-control").classList.toggle("hard-level",level==="hard");
+ city.setLevel(level);
  $("#city-heading").textContent=level==="easy"?"Central Avenue · Two-way road":level==="medium"?"Central Avenue · Four-way junction":"Metro City · Mixed-fleet intersection";
+ $("#tc-level-title").textContent=cfg().label;
+ $("#tc-level-heading-brand").textContent=cfg().label.split(" · ")[0]+" challenges";
 }
 function startRound(index=0){
  runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;missionStartedAt=Date.now();
@@ -304,12 +318,43 @@ function startRound(index=0){
  $("#traffic-status").textContent="Study the queues, calculate your plan and run the signal.";
  renderVehicles();updateMath();
 }
-function setLevel(next){
+function setLevel(next,index=0){
  level=next;
- const unlocked=Number(readProgress()[next]||0);
- round=Math.min(Math.max(0,unlocked),cfg().rounds.length-1);
+ round=Math.max(0,Math.min(cfg().rounds.length-1,Number(index)||0));
  setLevelUI();
  startRound(round);
+}
+function renderLevelGrid(){
+ const grid=$("#tc-level-grid"),completed=readProgress()[level]||[];
+ if(!grid)return;
+ grid.replaceChildren();
+ cfg().rounds.forEach((challenge,index)=>{
+  const number=index+1,isComplete=completed.includes(number),button=document.createElement("button");
+  button.type="button";button.className="tc-level-tile"+(isComplete?" completed":"");
+  button.setAttribute("aria-label","Level "+number+": "+challenge.title+(isComplete?", completed":""));
+  button.title=challenge.title;
+  const numberLabel=document.createElement("span");numberLabel.className="tc-level-number";numberLabel.textContent=String(number).padStart(2,"0");
+  const title=document.createElement("span");title.className="tc-level-name";title.textContent=challenge.title.replace(/^Challenge \d+ · /,"");
+  const status=document.createElement("span");status.className="tc-level-status";status.textContent=isComplete?"✓ Completed":"Play level";
+  button.append(numberLabel,title,status);
+  button.addEventListener("click",()=>chooseLevel(index));
+  grid.append(button);
+ });
+ $("#tc-level-progress-count").textContent=completed.length+" / "+cfg().rounds.length;
+}
+function showDifficultyView(){
+ pauseGame();
+ $("#tc-difficulty-view").hidden=false;$("#tc-level-view").hidden=true;$("#tc-game-view").hidden=true;
+}
+function showLevelsView(next=level){
+ pauseGame();
+ level=next;setLevelUI();renderLevelGrid();
+ $("#tc-difficulty-view").hidden=true;$("#tc-level-view").hidden=false;$("#tc-game-view").hidden=true;
+}
+function chooseLevel(index){
+ resumeGame();
+ $("#tc-difficulty-view").hidden=true;$("#tc-level-view").hidden=true;$("#tc-game-view").hidden=false;
+ setLevel(level,index);
 }
 function runPlan(){
  if(busy||paused||!total())return;
@@ -339,7 +384,8 @@ function runPlan(){
 function finish(){
  const m=mission(),lastChallenge=round===cfg().rounds.length-1;
  const progress=readProgress();
- progress[level]=Math.max(Number(progress[level]||0),Math.min(round+1,cfg().rounds.length));
+ if(!progress[level].includes(round+1))progress[level].push(round+1);
+ progress[level].sort((a,b)=>a-b);
  saveProgress(progress);
  $("#challenge-complete").hidden=false;
  $("#challenge-complete-title").textContent=lastChallenge?"All 50 challenges completed!":"Challenge complete!";
@@ -365,7 +411,7 @@ $("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventL
  if(round>=cfg().rounds.length-1)startRound(0);
  else startRound(round+1);
 });
-document.querySelectorAll(".level-tab").forEach(b=>b.addEventListener("click",()=>setLevel(b.dataset.level)));
+document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>showLevelsView(b.dataset.difficulty)));
 $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.getElementById("screen-traffic-control").classList.toggle("reduce-motion",reduced)});
 $("#text-size-toggle")?.addEventListener("click",()=>document.getElementById("screen-traffic-control").classList.toggle("large-type"));
 if(reduced)document.getElementById("screen-traffic-control").classList.add("reduce-motion");
@@ -398,7 +444,7 @@ const TrafficControlIntegration=(()=>{
   }
   function open(){
     const scale=Number(getComputedStyle(document.documentElement).getPropertyValue("--font-scale"))||1;
-    window.TrafficControlGame.setFontScale(scale);resumeGame();
+    window.TrafficControlGame.setFontScale(scale);showDifficultyView();
   }
   function setFontScale(value){window.TrafficControlGame.setFontScale(value)}
   function pause(){pauseGame();showDialog("traffic-pause-overlay")}
@@ -413,7 +459,7 @@ const TrafficControlIntegration=(()=>{
     event.preventDefault();event.stopPropagation();
     if(activeDialog==="traffic-pause-overlay")resume();else cancelExit();
   },true);
-  return{open,setFontScale,pause,resume,help,requestExit,cancelExit,confirmExit,pauseForNavigation};
+  return{open,setFontScale,pause,resume,help,showDifficulty:showDifficultyView,showLevels:()=>showLevelsView(level),requestExit,cancelExit,confirmExit,pauseForNavigation};
 })();
 window.TrafficControlIntegration=TrafficControlIntegration;
 setLevel("easy");
