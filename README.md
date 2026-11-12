@@ -24,6 +24,7 @@ The current main branch includes optional account sign-in, Cloudflare D1-backed 
 - 🥐 Fraction Bakery with 100 randomized levels across eight stages
 - 🧺 Slab Maths
 - 🧩 Number Maze with procedurally generated unique-solution path puzzles
+- 🚦 Traffic Control Centre with 150 traffic-planning challenges across three difficulty levels
 - 📱 Responsive desktop and mobile layouts
 - ⌨️ Keyboard-friendly controls and visible focus states
 - ❓ Game-specific How to play instructions
@@ -96,6 +97,12 @@ The current `main` implementation includes:
 ## Little Shop
 
 Little Shop is an open-ended fruit-counter activity. Learners assemble customer orders, check the bill, handle underpayment or exact payment, calculate change for overpayment, and serve the next customer. Currency calculations use integer paise internally; the activity uses simulated money and has no real payment flow. Automated cashier and layout checks exist, but supervised learner/educator review remains pending.
+
+## Traffic Control Centre
+
+Traffic Control Centre is a native game screen in the main arcade at `index.html#traffic-control`. It contains 150 challenges across Easy, Medium and Hard levels. Learners allocate green-signal time between traffic approaches, compare predicted vehicle flow and priority points, and run their plan. Challenge progress is stored locally on the learner's device.
+
+The game markup lives in the main `index.html`; all game-specific JavaScript is consolidated in `js/traffic-control.js`; and its styles live in `css/traffic-control.css`. The former `games/traffic-control/` entry URL redirects to the main arcade route. The focused challenge-data test is `node games/traffic-control/tests/mission-data.test.mjs`.
 
 ## Shelved and hidden games
 

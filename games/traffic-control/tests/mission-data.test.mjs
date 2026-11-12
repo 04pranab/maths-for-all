@@ -1,5 +1,19 @@
 import assert from "node:assert/strict";
-import { LEVELS } from "../missions.js";
+import { existsSync, readFileSync } from "node:fs";
+import vm from "node:vm";
+
+// The game keeps all runtime JavaScript in one browser module. Evaluate only
+// its mission-data section here so the test does not need a DOM or WebGL.
+const bundle = readFileSync(new URL("../../../js/traffic-control.js", import.meta.url), "utf8");
+const missionStart = bundle.indexOf("const LEVELS_BASE =");
+const missionEnd = bundle.indexOf("\n\nlet THREE", missionStart);
+assert.ok(missionStart >= 0 && missionEnd > missionStart, "mission data must remain in the game bundle");
+const sandbox = { module: { exports: {} } };
+vm.runInNewContext(
+  `${bundle.slice(missionStart, missionEnd)}\nmodule.exports = { LEVELS };`,
+  sandbox
+);
+const LEVELS = JSON.parse(JSON.stringify(sandbox.module.exports.LEVELS));
 
 const expectedDirections = {
   easy: ["north", "south"],
@@ -40,4 +54,24 @@ for (const [level, config] of Object.entries(LEVELS)) {
 }
 
 assert.equal(Object.values(LEVELS).reduce((sum, level) => sum + level.rounds.length, 0), 150);
-console.log("Traffic Control: all 150 challenge-data checks passed.");
+
+
+// Structural integration checks: the game has one native screen and one JS/CSS entry.
+const arcadeHtml = readFileSync(new URL("../../../index.html", import.meta.url), "utf8");
+const gameCss = readFileSync(new URL("../../../css/traffic-control.css", import.meta.url), "utf8");
+assert.equal((arcadeHtml.match(/id="screen-traffic-control"/g) || []).length, 1,
+  "Traffic Control markup must exist once in the main arcade");
+assert.match(arcadeHtml, /href="css\/traffic-control\.css(?:\?[^"]*)?"/,
+  "the main arcade must load the dedicated Traffic Control stylesheet");
+assert.match(arcadeHtml, /<script type="module" src="js\/traffic-control\.js(?:\?[^"]*)?"><\/script>/,
+  "the main arcade must load the consolidated Traffic Control module");
+assert.doesNotMatch(arcadeHtml, /<iframe\b[^>]*(?:traffic-control|traffic-control-frame)/i,
+  "Traffic Control must not be embedded in an iframe");
+assert.doesNotMatch(gameCss, /traffic-control-frame|tc-frame-wrap/,
+  "the dedicated stylesheet must not retain obsolete iframe layout rules");
+for (const obsolete of ["app.js", "city3d.js", "missions.js", "styles.css"]) {
+  assert.equal(existsSync(new URL(`../${obsolete}`, import.meta.url)), false,
+    `obsolete split module ${obsolete} must be removed`);
+}
+
+console.log("Traffic Control: all 150 challenge-data and native-integration checks passed.");

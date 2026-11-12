@@ -299,6 +299,25 @@ Careful observation and confidence through practice.
 
 ---
 
+### 🚦 Traffic Control Centre
+
+**What happens:**  
+The learner operates a city junction, divides a signal-cycle budget between traffic approaches, and tests a plan against the waiting queues.
+
+**Mathematical focus:**
+
+- Addition and comparison of queue sizes and waiting times;
+- Dividing a fixed time budget into phases;
+- Multiplication, estimation and comparing outcomes;
+- Planning under simple constraints.
+
+**Human value:**  
+Careful decisions, patience and responsibility for the safety of others.
+
+The game contains 150 challenges across Easy, Medium and Hard levels. Progress stays on the learner's device. Open it directly at `index.html#traffic-control`.
+
+---
+
 ## Little Shop: the fruit counter 🍎
 
 Little Shop is an open-ended shop-counter activity. There are no levels, level map, timed rounds, comparison quizzes, or final level. Customers keep arriving until the learner chooses to leave.
@@ -532,7 +551,7 @@ It is finished when the experience works.
 
 ## 14. Current project status and roadmap
 
-**Status checked: 10 November 2026.** The current `main` branch includes Number Maze and Little Shop. The learner-facing menu contains Arithmetic Quiz, Math Racing, Sudoku, Shape Fitting, Shape Architect, Fraction Bakery, Slab Maths, Little Shop and Number Maze.
+**Status checked: 12 November 2026.** The current `main` branch includes Number Maze and Little Shop. PR #212 adds Traffic Control Centre as a native game screen on its feature branch; that branch's learner-facing menu contains Arithmetic Quiz, Math Racing, Sudoku, Shape Fitting, Shape Architect, Fraction Bakery, Slab Maths, Little Shop, Number Maze and Traffic Control Centre.
 
 - **Shape Architect:** 100-level geometry builder; implemented and hardened.
 - **Fraction Bakery:** 100 levels across eight stages; automated mathematical and responsive-layout checks are present. Supervised learner/educator acceptance remains pending.
@@ -598,6 +617,7 @@ Every playable screen has a stable, shareable hash route. Opening a game from th
 | Fraction Bakery | `#fraction-bakery` | `index.html#fraction-bakery` |
 | Little Shop | `#little-shop` | `index.html#little-shop` |
 | Number Maze | `#number-maze` | `index.html#number-maze` |
+| Traffic Control Centre | `#traffic-control` | `index.html#traffic-control` |
 | Probability Machine (hidden) | `#probability-machine` | `index.html#probability-machine` |
 
 The menu is the URL without a hash. Unknown or malformed hashes safely resolve to the menu. A route restores the game screen, not an in-progress session snapshot. The Wiki game guide links directly to each active game.
