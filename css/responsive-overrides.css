@@ -28,7 +28,6 @@ button, [role="button"], input[type="button"], input[type="submit"] { touch-acti
   min-width: 0;
 }
 #screen-menu, #screen-menu .menu-grid { min-width: 0; }
-#screen-menu .menu-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr)); }
 #screen-menu .menu-card { min-width: 0; width: 100%; }
 
 @media (max-width: 1100px) {
@@ -151,4 +150,30 @@ button, [role="button"], input[type="button"], input[type="submit"] { touch-acti
 }
 @media (max-height: 700px) {
   .app-shell .city-stage-3d { min-height: 240px; height: min(58vh, 520px); }
+}
+
+
+/* Child-safe interaction defaults: prevent accidental text highlighting and dragging
+   on game pieces and controls, while keeping instructions and learning text selectable. */
+:where(.screen, .game-shell, .app-shell) :where(
+  button, [role="button"], .menu-card, .game-card, .answer-option, .choice-option,
+  .tile, .piece, .shape-piece, .nm-cell, .sudoku-cell, .board-cell,
+  .draggable, [draggable="true"], canvas, .city3d, .game-board
+) {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+:where(.screen, .game-shell, .app-shell) :where(
+  input, textarea, [contenteditable="true"], .game-instructions, .game-description,
+  .question-card, .challenge-question, .feedback, .hint, .help-content, .wiki-content
+) {
+  -webkit-user-select: text;
+  user-select: text;
+}
+:where(.screen, .game-shell, .app-shell) :where(button, [role="button"], .menu-card, .game-card) {
+  -webkit-tap-highlight-color: transparent;
+}
+:where(.screen, .game-shell, .app-shell) :where(.tile, .piece, .shape-piece, .nm-cell, .sudoku-cell, .board-cell, .draggable) {
+  touch-action: manipulation;
 }
