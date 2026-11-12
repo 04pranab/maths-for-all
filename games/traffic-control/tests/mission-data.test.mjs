@@ -86,6 +86,10 @@ assert.match(bundle, /function renderLevelGrid\(\)/,
   "the game module must render the 50 levels for the selected difficulty");
 assert.match(bundle, /function chooseLevel\(index\)/,
   "every level tile must be directly playable");
+assert.match(bundle, /actionLabel:"Choose another level"/,
+  "completing a challenge must offer free level selection instead of forced progression");
+assert.ok(bundle.includes('$("#next-mission").addEventListener("click",()=>showLevelsView(level));'),
+  "the completion action must return to the selected difficulty's level grid");
 assert.match(bundle, /Array\.isArray\(value\)/,
   "progress storage must preserve individually completed levels while migrating older progress");
 assert.match(gameCss, /\.tc-level-grid[^{]*\{[^}]*grid-template-columns/s,
