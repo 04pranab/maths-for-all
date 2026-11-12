@@ -353,9 +353,9 @@ function showLevelsView(next=level){
  $("#tc-difficulty-view").hidden=true;$("#tc-level-view").hidden=false;$("#tc-game-view").hidden=true;
 }
 function chooseLevel(index){
- resumeGame();
  $("#tc-difficulty-view").hidden=true;$("#tc-level-view").hidden=true;$("#tc-game-view").hidden=false;
  setLevel(level,index);
+ resumeGame();
 }
 function runPlan(){
  if(busy||paused||!total())return;
