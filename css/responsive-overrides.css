@@ -179,8 +179,7 @@ button, [role="button"], input[type="button"], input[type="submit"] { touch-acti
 }
 
 
-/* Unified navigation panel: desktop stays inline; mobile keeps every action
-   (including text zoom) behind one compact menu button. */
+/* Unified navigation panel: collapse before enlarged controls compete for horizontal space. */
 .nav-menu-panel {
   display: flex;
   flex: 1 1 auto;
@@ -188,78 +187,44 @@ button, [role="button"], input[type="button"], input[type="submit"] { touch-acti
   min-width: 0;
   gap: 12px;
 }
-@media (max-width: 820px) {
-  .site-nav {
-    flex-wrap: wrap;
+@media (max-width: 1100px) {
+  .site-nav { flex-wrap: wrap; align-items: center; }
+  .nav-menu-toggle {
+    display: inline-flex; flex: 0 0 44px; align-items: center; justify-content: center;
+    order: 2; width: 44px; min-width: 44px; height: 44px; min-height: 44px;
+    margin-left: auto; padding: 0; border-radius: 12px; font-size: 1.25rem; line-height: 1;
   }
-  .nav-menu-panel {
-    display: none;
-    flex: 1 0 100%;
-    order: 3;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    width: 100%;
-    margin-top: 4px;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: var(--card);
-    box-shadow: 0 8px 24px rgba(45, 57, 43, 0.08);
+  .nav-menu-panel, .nav-menu-panel:not(.open) {
+    display: none !important; flex: 1 0 100%; order: 3; flex-direction: column;
+    align-items: stretch; gap: 8px; width: 100%; min-width: 0; margin-top: 4px;
+    padding: 10px 12px; border: 1px solid var(--border); border-radius: 16px;
+    background: var(--card); box-shadow: 0 8px 24px rgba(45, 57, 43, 0.08);
   }
-  .nav-menu-panel.open {
-    display: flex;
-  }
+  .nav-menu-panel.open { display: flex !important; }
   .nav-menu-panel .nav-links {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-    gap: 4px;
-    margin: 0;
-    padding: 0;
-    border: 0;
+    display: flex; flex-direction: column; align-items: stretch; width: 100%;
+    min-width: 0; gap: 4px; margin: 0; padding: 0; border: 0;
   }
   .nav-menu-panel .nav-link {
-    width: 100%;
-    min-height: 44px;
-    padding-inline: 12px;
-    text-align: left;
+    display: flex; align-items: center; width: 100%; min-height: 44px;
+    padding: 8px 12px; border-radius: 10px; text-align: left; white-space: normal;
   }
   .nav-menu-panel .nav-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    width: 100%;
-    gap: 8px;
-    margin: 0;
-    padding-top: 10px;
+    display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap;
+    width: 100%; min-width: 0; gap: 8px; margin: 0; padding-top: 10px;
     border-top: 1px solid var(--border);
   }
   .nav-menu-panel .nav-accessibility {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    min-height: 44px;
+    display: inline-flex; align-items: center; flex: 0 1 auto; gap: 7px; min-height: 44px;
   }
-  .nav-menu-panel .nav-accessibility .a11y-label {
-    display: inline;
-  }
+  .nav-menu-panel .nav-accessibility .a11y-label { display: inline; }
   .nav-menu-panel .nav-accessibility .a11y-btn {
-    min-width: 44px;
-    min-height: 44px;
+    flex: 0 0 44px; min-width: 44px; min-height: 44px;
   }
-  .nav-menu-panel .nav-policy {
-    flex: 1 1 135px;
-    min-height: 44px;
-  }
+  .nav-menu-panel .nav-policy { flex: 0 1 auto; min-height: 44px; max-width: 100%; }
 }
-@media (max-width: 380px) {
-  .nav-menu-panel {
-    padding: 9px;
-  }
-  .nav-menu-panel .nav-right {
-    gap: 6px;
-  }
+@media (max-width: 420px) {
+  .nav-menu-panel { padding: 9px; }
+  .nav-menu-panel .nav-right { align-items: stretch; }
+  .nav-menu-panel .nav-policy { flex: 1 1 100%; }
 }
