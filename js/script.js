@@ -316,7 +316,6 @@ const Analytics = (function () {
     fraction_bakery: "Fraction Bakery",
     traffic_control: "Traffic Control Centre",
     number_maze: "Number Maze",
-    traffic_control: "Traffic Control Centre",
   };
 
   function events() {
@@ -432,6 +431,7 @@ const Progress = (function () {
     architect: "Shape Architect",
     probability_carnival: "Probability Machine",
     fraction_bakery: "Fraction Bakery",
+    traffic_control: "Traffic Control Centre",
   };
 
   function render() {
