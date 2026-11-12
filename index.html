@@ -324,9 +324,9 @@
 
         <button
           class="menu-card card-traffic-control"
-          style="--tile-accent: #397b5d; --tile-wash: #eaf3e9; --tile-border: #cfe1cf"
+          style="--tile-accent: #426b9a; --tile-wash: #e8eff9; --tile-border: #c9d8eb"
           type="button"
-          onclick="window.location.href='games/traffic-control/'"
+          onclick="Game.startTrafficControl()"
           aria-label="Play Traffic Control Centre"
         >
           <div class="card-badge-icon" aria-hidden="true">🚦</div>
@@ -1178,6 +1178,23 @@
         <div id="leaderboard-content" aria-live="polite">Loading the standings…</div>
       </div>
     </div>
+
+    <section id="screen-traffic-control" class="screen traffic-control-screen" aria-labelledby="traffic-control-title" style="--game-accent:#426b9a;--game-wash:#e8eff9;--game-border:#c9d8eb;--game-ink:#294765">
+      <header class="traffic-arcade-topbar">
+        <button type="button" class="btn-back" onclick="Game.goHome()">← Back to games</button>
+        <h1 id="traffic-control-title">🚦 Traffic Control Centre</h1>
+        <button type="button" class="btn-help" onclick="ControlsOverlay.forceShow('trafficControl')" aria-label="How to play Traffic Control Centre">?</button>
+      </header>
+      <iframe
+        id="traffic-control-frame"
+        class="traffic-control-frame"
+        title="Traffic Control Centre game"
+        src="games/traffic-control/index.html?embed=1"
+        loading="eager"
+        referrerpolicy="same-origin"
+        style="display:block;width:100%;height:1450px;border:0;background:#f4f7ef"
+      ></iframe>
+    </section>
 
     <!-- Floating drag ghost (used by shape puzzle) -->
     <div id="drag-ghost" class="hidden"></div>
