@@ -75,8 +75,8 @@ const Utils = (function () {
    ============================================================= */
 const Accessibility = (function () {
   const KEY = "mfa_a11y_v1";
-  // Bounded display scaling: 90% minimum, 130% maximum.
-  const SCALES = [0.9, 1, 1.1, 1.2, 1.3];
+  // Bounded display scaling: 90% minimum, 150% maximum.
+  const SCALES = [0.9, 1, 1.15, 1.3, 1.5];
   let idx = 0;
 
   function load() {
