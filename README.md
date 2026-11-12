@@ -100,7 +100,7 @@ Little Shop is an open-ended fruit-counter activity. Learners assemble customer 
 
 ## Traffic Control Centre
 
-Traffic Control Centre is a native game screen in the main arcade at `index.html#traffic-control`. It contains 150 challenges across Easy, Medium and Hard levels. Learners allocate green-signal time between traffic approaches, compare predicted vehicle flow and priority points, and run their plan. Challenge progress is stored locally on the learner's device.
+Traffic Control Centre is a native game screen in the main arcade at `index.html#traffic-control`. It contains 150 challenges across Easy, Medium and Hard levels. Learners allocate green-signal time between traffic approaches, compare predicted vehicle flow and priority points, and run their plan. Challenge progress is stored locally on the learner's device. Entry begins with a difficulty choice, followed by a Shape Architect-style grid showing all 50 levels in that difficulty. Every level is open from the start, completed levels are marked individually, and the gameplay view stays separate from the selectors.
 
 The game markup lives in the main `index.html`; all game-specific JavaScript is consolidated in `js/traffic-control.js`; and its styles live in `css/traffic-control.css`. The former `games/traffic-control/` entry URL redirects to the main arcade route. The focused challenge-data test is `node games/traffic-control/tests/mission-data.test.mjs`.
 
