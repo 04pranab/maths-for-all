@@ -1684,11 +1684,13 @@ async function main() {
       'assert(toggle.getAttribute("aria-expanded") === "true" && panel.classList.contains("open"), "Mobile menu button did not open the navigation panel.");' +
       'assert(getComputedStyle(panel).display !== "none" && getComputedStyle(links).display !== "none", "Opened mobile navigation remains hidden.");' +
       'for (let i = 0; i < 10; i++) Accessibility.changeFont(1);' +
-      'const maxTextSize = parseFloat(getComputedStyle(document.documentElement).fontSize);' +
-      'assert(maxTextSize <= 25.6, "Text zoom exceeded its maximum bound.");' +
+      'const maxTextScale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font-scale"));' +
+      'assert(maxTextScale <= 1.5, "Text zoom exceeded its 150% maximum bound.");' +
       'for (let i = 0; i < 10; i++) Accessibility.changeFont(-1);' +
-      'const minTextSize = parseFloat(getComputedStyle(document.documentElement).fontSize);' +
-      'assert(minTextSize >= 16, "Text zoom fell below its minimum bound.");' +
+      'const minTextScale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font-scale"));' +
+      'assert(minTextScale >= 0.9, "Text zoom fell below its 90% minimum bound.");' +
+      'Accessibility.changeFont(1);' +
+      'assert(parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font-scale")) === 1, "Zoom smoke test did not restore the default 100% scale.");' +
       "toggle.click();" +
       'assert(toggle.getAttribute("aria-expanded") === "false" && !panel.classList.contains("open"), "Mobile menu button did not close the navigation panel.");' +
       "return { openCloseChecked:true, expandedStateSynchronized:true, zoomControlsGrouped:true, zoomBoundsChecked:true };" +
@@ -1697,6 +1699,16 @@ async function main() {
   if (!mobileNavigationAudit || !mobileNavigationAudit.openCloseChecked)
     throw new Error("Mobile navigation audit did not complete.");
 
+  await cdp("Emulation.setDeviceMetricsOverride", {
+    width: 1024,
+    height: 768,
+    deviceScaleFactor: 1,
+    mobile: false,
+  });
+  const compactNavigationAudit = await evaluate(
+    '(() => { const toggle=document.getElementById("nav-menu-toggle"); const panel=document.getElementById("nav-menu-panel"); if (!toggle || !panel) throw new Error("Compact navigation controls are missing."); if (getComputedStyle(toggle).display === "none") throw new Error("Hamburger is hidden at 1024px."); if (getComputedStyle(panel).display !== "none") throw new Error("Navigation actions should be collapsed behind the hamburger at 1024px."); toggle.click(); if (getComputedStyle(panel).display === "none") throw new Error("Hamburger did not reveal the navigation actions at 1024px."); return { width: innerWidth, hamburgerVisible: true, menuExpandable: true }; })()',
+  );
+  if (!compactNavigationAudit?.menuExpandable) throw new Error("Compact navigation audit did not complete.");
   await cdp("Emulation.setDeviceMetricsOverride", {
     width: 1366,
     height: 768,

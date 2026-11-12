@@ -2700,7 +2700,8 @@
   line-height: 1.5;
 }
 #screen-math-court .mc-active-stage .mc-story-text {
-  font-size: 1.1rem !important;
+  /* Keep story copy at 18px minimum even at the 90% accessibility setting. */
+  font-size: max(1.2rem, 18px) !important;
   line-height: 1.62 !important;
 }
 #screen-math-court .mc-active-stage .mc-panel p {
@@ -2899,7 +2900,8 @@
 }
 #screen-math-court .mc-active-stage .mc-story-text {
   max-width: 78ch;
-  font-size: 1.16rem !important;
+  /* Preserve the 18px minimum at the 90% global zoom setting. */
+  font-size: max(1.2rem, 18px) !important;
   line-height: 1.65 !important;
 }
 #screen-math-court .mc-stage-layout--evidence .mc-evidence-pair {

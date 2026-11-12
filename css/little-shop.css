@@ -1009,3 +1009,12 @@
   outline: 3px solid var(--focus, #2458c6);
   outline-offset: 3px;
 }
+
+
+/* Keep product names and prices legible at the minimum 90% global text scale. */
+#screen-little-shop .ls-item-copy h3 {
+  font-size: max(1rem, 16px) !important;
+}
+#screen-little-shop .ls-item-copy p {
+  font-size: max(0.9rem, 14px) !important;
+}
