@@ -1020,10 +1020,58 @@
     </section>
 
     <section id="screen-traffic-control" class="screen traffic-screen" aria-label="Traffic Control Centre">
+      <div id="tc-difficulty-view" class="tc-selection-view">
+        <header class="tc-shell-bar">
+          <button type="button" class="tc-shell-back" onclick="TrafficControlIntegration.requestExit()">← Games</button>
+          <div class="tc-shell-brand"><span class="tc-shell-kicker">MATHS FOR ALL · CITY SYSTEMS</span><strong>🚦 Traffic Control Centre</strong></div>
+          <span class="tc-selection-spacer" aria-hidden="true"></span>
+        </header>
+        <main class="tc-selection-main">
+          <p class="tc-selection-kicker">PLAN YOUR CITY ROUTE</p>
+          <h1>Choose your difficulty</h1>
+          <p class="tc-selection-copy">Start where you feel comfortable. Every challenge is available from the beginning.</p>
+          <div class="tc-difficulty-grid" aria-label="Choose a difficulty">
+            <button class="tc-difficulty-card easy" type="button" data-difficulty="easy">
+              <span class="tc-difficulty-number">01</span><span class="tc-difficulty-name">Easy</span>
+              <span class="tc-difficulty-detail">Beginner · Two-way avenue</span><span class="tc-difficulty-count">50 challenges</span>
+              <span class="tc-difficulty-action">Choose Easy →</span>
+            </button>
+            <button class="tc-difficulty-card medium" type="button" data-difficulty="medium">
+              <span class="tc-difficulty-number">02</span><span class="tc-difficulty-name">Medium</span>
+              <span class="tc-difficulty-detail">City traffic · Four-way junction</span><span class="tc-difficulty-count">50 challenges</span>
+              <span class="tc-difficulty-action">Choose Medium →</span>
+            </button>
+            <button class="tc-difficulty-card hard" type="button" data-difficulty="hard">
+              <span class="tc-difficulty-number">03</span><span class="tc-difficulty-name">Hard</span>
+              <span class="tc-difficulty-detail">Traffic engineer · Mixed fleet</span><span class="tc-difficulty-count">50 challenges</span>
+              <span class="tc-difficulty-action">Choose Hard →</span>
+            </button>
+          </div>
+        </main>
+      </div>
+
+      <div id="tc-level-view" class="tc-selection-view" hidden>
+        <header class="tc-shell-bar">
+          <button type="button" class="tc-shell-back" onclick="TrafficControlIntegration.showDifficulty()">← Difficulty</button>
+          <div class="tc-shell-brand"><span class="tc-shell-kicker">TRAFFIC CONTROL CENTRE</span><strong id="tc-level-heading-brand">Easy challenges</strong></div>
+          <button type="button" class="tc-shell-back tc-level-games" onclick="TrafficControlIntegration.requestExit()">Games</button>
+        </header>
+        <main class="tc-selection-main tc-levels-main">
+          <div class="tc-level-heading">
+            <div><p class="tc-selection-kicker">YOUR CITY, YOUR CHOICE</p><h1 id="tc-level-title">Easy challenges</h1>
+              <p class="tc-selection-copy">Choose any level you like. You can play them in any order.</p></div>
+            <div class="tc-level-progress"><strong id="tc-level-progress-count">0 / 50</strong><span>completed</span></div>
+          </div>
+          <div id="tc-level-grid" class="tc-level-grid" aria-label="Choose any of the 50 challenges"></div>
+        </main>
+      </div>
+
+      <div id="tc-game-view" hidden>
       <header class="tc-shell-bar">
-        <button type="button" class="tc-shell-back" onclick="TrafficControlIntegration.requestExit()">← Games</button>
+        <button type="button" class="tc-shell-back" onclick="TrafficControlIntegration.showLevels()">← Levels</button>
         <div class="tc-shell-brand"><span class="tc-shell-kicker">MATHS FOR ALL · CITY SYSTEMS</span><strong>🚦 Traffic Control Centre</strong></div>
         <div class="tc-shell-actions">
+          <button type="button" onclick="TrafficControlIntegration.requestExit()">Games</button>
           <button type="button" onclick="TrafficControlIntegration.help()" aria-label="How to play Traffic Control Centre">? Help</button>
           <button type="button" onclick="TrafficControlIntegration.pause()" aria-label="Pause Traffic Control Centre">Ⅱ Pause</button>
         </div>
@@ -1083,6 +1131,7 @@
     </div>
   
 </main>
+      </div>
     <section id="traffic-exit-overlay" class="tc-shell-overlay" hidden aria-labelledby="traffic-exit-title">
       <div class="tc-shell-dialog" role="dialog" aria-modal="true" aria-labelledby="traffic-exit-title" aria-describedby="traffic-exit-copy">
         <span class="tc-dialog-icon" aria-hidden="true">🚦</span><p class="tc-dialog-kicker">LEAVE THE JUNCTION?</p>
