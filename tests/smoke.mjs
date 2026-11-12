@@ -1684,11 +1684,11 @@ async function main() {
       'assert(toggle.getAttribute("aria-expanded") === "true" && panel.classList.contains("open"), "Mobile menu button did not open the navigation panel.");' +
       'assert(getComputedStyle(panel).display !== "none" && getComputedStyle(links).display !== "none", "Opened mobile navigation remains hidden.");' +
       'for (let i = 0; i < 10; i++) Accessibility.changeFont(1);' +
-      'const maxTextSize = parseFloat(getComputedStyle(document.documentElement).fontSize);' +
-      'assert(maxTextSize <= 25.6, "Text zoom exceeded its maximum bound.");' +
+      'const maxTextScale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--font-scale'));' +
+      'assert(maxTextScale <= 1.5, "Text zoom exceeded its 150% maximum bound.");' +
       'for (let i = 0; i < 10; i++) Accessibility.changeFont(-1);' +
-      'const minTextSize = parseFloat(getComputedStyle(document.documentElement).fontSize);' +
-      'assert(minTextSize >= 16, "Text zoom fell below its minimum bound.");' +
+      'const minTextScale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--font-scale'));' +
+      'assert(minTextScale >= 0.9, "Text zoom fell below its 90% minimum bound.");' +
       "toggle.click();" +
       'assert(toggle.getAttribute("aria-expanded") === "false" && !panel.classList.contains("open"), "Mobile menu button did not close the navigation panel.");' +
       "return { openCloseChecked:true, expandedStateSynchronized:true, zoomControlsGrouped:true, zoomBoundsChecked:true };" +
