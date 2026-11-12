@@ -1688,8 +1688,7 @@ async function main() {
       'assert(maxTextSize <= 25.6, "Text zoom exceeded its maximum bound.");' +
       'for (let i = 0; i < 10; i++) Accessibility.changeFont(-1);' +
       'const minTextSize = parseFloat(getComputedStyle(document.documentElement).fontSize);' +
-      'assert(minTextSize >= 15.2, "Text zoom fell below its minimum bound.");' +
-      'Accessibility.changeFont(1);' +
+      'assert(minTextSize >= 16, "Text zoom fell below its minimum bound.");' +
       "toggle.click();" +
       'assert(toggle.getAttribute("aria-expanded") === "false" && !panel.classList.contains("open"), "Mobile menu button did not close the navigation panel.");' +
       "return { openCloseChecked:true, expandedStateSynchronized:true, zoomControlsGrouped:true, zoomBoundsChecked:true };" +
