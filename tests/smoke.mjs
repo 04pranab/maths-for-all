@@ -383,8 +383,12 @@ async function main() {
       "const assert = (condition, message) => { if (!condition) throw new Error(message); };" +
       "localStorage.clear(); sessionStorage.clear();" +
       'const guestPolicy = document.querySelector(".nav-policy");' +
-      'assert(guestPolicy, "Unauthenticated privacy/data policy button is missing.");' +
-      'assert(guestPolicy.offsetParent !== null, "Unauthenticated privacy/data policy button is not visible.");' +
+      'const navPanel = document.getElementById("nav-menu-panel");' +
+      'const navToggle = document.getElementById("nav-menu-toggle");' +
+      'assert(guestPolicy && navPanel && navToggle && navPanel.contains(guestPolicy), "Unauthenticated privacy/data policy button is missing from navigation.");' +
+      'if (getComputedStyle(navPanel).display === "none") navToggle.click();' +
+      'assert(guestPolicy.offsetParent !== null, "Privacy/data policy button should be visible when the mobile menu is open.");' +
+      'Navigation.closeMenu();' +
       "Game.startArithmetic();" +
       "await new Promise(r => setTimeout(r, 20));" +
       'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
