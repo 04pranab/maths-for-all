@@ -273,7 +273,7 @@ async function main() {
 
   const baseline = await evaluate(
     "(() => {" +
-      'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","screen-architect","screen-fraction-bakery","screen-number-maze","screen-math-court","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
+      'const required = ["screen-menu","screen-quiz","screen-race","screen-sudoku","screen-shape","screen-slab","screen-architect","screen-fraction-bakery","screen-number-maze","screen-traffic-control","screen-math-court","auth-modal","research-consent-modal","progress-modal","account-profile-modal"];' +
       "const missing = required.filter(id => !document.getElementById(id));" +
       'const resources = [...Array.from(document.scripts).map(s => s.src), ...Array.from(document.querySelectorAll("link[rel=stylesheet]")).map(l => l.href)];' +
       "return { missing, resources };" +
@@ -414,10 +414,10 @@ async function main() {
   const helpResult = await evaluate(
     "(async () => {" +
       "const assert = (condition, message) => { if (!condition) throw new Error(message); };" +
-      'const cases = [["screen-quiz","quiz","How to play: Arithmetic Quiz"],["screen-race","race","How to play: Math Racing"],["screen-sudoku","sudoku","How to play: Sudoku Challenge"],["screen-shape","shape","How to play: Shape Fitting"],["screen-slab","slab","How to play: Slab Maths"],["screen-architect","architect","How to play: Shape Architect"],["screen-fraction-bakery","fraction","How to play: Fraction Bakery"],["screen-number-maze","numberMaze","How to play: Number Maze"]];' +
+      'const cases = [["screen-quiz","quiz","How to play: Arithmetic Quiz"],["screen-race","race","How to play: Math Racing"],["screen-sudoku","sudoku","How to play: Sudoku Challenge"],["screen-shape","shape","How to play: Shape Fitting"],["screen-slab","slab","How to play: Slab Maths"],["screen-architect","architect","How to play: Shape Architect"],["screen-fraction-bakery","fraction","How to play: Fraction Bakery"],["screen-number-maze","numberMaze","How to play: Number Maze"],["screen-traffic-control","trafficControl","How to play: Traffic Control Centre"]];' +
       "for (const [screenId, key, title] of cases) {" +
       "Game.goHome();" +
-      "const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath, architect: Game.startShapeArchitect, fraction: Game.startFractionBakery, numberMaze: Game.startNumberMaze }[key];" +
+      "const start = { quiz: Game.startArithmetic, race: Game.startRacing, sudoku: Game.startSudoku, shape: Game.startShapePuzzle, slab: Game.startSlabMath, architect: Game.startShapeArchitect, fraction: Game.startFractionBakery, numberMaze: Game.startNumberMaze, trafficControl: Game.startTrafficControl }[key];" +
       "start();" +
       "Navigation.howToPlay();" +
       "await new Promise(r => setTimeout(r, 20));" +
