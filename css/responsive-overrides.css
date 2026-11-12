@@ -241,3 +241,55 @@ button, [role="button"], input[type="button"], input[type="submit"] { touch-acti
   .nav-menu-panel .nav-right { align-items: stretch; }
   .nav-menu-panel .nav-policy { flex: 1 1 100%; }
 }
+
+
+/* Traffic Control Centre: shared arcade shell and responsive embedded game frame. */
+.traffic-control-screen {
+  --game-accent: #426b9a;
+  --game-wash: #e8eff9;
+  --game-border: #c9d8eb;
+  --game-ink: #294765;
+  padding: 0 0 28px !important;
+  background: linear-gradient(145deg, #f1f5fb 0%, #fffaf0 100%);
+}
+.traffic-arcade-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px clamp(14px, 3vw, 30px);
+  background: var(--game-accent);
+  color: #fff;
+  border-bottom: 4px solid var(--game-border);
+}
+.traffic-arcade-topbar h1 {
+  flex: 1;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.1rem, 2.2vw, 1.65rem);
+  text-align: center;
+}
+.traffic-arcade-topbar .btn-back,
+.traffic-arcade-topbar .btn-help {
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255,255,255,.58);
+  border-radius: 12px;
+  background: rgba(255,255,255,.14);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+.traffic-control-frame {
+  display: block;
+  width: 100%;
+  min-height: 1120px;
+  border: 0;
+  background: #f4f7ef;
+}
+@media (max-width: 700px) {
+  .traffic-arcade-topbar { gap: 8px; padding: 10px 12px; }
+  .traffic-arcade-topbar h1 { font-size: 1rem; }
+  .traffic-arcade-topbar .btn-back,
+  .traffic-arcade-topbar .btn-help { min-height: 40px; padding: 7px 9px; font-size: .82rem; }
+  .traffic-control-frame { height: 1750px !important; min-height: 1750px; }
+}
