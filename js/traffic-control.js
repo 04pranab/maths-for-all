@@ -302,8 +302,9 @@ function setLevelUI(){
  document.getElementById("screen-traffic-control").classList.toggle("hard-level",level==="hard");
  city.setLevel(level);
  $("#city-heading").textContent=level==="easy"?"Central Avenue · Two-way road":level==="medium"?"Central Avenue · Four-way junction":"Metro City · Mixed-fleet intersection";
- $("#tc-level-title").textContent=cfg().label;
- $("#tc-level-heading-brand").textContent=cfg().label.split(" · ")[0]+" challenges";
+ const difficultyName={easy:"Easy",medium:"Medium",hard:"Hard"}[level];
+ $("#tc-level-title").textContent=difficultyName+" challenges";
+ $("#tc-level-heading-brand").textContent=difficultyName+" challenges";
 }
 function startRound(index=0){
  runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;missionStartedAt=Date.now();
@@ -330,7 +331,7 @@ function renderLevelGrid(){
  grid.replaceChildren();
  cfg().rounds.forEach((challenge,index)=>{
   const number=index+1,isComplete=completed.includes(number),button=document.createElement("button");
-  button.type="button";button.className="tc-level-tile"+(isComplete?" completed":"");
+  button.type="button";button.dataset.levelIndex=String(index);button.className="tc-level-tile"+(isComplete?" completed":"");
   button.setAttribute("aria-label","Level "+number+": "+challenge.title+(isComplete?", completed":""));
   button.title=challenge.title;
   const numberLabel=document.createElement("span");numberLabel.className="tc-level-number";numberLabel.textContent=String(number).padStart(2,"0");
