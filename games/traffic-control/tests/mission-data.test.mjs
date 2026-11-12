@@ -69,7 +69,7 @@ assert.doesNotMatch(arcadeHtml, /<iframe\b[^>]*(?:traffic-control|traffic-contro
   "Traffic Control must not be embedded in an iframe");
 assert.doesNotMatch(gameCss, /traffic-control-frame|tc-frame-wrap/,
   "the dedicated stylesheet must not retain obsolete iframe layout rules");
-for (const obsolete of ["app.js", "city3d.js", "missions.js"]) {
+for (const obsolete of ["app.js", "city3d.js", "missions.js", "styles.css"]) {
   assert.equal(existsSync(new URL(`../${obsolete}`, import.meta.url)), false,
     `obsolete split module ${obsolete} must be removed`);
 }
