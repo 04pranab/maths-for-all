@@ -610,7 +610,9 @@ async function main() {
     assert(completionOverlay && typeof CompletionOverlay?.show === "function", "Shared completion overlay should exist for all active games.");
     window.__completionOverlayTest = false;
     CompletionOverlay.show({ title: "Test completion", message: "Checking the shared dialog.", actionLabel: "Continue", onContinue: () => { window.__completionOverlayTest = true; } });
-    assert(!completionOverlay.hidden && document.getElementById("game-completion-title").textContent === "Test completion", "Completion overlay should display its supplied title.");
+    assert(completionOverlay.hidden, "Completion overlay should remain hidden during its three-second celebration pause.");
+    await new Promise(resolve => setTimeout(resolve, 3050));
+    assert(!completionOverlay.hidden && document.getElementById("game-completion-title").textContent === "Test completion", "Completion overlay should appear after its three-second delay.");
     document.getElementById("game-completion-continue").click();
     assert(completionOverlay.hidden && window.__completionOverlayTest, "Completion overlay Continue should close the dialog and run its action.");
     delete window.__completionOverlayTest;
@@ -1668,14 +1670,24 @@ async function main() {
     "(() => {" +
       "const assert = (condition, message) => { if (!condition) throw new Error(message); };" +
       'const toggle = document.getElementById("nav-menu-toggle");' +
+      'const panel = document.getElementById("nav-menu-panel");' +
       'const links = document.getElementById("nav-links");' +
-      'assert(toggle && links, "Mobile navigation controls are missing.");' +
+      'const zoomOut = document.getElementById("a11y-font-dec");' +
+      'const zoomIn = document.getElementById("a11y-font-inc");' +
+      'assert(toggle && panel && links && zoomOut && zoomIn, "Mobile navigation controls are missing.");' +
+      'assert(panel.contains(zoomOut) && panel.contains(zoomIn) && panel.contains(document.getElementById("account-nav-button")), "Every navigation utility, including text zoom and account access, must live inside the menu.");' +
       "toggle.click();" +
-      'assert(toggle.getAttribute("aria-expanded") === "true" && links.classList.contains("open"), "Mobile menu button did not open navigation.");' +
-      'assert(getComputedStyle(links).display !== "none", "Opened mobile navigation remains hidden.");' +
+      'assert(toggle.getAttribute("aria-expanded") === "true" && panel.classList.contains("open"), "Mobile menu button did not open the navigation panel.");' +
+      'assert(getComputedStyle(panel).display !== "none" && getComputedStyle(links).display !== "none", "Opened mobile navigation remains hidden.");' +
+      'for (let i = 0; i < 10; i++) Accessibility.changeFont(1);' +
+      'const maxTextSize = parseFloat(getComputedStyle(document.documentElement).fontSize);' +
+      'assert(maxTextSize <= 22.2, "Text zoom exceeded its maximum bound.");' +
+      'for (let i = 0; i < 10; i++) Accessibility.changeFont(-1);' +
+      'const minTextSize = parseFloat(getComputedStyle(document.documentElement).fontSize);' +
+      'assert(minTextSize >= 15.2, "Text zoom fell below its minimum bound.");' +
       "toggle.click();" +
-      'assert(toggle.getAttribute("aria-expanded") === "false" && !links.classList.contains("open"), "Mobile menu button did not close navigation.");' +
-      "return { openCloseChecked:true, expandedStateSynchronized:true };" +
+      'assert(toggle.getAttribute("aria-expanded") === "false" && !panel.classList.contains("open"), "Mobile menu button did not close the navigation panel.");' +
+      "return { openCloseChecked:true, expandedStateSynchronized:true, zoomControlsGrouped:true, zoomBoundsChecked:true };" +
       "})()",
   );
   if (!mobileNavigationAudit || !mobileNavigationAudit.openCloseChecked)
