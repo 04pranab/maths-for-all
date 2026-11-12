@@ -19,10 +19,10 @@ const TrafficControlIntegration = (() => {
   function open(){getFrame();send("resume")}
   function pause(){send("pause");showDialog("traffic-pause-overlay")}
   function resume(){closeDialog();send("resume")}
-  function help(){window.ControlsOverlay?.forceShow("trafficControl")}
+  function help(){ControlsOverlay.forceShow("trafficControl")}
   function requestExit(){send("pause");showDialog("traffic-exit-overlay")}
   function cancelExit(){closeDialog();send("resume")}
-  function confirmExit(){closeDialog(false);window.Game?.goHome()}
+  function confirmExit(){closeDialog(false);Game.goHome()}
   function pauseForNavigation(){if(getFrame())send("pause");closeDialog(false)}
   function onMessage(event){
     if(event.origin!==window.location.origin||event.source!==getFrame()?.contentWindow)return;
