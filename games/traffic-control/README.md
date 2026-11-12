@@ -54,4 +54,4 @@ The test verifies that all three levels contain exactly 50 unique challenge layo
 
 ## Integration note
 
-The simulation remains self-contained under `games/traffic-control/`, while the main arcade hosts it through the shared screen router at `#traffic-control`. The parent shell supplies the first-play controls overlay, help entry point, pause sheet, exit confirmation, and delayed completion overlay. The standalone route remains available. No Cloudflare backend is required: challenge progress remains local to the learner's device.
+The game and its game-specific integration assets are kept together under `games/traffic-control/`: simulation modules, shell bridge (`integration.js`), and shell styling (`traffic-control.css`). The main arcade still owns the shared screen router and global overlays, but loads the Traffic Control-specific pieces directly from this folder at `#traffic-control`. The parent shell supplies the first-play controls overlay, help entry point, pause sheet, exit confirmation, and delayed completion overlay. The standalone route remains available. No Cloudflare backend is required: challenge progress remains local to the learner's device.
