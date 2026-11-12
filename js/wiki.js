@@ -5,7 +5,7 @@
   const detail = document.getElementById("game-detail");
   const close = document.getElementById("game-detail-close");
 
-  const GAME_ROUTES = { arithmetic: "arithmetic", racing: "math-racing", sudoku: "sudoku", "shape-fitting": "shape-fitting", slab: "slab-maths", architect: "shape-architect", bakery: "fraction-bakery", shop: "little-shop", "number-maze": "number-maze" };
+  const GAME_ROUTES = { arithmetic: "arithmetic", racing: "math-racing", sudoku: "sudoku", "shape-fitting": "shape-fitting", slab: "slab-maths", architect: "shape-architect", bakery: "fraction-bakery", shop: "little-shop", "number-maze": "number-maze", "traffic-control": "traffic-control" };
 
   const games = {
     arithmetic: {
@@ -111,6 +111,14 @@
       prompt:
         "Which square could close off a route if you leave it too late? What clue helps you know which checkpoint comes next?",
       note: "The game offers three guided starters, unlimited untimed attempts, Undo, Reset and hints. Generated boards are solver-checked for a unique complete route. Copyable puzzle codes reproduce the exact board, and progress stays on the current device.",
+    },
+    "traffic-control": {
+      title: "🚦 Traffic Control Centre",
+      summary: "A city-junction challenge about allocating signal time and making careful decisions for moving traffic.",
+      how: "Choose a difficulty, inspect the traffic queues and waiting times, divide the signal-cycle budget between approaches, then run your plan and compare the result.",
+      skills: ["Addition and comparison of queue sizes", "Dividing a fixed time budget", "Multiplication, estimation and planning under constraints"],
+      prompt: "Which approach needs more green time? How does changing the split affect the number of vehicles that can move?",
+      note: "There are 150 challenges across Easy, Medium and Hard. Progress is saved on this device, and the game is available directly at index.html#traffic-control.",
     },
     shop: {
       title: "🍎 Little Shop",
