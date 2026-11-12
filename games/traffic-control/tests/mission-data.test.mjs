@@ -54,6 +54,9 @@ for (const [level, config] of Object.entries(LEVELS)) {
 }
 
 assert.equal(Object.values(LEVELS).reduce((sum, level) => sum + level.rounds.length, 0), 150);
+assert.deepEqual(Object.keys(LEVELS).sort(), ["easy", "hard", "medium"]);
+assert.ok(Object.values(LEVELS).every(level => level.rounds.length === 50),
+  "each difficulty must expose all 50 selectable levels");
 
 
 // Structural integration checks: the game has one native screen and one JS/CSS entry.
@@ -67,6 +70,26 @@ assert.match(arcadeHtml, /<script type="module" src="js\/traffic-control\.js(?:\
   "the main arcade must load the consolidated Traffic Control module");
 assert.doesNotMatch(arcadeHtml, /<iframe\b[^>]*(?:traffic-control|traffic-control-frame)/i,
   "Traffic Control must not be embedded in an iframe");
+assert.match(arcadeHtml, /id="tc-difficulty-view"/,
+  "Traffic Control must open on a dedicated difficulty-selection screen");
+assert.match(arcadeHtml, /id="tc-level-view"[^>]*hidden/,
+  "the level grid must be a separate screen shown after choosing a difficulty");
+assert.match(arcadeHtml, /id="tc-game-view" hidden/,
+  "the actual game must stay hidden until a level is chosen");
+assert.equal((arcadeHtml.match(/data-difficulty="(?:easy|medium|hard)"/g) || []).length, 3,
+  "the difficulty screen must offer Easy, Medium and Hard exactly once");
+assert.match(arcadeHtml, /id="tc-level-grid"/,
+  "the level screen must have a dedicated level grid");
+assert.doesNotMatch(arcadeHtml, /class="level-tab/,
+  "difficulty tabs must not remain inside the gameplay screen");
+assert.match(bundle, /function renderLevelGrid\(\)/,
+  "the game module must render the 50 levels for the selected difficulty");
+assert.match(bundle, /function chooseLevel\(index\)/,
+  "every level tile must be directly playable");
+assert.match(bundle, /Array\.isArray\(value\)/,
+  "progress storage must preserve individually completed levels while migrating older progress");
+assert.match(gameCss, /\.tc-level-grid[^{]*\{[^}]*grid-template-columns/s,
+  "the level chooser must have a responsive grid layout");
 assert.doesNotMatch(gameCss, /traffic-control-frame|tc-frame-wrap/,
   "the dedicated stylesheet must not retain obsolete iframe layout rules");
 for (const obsolete of ["app.js", "city3d.js", "missions.js", "styles.css"]) {
