@@ -13,7 +13,7 @@ vm.runInNewContext(
   `${bundle.slice(missionStart, missionEnd)}\nmodule.exports = { LEVELS };`,
   sandbox
 );
-const { LEVELS } = sandbox.module.exports;
+const LEVELS = JSON.parse(JSON.stringify(sandbox.module.exports.LEVELS));
 
 const expectedDirections = {
   easy: ["north", "south"],
