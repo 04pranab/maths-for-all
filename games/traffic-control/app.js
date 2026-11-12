@@ -126,4 +126,8 @@ window.addEventListener("message",event=>{
   updateQueue();updateMath();
  }
  if(event.data?.type==="mfa:traffic-continue")$("#next-mission").click();
+ if(event.data?.type==="mfa:traffic-font-scale"){
+  const scale=Math.max(.9,Math.min(1.5,Number(event.data.scale)||1));
+  document.documentElement.style.setProperty("--font-scale",String(scale));
+ }
 });
