@@ -15,8 +15,11 @@ Each game has one dedicated browser entry file and one dedicated stylesheet. Sha
 | Fraction Bakery | `js/fraction-bakery.js` | `css/fraction-bakery.css` | Active |
 | Little Shop | `js/little-shop.js` | `css/little-shop.css` | Active |
 | Number Maze | `js/number-maze.js` | `css/number-maze.css` | Active |
+| Traffic Control Centre | `js/traffic-control.js` | `css/traffic-control.css` | Active; native screen in `index.html` |
 | Probability Machine | `js/probability-carnival.js` | `css/probability-carnival.css` | Implemented, hidden |
 | Math Court | `js/math-court.js` | `css/math-court.css` | Shelved, hidden |
+
+Traffic Control Centre keeps its interface in the main `index.html`; its mission data, 3D city, gameplay, and pause/help/exit integration are consolidated in `js/traffic-control.js`, with screen-scoped styles in `css/traffic-control.css`. Its old standalone URL is a redirect only. The mission-data test remains under `games/traffic-control/tests/`.
 
 Arithmetic Quiz and Math Racing have separate entry files. They share `js/question-bank.js` for question generation and encouragement helpers. Little Shop's money logic and catalogue now live in its single module entry. Number Maze's deterministic engine and interaction layer, Shape Architect's geometry/rendering helpers, Probability Machine's story/library/canvas helpers, and Math Court's case catalogue are bundled into their respective game entry files.
 
@@ -48,6 +51,7 @@ Every playable screen has a stable, shareable hash route. Opening a game from th
 | Fraction Bakery | `#fraction-bakery` | `index.html#fraction-bakery` |
 | Little Shop | `#little-shop` | `index.html#little-shop` |
 | Number Maze | `#number-maze` | `index.html#number-maze` |
+| Traffic Control Centre | `#traffic-control` | `index.html#traffic-control` |
 | Probability Machine (hidden) | `#probability-machine` | `index.html#probability-machine` |
 
 The menu is the URL without a hash. Unknown or malformed hashes safely resolve to the menu. A route restores the game screen, not an in-progress session snapshot. The Wiki game guide links directly to each active game.
