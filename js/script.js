@@ -75,7 +75,8 @@ const Utils = (function () {
    ============================================================= */
 const Accessibility = (function () {
   const KEY = "mfa_a11y_v1";
-  const SCALES = [1, 1.15, 1.3, 1.5];
+  // Bounded display scaling: 90% minimum, 130% maximum.
+  const SCALES = [0.9, 1, 1.1, 1.2, 1.3];
   let idx = 0;
 
   function load() {
@@ -628,8 +629,11 @@ const Game = (function () {
    One clear, accessible completion moment across every active game.
    ============================================================= */
 const CompletionOverlay = (() => {
+  const SHOW_DELAY_MS = 3000;
   let continueAction = null;
   let previousFocus = null;
+  let showTimer = null;
+  let requestId = 0;
 
   function show(options = {}) {
     const overlay = document.getElementById("game-completion-overlay");
@@ -638,29 +642,44 @@ const CompletionOverlay = (() => {
     const message = document.getElementById("game-completion-message");
     const action = document.getElementById("game-completion-continue");
     if (!title || !message || !action) return;
-    // Reuse the active game's own theme tokens so the shared dialog follows
-    // each game's established palette without changing any game behaviour.
-    const activeScreen = document.querySelector(".screen.active");
-    const theme = activeScreen ? getComputedStyle(activeScreen) : null;
-    const themeTokens = {
-      "--completion-accent": "--game-accent",
-      "--completion-wash": "--game-wash",
-      "--completion-border": "--game-border",
-      "--completion-ink": "--game-ink",
-    };
-    Object.entries(themeTokens).forEach(([target, source]) => {
-      const value = theme?.getPropertyValue(source).trim();
-      if (value) overlay.style.setProperty(target, value);
-      else overlay.style.removeProperty(target);
-    });
-    previousFocus = document.activeElement;
-    continueAction = typeof options.onContinue === "function" ? options.onContinue : null;
-    title.textContent = options.title || "Level complete!";
-    message.textContent = options.message || "You finished this challenge. Take a moment to enjoy your progress.";
-    action.textContent = options.actionLabel || "Continue";
-    overlay.hidden = false;
-    document.body.classList.add("completion-overlay-open");
-    action.focus({ preventScroll: true });
+
+    // Give the learner a brief moment to see the successful game state before
+    // the shared, game-themed celebration appears.
+    if (showTimer !== null) window.clearTimeout(showTimer);
+    const request = ++requestId;
+    overlay.hidden = true;
+    document.body.classList.remove("completion-overlay-open");
+    continueAction = null;
+    previousFocus = null;
+
+    showTimer = window.setTimeout(() => {
+      if (request !== requestId) return;
+      showTimer = null;
+
+      // Reuse the active game's own theme tokens so the shared dialog follows
+      // each game's established palette without changing any game behaviour.
+      const activeScreen = document.querySelector(".screen.active");
+      const theme = activeScreen ? getComputedStyle(activeScreen) : null;
+      const themeTokens = {
+        "--completion-accent": "--game-accent",
+        "--completion-wash": "--game-wash",
+        "--completion-border": "--game-border",
+        "--completion-ink": "--game-ink",
+      };
+      Object.entries(themeTokens).forEach(([target, source]) => {
+        const value = theme?.getPropertyValue(source).trim();
+        if (value) overlay.style.setProperty(target, value);
+        else overlay.style.removeProperty(target);
+      });
+      previousFocus = document.activeElement;
+      continueAction = typeof options.onContinue === "function" ? options.onContinue : null;
+      title.textContent = options.title || "Level complete!";
+      message.textContent = options.message || "You finished this challenge. Take a moment to enjoy your progress.";
+      action.textContent = options.actionLabel || "Continue";
+      overlay.hidden = false;
+      document.body.classList.add("completion-overlay-open");
+      action.focus({ preventScroll: true });
+    }, SHOW_DELAY_MS);
   }
 
   function restoreFocus(target) {
@@ -673,8 +692,17 @@ const CompletionOverlay = (() => {
   }
 
   function close(restore = true) {
+    if (showTimer !== null) {
+      window.clearTimeout(showTimer);
+      showTimer = null;
+    }
+    requestId += 1;
     const overlay = document.getElementById("game-completion-overlay");
-    if (!overlay || overlay.hidden) return;
+    if (!overlay || overlay.hidden) {
+      continueAction = null;
+      previousFocus = null;
+      return;
+    }
     const target = previousFocus;
     overlay.hidden = true;
     document.body.classList.remove("completion-overlay-open");
@@ -738,18 +766,20 @@ document.addEventListener("DOMContentLoaded", () => {
    ============================================================= */
 const Navigation = (() => {
   function closeMenu() {
-    const menu=document.getElementById("nav-links"),button=document.getElementById("nav-menu-toggle");
+    const menu = document.getElementById("nav-menu-panel");
+    const button = document.getElementById("nav-menu-toggle");
     menu?.classList.remove("open");
-    button?.setAttribute("aria-expanded","false");
-    button?.setAttribute("aria-label","Open navigation menu");
+    button?.setAttribute("aria-expanded", "false");
+    button?.setAttribute("aria-label", "Open navigation menu");
   }
   function toggleMenu() {
-    const menu=document.getElementById("nav-links"),button=document.getElementById("nav-menu-toggle");
-    if(!menu)return;
-    const open=!menu.classList.contains("open");
-    menu.classList.toggle("open",open);
-    button?.setAttribute("aria-expanded",String(open));
-    button?.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");
+    const menu = document.getElementById("nav-menu-panel");
+    const button = document.getElementById("nav-menu-toggle");
+    if (!menu) return;
+    const open = !menu.classList.contains("open");
+    menu.classList.toggle("open", open);
+    button?.setAttribute("aria-expanded", String(open));
+    button?.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
   }
   function home(){closeMenu();Game.goHome();}
   function progress(){closeMenu();Progress.open();}
@@ -803,7 +833,7 @@ document.addEventListener(
       }
     }
 
-    const menu = document.getElementById("nav-links");
+    const menu = document.getElementById("nav-menu-panel");
     if (menu?.classList.contains("open") && typeof Navigation !== "undefined") {
       event.preventDefault();
       event.stopPropagation();
