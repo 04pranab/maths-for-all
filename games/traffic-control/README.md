@@ -4,19 +4,13 @@ A standalone, browser-based traffic-junction simulation for Maths for All. It us
 
 ## Open the game
 
-Open \`index.html\` through a static web server. For example, from the repository root:
+Traffic Control Centre is integrated into the main Maths For All router. Open the arcade and choose its tile, or visit:
 
-\`\`\`sh
-npx http-server .
-\`\`\`
+```
+https://04pranab.github.io/maths-for-all/index.html#traffic-control
+```
 
-Then visit:
-
-\`\`\`
-http://localhost:8080/games/traffic-control/
-\`\`\`
-
-The game uses JavaScript modules, so serve it over HTTP rather than opening the file directly with \`file://\`.
+The standalone route `games/traffic-control/` remains available for direct testing. The game uses JavaScript modules, so serve it over HTTP rather than opening the file directly with `file://`.
 
 ## Gameplay
 
@@ -60,4 +54,4 @@ The test verifies that all three levels contain exactly 50 unique challenge layo
 
 ## Integration note
 
-This contribution is intentionally self-contained under \`games/traffic-control/\`. It does not edit the existing home page, game router, stylesheets, scripts, package configuration, or current game files. The standalone page can be reviewed and tested before a separate, minimal home-menu integration is considered.
+The simulation remains self-contained under `games/traffic-control/`, while the main arcade hosts it through the shared screen router at `#traffic-control`. The parent shell supplies the first-play controls overlay, help entry point, pause sheet, exit confirmation, and delayed completion overlay. The standalone route remains available. No Cloudflare backend is required: challenge progress remains local to the learner's device.
