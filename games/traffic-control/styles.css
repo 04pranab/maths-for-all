@@ -560,3 +560,5 @@ body { background:#edf2f6; }
 html.traffic-embedded body { background: var(--canvas); }
 html.traffic-embedded #challenge-complete { display: none !important; }
 html.traffic-embedded .challenge-complete { display: none !important; }
+
+html { font-size: calc(16px * var(--font-scale, 1)); }
