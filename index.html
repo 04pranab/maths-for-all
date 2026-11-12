@@ -10,7 +10,7 @@
       name="description"
       content="A free, offline-friendly math arcade built for inclusive classrooms — big text, gentle colors, read-aloud support, and games that never punish a wrong answer."
     />
-        <link rel="stylesheet" href="css/style.css?v=20261111-game-theme-1" />
+        <link rel="stylesheet" href="css/style.css?v=20261112-mobile-nav-zoom-r1" />
     <link rel="stylesheet" href="css/sudoku.css?v=20261110-game-assets-2" />
     <link rel="stylesheet" href="css/shape-fitting.css?v=20261110-game-assets-2" />
     <link rel="stylesheet" href="css/slabmath.css?v=20261110-game-assets-2" />
@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="css/arithmetic-quiz.css?v=20261110-game-assets-2" />
     <link rel="stylesheet" href="css/math-racing.css?v=20261110-game-assets-2" />
     <link rel="stylesheet" href="css/interactions.css?v=20261110-game-assets-2" />
-    <link rel="stylesheet" href="css/responsive-overrides.css?v=20261111-sitewide-r1" />
+    <link rel="stylesheet" href="css/responsive-overrides.css?v=20261112-mobile-nav-r1" />
   </head>
   <body>
     <header class="site-header">
@@ -44,46 +44,55 @@
         <button
           class="nav-menu-toggle"
           id="nav-menu-toggle"
+          type="button"
           onclick="Navigation.toggleMenu()"
           aria-label="Open navigation menu"
+          aria-controls="nav-menu-panel"
           aria-expanded="false"
         >
-          ☰
+          <span aria-hidden="true">☰</span>
         </button>
-        <div class="nav-links" id="nav-links">
-          <button class="nav-link active" onclick="Navigation.home()">🎮 Games</button>
-          <button class="nav-link" onclick="Navigation.progress()">📊 My Progress</button>
-          <a class="nav-link nav-wiki-link" href="wiki.html">📚 Wiki</a>
-          <button class="nav-link" type="button" onclick="MfaAccounts.openLeaderboard()">🏆 Leaderboard</button>
-        </div>
-        <div class="nav-right">
-          <div class="nav-accessibility">
-            <span class="a11y-label">Text size</span>
-            <button
-              class="a11y-btn"
-              id="a11y-font-dec"
-              onclick="Accessibility.changeFont(-1)"
-              aria-label="Smaller text"
-            >
-              A−
-            </button>
-            <button
-              class="a11y-btn"
-              id="a11y-font-inc"
-              onclick="Accessibility.changeFont(1)"
-              aria-label="Bigger text"
-            >
-              A+
-            </button>
+        <div class="nav-menu-panel" id="nav-menu-panel">
+          <div class="nav-links" id="nav-links">
+            <button class="nav-link active" type="button" onclick="Navigation.home()">🎮 Games</button>
+            <button class="nav-link" type="button" onclick="Navigation.progress()">📊 My Progress</button>
+            <a class="nav-link nav-wiki-link" href="wiki.html" onclick="Navigation.closeMenu()">📚 Wiki</a>
+            <button class="nav-link" type="button" onclick="Navigation.closeMenu(); MfaAccounts.openLeaderboard()">🏆 Leaderboard</button>
           </div>
-          <button
-            class="nav-policy"
-            onclick="ResearchConsent.open()"
-            aria-label="Privacy and research data"
-          >
-            Privacy &amp; data
-          </button>
-          <button class="nav-policy" type="button" id="account-nav-button" onclick="Auth.open()">Sign in</button>
+          <div class="nav-right">
+            <div class="nav-accessibility" aria-label="Text size controls">
+              <span class="a11y-label">Text size</span>
+              <button
+                class="a11y-btn"
+                id="a11y-font-dec"
+                type="button"
+                onclick="Accessibility.changeFont(-1)"
+                aria-label="Zoom out, smaller text"
+                title="Zoom out"
+              >
+                A−
+              </button>
+              <button
+                class="a11y-btn"
+                id="a11y-font-inc"
+                type="button"
+                onclick="Accessibility.changeFont(1)"
+                aria-label="Zoom in, larger text"
+                title="Zoom in"
+              >
+                A+
+              </button>
+            </div>
+            <button
+              class="nav-policy"
+              type="button"
+              onclick="Navigation.closeMenu(); ResearchConsent.open()"
+              aria-label="Privacy and research data"
+            >
+              Privacy &amp; data
+            </button>
+            <button class="nav-policy" type="button" id="account-nav-button" onclick="Navigation.closeMenu(); Auth.open()">Sign in</button>
+          </div>
         </div>
       </nav>
     </header>
@@ -1195,7 +1204,7 @@
     
     
     
-    <script src="js/script.js?v=20261111-player-hq-nav-3"></script>
+    <script src="js/script.js?v=20261112-nav-completion-delay-r1"></script>
     <script src="js/question-bank.js?v=20261110-single-file-1"></script>
     <script src="js/arithmetic-quiz.js?v=20261110-completion-overlay-1"></script>
     <script src="js/math-racing.js?v=20261110-completion-overlay-1"></script>

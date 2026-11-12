@@ -177,3 +177,89 @@ button, [role="button"], input[type="button"], input[type="submit"] { touch-acti
 :where(.screen, .game-shell, .app-shell) :where(.tile, .piece, .shape-piece, .nm-cell, .sudoku-cell, .board-cell, .draggable) {
   touch-action: manipulation;
 }
+
+
+/* Unified navigation panel: desktop stays inline; mobile keeps every action
+   (including text zoom) behind one compact menu button. */
+.nav-menu-panel {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  gap: 12px;
+}
+@media (max-width: 820px) {
+  .site-nav {
+    flex-wrap: wrap;
+  }
+  .nav-menu-panel {
+    display: none;
+    flex: 1 0 100%;
+    order: 3;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--card);
+    box-shadow: 0 8px 24px rgba(45, 57, 43, 0.08);
+  }
+  .nav-menu-panel.open {
+    display: flex;
+  }
+  .nav-menu-panel .nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .nav-menu-panel .nav-link {
+    width: 100%;
+    min-height: 44px;
+    padding-inline: 12px;
+    text-align: left;
+  }
+  .nav-menu-panel .nav-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 8px;
+    margin: 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .nav-menu-panel .nav-accessibility {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 44px;
+  }
+  .nav-menu-panel .nav-accessibility .a11y-label {
+    display: inline;
+  }
+  .nav-menu-panel .nav-accessibility .a11y-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .nav-menu-panel .nav-policy {
+    flex: 1 1 135px;
+    min-height: 44px;
+  }
+}
+@media (max-width: 380px) {
+  .nav-menu-panel {
+    padding: 9px;
+  }
+  .nav-menu-panel .nav-right {
+    gap: 6px;
+  }
+}
