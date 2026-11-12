@@ -6,7 +6,7 @@ const VEHICLE={bike:{length:1.35,width:.62,height:1.15,gap:.9},car:{length:2.55,
 const mat=(color,roughness=.82,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 export class TrafficCity3D{
  constructor(host,{reducedMotion=false}={}){
-  this.host=host;this.reducedMotion=reducedMotion;this.vehicles=new Map();this.signals={};this.level="easy";this.disposed=false;this.elapsed=0;
+  this.host=host;this.reducedMotion=reducedMotion;this.vehicles=new Map();this.signals={};this.level="easy";this.disposed=false;this.paused=false;this.pendingMoveTick=null;this.elapsed=0;
   host.innerHTML="";
   if(!THREE){host.innerHTML='<div class="city-fallback">The 3D city could not load. Check your internet connection and reload the game.</div>';return}
   this.scene=new THREE.Scene();this.scene.background=new THREE.Color(0xb8cbd0);this.scene.fog=new THREE.Fog(0xb8cbd0,48,100);
@@ -102,10 +102,12 @@ export class TrafficCity3D{
  addVehicles(queues,palette){if(!this.vehicleGroup)return;this.vehicleGroup.clear();this.vehicles.clear();const colors=[0xe97862,0xf0bd52,0x319ba2,0x6c83c8,0x9c78bd,0x6d9c73];for(const [d,list] of Object.entries(queues)){const positions=this.positionsForQueue(d,list);list.forEach((kind,i)=>{const g=this.makeVehicle(kind,colors[(i+["north","south","east","west"].indexOf(d)*2)%colors.length]);const p=positions[i];g.position.set(p.x,p.y,p.z);g.rotation.y=p.yaw;g.userData={direction:d,kind,position:{...p}};this.vehicleGroup.add(g);this.vehicles.set(d+":"+i,g)})}}
  moveVehicles(moving,onDone,{stagger=90,duration=1600}={}){
   if(!this.vehicleGroup){onDone?.();return}const animations=[];moving.forEach((v,i)=>{const g=this.makeVehicle(v.kind,v.color||0x319ba2);const p=v.start;g.position.set(p.x,p.y,p.z);g.rotation.y=p.yaw;this.vehicleGroup.add(g);const end={x:p.exit.x,z:p.exit.z};animations.push({g,start:performance.now()+i*stagger,duration:duration,from:{x:p.x,z:p.z},to:end})});
-  const tick=()=>{if(!animations.length){onDone?.();return}const now=performance.now();for(let i=animations.length-1;i>=0;i--){const a=animations[i];const t=THREE.MathUtils.clamp((now-a.start)/a.duration,0,1),e=1-Math.pow(1-t,3);a.g.position.x=THREE.MathUtils.lerp(a.from.x,a.to.x,e);a.g.position.z=THREE.MathUtils.lerp(a.from.z,a.to.z,e);if(t>=1){this.vehicleGroup.remove(a.g);animations.splice(i,1)}}if(animations.length)requestAnimationFrame(tick);else onDone?.()};requestAnimationFrame(tick)
+  const tick=()=>{if(this.paused){this.pendingMoveTick=tick;return}if(!animations.length){onDone?.();return}const now=performance.now();for(let i=animations.length-1;i>=0;i--){const a=animations[i];const t=THREE.MathUtils.clamp((now-a.start)/a.duration,0,1),e=1-Math.pow(1-t,3);a.g.position.x=THREE.MathUtils.lerp(a.from.x,a.to.x,e);a.g.position.z=THREE.MathUtils.lerp(a.from.z,a.to.z,e);if(t>=1){this.vehicleGroup.remove(a.g);animations.splice(i,1)}}if(animations.length)requestAnimationFrame(tick);else onDone?.()};requestAnimationFrame(tick)
  }
  resize(){if(!this.renderer)return;const w=Math.max(1,this.host.clientWidth),h=Math.max(1,this.host.clientHeight);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.renderer.setSize(w,h,false)}
  placeCamera(){if(!this.camera)return;this.camera.position.set(0,64,30);this.camera.lookAt(0,0,0)}
- animate(){if(this.disposed||!this.renderer)return;this.frame=requestAnimationFrame(()=>this.animate());this.renderer.render(this.scene,this.camera)}
- dispose(){this.disposed=true;cancelAnimationFrame(this.frame);this.resizeObserver?.disconnect();this.renderer?.dispose()}
+ animate(){if(this.disposed||this.paused||!this.renderer)return;this.frame=requestAnimationFrame(()=>this.animate());this.renderer.render(this.scene,this.camera)}
+ pause(){this.paused=true;cancelAnimationFrame(this.frame)}
+ resume(){if(this.disposed)return;this.paused=false;this.animate();if(this.pendingMoveTick){const tick=this.pendingMoveTick;this.pendingMoveTick=null;requestAnimationFrame(tick)}}
+ dispose(){this.disposed=true;cancelAnimationFrame(this.frame);this.pendingMoveTick=null;this.resizeObserver?.disconnect();this.renderer?.dispose()}
 }
