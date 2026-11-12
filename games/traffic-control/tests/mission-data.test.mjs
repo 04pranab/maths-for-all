@@ -1,5 +1,19 @@
 import assert from "node:assert/strict";
-import { LEVELS } from "../missions.js";
+import { readFileSync } from "node:fs";
+import vm from "node:vm";
+
+// The game keeps all runtime JavaScript in one browser module. Evaluate only
+// its mission-data section here so the test does not need a DOM or WebGL.
+const bundle = readFileSync(new URL("../../../js/traffic-control.js", import.meta.url), "utf8");
+const missionStart = bundle.indexOf("const LEVELS_BASE =");
+const missionEnd = bundle.indexOf("\n\nlet THREE", missionStart);
+assert.ok(missionStart >= 0 && missionEnd > missionStart, "mission data must remain in the game bundle");
+const sandbox = { module: { exports: {} } };
+vm.runInNewContext(
+  `${bundle.slice(missionStart, missionEnd)}\nmodule.exports = { LEVELS };`,
+  sandbox
+);
+const { LEVELS } = sandbox.module.exports;
 
 const expectedDirections = {
   easy: ["north", "south"],
