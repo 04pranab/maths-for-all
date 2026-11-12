@@ -6,7 +6,7 @@ const PROGRESS_KEY="mfa-traffic-control-progress-v1";
 function readProgress(){try{return JSON.parse(localStorage.getItem(PROGRESS_KEY)||"{}")}catch{return {}}}
 function saveProgress(data){try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(data))}catch(error){console.warn("Could not save challenge progress:",error.message)}}
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
-let level="easy",round=0,queues={},busy=false,runId=0,nsSeconds=30,cleared=0,score=0,cycles=0,optimalScore=0,missionStartedAt=Date.now(),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let level="easy",round=0,queues={},busy=false,paused=false,runId=0,nsSeconds=30,cleared=0,score=0,cycles=0,optimalScore=0,missionStartedAt=Date.now(),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const city=new TrafficCity3D($("#city3d"),{reducedMotion:reduced});
 function total(){return dirs().reduce((s,d)=>s+(queues[d]?.length||0),0)}
 function budget(){return mission().budget}
@@ -26,7 +26,7 @@ function updateMath(){
  const result=planAt(nsSeconds);
  $("#predicted-vehicles").textContent=result.moved+" / "+total();$("#predicted-score").textContent=result.points+" pts";
  {const ew=budget()-nsSeconds;$("#ns-seconds").max=budget();$("#ns-seconds").step=cfg().step;$("#ns-seconds").value=nsSeconds;$("#ns-output").textContent=nsSeconds+" sec";$("#ns-preview").textContent=nsSeconds+" sec";$("#ew-preview").textContent=ew+" sec";$("#ns-track").style.width=(nsSeconds/budget()*100)+"%";$("#ew-track").style.width=(ew/budget()*100)+"%";$("#slider-label").textContent=level==="easy"?"Green time for Northbound traffic":"Green time for North + South";$("#ns-side-label").textContent=level==="easy"?"Northbound":"North + South";$("#ew-side-label").textContent=level==="easy"?"Southbound":"East + West";}
- $("#math-hint").textContent=m.lesson;$("#run-plan").disabled=busy||total()===0;
+ $("#math-hint").textContent=m.lesson;$("#run-plan").disabled=busy||paused||total()===0;$("#ns-seconds").disabled=paused||busy;
 }
 function setLevelUI(){
  document.body.classList.toggle("easy-level",level==="easy");document.body.classList.toggle("hard-level",level==="hard");city.setLevel(level);
@@ -54,7 +54,7 @@ function setLevel(next){
  startRound(round);
 }
 function runPlan(){
- if(busy||!total())return;
+ if(busy||paused||!total())return;
  const id=++runId,p=planAt(nsSeconds),best=bestPlan(),moving=[];
  optimalScore+=best.points;cycles++;busy=true;$("#run-plan").disabled=true;
  for(const d of dirs()){
@@ -92,6 +92,7 @@ function finish(){
  $("#next-mission").textContent=lastChallenge?"Replay this level ↻":"Next challenge →";
  $("#math-check").hidden=false;$("#math-title").textContent="Junction cleared! Excellent engineering.";$("#math-question").textContent="You moved "+cleared+" vehicles in "+cycles+" cycles and earned "+score+" priority points.";$("#math-feedback").textContent=m.lesson;
  $("#traffic-status").textContent="All queues cleared. Level challenge complete.";
+ if(window.parent!==window)window.parent.postMessage({source:"traffic-control",type:"challenge-complete",title:lastChallenge?"Level completed!":"Junction cleared!",message:lastChallenge?"You completed all 50 challenges in this city level. Choose another level or replay this one.":"You cleared the traffic queues. Your next challenge is ready.",actionLabel:lastChallenge?"Replay level":"Next challenge"},location.origin);
  const scorePercent=optimalScore>0?Math.max(0,Math.min(100,(score/optimalScore)*100)):0,durationSeconds=Math.max(1,Math.min(14400,Math.round((Date.now()-missionStartedAt)/1000))),accounts=window.MfaAccounts;
  if(accounts?.refreshSession&&accounts?.submitAttempt)accounts.refreshSession().then(()=>accounts.submitAttempt("traffic-control",scorePercent,durationSeconds,null,{difficulty:level,level:round+1})).catch(error=>console.warn("Could not save Traffic Control Centre score:",error.message));
  window.ResearchEventGateway?.record("traffic-control","mission_complete",{difficulty:level,level:round+1,completed:true,correct:true,seconds:durationSeconds});
@@ -105,4 +106,11 @@ document.querySelectorAll(".level-tab").forEach(b=>b.addEventListener("click",()
 $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.body.classList.toggle("reduce-motion",reduced)});
 $("#text-size-toggle")?.addEventListener("click",()=>document.body.classList.toggle("large-type"));
 if(reduced)document.body.classList.add("reduce-motion");
+window.addEventListener("message",event=>{
+ if(event.origin!==location.origin||event.source!==window.parent)return;
+ const data=event.data;if(!data||data.source!=="mfa-shell")return;
+ if(data.type==="next")$("#next-mission")?.click();
+ if(data.type==="pause"){paused=true;updateMath()}
+ if(data.type==="resume"){paused=false;updateMath()}
+});
 setLevel("easy");
