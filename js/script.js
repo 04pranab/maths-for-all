@@ -198,6 +198,18 @@ const ControlsOverlay = (function () {
         "The clock measures your time, but speed is not the goal. Notice how shapes fit.",
       ],
     },
+    trafficControl: {
+      icon: "🚦",
+      title: "How to play: Traffic Control Centre",
+      bullets: [
+        "Choose a city level: Easy, Medium, or Hard. Each level has 50 traffic challenges.",
+        "Study the vehicle queues, waiting times, and available signal time.",
+        "Split the green-light time between the road directions using the slider.",
+        "Check the predicted vehicles and priority points, then run your signal plan.",
+        "Clear every queue to complete the challenge. You can retry, restart, and work at your own pace.",
+        "Your unlocked challenge progress is saved on this device. Use Pause whenever you need a break.",
+      ],
+    },
     numberMaze: {
       icon: "🧩",
       title: "How to play: Number Maze",
@@ -470,18 +482,21 @@ const Game = (function () {
     fraction: "screen-fraction-bakery",
     shop: "screen-little-shop",
     numberMaze: "screen-number-maze",
+    trafficControl: "screen-traffic-control",
   };
 
   const ROUTE_SLUGS = {
     menu: null, quiz: "arithmetic", race: "math-racing", sudoku: "sudoku",
     shape: "shape-fitting", slab: "slab-maths", architect: "shape-architect",
     fraction: "fraction-bakery", shop: "little-shop", numberMaze: "number-maze",
+    trafficControl: "traffic-control",
   };
   const ROUTE_STARTERS = {
     arithmetic: startArithmetic, "math-racing": startRacing, sudoku: startSudoku,
     "shape-fitting": startShapePuzzle, "slab-maths": startSlabMath,
     "shape-architect": startShapeArchitect, "fraction-bakery": startFractionBakery,
     "little-shop": startLittleShop, "number-maze": startNumberMaze,
+    "traffic-control": startTrafficControl,
   };
   let restoringHistory = false;
   let lastAppliedUrl = null;
@@ -534,6 +549,7 @@ const Game = (function () {
     if (window.FractionBakery && typeof FractionBakery.stop === "function") FractionBakery.stop();
     if (window.LittleShop && typeof window.LittleShop.stop === "function") window.LittleShop.stop();
     if (window.NumberMaze && typeof window.NumberMaze.stop === "function") window.NumberMaze.stop();
+    if (window.TrafficControlIntegration?.pauseForNavigation) window.TrafficControlIntegration.pauseForNavigation();
   }
 
   function showScreen(name) {
@@ -609,6 +625,13 @@ const Game = (function () {
     ControlsOverlay.maybeShow("numberMaze");
   }
 
+  function startTrafficControl() {
+    Analytics.log("traffic_control", "open", {});
+    showScreen("trafficControl");
+    window.TrafficControlIntegration?.open();
+    ControlsOverlay.maybeShow("trafficControl");
+  }
+
   document.addEventListener("DOMContentLoaded", restoreRoute);
 
   return {
@@ -623,6 +646,7 @@ const Game = (function () {
     startFractionBakery,
     startLittleShop,
     startNumberMaze,
+    startTrafficControl,
   };
 })();
 
@@ -787,7 +811,7 @@ const Navigation = (() => {
   function progress(){closeMenu();Progress.open();}
   function howToPlay(){
     const screen=document.querySelector(".screen.active")?.id;
-    const keys={"screen-quiz":"quiz","screen-race":"race","screen-sudoku":"sudoku","screen-shape":"shape","screen-slab":"slab","screen-architect":"architect","screen-fraction-bakery":"fraction","screen-number-maze":"numberMaze"};
+    const keys={"screen-quiz":"quiz","screen-race":"race","screen-sudoku":"sudoku","screen-shape":"shape","screen-slab":"slab","screen-architect":"architect","screen-fraction-bakery":"fraction","screen-number-maze":"numberMaze","screen-traffic-control":"trafficControl"};
     const key=keys[screen];
     if(key)ControlsOverlay.forceShow(key);
   }
