@@ -623,9 +623,25 @@ const Game = (function () {
     document.getElementById("number-maze-title")?.focus({ preventScroll: true });
     ControlsOverlay.maybeShow("numberMaze");
   }
+  let trafficScaleObserver = null;
+  function syncTrafficControlScale() {
+    const frame = document.getElementById("traffic-control-frame");
+    if (!frame) return;
+    const scale = Number(getComputedStyle(document.documentElement).getPropertyValue("--font-scale")) || 1;
+    frame.contentWindow?.postMessage({ type: "mfa:traffic-font-scale", scale }, window.location.origin);
+  }
   function startTrafficControl() {
     Analytics.log("traffic_control", "open", {});
     showScreen("trafficControl");
+    const frame = document.getElementById("traffic-control-frame");
+    if (frame) {
+      frame.addEventListener("load", syncTrafficControlScale, { once: true });
+      syncTrafficControlScale();
+    }
+    if (!trafficScaleObserver && window.MutationObserver) {
+      trafficScaleObserver = new MutationObserver(syncTrafficControlScale);
+      trafficScaleObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
+    }
     ControlsOverlay.maybeShow("trafficControl");
   }
 
