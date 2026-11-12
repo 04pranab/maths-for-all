@@ -108,6 +108,6 @@ export class TrafficCity3D{
  placeCamera(){if(!this.camera)return;this.camera.position.set(0,64,30);this.camera.lookAt(0,0,0)}
  animate(){if(this.disposed||this.paused||!this.renderer)return;this.frame=requestAnimationFrame(()=>this.animate());this.renderer.render(this.scene,this.camera)}
  pause(){this.paused=true;cancelAnimationFrame(this.frame)}
- resume(){if(this.disposed)return;this.paused=false;this.animate();if(this.pendingMoveTick){const tick=this.pendingMoveTick;this.pendingMoveTick=null;requestAnimationFrame(tick)}}
+ resume(){if(this.disposed||!this.paused)return;this.paused=false;this.animate();if(this.pendingMoveTick){const tick=this.pendingMoveTick;this.pendingMoveTick=null;requestAnimationFrame(tick)}}
  dispose(){this.disposed=true;cancelAnimationFrame(this.frame);this.pendingMoveTick=null;this.resizeObserver?.disconnect();this.renderer?.dispose()}
 }
