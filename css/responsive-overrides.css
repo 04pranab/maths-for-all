@@ -177,3 +177,106 @@ button, [role="button"], input[type="button"], input[type="submit"] { touch-acti
 :where(.screen, .game-shell, .app-shell) :where(.tile, .piece, .shape-piece, .nm-cell, .sudoku-cell, .board-cell, .draggable) {
   touch-action: manipulation;
 }
+
+/* Compact navigation: at narrow effective widths (including browser zoom),
+   keep every navigation and accessibility control inside the hamburger panel. */
+@media (max-width: 1020px) {
+  .site-nav {
+    position: relative;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .site-nav .nav-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    order: 2;
+    margin-left: auto;
+    flex: 0 0 44px;
+  }
+
+  .site-nav .nav-links {
+    display: none;
+    order: 3;
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 8px 0 4px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    border-top: 1px solid var(--border);
+  }
+
+  .site-nav .nav-links.open {
+    display: flex;
+  }
+
+  .site-nav .nav-link {
+    width: 100%;
+    min-width: 0;
+    text-align: left;
+    justify-content: flex-start;
+  }
+
+  /* nav-right follows nav-links in the document, so it joins the same
+     expanded panel and stays hidden until the hamburger is opened. */
+  .site-nav .nav-right {
+    display: none;
+    order: 4;
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 8px 0 2px;
+    border-top: 1px solid var(--border);
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .site-nav .nav-links.open + .nav-right {
+    display: flex;
+  }
+
+  .site-nav .nav-accessibility .a11y-label {
+    display: inline;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-nav .nav-right {
+    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .site-nav .nav-links.open + .nav-right {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  .site-nav .nav-accessibility {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .site-nav .nav-accessibility .a11y-label {
+    display: inline;
+    margin-right: 4px;
+  }
+
+  .site-nav .nav-policy {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding-inline: 10px;
+    white-space: nowrap;
+  }
+}
+
