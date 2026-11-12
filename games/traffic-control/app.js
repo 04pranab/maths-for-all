@@ -95,6 +95,16 @@ function finish(){
  const scorePercent=optimalScore>0?Math.max(0,Math.min(100,(score/optimalScore)*100)):0,durationSeconds=Math.max(1,Math.min(14400,Math.round((Date.now()-missionStartedAt)/1000))),accounts=window.MfaAccounts;
  if(accounts?.refreshSession&&accounts?.submitAttempt)accounts.refreshSession().then(()=>accounts.submitAttempt("traffic-control",scorePercent,durationSeconds,null,{difficulty:level,level:round+1})).catch(error=>console.warn("Could not save Traffic Control Centre score:",error.message));
  window.ResearchEventGateway?.record("traffic-control","mission_complete",{difficulty:level,level:round+1,completed:true,correct:true,seconds:durationSeconds});
+ if (window.parent !== window) {
+  window.parent.postMessage({
+   type:"mfa:traffic-complete",
+   title:lastChallenge?"Level complete!":"Junction cleared!",
+   message:lastChallenge
+    ?"You completed all 50 challenges in this level, moved "+cleared+" vehicles, and earned "+score+" priority points."
+    :"You moved "+cleared+" vehicles in "+cycles+" cycles and earned "+score+" priority points. The next challenge is unlocked.",
+   actionLabel:lastChallenge?"Replay level":"Next challenge"
+  },window.location.origin);
+ }
 }
 $("#ns-seconds").addEventListener("input",e=>{nsSeconds=Number(e.target.value);updateMath()});
 $("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>{
@@ -106,3 +116,14 @@ $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.bod
 $("#text-size-toggle")?.addEventListener("click",()=>document.body.classList.toggle("large-type"));
 if(reduced)document.body.classList.add("reduce-motion");
 setLevel("easy");
+
+
+window.addEventListener("message",event=>{
+ if(event.origin!==window.location.origin||event.source!==window.parent)return;
+ if(event.data?.type==="mfa:traffic-stop"){
+  runId++;busy=false;
+  for(const d of DIRS)setSignal(d,false);
+  updateQueue();updateMath();
+ }
+ if(event.data?.type==="mfa:traffic-continue")$("#next-mission").click();
+});
