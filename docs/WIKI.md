@@ -551,7 +551,7 @@ It is finished when the experience works.
 
 ## 14. Current project status and roadmap
 
-**Status checked: 10 November 2026.** The current `main` branch includes Number Maze and Little Shop. The learner-facing menu contains Arithmetic Quiz, Math Racing, Sudoku, Shape Fitting, Shape Architect, Fraction Bakery, Slab Maths, Little Shop and Number Maze.
+**Status checked: 12 November 2026.** The current `main` branch includes Number Maze and Little Shop. PR #212 adds Traffic Control Centre as a native game screen on its feature branch; that branch's learner-facing menu contains Arithmetic Quiz, Math Racing, Sudoku, Shape Fitting, Shape Architect, Fraction Bakery, Slab Maths, Little Shop, Number Maze and Traffic Control Centre.
 
 - **Shape Architect:** 100-level geometry builder; implemented and hardened.
 - **Fraction Bakery:** 100 levels across eight stages; automated mathematical and responsive-layout checks are present. Supervised learner/educator acceptance remains pending.
