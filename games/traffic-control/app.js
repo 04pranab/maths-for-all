@@ -111,7 +111,7 @@ window.addEventListener("message",event=>{
  const data=event.data;if(!data||data.source!=="mfa-shell")return;
  if(data.type==="next")$("#next-mission")?.click();
  if(data.type==="font-scale"&&Number.isFinite(Number(data.value)))document.documentElement.style.fontSize=(16*Math.max(.8,Math.min(1.6,Number(data.value))))+"px";
- if(data.type==="pause"){paused=true;updateMath()}
- if(data.type==="resume"){paused=false;updateMath()}
+ if(data.type==="pause"){paused=true;city.pause();updateMath()}
+ if(data.type==="resume"){paused=false;city.resume();updateMath()}
 });
 setLevel("easy");
