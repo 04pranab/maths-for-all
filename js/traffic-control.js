@@ -391,15 +391,15 @@ function finish(){
  $("#challenge-complete").hidden=false;
  $("#challenge-complete-title").textContent=lastChallenge?"All 50 challenges completed!":"Challenge complete!";
  $("#challenge-complete-text").textContent=lastChallenge
-  ?"You have completed every challenge in this level. Replay the level or choose another difficulty."
-  :"Great work. Your next challenge is now unlocked.";
+  ?"You have completed all 50 challenges in this difficulty. Choose another level or difficulty."
+  :"Great work. Choose any other level whenever you are ready.";
  $("#next-mission").hidden=false;
  $("#next-mission").textContent="Choose another level →";
  $("#math-check").hidden=false;$("#math-title").textContent="Junction cleared! Excellent engineering.";$("#math-question").textContent="You moved "+cleared+" vehicles in "+cycles+" cycles and earned "+score+" priority points.";$("#math-feedback").textContent=m.lesson;
  $("#traffic-status").textContent="All queues cleared. Level challenge complete.";
  window.CompletionOverlay?.show({
   title:lastChallenge?"Level completed!":"Junction cleared!",
-  message:lastChallenge?"You completed all 50 challenges in this city level. Choose another level or replay this one.":"You cleared the traffic queues. Your next challenge is ready.",
+  message:lastChallenge?"You completed all 50 challenges in this difficulty. Choose another level or difficulty.":"You cleared the traffic queues. Choose any other level whenever you are ready.",
   actionLabel:"Choose another level",
   onContinue:()=>showLevelsView(level)
 });
@@ -408,10 +408,7 @@ function finish(){
  window.ResearchEventGateway?.record("traffic-control","mission_complete",{difficulty:level,level:round+1,completed:true,correct:true,seconds:durationSeconds});
 }
 $("#ns-seconds").addEventListener("input",e=>{nsSeconds=Number(e.target.value);updateMath()});
-$("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>{
- if(round>=cfg().rounds.length-1)startRound(0);
- else startRound(round+1);
-});
+$("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>showLevelsView(level));
 document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>showLevelsView(b.dataset.difficulty)));
 $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.getElementById("screen-traffic-control").classList.toggle("reduce-motion",reduced)});
 $("#text-size-toggle")?.addEventListener("click",()=>document.getElementById("screen-traffic-control").classList.toggle("large-type"));
