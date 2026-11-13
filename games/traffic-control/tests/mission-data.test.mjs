@@ -14,6 +14,29 @@ vm.runInNewContext(
   sandbox
 );
 const LEVELS = JSON.parse(JSON.stringify(sandbox.module.exports.LEVELS));
+const capacityStart = bundle.indexOf("function service(kind)");
+const capacityEnd = bundle.indexOf("\\nfunction planAt", capacityStart);
+assert.ok(capacityStart >= 0 && capacityEnd > capacityStart, "service and capacity functions must remain testable");
+const capacitySource = bundle.slice(capacityStart, capacityEnd);
+function capacityFor(difficulty, queue, greenSeconds, configuredServiceSeconds) {
+  const context = {
+    module: { exports: {} },
+    level: difficulty,
+    queues: { north: queue },
+    mission: () => ({}),
+    cfg: () => ({ serviceSeconds: configuredServiceSeconds }),
+    TIMES: { bike: 5, car: 10, truck: 15 }
+  };
+  vm.runInNewContext(`${capacitySource}\\nmodule.exports = capacity;`, context);
+  return context.module.exports("north", greenSeconds);
+}
+assert.equal(capacityFor("easy", ["car", "car", "car"], 20, undefined), 2,
+  "Easy must clear only two cars in a 20-second green when service time comes from the config fallback");
+assert.equal(capacityFor("medium", ["car", "car"], 15, 10), 1,
+  "Medium must count only complete cars within its green phase");
+assert.equal(capacityFor("hard", ["bike", "car", "truck"], 29, 10), 2,
+  "Hard must add mixed-fleet service times and reject a vehicle that does not fit");
+
 
 const expectedDirections = {
   easy: ["north", "south"],
