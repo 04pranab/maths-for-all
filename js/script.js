@@ -823,9 +823,9 @@ const Navigation = (() => {
 window.Navigation=Navigation;
 
 /* ---------- Shared Escape handling ----------
-   The capture-phase handler consumes Escape when a modal is open before
-   other document keyboard handlers can navigate the game. */
-document.addEventListener(
+   The window capture handler consumes Escape when a modal is open before
+   document-level game keyboard handlers can navigate the game. */
+window.addEventListener(
   "keydown",
   (event) => {
     if (event.key !== "Escape") return;
