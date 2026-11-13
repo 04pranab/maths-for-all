@@ -331,12 +331,12 @@ function updateMath(){
  for(const d of DIRS){const active=dirs().includes(d),chip=$(".approach-math ."+d+"-chip");if(chip)chip.hidden=!active;if(active){$("#math-"+d).textContent=queues[d].length+" "+(queues[d].length===1?"vehicle":"vehicles");$("#wait-"+d).textContent=m.waitMinutes[d]+" min"}}
  $("#vehicle-budget").innerHTML=budget()+' <small>seconds</small>';
  $("#reserve-note").textContent=level==="hard"?"Mixed fleet: bicycle 5s · car 10s · truck 15s":level==="easy"?"Northbound and southbound take separate green turns":"Split the cycle between the two roads";
- $("#planner-question").textContent=m.objective;$("#fleet-legend").hidden=level!=="hard";$("#schedule-inputs").hidden=false;
+ $("#math-briefing-title").textContent=m.title;$("#planner-question").textContent="Set the green light. Move the traffic. Beat your best!";$("#reserve-note").hidden=level==="hard";$("#reserve-note").textContent=level==="hard"?"🚲 5s · 🚗 10s · 🚚 15s":"🚗 Each car needs 10 seconds";$("#fleet-legend").hidden=level!=="hard";$("#schedule-inputs").hidden=false;
  $("#tc-score-label").textContent=m.scoringMode==="throughput"?"THROUGHPUT POINTS":m.scoringMode==="balanced"?"FLOW + FAIRNESS POINTS":"WAIT-PRIORITY POINTS";
  const result=planAt(nsSeconds);
  $("#predicted-vehicles").textContent=result.moved+" / "+total();$("#predicted-score").textContent=result.points+" pts";
  {const ew=budget()-nsSeconds;$("#ns-seconds").max=budget();$("#ns-seconds").step=cfg().step;$("#ns-seconds").value=nsSeconds;$("#ns-output").textContent=nsSeconds+" sec";$("#ns-preview").textContent=nsSeconds+" sec";$("#ew-preview").textContent=ew+" sec";$("#ns-track").style.width=(nsSeconds/budget()*100)+"%";$("#ew-track").style.width=(ew/budget()*100)+"%";$("#slider-label").textContent=level==="easy"?"Green time for Northbound traffic":"Green time for North + South";$("#ns-side-label").textContent=level==="easy"?"Northbound":"North + South";$("#ew-side-label").textContent=level==="easy"?"Southbound":"East + West";}
- $("#math-hint").textContent=m.lesson;$("#ns-seconds").min=m.minimumGreen||5;$("#ns-seconds").max=budget()-(m.minimumGreen||5);$("#run-plan").disabled=busy||paused||total()===0;$("#ns-seconds").disabled=paused||busy;
+ $("#math-hint").textContent="";$("#ns-seconds").min=m.minimumGreen||5;$("#ns-seconds").max=budget()-(m.minimumGreen||5);$("#run-plan").disabled=busy||paused||total()===0;$("#ns-seconds").disabled=paused||busy;
  const learning=m.learning||LEARNING_MODULES[level][0];
  $("#tc-learning-topic").textContent=learning.topic;
  $("#tc-learning-formula").textContent=learning.formula;
