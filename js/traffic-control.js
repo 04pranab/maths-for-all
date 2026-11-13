@@ -389,9 +389,6 @@ function startRound(index=0){
  $("#mission-number").textContent=String(round+1).padStart(2,"0")+" / "+challengeCount;
  $("#mission-progress-fill").style.width=((round+1)/challengeCount*100)+"%";
  $("#mission-tag").textContent=cfg().label;
-  const modifier=CHALLENGE_MODIFIERS.find(item=>item.id===m.modifier)||CHALLENGE_MODIFIERS[0];
-  $("#mission-tag").textContent=cfg().label+" · "+modifier.label;
-  const modifierNote=$("#tc-modifier-note");if(modifierNote){modifierNote.hidden=m.modifier==="standard";modifierNote.textContent=modifier.description+(m.priorityDirection?" Priority approach: "+m.priorityDirection.toUpperCase()+".":"");}
  $("#challenge-tag").textContent=(window.TrafficControlDaily?"DAILY CHALLENGE · ":"")+level.toUpperCase()+" · "+String(round+1).padStart(2,"0")+" / "+challengeCount;
  $("#challenge-complete").hidden=true;$("#tc-leaderboard").hidden=true;$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;let modifierNote=$("#tc-modifier-note");if(!modifierNote){modifierNote=document.createElement("p");modifierNote.id="tc-modifier-note";modifierNote.className="tc-modifier-note";$("#mission-description").insertAdjacentElement("afterend",modifierNote)}const modifier=CHALLENGE_MODIFIERS.find(item=>item.id===m.modifier)||CHALLENGE_MODIFIERS[0];modifierNote.hidden=m.modifier==="standard";modifierNote.textContent=modifier.description+(m.priorityDirection?" Priority approach: "+m.priorityDirection.toUpperCase()+".":"");$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
  for(const d of DIRS)setSignal(d,false);
@@ -469,7 +466,7 @@ function runPlan(){
 
   if(total()===0)finish();
   else if(cycles>=mission().maxCycles)failChallenge("The cycle limit was reached with "+total()+" vehicles still waiting. The challenge allows "+mission().maxCycles+" cycles. Restart and allocate green time more carefully.");
-  else {addRushHourArrivals();$("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for cycle "+(cycles+1)+" of "+mission().maxCycles+".";updateMath();}
+  else {$("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for cycle "+(cycles+1)+" of "+mission().maxCycles+".";updateMath();}
   $("#tc-live-feedback").textContent="Forecast vs actual: "+p.moved+" vehicles predicted and "+p.moved+" moved. Score: "+p.points+" points.";
  },{stagger:reduced?0:100,duration});
 }
