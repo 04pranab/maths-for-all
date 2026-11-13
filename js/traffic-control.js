@@ -348,7 +348,10 @@ function updateMath(){
  $("#tc-live-equation").textContent=nsSeconds+"s + "+(budget()-nsSeconds)+"s = "+budget()+"s";
  $("#tc-live-feedback").textContent=result.moved+" vehicles predicted from "+total()+" waiting; "+result.points+" points under the "+result.scoringMode+" scoring rule if this plan runs.";
  $("#tc-cycle-count").textContent=cycles+" / "+m.maxCycles;
- $("#tc-efficiency").textContent=(optimalScore>0?Math.round(score/optimalScore*100):100)+"%";
+ $("#tc-efficiency").textContent=optimalScore>0?Math.round(score/optimalScore*100)+"%":"—";
+ let bestRecord=null;try{bestRecord=JSON.parse(localStorage.getItem("mfa-traffic-control-best-v2")||"{}")?.[level+":"+(round+1)]||null}catch{}
+ $("#tc-star-result").textContent=bestRecord?"★".repeat(bestRecord.stars||0)+"☆".repeat(3-(bestRecord.stars||0)):"☆☆☆";
+ $("#tc-best-result").textContent=bestRecord?"PB: "+Math.round((bestRecord.efficiency||0)*100)+"% · "+bestRecord.cycles+" cycles":"Best: not set";
  const chart=$("#tc-queue-chart");
  if(chart)chart.innerHTML=dirs().map(d=>{const cap=result.caps[d]||0,waiting=queues[d].length,pct=waiting?Math.min(100,cap/waiting*100):100;return '<div class="tc-flow-row"><span>'+d.toUpperCase()+'</span><span class="tc-flow-track"><i style="width:'+pct+'%"></i></span><b>'+cap+'/'+waiting+'</b></div>'}).join("");
 }
@@ -442,6 +445,7 @@ function runPlan(){
   if(id!==runId)return;
   busy=false;for(const d of DIRS)setSignal(d,false);updateQueue();updateMath();
   $("#math-hint").textContent=p.points===best.points?"Excellent! That split earned the best possible score for this cycle.":"Your plan earned "+p.points+" points. Best split: "+best.ns+"s North–South and "+best.ew+"s East–West ("+best.points+" points).";
+  $("#tc-live-feedback").textContent="Forecast vs actual: "+p.moved+" vehicles predicted and "+p.moved+" moved. Score: "+p.points+" points.";
   if(total()===0)finish();
   else if(cycles>=mission().maxCycles)failChallenge("The cycle limit was reached with "+total()+" vehicles still waiting. The challenge allows "+mission().maxCycles+" cycles. Restart and allocate green time more carefully.");
   else {$("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for cycle "+(cycles+1)+" of "+mission().maxCycles+".";updateMath();}
