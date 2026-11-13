@@ -220,3 +220,20 @@
  #screen-traffic-control .prediction-card{padding:8px}
  #screen-traffic-control .plan-button{min-height:50px}
 }
+/* Live arcade controls */
+#screen-traffic-control .schedule-inputs,#screen-traffic-control .prediction-row,#screen-traffic-control #run-plan{display:none!important}
+#screen-traffic-control .tc-live-play{margin:12px 0;padding:13px;border-radius:16px;background:#f1f8ed;border:1px solid #d4e6d0}
+#screen-traffic-control .tc-live-hud{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#567260;font-size:.68rem;font-weight:900;letter-spacing:.06em}
+#screen-traffic-control .tc-live-hud strong{font-size:1.5rem;color:#244f38;font-variant-numeric:tabular-nums}
+#screen-traffic-control .tc-live-time-track{height:9px;margin:8px 0 12px;overflow:hidden;border-radius:99px;background:#dce8d8}
+#screen-traffic-control .tc-live-time-track i{display:block;width:100%;height:100%;border-radius:inherit;background:#5ca66b;transition:width .1s linear}
+#screen-traffic-control .tc-live-prompt{margin:0 0 8px;color:#57715d;font-size:.66rem;font-weight:950;letter-spacing:.1em;text-align:center}
+#screen-traffic-control .tc-live-buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#screen-traffic-control .tc-live-button{display:flex;min-height:108px;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 8px;border:2px solid #b8d5b7;border-radius:14px;background:#fff;color:#28553a;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;transition:transform .12s,background .12s,border-color .12s,box-shadow .12s}
+#screen-traffic-control .tc-live-button span{font-size:1.5rem;line-height:1}
+#screen-traffic-control .tc-live-button strong{font-size:.85rem;font-weight:950}
+#screen-traffic-control .tc-live-button small{font-size:.65rem;color:#6b806e}
+#screen-traffic-control .tc-live-button.active{transform:translateY(2px);border-color:#39864f;background:#ccebd0;box-shadow:inset 0 0 0 2px #fff,0 0 0 3px #83bd8b}
+#screen-traffic-control .tc-live-button:focus-visible{outline:3px solid #2d7548;outline-offset:3px}
+#screen-traffic-control .tc-live-tip{margin:9px 0 0;color:#617565;font-size:.72rem;line-height:1.35;text-align:center}
+@media(max-width:560px){#screen-traffic-control .tc-live-play{padding:10px;margin:8px 0}#screen-traffic-control .tc-live-button{min-height:94px}#screen-traffic-control .tc-live-button strong{font-size:.77rem}}
