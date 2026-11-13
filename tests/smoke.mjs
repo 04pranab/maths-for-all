@@ -1019,6 +1019,36 @@ async function main() {
     return { difficulties: 3, levelsPerDifficulty: 50, freeChoice: true, legacyProgressMigrated: true };
   })()`);
 
+  const trafficLivePlayResult = await evaluate(`(async () => {
+    const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    Game.goHome();
+    Game.startTrafficControl();
+    document.querySelector('[data-difficulty="easy"]').click();
+    document.querySelector('#tc-level-grid [data-level-index="0"]').click();
+    const northButton = document.querySelector('[data-live-axis="ns"]');
+    const southButton = document.querySelector('[data-live-axis="ew"]');
+    assert(northButton && southButton, "Live signal controls are missing.");
+    assert(getComputedStyle(document.getElementById("run-plan")).display === "none", "Old one-click Run button must not be part of live play.");
+    assert(getComputedStyle(document.getElementById("schedule-inputs")).display === "none", "Old planning slider must not be part of live play.");
+    document.body.dispatchEvent(new KeyboardEvent("keydown", {key:"ArrowUp",bubbles:true}));
+    assert(northButton.classList.contains("active"), "Arrow Up should activate the north green light.");
+    document.body.dispatchEvent(new KeyboardEvent("keyup", {key:"ArrowUp",bubbles:true}));
+    const northBefore = Number(document.getElementById("count-north").textContent);
+    northButton.dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,pointerId:1}));
+    await new Promise(resolve => setTimeout(resolve, 1600));
+    northButton.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,pointerId:1}));
+    const northAfter = Number(document.getElementById("count-north").textContent);
+    assert(northAfter < northBefore, "Holding the north signal should move a vehicle without a Run click.");
+    const southBefore = Number(document.getElementById("count-south").textContent);
+    southButton.dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,pointerId:2}));
+    await new Promise(resolve => setTimeout(resolve, 1600));
+    southButton.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,pointerId:2}));
+    const southAfter = Number(document.getElementById("count-south").textContent);
+    assert(southAfter < southBefore, "Holding the second signal should move its queued vehicle. State: "+JSON.stringify(TrafficControlGame.getLiveState())+" active:"+southButton.classList.contains("active"));
+    Game.goHome();
+    return {liveSignals:true,keyboardControl:true,northVehiclesMoved:northBefore-northAfter,southVehiclesMoved:southBefore-southAfter,oneClickRunRemoved:true};
+  })()`);
+
   const malformedInputResult = await evaluate(
     "(async () => {" +
       "const assert = (condition, message) => { if (!condition) throw new Error(message); };" +
@@ -2019,6 +2049,7 @@ async function main() {
         malformedInputs: malformedInputResult,
         fractionBakery: fractionResult,
         trafficControlSelection: trafficSelectionResult,
+        trafficLivePlay: trafficLivePlayResult,
         fractionBakeryResponsive: fractionResponsiveResults,
         littleShopResponsive: littleShopResponsiveResults,
         keyboard: keyboardAudit,
