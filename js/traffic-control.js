@@ -183,6 +183,22 @@ for (const [difficulty, config] of Object.entries(LEVELS)) {
 }
 
 
+// The existing 50-level ladder now introduces real modifiers in deliberate bands.
+const CHALLENGE_MODIFIERS = [
+ {id:"standard",label:"Clear roads",description:"A steady day at the junction."},
+ {id:"rush-hour",label:"Rush hour",description:"A fresh wave of traffic joins the queues after the first shift."},
+ {id:"school-crossing",label:"School crossing",description:"A protected pedestrian crossing pauses vehicle service at the start of each shift."},
+ {id:"emergency-priority",label:"Emergency route",description:"The highlighted approach earns extra priority when vehicles are served."},
+ {id:"rain",label:"Rainy junction",description:"Wet roads slow vehicle movement, so allow more time for each clearing animation."}
+];
+for (const config of Object.values(LEVELS)) config.rounds.forEach((challenge,index)=>{
+ const band=Math.min(4,Math.floor(index/10));
+ challenge.modifier=CHALLENGE_MODIFIERS[band].id;
+ challenge.modifierLabel=CHALLENGE_MODIFIERS[band].label;
+ challenge.modifierDescription=CHALLENGE_MODIFIERS[band].description;
+ if(band===3){challenge.priorityDirection=config.directions[(index+1)%config.directions.length];challenge.scoringMode="priority";}
+});
+
 let THREE=null;
 try{THREE=await import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");}
 catch(error){console.error("3D engine could not load:",error);}
@@ -315,22 +331,6 @@ function readProgress(){
  }catch{return{easy:[],medium:[],hard:[]}}
 }
 function saveProgress(data){try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(data))}catch(error){console.warn("Could not save challenge progress:",error.message)}}
-// The existing 50-level ladder now introduces real modifiers in deliberate bands.
-const CHALLENGE_MODIFIERS = [
- {id:"standard",label:"Clear roads",description:"A steady day at the junction."},
- {id:"rush-hour",label:"Rush hour",description:"A fresh wave of traffic joins the queues after the first shift."},
- {id:"school-crossing",label:"School crossing",description:"A protected pedestrian crossing pauses vehicle service at the start of each shift."},
- {id:"emergency-priority",label:"Emergency route",description:"The highlighted approach earns extra priority when vehicles are served."},
- {id:"rain",label:"Rainy junction",description:"Wet roads slow vehicle movement, so allow more time for each clearing animation."}
-];
-for (const config of Object.values(LEVELS)) config.rounds.forEach((challenge,index)=>{
- const band=Math.min(4,Math.floor(index/10));
- challenge.modifier=CHALLENGE_MODIFIERS[band].id;
- challenge.modifierLabel=CHALLENGE_MODIFIERS[band].label;
- challenge.modifierDescription=CHALLENGE_MODIFIERS[band].description;
- if(band===3){challenge.priorityDirection=config.directions[(index+1)%config.directions.length];challenge.scoringMode="priority";}
-});
-
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
 let level="easy",round=0,queues={},busy=false,paused=false,runId=0,nsSeconds=30,cleared=0,score=0,cycles=0,optimalScore=0,missionStartedAt=Date.now(),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
 let liveAxis=null,liveBudget=0,liveService={north:0,south:0,east:0,west:0},liveAnimating=false,liveCycleBest=null,liveCycleStats={moved:0,weighted:0,approaches:new Set()},liveTickHandle=null,livePedestrianHold=0,rushHourArrivalsAdded=false;
