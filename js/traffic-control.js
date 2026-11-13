@@ -191,7 +191,7 @@ const VEHICLE={bike:{length:1.35,width:.62,height:1.15,gap:.9},car:{length:2.55,
 const mat=(color,roughness=.82,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 class TrafficCity3D{
  constructor(host,{reducedMotion=false}={}){
-  this.host=host;this.reducedMotion=reducedMotion;this.vehicles=new Map();this.signals={};this.level="easy";this.disposed=false;this.paused=false;this.pendingMoveTick=null;this.elapsed=0;
+  this.host=host;this.reducedMotion=reducedMotion;this.vehicles=new Map();this.signals={};this.signalTimers={};this.level="easy";this.disposed=false;this.paused=false;this.pendingMoveTick=null;this.elapsed=0;
   host.innerHTML="";
   if(!THREE){host.innerHTML='<div class="city-fallback">The 3D city could not load. Check your internet connection and reload the game.</div>';return}
   this.scene=new THREE.Scene();this.scene.background=new THREE.Color(0xb8cbd0);this.scene.fog=new THREE.Fog(0xb8cbd0,48,100);
@@ -252,7 +252,7 @@ class TrafficCity3D{
  buildSignals(){
   for(const d of ["north","south","east","west"]){const g=new THREE.Group();let x=0,z=0,rot=0;if(d==="north"){x=6.6;z=-7;rot=0}else if(d==="south"){x=-6.6;z=7;rot=Math.PI}else if(d==="east"){x=7;z=6.6;rot=-Math.PI/2}else{x=-7;z=-6.6;rot=Math.PI/2}g.position.set(x,.25,z);g.rotation.y=rot;this.scene.add(g);const black=mat(0x1e303b),post=mat(0x344b56);this.cyl(g,.12,.16,2.7,0,1.35,0,post);this.box(g,.65,1.35,.42,0,2.55,0,black);const bulbs=[];for(let i=0;i<3;i++){const material=new THREE.MeshStandardMaterial({color:[COLORS.red,COLORS.amber,COLORS.green][i],emissive:0x000000,roughness:.25});const bulb=new THREE.Mesh(new THREE.SphereGeometry(.17,16,12),material);bulb.position.set(0,2.95-i*.4,.23);g.add(bulb);bulbs.push(bulb)}this.signals[d]=bulbs;g.userData.direction=d;this.setSignal(d,false)}
  }
- setSignal(direction,green){if(!this.signals)return;const bulbs=this.signals[direction];if(!bulbs)return;bulbs.forEach((b,i)=>{const on=green?i===2:i===0;b.material.emissive.setHex(on?[COLORS.red,COLORS.amber,COLORS.green][i]:0x000000);b.material.emissiveIntensity=on?1.8:0;b.material.color.setHex(on?[COLORS.red,COLORS.amber,COLORS.green][i]:0x303a40)})}
+ setSignal(direction,green){if(!this.signals)return;const bulbs=this.signals[direction];if(!bulbs)return;clearTimeout(this.signalTimers[direction]);const paint=state=>bulbs.forEach((b,i)=>{const on=state==="green"?i===2:state==="amber"?i===1:i===0;b.material.emissive.setHex(on?[COLORS.red,COLORS.amber,COLORS.green][i]:0x000000);b.material.emissiveIntensity=on?1.8:0;b.material.color.setHex(on?[COLORS.red,COLORS.amber,COLORS.green][i]:0x303a40)});paint("amber");this.signalTimers[direction]=setTimeout(()=>paint(green?"green":"red"),180)}
  setLevel(level){this.level=level;if(!this.city)return;this.city.children.forEach(o=>{if(o.userData.horizontalRoad)o.visible=level!=="easy"});for(const [d,b] of Object.entries(this.signals)){const active=level!=="easy"||d==="north"||d==="south";b[0].parent.visible=active}}
  positionFor(direction,index,kind,queueOffset=0){
   const offset=6.8+queueOffset,laneOffset=1.65;
@@ -284,7 +284,8 @@ class TrafficCity3D{
   for(const x of [-width*.34,width*.34]){this.box(g,.18,.14,.12,x,.65,length/2-.04,lamp,false);this.box(g,.18,.14,.12,x,.65,-length/2+.04,mat(0xe45d52),false)}
   return g;
  }
- addVehicles(queues,palette){if(!this.vehicleGroup)return;this.vehicleGroup.clear();this.vehicles.clear();const colors=[0xe97862,0xf0bd52,0x319ba2,0x6c83c8,0x9c78bd,0x6d9c73];for(const [d,list] of Object.entries(queues)){const positions=this.positionsForQueue(d,list);list.forEach((kind,i)=>{const g=this.makeVehicle(kind,colors[(i+["north","south","east","west"].indexOf(d)*2)%colors.length]);const p=positions[i];g.position.set(p.x,p.y,p.z);g.rotation.y=p.yaw;g.userData={direction:d,kind,position:{...p}};this.vehicleGroup.add(g);this.vehicles.set(d+":"+i,g)})}}
+ setBrakeLights(group,on){for(const light of group?.userData?.brakeLights||[]){light.material.emissive.setHex(on?0xff3028:0x000000);light.material.emissiveIntensity=on?1.4:0}}
+  addVehicles(queues,palette){if(!this.vehicleGroup)return;this.vehicleGroup.clear();this.vehicles.clear();const colors=[0xe97862,0xf0bd52,0x319ba2,0x6c83c8,0x9c78bd,0x6d9c73];for(const [d,list] of Object.entries(queues)){const positions=this.positionsForQueue(d,list);list.forEach((kind,i)=>{const g=this.makeVehicle(kind,colors[(i+["north","south","east","west"].indexOf(d)*2)%colors.length]);const p=positions[i];g.position.set(p.x,p.y,p.z);g.rotation.y=p.yaw;g.userData.direction=d;g.userData.kind=kind;g.userData.position={...p};this.setBrakeLights(g,true);this.vehicleGroup.add(g);this.vehicles.set(d+":"+i,g)})}}
  moveVehicles(moving,onDone,{stagger=90,duration=1600}={}){
   if(!this.vehicleGroup){onDone?.();return}const animations=[];moving.forEach((v,i)=>{const g=this.makeVehicle(v.kind,v.color||0x319ba2);const p=v.start;g.position.set(p.x,p.y,p.z);g.rotation.y=p.yaw;this.vehicleGroup.add(g);const end={x:p.exit.x,z:p.exit.z};animations.push({g,start:performance.now()+i*stagger,duration:duration,from:{x:p.x,z:p.z},to:end})});
   const tick=()=>{if(this.paused){this.pendingMoveTick=tick;return}if(!animations.length){onDone?.();return}const now=performance.now();for(let i=animations.length-1;i>=0;i--){const a=animations[i];const t=THREE.MathUtils.clamp((now-a.start)/a.duration,0,1),e=1-Math.pow(1-t,3);a.g.position.x=THREE.MathUtils.lerp(a.from.x,a.to.x,e);a.g.position.z=THREE.MathUtils.lerp(a.from.z,a.to.z,e);if(t>=1){this.vehicleGroup.remove(a.g);animations.splice(i,1)}}if(animations.length)requestAnimationFrame(tick);else onDone?.()};requestAnimationFrame(tick)
@@ -479,6 +480,7 @@ function addRushHourArrivals(){
   queues[direction].push("car");renderVehicles();
   $("#tc-live-feedback").textContent="Rush hour wave! One more car has joined the "+direction.toUpperCase()+" queue.";
  }
+ function addRushHourArrivals(){if(mission().modifier!=="rush-hour"||rushHourArrivalsAdded||cycles!==1)return;rushHourArrivalsAdded=true;const direction=dirs().reduce((best,d)=>queues[d].length>queues[best].length?d:best,dirs()[0]);queues[direction].push("car");renderVehicles();$("#tc-live-feedback").textContent="Rush-hour wave! One more car has joined the "+direction.toUpperCase()+" queue."}
  function failChallenge(reason){
  busy=false;
  $("#challenge-complete").hidden=false;
@@ -533,6 +535,7 @@ function endLiveShift(){liveAxis=null;liveSetSignals(null)}
 function liveTick(){
  if(paused||!liveAxis||liveAnimating)return;
  liveBudget=Math.max(0,liveBudget-1);
+  if(livePedestrianHold>0){livePedestrianHold--;$("#tc-live-feedback").textContent="🚸 School crossing: "+livePedestrianHold+"s until vehicles can move.";$("#tc-live-time").textContent=liveBudget+"s";$("#tc-live-time-fill").style.width=Math.max(0,liveBudget/budget()*100)+"%";if(liveBudget<=0)finishLiveCycle();return;}
  const moving=[];
  for(const d of liveAxisDirections(liveAxis)){
   const q=queues[d]||[];if(!q.length)continue;
