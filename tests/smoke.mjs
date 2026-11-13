@@ -391,36 +391,36 @@ async function main() {
       'Navigation.closeMenu();' +
       "Game.startArithmetic();" +
       "await new Promise(r => setTimeout(r, 20));" +
-      'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("screen-quiz").classList.contains("active"), "Escape without an overlay must not navigate away from the game.");' +
       'Auth.open("login");' +
       "await new Promise(r => setTimeout(r, 50));" +
       'assert(document.activeElement?.id === "auth-username", "Auth modal did not move focus to the first field.");' +
-      'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
       'assert(document.getElementById("auth-modal").classList.contains("hidden"), "Escape did not close the auth overlay.");' +
       // Modal Escape must dismiss only the overlay, never the game underneath it.
       "Game.startArithmetic(); ControlsOverlay.close();" +
       'document.getElementById("leaderboard-modal").classList.remove("hidden");' +
-      'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("leaderboard-modal").classList.contains("hidden"), "Escape did not close the leaderboard overlay.");' +
       'assert(document.getElementById("screen-quiz").classList.contains("active"), "Closing the leaderboard also navigated away from the active game.");' +
-      'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("screen-menu").classList.contains("active"), "Escape without an overlay should retain the existing return-to-menu behaviour.");' +
       "Game.startArithmetic(); ControlsOverlay.close();" +
       'document.getElementById("account-profile-modal").classList.remove("hidden");' +
-      'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("account-profile-modal").classList.contains("hidden"), "Escape did not close the profile overlay.");' +
       'assert(document.getElementById("screen-quiz").classList.contains("active"), "Closing the profile also navigated away from the active game.");' +
-      'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("screen-menu").classList.contains("active"), "Escape after closing the profile should retain normal game navigation.");' +
       "ResearchConsent.open();" +
       "await new Promise(r => setTimeout(r, 50));" +
       'assert(document.activeElement?.classList.contains("consent-btn"), "Consent modal did not move focus to a choice.");' +
-      'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
       'assert(!document.getElementById("research-consent-modal").classList.contains("hidden"), "Initial consent must not close with Escape before a choice.");' +
       'ResearchConsent.choose("no");' +
       "ResearchConsent.open();" +
-      'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
       'assert(document.getElementById("research-consent-modal").classList.contains("hidden"), "Dismissible consent overlay did not close with Escape.");' +
       "return { ok: true };" +
       "})()",
@@ -438,7 +438,7 @@ async function main() {
       "await new Promise(r => setTimeout(r, 20));" +
       'assert(document.getElementById(screenId).classList.contains("active"), "Expected active game screen: " + screenId);' +
       'assert(document.getElementById("controls-title").textContent === title, "How to play opened the wrong instructions for " + key);' +
-      'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
       'assert(document.getElementById("controls-overlay").classList.contains("hidden"), "Escape did not close controls overlay for " + key);' +
       "}" +
       "return { ok: true };" +
@@ -1076,7 +1076,7 @@ async function main() {
       "Game.startSudoku();" +
       'const sudokuCell = document.querySelector("#sudoku-grid .sudoku-cell");' +
       "sudokuCell?.click();" +
-      'for (let i=0;i<81;i++) window.dispatchEvent(new KeyboardEvent("keydown", { key: "x" }));' +
+      'for (let i=0;i<81;i++) document.dispatchEvent(new KeyboardEvent("keydown", { key: "x" }));' +
       "Game.startShapePuzzle();" +
       "for (let i=0;i<50;i++) { ShapePuzzle.rotateSelected(); ShapePuzzle.showHint(); }" +
       "Game.startSlabMath();" +
