@@ -76,6 +76,7 @@ for (const [difficulty, config] of Object.entries(LEVELS)) {
   assert.ok(topics.size >= 5, difficulty + " must teach a progression of distinct concepts");
 }
 assert.match(bundle, /function failChallenge\(/, "a poor plan must be able to fail and be retried");
+assert.match(bundle, /mission\(\)\.serviceSeconds\?\?cfg\(\)\.serviceSeconds\?\?10/, "Easy and Medium capacity must use a finite vehicle service time");
 assert.match(bundle, /cycles>=mission\(\)\.maxCycles/, "the simulation must enforce a cycle limit");
 assert.match(bundle, /scoringMode==="throughput"/, "throughput levels must score completed movements");
 assert.match(bundle, /scoringMode==="balanced"/, "balanced levels must reward approach fairness");

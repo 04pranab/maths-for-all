@@ -319,7 +319,7 @@ let level="easy",round=0,queues={},busy=false,paused=false,runId=0,nsSeconds=30,
 const city=new TrafficCity3D($("#city3d"),{reducedMotion:reduced});
 function total(){return dirs().reduce((s,d)=>s+(queues[d]?.length||0),0)}
 function budget(){return mission().budget}
-function service(kind){return level==="hard"?TIMES[kind]:mission().serviceSeconds}
+function service(kind){const seconds=level==="hard"?TIMES[kind]:Number(mission().serviceSeconds??cfg().serviceSeconds??10);return Number.isFinite(seconds)&&seconds>0?seconds:10}
 function capacity(d,seconds){let used=0,count=0;for(const v of queues[d]||[]){const t=service(v);if(used+t>seconds)break;used+=t;count++}return count}
 function planAt(ns){ns=Math.max(mission().minimumGreen||5,Math.min(budget()-(mission().minimumGreen||5),ns));const ew=budget()-ns,caps={};for(const d of dirs()){if(level==="easy")caps[d]=capacity(d,d==="north"?ns:ew);else caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew)}let moved=0,weightedPoints=0,servedApproaches=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;if(n>0)servedApproaches++;weightedPoints+=n*mission().waitMinutes[d]*10}const mode=mission().scoringMode||"priority";const points=mode==="throughput"?moved*10:mode==="balanced"?weightedPoints+servedApproaches*25:weightedPoints;return{ns,ew,caps,moved,points,servedApproaches,scoringMode:mode}}
 function bestPlan(){let best=null;const min=mission().minimumGreen||5;for(let n=min;n<=budget()-min;n+=cfg().step){const p=planAt(n);if(!best||p.points>best.points||(p.points===best.points&&p.moved>best.moved))best=p}return best}
