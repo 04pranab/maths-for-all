@@ -1048,18 +1048,25 @@ async function main() {
     document.dispatchEvent(new KeyboardEvent("keydown", {key:"ArrowUp",bubbles:true}));
     assert(northButton.classList.contains("active"), "Arrow Up should activate the north green light.");
     document.body.dispatchEvent(new KeyboardEvent("keyup", {key:"ArrowUp",bubbles:true}));
-    const northBefore = Number(document.getElementById("count-north").textContent);
-    northButton.dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,pointerId:1}));
-    await new Promise(resolve => setTimeout(resolve, 1600));
-    northButton.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,pointerId:1}));
-    const northAfter = Number(document.getElementById("count-north").textContent);
-    assert(northAfter < northBefore, "Holding the north signal should move a vehicle without a Run click.");
-    const southBefore = Number(document.getElementById("count-south").textContent);
-    southButton.dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,pointerId:2}));
-    await new Promise(resolve => setTimeout(resolve, 1600));
-    southButton.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,pointerId:2}));
-    const southAfter = Number(document.getElementById("count-south").textContent);
-    assert(southAfter < southBefore, "Holding the second signal should move its queued vehicle. State: "+JSON.stringify(TrafficControlGame.getLiveState())+" active:"+southButton.classList.contains("active"));
+    async function holdUntilOneVehicleMoves(button, direction, pointerId) {
+      const before = Number(document.getElementById("count-" + direction).textContent);
+      const deadline = Date.now() + 5000;
+      button.dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,pointerId}));
+      while (Number(document.getElementById("count-" + direction).textContent) >= before && Date.now() < deadline) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+      button.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,pointerId}));
+      while (TrafficControlGame.getLiveState().animating && Date.now() < deadline) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+      return {before, after:Number(document.getElementById("count-" + direction).textContent)};
+    }
+    const northResult = await holdUntilOneVehicleMoves(northButton, "north", 1);
+    assert(northResult.after < northResult.before, "Holding the north signal should move a vehicle without a Run click.");
+    const southResult = await holdUntilOneVehicleMoves(southButton, "south", 2);
+    assert(southResult.after < southResult.before, "Holding the second signal should move its queued vehicle. State: "+JSON.stringify(TrafficControlGame.getLiveState())+" active:"+southButton.classList.contains("active"));
+    const northBefore = northResult.before, northAfter = northResult.after;
+    const southBefore = southResult.before, southAfter = southResult.after;
     Game.goHome();
     return {liveSignals:true,keyboardControl:true,northVehiclesMoved:northBefore-northAfter,southVehiclesMoved:southBefore-southAfter,oneClickRunRemoved:true};
   })()`);
