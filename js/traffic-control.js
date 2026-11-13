@@ -445,10 +445,11 @@ function runPlan(){
   if(id!==runId)return;
   busy=false;for(const d of DIRS)setSignal(d,false);updateQueue();updateMath();
   $("#math-hint").textContent=p.points===best.points?"Excellent! That split earned the best possible score for this cycle.":"Your plan earned "+p.points+" points. Best split: "+best.ns+"s North–South and "+best.ew+"s East–West ("+best.points+" points).";
-  $("#tc-live-feedback").textContent="Forecast vs actual: "+p.moved+" vehicles predicted and "+p.moved+" moved. Score: "+p.points+" points.";
+
   if(total()===0)finish();
   else if(cycles>=mission().maxCycles)failChallenge("The cycle limit was reached with "+total()+" vehicles still waiting. The challenge allows "+mission().maxCycles+" cycles. Restart and allocate green time more carefully.");
   else {$("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for cycle "+(cycles+1)+" of "+mission().maxCycles+".";updateMath();}
+  $("#tc-live-feedback").textContent="Forecast vs actual: "+p.moved+" vehicles predicted and "+p.moved+" moved. Score: "+p.points+" points.";
  },{stagger:reduced?0:100,duration});
 }
 function failChallenge(reason){
