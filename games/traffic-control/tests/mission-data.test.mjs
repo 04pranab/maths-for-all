@@ -57,6 +57,28 @@ assert.equal(Object.values(LEVELS).reduce((sum, level) => sum + level.rounds.len
 assert.deepEqual(Object.keys(LEVELS).sort(), ["easy", "hard", "medium"]);
 assert.ok(Object.values(LEVELS).every(level => level.rounds.length === 50),
   "each difficulty must expose all 50 selectable levels");
+for (const [difficulty, config] of Object.entries(LEVELS)) {
+  const topics = new Set();
+  for (const challenge of config.rounds) {
+    assert.ok(challenge.learning?.topic, "every challenge must teach a named mathematical concept");
+    assert.ok(challenge.learning?.formula, "every challenge must expose a usable mathematical formula");
+    assert.ok(challenge.learning?.example, "every challenge must include a worked example");
+    assert.ok(challenge.learning?.prompt, "every challenge must connect the concept to a player action");
+    assert.ok(challenge.maxCycles >= 1 && challenge.maxCycles <= 4,
+      "every challenge must have a meaningful cycle limit");
+    assert.ok(challenge.targetEfficiency >= 0.75 && challenge.targetEfficiency <= 0.9,
+      "every challenge must enforce a measurable efficiency target");
+    assert.ok(challenge.minimumGreen >= 5, "every challenge must prevent zero-green starvation");
+    topics.add(challenge.learning.topic);
+  }
+  assert.ok(topics.size >= 5, difficulty + " must teach a progression of distinct concepts");
+}
+assert.match(bundle, /function failChallenge\(/, "a poor plan must be able to fail and be retried");
+assert.match(bundle, /cycles>=mission\(\)\.maxCycles/, "the simulation must enforce a cycle limit");
+assert.match(bundle, /efficiency<m\.targetEfficiency/, "clearing queues alone must not guarantee success");
+assert.match(bundle, /mfa-traffic-control-best-v2/, "personal bests and stars must be persisted locally");
+assert.match(arcadeHtml, /tc-learning-formula/, "the learning formula must be visible in the game");
+assert.match(arcadeHtml, /tc-queue-chart/, "the game must visualise predicted queue clearance");
 
 
 // Structural integration checks: the game has one native screen and one JS/CSS entry.

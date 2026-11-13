@@ -1099,11 +1099,24 @@
           </div>
           <div class="schedule-inputs" id="schedule-inputs">
             <div class="slider-heading"><label id="slider-label" for="ns-seconds">Green time for North + South</label><output id="ns-output" for="ns-seconds">20 sec</output></div>
-            <input id="ns-seconds" type="range" min="0" max="40" step="5" value="20">
+            <input id="ns-seconds" type="range" min="5" max="35" step="5" value="20" aria-describedby="tc-cycle-rule">
             <div class="schedule-split"><span><b id="ns-side-label">North + South</b> <strong id="ns-preview">20 sec</strong></span><span><b id="ew-side-label">East + West</b> <strong id="ew-preview">20 sec</strong></span></div>
             <div class="schedule-track"><span id="ns-track"></span><span id="ew-track"></span></div>
           </div>
           <div class="fleet-legend" id="fleet-legend"><span>🚲 Cycle · 5s</span><span>🚗 Car · 10s</span><span>🚚 Truck · 15s</span></div>
+          <section class="tc-learning-card" aria-labelledby="tc-learning-heading">
+            <div class="tc-learning-head"><span aria-hidden="true">∑</span><div><p class="tc-learning-kicker">ENGINEER'S NOTEBOOK</p><h3 id="tc-learning-heading">Learn the maths behind the signal</h3></div></div>
+            <p id="tc-learning-topic" class="tc-learning-topic">Ratios</p>
+            <p id="tc-learning-formula" class="tc-learning-formula">green time = cycle budget × share</p>
+            <p id="tc-learning-explanation" class="tc-learning-copy"></p>
+            <div class="tc-worked-example"><strong>Worked example</strong><p id="tc-learning-example"></p></div>
+            <p id="tc-learning-prompt" class="tc-learning-prompt"></p>
+            <div class="tc-cycle-rule" id="tc-cycle-rule"></div>
+            <div class="tc-live-maths"><span>YOUR LIVE CALCULATION</span><strong id="tc-live-equation">20s + 20s = 40s</strong><p id="tc-live-feedback"></p></div>
+            <div class="tc-flow-title"><span>Predicted queue clearance</span><span id="tc-cycle-count">0 / 3 cycles</span></div>
+            <div id="tc-queue-chart" class="tc-queue-chart" aria-label="Predicted vehicles served per approach"></div>
+            <div class="tc-learning-stats"><span>Efficiency <b id="tc-efficiency">100%</b></span><span id="tc-star-result">☆☆☆</span><span id="tc-best-result">Best: not set</span></div>
+          </section>
           <div class="prediction-row"><div class="prediction-card"><span>VEHICLES MOVING</span><strong id="predicted-vehicles">—</strong></div><div class="prediction-card points-card"><span>PRIORITY POINTS</span><strong id="predicted-score">—</strong></div></div>
           <button id="run-plan" class="send-button plan-button" type="button">Run my signal plan →</button>
           <div id="challenge-complete" class="challenge-complete" hidden>

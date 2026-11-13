@@ -135,12 +135,49 @@ function generatedRounds(levelKey, originalRounds) {
   return rounds;
 }
 
+const LEARNING_MODULES = {
+ easy: [
+  {topic:"Ratios",formula:"north : south = green seconds : green seconds",explain:"A ratio compares two quantities. Give each road a share of the total cycle in the same proportion as its demand.",example:"If 6 cars wait north and 3 wait south, the ratio is 6:3 = 2:1. A 45-second cycle can be split into 30s and 15s.",prompt:"Compare the queue sizes, simplify the ratio, then allocate the cycle."},
+  {topic:"Unit rates",formula:"vehicles served = green time ÷ seconds per vehicle",explain:"A unit rate tells you how much work happens in one unit of time. Here, one car needs 10 seconds of green.",example:"30 seconds ÷ 10 seconds per car = 3 cars. A 20-second phase clears 2 cars.",prompt:"Convert each green phase into a vehicle capacity before running it."},
+  {topic:"Whole-cycle budgets",formula:"north green + south green = total cycle",explain:"The cycle is a fixed budget. Every second assigned to one direction is unavailable to the other.",example:"For a 50-second cycle, 25s + 25s = 50s. A 35s + 25s plan is invalid because it spends 60s.",prompt:"Use the full budget without spending the same second twice."},
+  {topic:"Capacity",formula:"capacity = floor(green time ÷ service time)",explain:"Capacity is the number of complete vehicles that fit in a green phase. A partial vehicle cannot cross safely.",example:"A 25-second green with 10 seconds per car clears floor(25/10) = 2 cars, not 2.5.",prompt:"Count only complete vehicles that fit."},
+  {topic:"Average waiting time",formula:"average wait = total waiting minutes ÷ vehicles",explain:"An average gives each vehicle equal weight. A busy road can have a larger total wait even if each driver waited less.",example:"Three cars waiting 4 minutes each have 12 vehicle-minutes of delay. Divide by 3 for a 4-minute average.",prompt:"Compare total delay and average delay before choosing a split."},
+  {topic:"Efficiency",formula:"efficiency = achieved points ÷ best possible points × 100%",explain:"Efficiency compares your result with the best score available for the same traffic state. It rewards a strong plan, not just an empty road.",example:"You earn 80 points when the best possible score is 100: 80 ÷ 100 × 100% = 80%.",prompt:"Aim for the target efficiency shown before you run the plan."}
+ ],
+ medium: [
+  {topic:"Weighted averages",formula:"weighted average = Σ(value × weight) ÷ Σ(weights)",explain:"Not every queue has the same urgency. Waiting time acts as a weight, so serving a longer-waiting queue earns more priority.",example:"Two cars waiting 5 min and one car waiting 2 min: average = (5+5+2) ÷ 3 = 4 min.",prompt:"Use both queue size and waiting time. The longest queue is not always the most urgent."},
+  {topic:"Linear constraints",formula:"N + E = cycle budget",explain:"A linear equation represents a fixed total. Increasing one phase forces the other phase to shrink by the same amount.",example:"If N + E = 60 and N = 35, then E = 60 − 35 = 25 seconds.",prompt:"Find a valid pair of green times that obeys the cycle equation."},
+  {topic:"Inequalities",formula:"minimum green ≤ phase time ≤ budget − minimum green",explain:"A safe signal plan has bounds. Neither road may be starved, and neither phase can exceed the remaining budget.",example:"With a 60s cycle and a 5s minimum, each phase must stay between 5s and 55s.",prompt:"Keep both phases inside the allowed interval."},
+  {topic:"Priority scoring",formula:"priority points = vehicles served × wait minutes × 10",explain:"This scoring model rewards serving more vehicles and reducing the delay of people who have waited longer.",example:"Three vehicles waiting 4 minutes earn 3 × 4 × 10 = 120 points.",prompt:"Compare the priority value of each possible split, not just the raw vehicle count."},
+  {topic:"Bottlenecks",formula:"junction throughput = the sum of completed vehicle movements",explain:"A bottleneck is the part of a system that limits total flow. A large queue can dominate the junction if its phase receives too little time.",example:"A 30s phase serves 3 cars at 10s each. Adding 10s raises capacity to 4, one more vehicle.",prompt:"Find which approach is limiting the whole junction."},
+  {topic:"Trade-offs",formula:"best plan = highest score subject to every constraint",explain:"Optimisation balances competing goals. More green time for one road can improve its score while reducing the other road's capacity.",example:"A 40/20 split may serve more urgent traffic than 30/30, even though both use 60 seconds.",prompt:"Test nearby splits and compare the score and remaining queues."}
+ ],
+ hard: [
+  {topic:"Mixed-unit capacity",formula:"used time = Σ(service time of each vehicle)",explain:"Different vehicles consume different amounts of green time. The order matters because the next vehicle must fit completely.",example:"Bike + car + truck = 5 + 10 + 15 = 30 seconds. A 25s phase cannot clear all three.",prompt:"Add service times in queue order. Never count a vehicle that does not fit."},
+  {topic:"Discrete optimisation",formula:"maximise Σ(served × wait weight), in 5-second steps",explain:"This is a discrete optimisation problem: only allowed signal timings are legal. The best mathematical split may sit between two tempting choices.",example:"With a 90s cycle and 5s steps, test 5, 10, 15 … 85 seconds for the first phase.",prompt:"Compare legal allocations and select the highest-scoring feasible plan."},
+  {topic:"Fairness constraints",formula:"each phase ≥ minimum green; no road is starved",explain:"A high total score is not enough if one approach is ignored. Fairness constraints prevent a plan from sacrificing a road indefinitely.",example:"A 90s cycle split 85/5 obeys the total, but may violate a 10s minimum-green rule.",prompt:"Protect every approach while maximising the weighted score."},
+  {topic:"Queue growth",formula:"next queue = current queue + arrivals − departures",explain:"Traffic is a flow system. Queues grow when arrivals exceed departures and shrink when the signal serves more vehicles than arrive.",example:"A queue of 8 receives 3 arrivals and serves 5: 8 + 3 − 5 = 6 vehicles remain.",prompt:"Think about what happens after this cycle, not only what clears now."},
+  {topic:"Synchronisation",formula:"shared timing repeats every LCM(cycle₁, cycle₂)",explain:"The least common multiple finds when two repeating signal cycles line up again. Coordinated junctions can create a smoother route.",example:"Cycles of 30s and 45s realign every LCM(30,45) = 90 seconds.",prompt:"Look for a common repeat interval before coordinating signals."},
+  {topic:"Probability and uncertainty",formula:"expected arrivals = Σ(probability × possible arrivals)",explain:"When arrivals are uncertain, expected value gives a useful planning estimate. It does not promise the exact number of vehicles.",example:"A 50% chance of 2 arrivals and a 50% chance of 6 gives 0.5×2 + 0.5×6 = 4 expected arrivals.",prompt:"Plan for the expected flow and leave enough spare capacity for variation."}
+ ]
+};
+
 const LEVELS = Object.fromEntries(
   Object.entries(LEVELS_BASE).map(([key, config]) => [
     key,
     { ...config, rounds: generatedRounds(key, config.rounds) }
   ])
 );
+for (const [difficulty, config] of Object.entries(LEVELS)) {
+  config.rounds.forEach((challenge, index) => {
+    const modules = LEARNING_MODULES[difficulty];
+    challenge.learning = modules[Math.min(modules.length - 1, Math.floor(index / (50 / modules.length)))];
+    challenge.maxCycles = difficulty === "easy" ? 3 : difficulty === "medium" ? 3 : 4;
+    challenge.targetEfficiency = difficulty === "easy" ? 0.78 : difficulty === "medium" ? 0.84 : 0.88;
+    challenge.minimumGreen = 5;
+    challenge.stars = 0;
+  });
+}
 
 
 let THREE=null;
@@ -281,8 +318,8 @@ function total(){return dirs().reduce((s,d)=>s+(queues[d]?.length||0),0)}
 function budget(){return mission().budget}
 function service(kind){return level==="hard"?TIMES[kind]:mission().serviceSeconds}
 function capacity(d,seconds){let used=0,count=0;for(const v of queues[d]||[]){const t=service(v);if(used+t>seconds)break;used+=t;count++}return count}
-function planAt(ns){const ew=budget()-ns,caps={};for(const d of dirs()){if(level==="easy")caps[d]=capacity(d,d==="north"?ns:ew);else caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew)}let moved=0,points=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;points+=n*mission().waitMinutes[d]*10}return{ns,ew,caps,moved,points}}
-function bestPlan(){let best=null;for(let n=0;n<=budget();n+=cfg().step){const p=planAt(n);if(!best||p.points>best.points||(p.points===best.points&&p.moved>best.moved))best=p}return best}
+function planAt(ns){ns=Math.max(mission().minimumGreen||5,Math.min(budget()-(mission().minimumGreen||5),ns));const ew=budget()-ns,caps={};for(const d of dirs()){if(level==="easy")caps[d]=capacity(d,d==="north"?ns:ew);else caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew)}let moved=0,points=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;points+=n*mission().waitMinutes[d]*10}return{ns,ew,caps,moved,points}}
+function bestPlan(){let best=null;const min=mission().minimumGreen||5;for(let n=min;n<=budget()-min;n+=cfg().step){const p=planAt(n);if(!best||p.points>best.points||(p.points===best.points&&p.moved>best.moved))best=p}return best}
 function updateQueue(){for(const d of DIRS)$("#count-"+d).textContent=queues[d]?.length||0;$("#cleared-count").textContent=cleared;$("#total-score").textContent=score;$("#cycles-used").textContent=cycles}
 function renderVehicles(){city.addVehicles(queues);updateQueue()}
 function setSignal(d,on){city.setSignal(d,on)}
@@ -295,7 +332,20 @@ function updateMath(){
  const result=planAt(nsSeconds);
  $("#predicted-vehicles").textContent=result.moved+" / "+total();$("#predicted-score").textContent=result.points+" pts";
  {const ew=budget()-nsSeconds;$("#ns-seconds").max=budget();$("#ns-seconds").step=cfg().step;$("#ns-seconds").value=nsSeconds;$("#ns-output").textContent=nsSeconds+" sec";$("#ns-preview").textContent=nsSeconds+" sec";$("#ew-preview").textContent=ew+" sec";$("#ns-track").style.width=(nsSeconds/budget()*100)+"%";$("#ew-track").style.width=(ew/budget()*100)+"%";$("#slider-label").textContent=level==="easy"?"Green time for Northbound traffic":"Green time for North + South";$("#ns-side-label").textContent=level==="easy"?"Northbound":"North + South";$("#ew-side-label").textContent=level==="easy"?"Southbound":"East + West";}
- $("#math-hint").textContent=m.lesson;$("#run-plan").disabled=busy||paused||total()===0;$("#ns-seconds").disabled=paused||busy;
+ $("#math-hint").textContent=m.lesson;$("#ns-seconds").min=m.minimumGreen||5;$("#ns-seconds").max=budget()-(m.minimumGreen||5);$("#run-plan").disabled=busy||paused||total()===0;$("#ns-seconds").disabled=paused||busy;
+ const learning=m.learning||LEARNING_MODULES[level][0];
+ $("#tc-learning-topic").textContent=learning.topic;
+ $("#tc-learning-formula").textContent=learning.formula;
+ $("#tc-learning-explanation").textContent=learning.explain;
+ $("#tc-learning-example").textContent=learning.example;
+ $("#tc-learning-prompt").textContent=learning.prompt;
+ $("#tc-cycle-rule").textContent="Clear the junction within "+m.maxCycles+" cycles and reach at least "+Math.round(m.targetEfficiency*100)+"% efficiency. Each phase must receive at least "+(m.minimumGreen||5)+" seconds.";
+ $("#tc-live-equation").textContent=nsSeconds+"s + "+(budget()-nsSeconds)+"s = "+budget()+"s";
+ $("#tc-live-feedback").textContent=result.moved+" vehicles predicted from "+total()+" waiting; "+result.points+" priority points if this plan runs.";
+ $("#tc-cycle-count").textContent=cycles+" / "+m.maxCycles;
+ $("#tc-efficiency").textContent=(optimalScore>0?Math.round(score/optimalScore*100):100)+"%";
+ const chart=$("#tc-queue-chart");
+ if(chart)chart.innerHTML=dirs().map(d=>{const cap=result.caps[d]||0,waiting=queues[d].length,pct=waiting?Math.min(100,cap/waiting*100):100;return '<div class="tc-flow-row"><span>'+d.toUpperCase()+'</span><span class="tc-flow-track"><i style="width:'+pct+'%"></i></span><b>'+cap+'/'+waiting+'</b></div>'}).join("");
 }
 function setLevelUI(){
  document.getElementById("screen-traffic-control").classList.toggle("easy-level",level==="easy");
@@ -308,7 +358,7 @@ function setLevelUI(){
 }
 function startRound(index=0){
  runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;missionStartedAt=Date.now();
- const m=mission();queues=Object.fromEntries(dirs().map(d=>[d,[...m.queues[d]]]));nsSeconds=Math.round(budget()/2/cfg().step)*cfg().step;
+ const m=mission();queues=Object.fromEntries(dirs().map(d=>[d,[...m.queues[d]]]));nsSeconds=Math.max(m.minimumGreen||5,Math.min(budget()-(m.minimumGreen||5),Math.round(budget()/2/cfg().step)*cfg().step));
  const challengeCount=cfg().rounds.length;
  $("#mission-number").textContent=String(round+1).padStart(2,"0")+" / "+challengeCount;
  $("#mission-progress-fill").style.width=((round+1)/challengeCount*100)+"%";
@@ -379,22 +429,44 @@ function runPlan(){
   if(id!==runId)return;
   busy=false;for(const d of DIRS)setSignal(d,false);updateQueue();updateMath();
   $("#math-hint").textContent=p.points===best.points?"Excellent! That split earned the best possible score for this cycle.":"Your plan earned "+p.points+" points. Best split: "+best.ns+"s North–South and "+best.ew+"s East–West ("+best.points+" points).";
-  if(total()===0)finish();else $("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for the next cycle.";
+  if(total()===0)finish();
+  else if(cycles>=mission().maxCycles)failChallenge("The cycle limit was reached with "+total()+" vehicles still waiting. The challenge allows "+mission().maxCycles+" cycles. Restart and allocate green time more carefully.");
+  else {$("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for cycle "+(cycles+1)+" of "+mission().maxCycles+".";updateMath();}
  },{stagger:reduced?0:100,duration});
+}
+function failChallenge(reason){
+ busy=false;
+ $("#challenge-complete").hidden=false;
+ $("#challenge-complete-title").textContent="Not quite. Rework the plan.";
+ $("#challenge-complete-text").textContent=reason;
+ $("#next-mission").hidden=false;
+ $("#next-mission").textContent="Retry this challenge ↻";
+ $("#traffic-status").textContent=reason;
+ $("#math-hint").textContent="Study the worked example, adjust the green-time split and try again. Your best result is kept locally.";
 }
 function finish(){
  const m=mission(),lastChallenge=round===cfg().rounds.length-1;
+ const efficiency=optimalScore>0?score/optimalScore:1;
+ if(cycles>m.maxCycles||efficiency<m.targetEfficiency){
+  failChallenge("The queues cleared, but the plan did not meet the challenge standard. Your efficiency was "+Math.round(efficiency*100)+"%; the target is "+Math.round(m.targetEfficiency*100)+"%. Try to clear more urgent traffic with fewer wasted seconds.");
+  return;
+ }
+ const stars=efficiency>=.97?3:efficiency>=.9?2:1;
+ const bestKey="mfa-traffic-control-best-v2",bestStore=(()=>{try{return JSON.parse(localStorage.getItem(bestKey)||"{}")||{}}catch{return{}}})();
+ const key=level+":"+(round+1),previous=bestStore[key]||{};
+ bestStore[key]={score:Math.max(Number(previous.score)||0,score),efficiency:Math.max(Number(previous.efficiency)||0,efficiency),stars:Math.max(Number(previous.stars)||0,stars),cycles:cycles};
+ try{localStorage.setItem(bestKey,JSON.stringify(bestStore))}catch(error){console.warn("Could not save personal best:",error.message)}
  const progress=readProgress();
  if(!progress[level].includes(round+1))progress[level].push(round+1);
  progress[level].sort((a,b)=>a-b);
  saveProgress(progress);
  $("#challenge-complete").hidden=false;
- $("#challenge-complete-title").textContent=lastChallenge?"All 50 challenges completed!":"Challenge complete!";
- $("#challenge-complete-text").textContent=lastChallenge
-  ?"You have completed all 50 challenges in this difficulty. Choose another level or difficulty."
-  :"Great work. Choose any other level whenever you are ready.";
+ $("#challenge-complete-title").textContent="Challenge complete · "+"★".repeat(stars)+"☆".repeat(3-stars);
+ $("#challenge-complete-text").textContent="Efficiency: "+Math.round(efficiency*100)+"%. "+cleared+" vehicles cleared in "+cycles+" cycles. "+(previous.stars?"Personal best retained.":"A new personal record!");
  $("#next-mission").hidden=false;
  $("#next-mission").textContent="Choose another level →";
+ $("#tc-star-result").textContent="★".repeat(stars)+"☆".repeat(3-stars);
+ $("#tc-best-result").textContent="Best: "+bestStore[key].stars+" stars · "+Math.round(bestStore[key].efficiency*100)+"%";
  $("#math-check").hidden=false;$("#math-title").textContent="Junction cleared! Excellent engineering.";$("#math-question").textContent="You moved "+cleared+" vehicles in "+cycles+" cycles and earned "+score+" priority points.";$("#math-feedback").textContent=m.lesson;
  $("#traffic-status").textContent="All queues cleared. Level challenge complete.";
  window.CompletionOverlay?.show({
@@ -408,7 +480,7 @@ function finish(){
  window.ResearchEventGateway?.record("traffic-control","mission_complete",{difficulty:level,level:round+1,completed:true,correct:true,seconds:durationSeconds});
 }
 $("#ns-seconds").addEventListener("input",e=>{nsSeconds=Number(e.target.value);updateMath()});
-$("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>showLevelsView(level));
+$("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>{if($("#next-mission").textContent.startsWith("Retry"))startRound(round);else showLevelsView(level)});
 document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>showLevelsView(b.dataset.difficulty)));
 $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.getElementById("screen-traffic-control").classList.toggle("reduce-motion",reduced)});
 $("#text-size-toggle")?.addEventListener("click",()=>document.getElementById("screen-traffic-control").classList.toggle("large-type"));
