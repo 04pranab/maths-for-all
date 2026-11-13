@@ -547,6 +547,8 @@ window.TrafficControlGame={
   pause:pauseGame,
   resume:resumeGame,
   next:()=>$("#next-mission")?.click(),
+  holdSignal:beginLiveShift,
+  releaseSignal:endLiveShift,
   setFontScale:value=>{
     const scale=Math.max(.8,Math.min(1.6,Number(value)||1));
     document.getElementById("screen-traffic-control").style.fontSize=(16*scale)+"px";
@@ -591,7 +593,7 @@ window.TrafficControlIntegration=TrafficControlIntegration;
 
 document.querySelectorAll("[data-live-axis]").forEach(button=>{
  const axis=button.dataset.liveAxis;
- button.addEventListener("pointerdown",event=>{event.preventDefault();button.setPointerCapture?.(event.pointerId);beginLiveShift(axis)});
+ button.addEventListener("pointerdown",event=>{event.preventDefault();try{button.setPointerCapture?.(event.pointerId)}catch{}beginLiveShift(axis)});
  const release=()=>{if(liveAxis===axis)endLiveShift()};
  button.addEventListener("pointerup",release);button.addEventListener("pointercancel",release);button.addEventListener("lostpointercapture",release);
  button.addEventListener("keydown",event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();beginLiveShift(axis)}});
