@@ -644,6 +644,8 @@ async function main() {
     await new Promise(resolve => setTimeout(resolve, 3050));
     assert(completionOverlay.hidden, "A stale completion callback must never appear over the main menu.");
 
+    Game.startNumberMaze();
+    ControlsOverlay.close();
     const screen = document.getElementById("screen-number-maze");
     assert(screen.classList.contains("active"), "Number Maze did not open.");
     assert(!screen.querySelector("#nm-setup").hidden, "Number Maze should open on its difficulty and mode menu.");
