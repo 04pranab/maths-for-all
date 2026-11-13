@@ -567,6 +567,7 @@ function finishLiveCycle(){
  if(cycles===1)addRushHourArrivals();
   if(total()===0){finish();return}
  if(cycles>=mission().maxCycles){failChallenge("The shifts are over! "+total()+" vehicles are still waiting. Switch green lights sooner next time.");return}
+ livePedestrianHold=mission().modifier==="school-crossing"?5:0;
  liveBudget=budget();liveService={north:0,south:0,east:0,west:0};liveCycleStats={moved:0,weighted:0,approaches:new Set()};liveCycleBest=bestPlan();
  $("#traffic-status").textContent="New shift! "+total()+" vehicles remain. Grab a green light.";updateMath();
 }
