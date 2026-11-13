@@ -2046,6 +2046,7 @@ async function main() {
         malformedInputs: malformedInputResult,
         fractionBakery: fractionResult,
         trafficControlSelection: trafficSelectionResult,
+        trafficLivePlay: trafficLivePlayResult,
         fractionBakeryResponsive: fractionResponsiveResults,
         littleShopResponsive: littleShopResponsiveResults,
         keyboard: keyboardAudit,
