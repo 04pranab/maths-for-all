@@ -549,6 +549,7 @@ window.TrafficControlGame={
   next:()=>$("#next-mission")?.click(),
   holdSignal:beginLiveShift,
   releaseSignal:endLiveShift,
+  getLiveState:()=>({axis:liveAxis,budget:liveBudget,service:{...liveService},animating:liveAnimating,paused,queues:Object.fromEntries(DIRS.map(d=>[d,queues[d]?.length||0]))}),
   setFontScale:value=>{
     const scale=Math.max(.8,Math.min(1.6,Number(value)||1));
     document.getElementById("screen-traffic-control").style.fontSize=(16*scale)+"px";
