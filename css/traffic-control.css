@@ -144,3 +144,44 @@
   #screen-traffic-control .tc-difficulty-card,
   #screen-traffic-control .tc-level-tile { transition: none; }
 }
+
+/* Traffic Control 2.0: keep the maths visible and make learning part of play. */
+#screen-traffic-control .tc-learning-card{display:block!important;margin:14px 0 0;padding:17px;border:2px solid #a9d8d0;border-radius:17px;background:linear-gradient(145deg,#f5fcfa,#fff);color:#164f55}
+#screen-traffic-control .tc-learning-head{display:flex;align-items:center;gap:11px}
+#screen-traffic-control .tc-learning-head>span{display:grid;width:38px;height:38px;place-items:center;border-radius:12px;background:#dff3ed;color:#087e83;font-size:1.35rem;font-weight:950}
+#screen-traffic-control .tc-learning-kicker{margin:0;color:#087e83;font-size:.62rem;font-weight:950;letter-spacing:.14em}
+#screen-traffic-control .tc-learning-head h3{margin:3px 0 0;font-size:1.02rem}
+#screen-traffic-control .tc-learning-topic{display:inline-block;margin:13px 0 6px;padding:5px 9px;border-radius:99px;background:#e1f2ed;color:#17645f;font-size:.72rem;font-weight:900}
+#screen-traffic-control .tc-learning-formula{margin:0;padding:11px 13px;border-left:4px solid #0b8b83;border-radius:0 10px 10px 0;background:#eaf6f2;color:#123f43;font-size:clamp(.9rem,1.4vw,1.08rem);font-weight:950;line-height:1.4}
+#screen-traffic-control .tc-learning-copy{margin:10px 0;color:#4d6869;font-size:.8rem;line-height:1.55}
+#screen-traffic-control .tc-worked-example{padding:10px 12px;border:1px solid #dbe9df;border-radius:11px;background:#fff}
+#screen-traffic-control .tc-worked-example strong{color:#95631f;font-size:.72rem}
+#screen-traffic-control .tc-worked-example p{margin:4px 0 0;color:#52686a;font-size:.77rem;line-height:1.5}
+#screen-traffic-control .tc-learning-prompt{margin:10px 0;color:#17645f;font-size:.76rem;font-weight:800;line-height:1.45}
+#screen-traffic-control .tc-cycle-rule{padding:9px 11px;border:1px solid #efcf9c;border-radius:10px;background:#fff7e9;color:#79531d;font-size:.73rem;font-weight:850;line-height:1.45}
+#screen-traffic-control .tc-live-maths{margin-top:11px;padding:11px 12px;border-radius:11px;background:#173f46;color:#fff}
+#screen-traffic-control .tc-live-maths>span{display:block;color:#b9e9dc;font-size:.6rem;font-weight:900;letter-spacing:.12em}
+#screen-traffic-control .tc-live-maths strong{display:block;margin-top:5px;font-size:1.2rem;font-variant-numeric:tabular-nums}
+#screen-traffic-control .tc-live-maths p{margin:4px 0 0;color:#d2e7e2;font-size:.72rem;line-height:1.45}
+#screen-traffic-control .tc-flow-title{display:flex;justify-content:space-between;gap:8px;margin:12px 0 7px;color:#456365;font-size:.7rem;font-weight:850}
+#screen-traffic-control .tc-queue-chart{display:grid;gap:6px}
+#screen-traffic-control .tc-flow-row{display:grid;grid-template-columns:42px minmax(0,1fr) 48px;align-items:center;gap:8px;color:#5d7473;font-size:.64rem;font-weight:850}
+#screen-traffic-control .tc-flow-track{height:9px;overflow:hidden;border-radius:99px;background:#e8efec}
+#screen-traffic-control .tc-flow-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2b9c88,#a1c66e)}
+#screen-traffic-control .tc-flow-row b{text-align:right;color:#174f55;font-variant-numeric:tabular-nums}
+#screen-traffic-control .tc-learning-stats{display:flex;flex-wrap:wrap;justify-content:space-between;gap:7px;margin-top:11px;padding-top:9px;border-top:1px solid #dceae5;color:#587170;font-size:.68rem;font-weight:800}
+#screen-traffic-control .tc-learning-stats b{color:#087e83}
+#screen-traffic-control #math-hint{display:block!important;margin:11px 0 0;padding:9px 11px;border-radius:10px;background:#f0f6ed;color:#4d6c56;font-size:.74rem;line-height:1.5}
+#screen-traffic-control .prediction-row{margin-top:12px}
+#screen-traffic-control .logic-hooks{display:none!important}
+@media(max-width:950px){#screen-traffic-control .tc-learning-card{padding:14px}}
+@media(prefers-reduced-motion:reduce){#screen-traffic-control .tc-flow-track i{transition:none}}
+
+#screen-traffic-control .tc-level-actions{display:flex;align-items:center;gap:10px}
+#screen-traffic-control .tc-daily-button{min-height:46px;padding:10px 14px;border:1.5px solid #d9b56d;border-radius:13px;background:#fff5df;color:#815719;font:inherit;font-size:.78rem;font-weight:900;cursor:pointer}
+#screen-traffic-control .tc-daily-button:hover{background:#ffedc8;border-color:#b9893a}
+@media(max-width:680px){#screen-traffic-control .tc-level-actions{align-items:stretch;flex-direction:column}#screen-traffic-control .tc-daily-button{font-size:.7rem;padding:8px}}
+
+#screen-traffic-control .tc-leaderboard-button{width:100%;min-height:44px;margin-top:8px;padding:9px 12px;border:1.5px solid #c5dcd5;border-radius:11px;background:#eef8f4;color:#17645f;font:inherit;font-size:.78rem;font-weight:900;cursor:pointer}
+#screen-traffic-control .tc-leaderboard-button:hover{background:#e1f2eb;border-color:#087e83}
+#screen-traffic-control .tc-leaderboard-button[hidden]{display:none!important}

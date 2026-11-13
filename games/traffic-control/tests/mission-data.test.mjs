@@ -14,6 +14,29 @@ vm.runInNewContext(
   sandbox
 );
 const LEVELS = JSON.parse(JSON.stringify(sandbox.module.exports.LEVELS));
+const capacityStart = bundle.indexOf("function service(kind)");
+const capacityEnd = bundle.indexOf("\nfunction planAt", capacityStart);
+assert.ok(capacityStart >= 0 && capacityEnd > capacityStart, "service and capacity functions must remain testable");
+const capacitySource = bundle.slice(capacityStart, capacityEnd);
+function capacityFor(difficulty, queue, greenSeconds, configuredServiceSeconds) {
+  const context = {
+    module: { exports: {} },
+    level: difficulty,
+    queues: { north: queue },
+    mission: () => ({}),
+    cfg: () => ({ serviceSeconds: configuredServiceSeconds }),
+    TIMES: { bike: 5, car: 10, truck: 15 }
+  };
+  vm.runInNewContext(`${capacitySource}\nmodule.exports = capacity;`, context);
+  return context.module.exports("north", greenSeconds);
+}
+assert.equal(capacityFor("easy", ["car", "car", "car"], 20, undefined), 2,
+  "Easy must clear only two cars in a 20-second green when service time comes from the config fallback");
+assert.equal(capacityFor("medium", ["car", "car"], 15, 10), 1,
+  "Medium must count only complete cars within its green phase");
+assert.equal(capacityFor("hard", ["bike", "car", "truck"], 29, 10), 2,
+  "Hard must add mixed-fleet service times and reject a vehicle that does not fit");
+
 
 const expectedDirections = {
   easy: ["north", "south"],
@@ -57,11 +80,41 @@ assert.equal(Object.values(LEVELS).reduce((sum, level) => sum + level.rounds.len
 assert.deepEqual(Object.keys(LEVELS).sort(), ["easy", "hard", "medium"]);
 assert.ok(Object.values(LEVELS).every(level => level.rounds.length === 50),
   "each difficulty must expose all 50 selectable levels");
+for (const [difficulty, config] of Object.entries(LEVELS)) {
+  const topics = new Set();
+  for (const challenge of config.rounds) {
+    assert.ok(challenge.learning?.topic, "every challenge must teach a named mathematical concept");
+    assert.ok(challenge.learning?.formula, "every challenge must expose a usable mathematical formula");
+    assert.ok(challenge.learning?.example, "every challenge must include a worked example");
+    assert.ok(challenge.learning?.prompt, "every challenge must connect the concept to a player action");
+    assert.ok(challenge.maxCycles >= 1 && challenge.maxCycles <= 5,
+      "every challenge must have a meaningful cycle limit");
+    assert.ok(challenge.targetEfficiency >= 0.75 && challenge.targetEfficiency <= 0.9,
+      "every challenge must enforce a measurable efficiency target");
+    assert.ok(challenge.minimumGreen >= 5, "every challenge must prevent zero-green starvation");
+    assert.ok(["throughput", "balanced", "priority"].includes(challenge.scoringMode),
+      "each challenge must define a real scoring mechanic");
+    topics.add(challenge.learning.topic);
+  }
+  assert.ok(topics.size >= 5, difficulty + " must teach a progression of distinct concepts");
+}
+assert.match(bundle, /function failChallenge\(/, "a poor plan must be able to fail and be retried");
+assert.match(bundle, /mission\(\)\.serviceSeconds\?\?cfg\(\)\.serviceSeconds\?\?10/, "Easy and Medium capacity must use a finite vehicle service time");
+assert.match(bundle, /cycles>=mission\(\)\.maxCycles/, "the simulation must enforce a cycle limit");
+assert.match(bundle, /mode==="throughput"/, "throughput levels must score completed movements");
+assert.match(bundle, /mode==="balanced"/, "balanced levels must reward approach fairness");
+assert.match(bundle, /efficiency<m\.targetEfficiency/, "clearing queues alone must not guarantee success");
+assert.match(bundle, /mfa-traffic-control-best-v2/, "personal bests and stars must be persisted locally");
+assert.match(bundle, /MfaAccounts\?\.openLeaderboard/, "successful challenges must link to the existing leaderboard");
 
 
 // Structural integration checks: the game has one native screen and one JS/CSS entry.
 const arcadeHtml = readFileSync(new URL("../../../index.html", import.meta.url), "utf8");
 const gameCss = readFileSync(new URL("../../../css/traffic-control.css", import.meta.url), "utf8");
+assert.match(arcadeHtml, /tc-learning-formula/, "the learning formula must be visible in the game");
+assert.match(arcadeHtml, /tc-queue-chart/, "the game must visualise predicted queue clearance");
+assert.match(arcadeHtml, /id="tc-daily-challenge"/, "the level selector must expose a daily challenge");
+assert.match(arcadeHtml, /id="tc-leaderboard"/, "the completion panel must expose the existing leaderboard");
 assert.equal((arcadeHtml.match(/id="screen-traffic-control"/g) || []).length, 1,
   "Traffic Control markup must exist once in the main arcade");
 assert.match(arcadeHtml, /href="css\/traffic-control\.css(?:\?[^"]*)?"/,
@@ -88,8 +141,10 @@ assert.match(bundle, /function chooseLevel\(index\)/,
   "every level tile must be directly playable");
 assert.match(bundle, /actionLabel:"Choose another level"/,
   "completing a challenge must offer free level selection instead of forced progression");
-assert.ok(bundle.includes('$("#next-mission").addEventListener("click",()=>showLevelsView(level));'),
-  "the completion action must return to the selected difficulty's level grid");
+assert.match(bundle, /startsWith\("Retry"\).*startRound\(round\).*showLevelsView\(level\)/,
+  "failed attempts must retry while successful attempts return to level selection");
+assert.match(bundle, /function startDailyChallenge\(/,
+  "the game must expose a deterministic daily challenge");
 assert.match(bundle, /Array\.isArray\(value\)/,
   "progress storage must preserve individually completed levels while migrating older progress");
 assert.match(gameCss, /\.tc-level-grid[^{]*\{[^}]*grid-template-columns/s,
