@@ -328,7 +328,7 @@ for (const config of Object.values(LEVELS)) config.rounds.forEach((challenge,ind
  challenge.modifier=CHALLENGE_MODIFIERS[band].id;
  challenge.modifierLabel=CHALLENGE_MODIFIERS[band].label;
  challenge.modifierDescription=CHALLENGE_MODIFIERS[band].description;
- if(band===3) challenge.priorityDirection=config.directions[(index+1)%config.directions.length];
+ if(band===3){challenge.priorityDirection=config.directions[(index+1)%config.directions.length];challenge.scoringMode="priority";}
 });
 
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
