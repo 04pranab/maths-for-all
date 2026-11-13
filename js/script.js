@@ -672,6 +672,15 @@ const CompletionOverlay = (() => {
     const action = document.getElementById("game-completion-continue");
     if (!title || !message || !action) return;
 
+    // A completion callback can arrive after its game has already navigated
+    // away (for example, after an animation finishes). Never show a game
+    // celebration on the home screen or over a different screen.
+    const sourceScreen = document.querySelector(".screen.active");
+    if (!sourceScreen || sourceScreen.id === "screen-menu") {
+      close(false);
+      return;
+    }
+
     // Give the learner a brief moment to see the successful game state before
     // the shared, game-themed celebration appears.
     if (showTimer !== null) window.clearTimeout(showTimer);
