@@ -517,7 +517,7 @@ function liveTick(){
  updateQueue();$("#tc-live-time").textContent=liveBudget+"s";$("#tc-live-time-fill").style.width=Math.max(0,liveBudget/budget()*100)+"%";
  if(moving.length){
   liveAnimating=true;renderVehicles();
-  city.moveVehicles(moving,()=>{liveAnimating=false;cleared+=moving.length;updateQueue();updateMath();$("#tc-live-feedback").textContent="Nice! "+moving.length+" vehicle"+(moving.length===1?"":"s")+" through. Keep the flow going.";if(total()===0){endLiveShift();finishLiveCycle()}}, {stagger:0,duration:480});
+  city.moveVehicles(moving,()=>{liveAnimating=false;cleared+=moving.length;updateQueue();updateMath();$("#tc-live-feedback").textContent="Nice! "+moving.length+" vehicle"+(moving.length===1?"":"s")+" through. Keep the flow going.";if(total()===0){endLiveShift();finishLiveCycle()}else if(liveBudget<=0)finishLiveCycle()}, {stagger:0,duration:480});
  }
  if(liveBudget<=0){endLiveShift();if(!liveAnimating)finishLiveCycle()}
 }
