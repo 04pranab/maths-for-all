@@ -1044,7 +1044,7 @@ async function main() {
     await new Promise(resolve => setTimeout(resolve, 1600));
     southButton.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,pointerId:2}));
     const southAfter = Number(document.getElementById("count-south").textContent);
-    assert(southAfter < southBefore, "Holding the second signal should move its queued vehicle.");
+    assert(southAfter < southBefore, "Holding the second signal should move its queued vehicle. State: "+JSON.stringify(TrafficControlGame.getLiveState())+" active:"+southButton.classList.contains("active"));
     Game.goHome();
     return {liveSignals:true,keyboardControl:true,northVehiclesMoved:northBefore-northAfter,southVehiclesMoved:southBefore-southAfter,oneClickRunRemoved:true};
   })()`);
