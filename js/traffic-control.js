@@ -599,7 +599,7 @@ document.querySelectorAll("[data-live-axis]").forEach(button=>{
  button.addEventListener("keydown",event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();beginLiveShift(axis)}});
  button.addEventListener("keyup",event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();if(liveAxis===axis)endLiveShift()}});
 });
-document.addEventListener("keydown",event=>{if($("#tc-game-view").hidden||event.repeat||event.target.matches("input,textarea,select,button"))return;const axis=["ArrowUp","ArrowDown","w","W","s","S"].includes(event.key)?"ns":["ArrowLeft","ArrowRight","a","A","d","D"].includes(event.key)?"ew":null;if(axis){event.preventDefault();beginLiveShift(axis)}});
+document.addEventListener("keydown",event=>{if($("#tc-game-view").hidden||event.repeat||event.target?.matches?.("input,textarea,select,button"))return;const axis=["ArrowUp","ArrowDown","w","W","s","S"].includes(event.key)?"ns":["ArrowLeft","ArrowRight","a","A","d","D"].includes(event.key)?"ew":null;if(axis){event.preventDefault();beginLiveShift(axis)}});
 document.addEventListener("keyup",event=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","W","a","A","s","S","d","D"].includes(event.key))endLiveShift()});
 
 setLevel("easy");
