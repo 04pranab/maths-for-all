@@ -237,3 +237,17 @@
 #screen-traffic-control .tc-live-button:focus-visible{outline:3px solid #2d7548;outline-offset:3px}
 #screen-traffic-control .tc-live-tip{margin:9px 0 0;color:#617565;font-size:.72rem;line-height:1.35;text-align:center}
 @media(max-width:560px){#screen-traffic-control .tc-live-play{padding:10px;margin:8px 0}#screen-traffic-control .tc-live-button{min-height:94px}#screen-traffic-control .tc-live-button strong{font-size:.77rem}}
+
+
+/* Small, readable briefing for the active challenge modifier. */
+#screen-traffic-control .tc-modifier-note {
+  margin: .65rem 0;
+  padding: .65rem .85rem;
+  border-left: 4px solid var(--tc-accent, #e3a84b);
+  border-radius: .45rem;
+  background: rgba(227, 168, 75, .12);
+  color: inherit;
+  font-size: .92rem;
+  line-height: 1.5;
+}
+#screen-traffic-control .tc-modifier-note[hidden] { display: none; }
