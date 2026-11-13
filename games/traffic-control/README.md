@@ -12,7 +12,7 @@ The former standalone URL redirects to the main arcade route. There is only one 
 
 ## Gameplay
 
-The game has three difficulty levels, each with 50 challenges (150 total). Learners choose a difficulty first, then see a Shape Architect-style grid of all 50 levels. Every level is selectable immediately, in any order; completed levels are marked individually. The level grid and live game are separate views, and a Levels control returns to the selected difficulty's grid:
+The game has three difficulty levels, each with 50 challenges (150 total). Learners choose a difficulty first, then see a Shape Architect-style grid of all 50 levels. Every level is selectable immediately, in any order; completed levels are marked individually. Challenge modifiers are introduced in five ten-level bands: steady traffic, rush-hour arrivals, school-crossing pauses, emergency-route priority and rain-slowed vehicle movement. The level grid and live game are separate views, and a Levels control returns to the selected difficulty's grid:
 
 - **Easy:** A two-way road with northbound and southbound car queues.
 - **Medium:** A four-way junction. North + South and East + West receive separate green phases.
