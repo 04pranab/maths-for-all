@@ -538,7 +538,7 @@ function finish(){
 
 function liveAxisDirections(axis){if(level==="easy")return axis==="ns"?["north"]:["south"];return axis==="ns"?["north","south"]:["east","west"]}
 function liveSetSignals(axis){for(const d of DIRS)setSignal(d,false);if(axis)for(const d of liveAxisDirections(axis))setSignal(d,true);document.querySelectorAll("[data-live-axis]").forEach(b=>{const active=b.dataset.liveAxis===axis;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))})}
-function beginLiveShift(axis){if(paused||busy||liveBudget<=0||!total())return;liveAxis=axis;liveSetSignals(axis);$("#traffic-status").textContent=livePedestrianHold>0?"Pedestrian crossing active. Vehicles will move when the crossing is clear.":(axis==="ns"?"North / South":"East / West")+" green! Hold to move traffic. Release to switch.";if(!liveTickHandle)liveTickHandle=setInterval(liveTick,1000)}
+function beginLiveShift(axis){if(paused||busy||liveBudget<=0||!total())return;liveAxis=axis;liveSetSignals(axis);$("#traffic-status").textContent=livePedestrianHold>0?"Pedestrian crossing active. Vehicles will move when the crossing is clear.":(axis==="ns"?"North / South":"East / West")+" green! Hold to move traffic. Release to switch.";if(!liveTickHandle)liveTickHandle=setInterval(liveTick,100)}
 function endLiveShift(){liveAxis=null;liveSetSignals(null)}
 function liveTick(){
  if(paused||!liveAxis||liveAnimating)return;
