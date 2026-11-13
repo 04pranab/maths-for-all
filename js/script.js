@@ -825,7 +825,7 @@ window.Navigation=Navigation;
 /* ---------- Shared Escape handling ----------
    Overlays close first; then local selections clear; otherwise Escape
    returns to the menu. Text fields blur without losing their contents. */
-document.addEventListener(
+window.addEventListener(
   "keydown",
   (event) => {
     if (event.key !== "Escape") return;
@@ -835,6 +835,7 @@ document.addEventListener(
       "progress-modal",
       "research-consent-modal",
       "auth-modal",
+      "leaderboard-modal",
       "account-profile-modal",
       "dare-modal",
       "pin-modal",
@@ -844,7 +845,7 @@ document.addEventListener(
       const overlay = document.getElementById(id);
       if (overlay && !overlay.classList.contains("hidden")) {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         if (id === "controls-overlay") ControlsOverlay.close();
         else if (id === "progress-modal") Progress.close();
         else if (id === "auth-modal" && window.Auth?.close) Auth.close();
@@ -865,7 +866,7 @@ document.addEventListener(
     const menu = document.getElementById("nav-menu-panel");
     if (menu?.classList.contains("open") && typeof Navigation !== "undefined") {
       event.preventDefault();
-      event.stopPropagation();
+      event.stopImmediatePropagation();
       Navigation.closeMenu();
       return;
     }
@@ -873,7 +874,7 @@ document.addEventListener(
     const screen = activeGameScreen();
     if (!screen || screen.id === "screen-menu") return;
     event.preventDefault();
-    event.stopPropagation();
+    event.stopImmediatePropagation();
 
     if (isTypingTarget(event.target)) {
       event.target.blur();
