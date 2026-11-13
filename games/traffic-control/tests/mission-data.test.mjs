@@ -82,6 +82,7 @@ assert.match(bundle, /mode==="throughput"/, "throughput levels must score comple
 assert.match(bundle, /mode==="balanced"/, "balanced levels must reward approach fairness");
 assert.match(bundle, /efficiency<m\.targetEfficiency/, "clearing queues alone must not guarantee success");
 assert.match(bundle, /mfa-traffic-control-best-v2/, "personal bests and stars must be persisted locally");
+assert.match(bundle, /MfaAccounts\?\.openLeaderboard/, "successful challenges must link to the existing leaderboard");
 
 
 // Structural integration checks: the game has one native screen and one JS/CSS entry.
@@ -90,6 +91,7 @@ const gameCss = readFileSync(new URL("../../../css/traffic-control.css", import.
 assert.match(arcadeHtml, /tc-learning-formula/, "the learning formula must be visible in the game");
 assert.match(arcadeHtml, /tc-queue-chart/, "the game must visualise predicted queue clearance");
 assert.match(arcadeHtml, /id="tc-daily-challenge"/, "the level selector must expose a daily challenge");
+assert.match(arcadeHtml, /id="tc-leaderboard"/, "the completion panel must expose the existing leaderboard");
 assert.equal((arcadeHtml.match(/id="screen-traffic-control"/g) || []).length, 1,
   "Traffic Control markup must exist once in the main arcade");
 assert.match(arcadeHtml, /href="css\/traffic-control\.css(?:\?[^"]*)?"/,

@@ -346,7 +346,7 @@ function updateMath(){
  $("#tc-cycle-rule").textContent="Clear the junction within "+m.maxCycles+" cycles and reach at least "+Math.round(m.targetEfficiency*100)+"% efficiency. Each phase must receive at least "+(m.minimumGreen||5)+" seconds. Scoring: "+(m.scoringMode==="throughput"?"maximise vehicles served":m.scoringMode==="balanced"?"reward flow across more approaches":"prioritise longer waits")+".";
  $("#ns-seconds").min=m.minimumGreen||5;$("#ns-seconds").max=budget()-(m.minimumGreen||5);
  $("#tc-live-equation").textContent=nsSeconds+"s + "+(budget()-nsSeconds)+"s = "+budget()+"s";
- $("#tc-live-feedback").textContent=result.moved+" vehicles predicted from "+total()+" waiting; "+result.points+" priority points if this plan runs.";
+ $("#tc-live-feedback").textContent=result.moved+" vehicles predicted from "+total()+" waiting; "+result.points+" points under the "+result.scoringMode+" scoring rule if this plan runs.";
  $("#tc-cycle-count").textContent=cycles+" / "+m.maxCycles;
  $("#tc-efficiency").textContent=(optimalScore>0?Math.round(score/optimalScore*100):100)+"%";
  const chart=$("#tc-queue-chart");
@@ -481,7 +481,7 @@ function finish(){
  $("#next-mission").textContent="Choose another level →";
  $("#tc-star-result").textContent="★".repeat(stars)+"☆".repeat(3-stars);
  $("#tc-best-result").textContent="Best: "+bestStore[key].stars+" stars · "+Math.round(bestStore[key].efficiency*100)+"%";
- $("#math-check").hidden=false;$("#math-title").textContent="Junction cleared! Excellent engineering.";$("#math-question").textContent="You moved "+cleared+" vehicles in "+cycles+" cycles and earned "+score+" priority points.";$("#math-feedback").textContent=m.lesson;
+ $("#math-check").hidden=false;$("#math-title").textContent="Junction cleared! Excellent engineering.";$("#math-question").textContent="You moved "+cleared+" vehicles in "+cycles+" cycles and earned "+score+" points.";$("#math-feedback").textContent=m.lesson;
  $("#traffic-status").textContent="All queues cleared. Level challenge complete.";
  window.CompletionOverlay?.show({
   title:lastChallenge?"Level completed!":"Junction cleared!",
