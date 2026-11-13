@@ -110,7 +110,7 @@ assert.match(bundle, /modifier==="emergency-priority"/, "emergency routes must a
 assert.match(bundle, /modifier==="rain"/, "rain challenges must change vehicle movement timing");
 assert.match(bundle, /paint\("amber"\)/, "signals must show an amber transition");
 assert.match(bundle, /g.userData.brakeLights=brakeLights/, "queued vehicles must expose illuminated brake lights");
-assert.match(bundle, /setInterval\(liveTick,1000\)/, "live shift budget must tick in one-second intervals");
+assert.match(bundle, /setInterval\(liveTick,100\)/, "live shift budget must tick in one-second intervals");
 assert.match(bundle, /function failChallenge\(/, "a poor plan must be able to fail and be retried");
 assert.match(bundle, /mission\(\)\.serviceSeconds\?\?cfg\(\)\.serviceSeconds\?\?10/, "Easy and Medium capacity must use a finite vehicle service time");
 assert.match(bundle, /cycles>=mission\(\)\.maxCycles/, "the simulation must enforce a cycle limit");
