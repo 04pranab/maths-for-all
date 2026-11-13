@@ -4,7 +4,7 @@ A simple, friendly mathematics learning website built with plain HTML, CSS, and 
 
 Maths for All is designed around a learner-first loop: **try → understand → retry → continue**.
 
-Maths for All is an independent mathematics learning project inspired by inclusive, values-based education. It is not an official initiative of Sri Sathya Sai Vidya Vahini (SSSVV) or the Sri Sathya Sai Central Trust, and no endorsement or formal partnership is claimed. The project's background and educational inspiration are documented on the [Wiki](wiki.html#offering).
+Maths for All is an independent mathematics learning project inspired by inclusive, values-based education. It is not an official initiative of Sri Sathya Sai Vidya Vahini (SSSVV) or the Sri Sathya Sai Central Trust, and no endorsement or formal partnership is claimed. The project's background and educational inspiration are documented on the [Wiki](https://04pranab.github.io/maths-for-all/wiki.html).
 
 ## Current release
 
