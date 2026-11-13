@@ -1030,20 +1030,23 @@ async function main() {
     assert(northButton && southButton, "Live signal controls are missing.");
     assert(getComputedStyle(document.getElementById("run-plan")).display === "none", "Old one-click Run button must not be part of live play.");
     assert(getComputedStyle(document.getElementById("schedule-inputs")).display === "none", "Old planning slider must not be part of live play.");
-    const northBefore = Number(document.getElementById("count-north").textContent);
     document.body.dispatchEvent(new KeyboardEvent("keydown", {key:"ArrowUp",bubbles:true}));
-    await new Promise(resolve => setTimeout(resolve, 1600));
+    assert(northButton.classList.contains("active"), "Arrow Up should activate the north green light.");
     document.body.dispatchEvent(new KeyboardEvent("keyup", {key:"ArrowUp",bubbles:true}));
-    const northAfter = Number(document.getElementById("count-north").textContent);
-    assert(northAfter < northBefore, "Holding the north green signal should move a vehicle without a Run click.");
-    const southBefore = Number(document.getElementById("count-south").textContent);
-    document.body.dispatchEvent(new KeyboardEvent("keydown", {key:"ArrowRight",bubbles:true}));
+    const northBefore = Number(document.getElementById("count-north").textContent);
+    northButton.dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,pointerId:1}));
     await new Promise(resolve => setTimeout(resolve, 1600));
-    document.body.dispatchEvent(new KeyboardEvent("keyup", {key:"ArrowRight",bubbles:true}));
+    northButton.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,pointerId:1}));
+    const northAfter = Number(document.getElementById("count-north").textContent);
+    assert(northAfter < northBefore, "Holding the north signal should move a vehicle without a Run click.");
+    const southBefore = Number(document.getElementById("count-south").textContent);
+    southButton.dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,pointerId:2}));
+    await new Promise(resolve => setTimeout(resolve, 1600));
+    southButton.dispatchEvent(new PointerEvent("pointerup", {bubbles:true,pointerId:2}));
     const southAfter = Number(document.getElementById("count-south").textContent);
-    assert(southAfter < southBefore, "Switching to the second green signal should move its queued vehicle.");
+    assert(southAfter < southBefore, "Holding the second signal should move its queued vehicle.");
     Game.goHome();
-    return {liveSignals:true,northVehiclesMoved:northBefore-northAfter,southVehiclesMoved:southBefore-southAfter,oneClickRunRemoved:true};
+    return {liveSignals:true,keyboardControl:true,northVehiclesMoved:northBefore-northAfter,southVehiclesMoved:southBefore-southAfter,oneClickRunRemoved:true};
   })()`);
 
   const malformedInputResult = await evaluate(
