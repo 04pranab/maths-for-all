@@ -524,7 +524,7 @@ function liveTick(){
 function finishLiveCycle(){
  if(!liveCycleBest)return;
  endLiveShift();const mode=mission().scoringMode||"priority";
- const earned=mode==="throughput"?liveCycleStats.moved*10:mode==="balanced"?liveCycleStats.moved*10+liveCycleStats.approaches.size*25:liveCycleStats.weighted;
+ const earned=mode==="throughput"?liveCycleStats.moved*10:mode==="balanced"?liveCycleStats.weighted+liveCycleStats.approaches.size*25:liveCycleStats.weighted;
  score+=earned;optimalScore+=liveCycleBest.points;cycles++;liveCycleBest=null;
  $("#tc-live-feedback").textContent="Shift score: "+earned+" points. "+total()+" vehicles left.";
  if(total()===0){finish();return}
