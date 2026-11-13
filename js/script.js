@@ -691,7 +691,7 @@ const CompletionOverlay = (() => {
     previousFocus = null;
 
     showTimer = window.setTimeout(() => {
-      if (request !== requestId) return;
+      if (request !== requestId || !sourceScreen.isConnected || !sourceScreen.classList.contains("active")) return;
       showTimer = null;
 
       // Reuse the active game's own theme tokens so the shared dialog follows
