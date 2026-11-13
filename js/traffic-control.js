@@ -172,9 +172,12 @@ for (const [difficulty, config] of Object.entries(LEVELS)) {
   config.rounds.forEach((challenge, index) => {
     const modules = LEARNING_MODULES[difficulty];
     challenge.learning = modules[Math.min(modules.length - 1, Math.floor(index / (50 / modules.length)))];
-    challenge.maxCycles = difficulty === "easy" ? 3 : difficulty === "medium" ? 3 : 4;
-    challenge.targetEfficiency = difficulty === "easy" ? 0.78 : difficulty === "medium" ? 0.84 : 0.88;
-    challenge.minimumGreen = 5;
+    challenge.maxCycles = difficulty === "easy" ? 4 : difficulty === "medium" ? 3 : 4;
+    const targetBase = difficulty === "easy" ? 0.76 : difficulty === "medium" ? 0.80 : 0.82;
+    challenge.targetEfficiency = targetBase + (index % 5) * 0.02;
+    challenge.minimumGreen = 5 + (index % 3) * 5;
+    const scoringModes = difficulty === "easy" ? ["throughput", "balanced", "priority"] : difficulty === "medium" ? ["priority", "throughput", "balanced"] : ["balanced", "priority", "throughput"];
+    challenge.scoringMode = scoringModes[index % scoringModes.length];
     challenge.stars = 0;
   });
 }
@@ -318,7 +321,7 @@ function total(){return dirs().reduce((s,d)=>s+(queues[d]?.length||0),0)}
 function budget(){return mission().budget}
 function service(kind){return level==="hard"?TIMES[kind]:mission().serviceSeconds}
 function capacity(d,seconds){let used=0,count=0;for(const v of queues[d]||[]){const t=service(v);if(used+t>seconds)break;used+=t;count++}return count}
-function planAt(ns){ns=Math.max(mission().minimumGreen||5,Math.min(budget()-(mission().minimumGreen||5),ns));const ew=budget()-ns,caps={};for(const d of dirs()){if(level==="easy")caps[d]=capacity(d,d==="north"?ns:ew);else caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew)}let moved=0,points=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;points+=n*mission().waitMinutes[d]*10}return{ns,ew,caps,moved,points}}
+function planAt(ns){ns=Math.max(mission().minimumGreen||5,Math.min(budget()-(mission().minimumGreen||5),ns));const ew=budget()-ns,caps={};for(const d of dirs()){if(level==="easy")caps[d]=capacity(d,d==="north"?ns:ew);else caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew)}let moved=0,weightedPoints=0,servedApproaches=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;if(n>0)servedApproaches++;weightedPoints+=n*mission().waitMinutes[d]*10}const mode=mission().scoringMode||"priority";const points=mode==="throughput"?moved*10:mode==="balanced"?weightedPoints+servedApproaches*25:weightedPoints;return{ns,ew,caps,moved,points,servedApproaches,scoringMode:mode}}
 function bestPlan(){let best=null;const min=mission().minimumGreen||5;for(let n=min;n<=budget()-min;n+=cfg().step){const p=planAt(n);if(!best||p.points>best.points||(p.points===best.points&&p.moved>best.moved))best=p}return best}
 function updateQueue(){for(const d of DIRS)$("#count-"+d).textContent=queues[d]?.length||0;$("#cleared-count").textContent=cleared;$("#total-score").textContent=score;$("#cycles-used").textContent=cycles}
 function renderVehicles(){city.addVehicles(queues);updateQueue()}
@@ -329,6 +332,7 @@ function updateMath(){
  $("#vehicle-budget").innerHTML=budget()+' <small>seconds</small>';
  $("#reserve-note").textContent=level==="hard"?"Mixed fleet: bicycle 5s · car 10s · truck 15s":level==="easy"?"Northbound and southbound take separate green turns":"Split the cycle between the two roads";
  $("#planner-question").textContent=m.objective;$("#fleet-legend").hidden=level!=="hard";$("#schedule-inputs").hidden=false;
+ $("#tc-score-label").textContent=m.scoringMode==="throughput"?"THROUGHPUT POINTS":m.scoringMode==="balanced"?"FLOW + FAIRNESS POINTS":"WAIT-PRIORITY POINTS";
  const result=planAt(nsSeconds);
  $("#predicted-vehicles").textContent=result.moved+" / "+total();$("#predicted-score").textContent=result.points+" pts";
  {const ew=budget()-nsSeconds;$("#ns-seconds").max=budget();$("#ns-seconds").step=cfg().step;$("#ns-seconds").value=nsSeconds;$("#ns-output").textContent=nsSeconds+" sec";$("#ns-preview").textContent=nsSeconds+" sec";$("#ew-preview").textContent=ew+" sec";$("#ns-track").style.width=(nsSeconds/budget()*100)+"%";$("#ew-track").style.width=(ew/budget()*100)+"%";$("#slider-label").textContent=level==="easy"?"Green time for Northbound traffic":"Green time for North + South";$("#ns-side-label").textContent=level==="easy"?"Northbound":"North + South";$("#ew-side-label").textContent=level==="easy"?"Southbound":"East + West";}
@@ -339,7 +343,8 @@ function updateMath(){
  $("#tc-learning-explanation").textContent=learning.explain;
  $("#tc-learning-example").textContent=learning.example;
  $("#tc-learning-prompt").textContent=learning.prompt;
- $("#tc-cycle-rule").textContent="Clear the junction within "+m.maxCycles+" cycles and reach at least "+Math.round(m.targetEfficiency*100)+"% efficiency. Each phase must receive at least "+(m.minimumGreen||5)+" seconds.";
+ $("#tc-cycle-rule").textContent="Clear the junction within "+m.maxCycles+" cycles and reach at least "+Math.round(m.targetEfficiency*100)+"% efficiency. Each phase must receive at least "+(m.minimumGreen||5)+" seconds. Scoring: "+(m.scoringMode==="throughput"?"maximise vehicles served":m.scoringMode==="balanced"?"reward flow across more approaches":"prioritise longer waits")+".";
+ $("#ns-seconds").min=m.minimumGreen||5;$("#ns-seconds").max=budget()-(m.minimumGreen||5);
  $("#tc-live-equation").textContent=nsSeconds+"s + "+(budget()-nsSeconds)+"s = "+budget()+"s";
  $("#tc-live-feedback").textContent=result.moved+" vehicles predicted from "+total()+" waiting; "+result.points+" priority points if this plan runs.";
  $("#tc-cycle-count").textContent=cycles+" / "+m.maxCycles;

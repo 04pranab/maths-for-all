@@ -69,12 +69,16 @@ for (const [difficulty, config] of Object.entries(LEVELS)) {
     assert.ok(challenge.targetEfficiency >= 0.75 && challenge.targetEfficiency <= 0.9,
       "every challenge must enforce a measurable efficiency target");
     assert.ok(challenge.minimumGreen >= 5, "every challenge must prevent zero-green starvation");
+    assert.ok(["throughput", "balanced", "priority"].includes(challenge.scoringMode),
+      "each challenge must define a real scoring mechanic");
     topics.add(challenge.learning.topic);
   }
   assert.ok(topics.size >= 5, difficulty + " must teach a progression of distinct concepts");
 }
 assert.match(bundle, /function failChallenge\(/, "a poor plan must be able to fail and be retried");
 assert.match(bundle, /cycles>=mission\(\)\.maxCycles/, "the simulation must enforce a cycle limit");
+assert.match(bundle, /scoringMode==="throughput"/, "throughput levels must score completed movements");
+assert.match(bundle, /scoringMode==="balanced"/, "balanced levels must reward approach fairness");
 assert.match(bundle, /efficiency<m\.targetEfficiency/, "clearing queues alone must not guarantee success");
 assert.match(bundle, /mfa-traffic-control-best-v2/, "personal bests and stars must be persisted locally");
 
