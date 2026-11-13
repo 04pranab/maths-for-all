@@ -398,6 +398,21 @@ async function main() {
       'assert(document.activeElement?.id === "auth-username", "Auth modal did not move focus to the first field.");' +
       'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
       'assert(document.getElementById("auth-modal").classList.contains("hidden"), "Escape did not close the auth overlay.");' +
+      // Modal Escape must dismiss only the overlay, never the game underneath it.
+      "Game.startArithmetic();" +
+      'document.getElementById("leaderboard-modal").classList.remove("hidden");' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'assert(document.getElementById("leaderboard-modal").classList.contains("hidden"), "Escape did not close the leaderboard overlay.");' +
+      'assert(document.getElementById("screen-quiz").classList.contains("active"), "Closing the leaderboard also navigated away from the active game.");' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'assert(document.getElementById("screen-menu").classList.contains("active"), "Escape without an overlay should retain the existing return-to-menu behaviour.");' +
+      "Game.startArithmetic();" +
+      'document.getElementById("account-profile-modal").classList.remove("hidden");' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'assert(document.getElementById("account-profile-modal").classList.contains("hidden"), "Escape did not close the profile overlay.");' +
+      'assert(document.getElementById("screen-quiz").classList.contains("active"), "Closing the profile also navigated away from the active game.");' +
+      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'assert(document.getElementById("screen-menu").classList.contains("active"), "Escape after closing the profile should retain normal game navigation.");' +
       "ResearchConsent.open();" +
       "await new Promise(r => setTimeout(r, 50));" +
       'assert(document.activeElement?.classList.contains("consent-btn"), "Consent modal did not move focus to a choice.");' +
