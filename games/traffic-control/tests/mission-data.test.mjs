@@ -64,7 +64,7 @@ for (const [difficulty, config] of Object.entries(LEVELS)) {
     assert.ok(challenge.learning?.formula, "every challenge must expose a usable mathematical formula");
     assert.ok(challenge.learning?.example, "every challenge must include a worked example");
     assert.ok(challenge.learning?.prompt, "every challenge must connect the concept to a player action");
-    assert.ok(challenge.maxCycles >= 1 && challenge.maxCycles <= 4,
+    assert.ok(challenge.maxCycles >= 1 && challenge.maxCycles <= 5,
       "every challenge must have a meaningful cycle limit");
     assert.ok(challenge.targetEfficiency >= 0.75 && challenge.targetEfficiency <= 0.9,
       "every challenge must enforce a measurable efficiency target");

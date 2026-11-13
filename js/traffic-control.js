@@ -172,7 +172,7 @@ for (const [difficulty, config] of Object.entries(LEVELS)) {
   config.rounds.forEach((challenge, index) => {
     const modules = LEARNING_MODULES[difficulty];
     challenge.learning = modules[Math.min(modules.length - 1, Math.floor(index / (50 / modules.length)))];
-    challenge.maxCycles = difficulty === "easy" ? 4 : difficulty === "medium" ? 3 : 4;
+    challenge.maxCycles = difficulty === "easy" ? 5 : difficulty === "medium" ? 3 : 4;
     const targetBase = difficulty === "easy" ? 0.76 : difficulty === "medium" ? 0.80 : 0.82;
     challenge.targetEfficiency = targetBase + (index % 5) * 0.02;
     challenge.minimumGreen = 5 + (index % 3) * 5;
@@ -368,7 +368,7 @@ function startRound(index=0){
  $("#mission-number").textContent=String(round+1).padStart(2,"0")+" / "+challengeCount;
  $("#mission-progress-fill").style.width=((round+1)/challengeCount*100)+"%";
  $("#mission-tag").textContent=cfg().label;
- $("#challenge-tag").textContent=level.toUpperCase()+" · "+String(round+1).padStart(2,"0")+" / "+challengeCount;
+ $("#challenge-tag").textContent=(window.TrafficControlDaily?"DAILY CHALLENGE · ":"")+level.toUpperCase()+" · "+String(round+1).padStart(2,"0")+" / "+challengeCount;
  $("#challenge-complete").hidden=true;$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
  for(const d of DIRS)setSignal(d,false);
  $("#traffic-status").textContent="Study the queues, calculate your plan and run the signal.";
