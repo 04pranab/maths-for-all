@@ -823,9 +823,9 @@ const Navigation = (() => {
 window.Navigation=Navigation;
 
 /* ---------- Shared Escape handling ----------
-   Overlays close first; then local selections clear; otherwise Escape
-   returns to the menu. Text fields blur without losing their contents. */
-window.addEventListener(
+   The capture-phase handler consumes Escape when a modal is open before
+   other document keyboard handlers can navigate the game. */
+document.addEventListener(
   "keydown",
   (event) => {
     if (event.key !== "Escape") return;
