@@ -207,14 +207,14 @@ const VEHICLE={bike:{length:1.35,width:.62,height:1.15,gap:.9},car:{length:2.55,
 const mat=(color,roughness=.82,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 class TrafficCity3D{
  constructor(host,{reducedMotion=false}={}){
-  this.host=host;this.reducedMotion=reducedMotion;this.vehicles=new Map();this.signals={};this.signalTimers={};this.level="easy";this.disposed=false;this.paused=false;this.pendingMoveTick=null;this.elapsed=0;
+  this.host=host;this.reducedMotion=reducedMotion;this.vehicles=new Map();this.signals={};this.signalTimers={};this.pedestrians=[];this.level="easy";this.disposed=false;this.paused=false;this.pendingMoveTick=null;this.elapsed=0;
   host.innerHTML="";
   if(!THREE){host.innerHTML='<div class="city-fallback">The 3D city could not load. Check your internet connection and reload the game.</div>';return}
   this.scene=new THREE.Scene();this.scene.background=new THREE.Color(0xb8cbd0);this.scene.fog=new THREE.Fog(0xb8cbd0,48,100);
   this.camera=new THREE.PerspectiveCamera(38,1,.1,260);this.camera.position.set(0,64,30);this.camera.lookAt(0,0,0);
   try{this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:false})}catch(error){console.error("WebGL is unavailable:",error);host.innerHTML='<div class="city-fallback">This browser could not start the 3D city. Please enable hardware acceleration or try a browser with WebGL support.</div>';return}this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.8));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;this.renderer.outputColorSpace=THREE.SRGBColorSpace;this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.15;host.append(this.renderer.domElement);
   this.scene.add(new THREE.HemisphereLight(0xe9f6ff,0x71816b,2.1));const sun=new THREE.DirectionalLight(0xffe4bd,3.1);sun.position.set(-18,30,15);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-38;sun.shadow.camera.right=38;sun.shadow.camera.top=38;sun.shadow.camera.bottom=-38;this.scene.add(sun);
-  this.city=new THREE.Group();this.scene.add(this.city);this.vehicleGroup=new THREE.Group();this.scene.add(this.vehicleGroup);this.buildCity();this.buildSignals();this.resize();
+  this.city=new THREE.Group();this.scene.add(this.city);this.vehicleGroup=new THREE.Group();this.scene.add(this.vehicleGroup);this.buildCity();this.buildSignals();this.buildPedestrians();this.resize();
   this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(host);
   host.style.cursor="default";
   this.placeCamera();this.animate();
@@ -270,6 +270,17 @@ class TrafficCity3D{
  }
  setSignal(direction,green){if(!this.signals)return;const bulbs=this.signals[direction];if(!bulbs)return;clearTimeout(this.signalTimers[direction]);const paint=state=>bulbs.forEach((b,i)=>{const on=state==="green"?i===2:state==="amber"?i===1:i===0;b.material.emissive.setHex(on?[COLORS.red,COLORS.amber,COLORS.green][i]:0x000000);b.material.emissiveIntensity=on?1.8:0;b.material.color.setHex(on?[COLORS.red,COLORS.amber,COLORS.green][i]:0x303a40)});paint("amber");this.signalTimers[direction]=setTimeout(()=>paint(green?"green":"red"),180)}
  setLevel(level){this.level=level;if(!this.city)return;this.city.children.forEach(o=>{if(o.userData.horizontalRoad)o.visible=level!=="easy"});for(const [d,b] of Object.entries(this.signals)){const active=level!=="easy"||d==="north"||d==="south";b[0].parent.visible=active}}
+  buildPedestrians(){
+   const skin=mat(0xe2b58f),shirt=mat(0x3e718d),trousers=mat(0x344653),shoe=mat(0x27343a);
+   for(const [x,z,turn] of [[8,-8,Math.PI/2],[-8,8,-Math.PI/2]]){
+    const person=new THREE.Group();person.position.set(x,.25,z);person.rotation.y=turn;
+    const torso=this.cyl(person,.22,.28,.72,0,1.05,0,shirt,8);torso.rotation.z=-.08;
+    const head=new THREE.Mesh(new THREE.SphereGeometry(.19,12,10),skin);head.position.set(0,1.58,.02);person.add(head);
+    for(const side of [-1,1]){const leg=this.cyl(person,.09,.11,.55,side*.12,.42,0,trousers,8);leg.rotation.z=side*.08;this.box(person,.16,.09,.28,side*.12,.13,.06,shoe,false);const arm=this.cyl(person,.07,.08,.5,side*.29,1.03,.02,skin,8);arm.rotation.z=side*.55}
+    person.visible=false;person.userData.baseY=.25;person.userData.phase=this.pedestrians.length*1.7;this.city.add(person);this.pedestrians.push(person);
+   }
+  }
+  setPedestrianCrossing(active){for(const person of this.pedestrians)person.visible=Boolean(active)}
  positionFor(direction,index,kind,queueOffset=0){
   const offset=6.8+queueOffset,laneOffset=1.65;
   const map={north:{x:-laneOffset,z:-offset,yaw:0,exit:{x:-laneOffset,z:34}},south:{x:laneOffset,z:offset,yaw:Math.PI,exit:{x:laneOffset,z:-34}},east:{x:offset,z:laneOffset,yaw:-Math.PI/2,exit:{x:-34,z:laneOffset}},west:{x:-offset,z:-laneOffset,yaw:Math.PI/2,exit:{x:34,z:-laneOffset}}};
@@ -308,7 +319,7 @@ class TrafficCity3D{
  }
  resize(){if(!this.renderer)return;const w=Math.max(1,this.host.clientWidth),h=Math.max(1,this.host.clientHeight);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.renderer.setSize(w,h,false)}
  placeCamera(){if(!this.camera)return;this.camera.position.set(0,64,30);this.camera.lookAt(0,0,0)}
- animate(){if(this.disposed||this.paused||!this.renderer)return;this.frame=requestAnimationFrame(()=>this.animate());this.renderer.render(this.scene,this.camera)}
+ animate(){if(this.disposed||this.paused||!this.renderer)return;this.frame=requestAnimationFrame(()=>this.animate());this.elapsed+=.016;for(const person of this.pedestrians)if(person.visible)person.position.y=person.userData.baseY+Math.sin(this.elapsed*2+person.userData.phase)*.035;this.renderer.render(this.scene,this.camera)}
  pause(){this.paused=true;cancelAnimationFrame(this.frame)}
  resume(){if(this.disposed||!this.paused)return;this.paused=false;this.animate();if(this.pendingMoveTick){const tick=this.pendingMoveTick;this.pendingMoveTick=null;requestAnimationFrame(tick)}}
  dispose(){this.disposed=true;cancelAnimationFrame(this.frame);this.pendingMoveTick=null;this.resizeObserver?.disconnect();this.renderer?.dispose()}
@@ -384,7 +395,7 @@ function setLevelUI(){
 }
 function startRound(index=0){
  runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;liveAxis=null;liveBudget=budget();liveService={north:0,south:0,east:0,west:0};liveAnimating=false;livePedestrianHold=mission().modifier==="school-crossing"?5:0;rushHourArrivalsAdded=false;liveCycleStats={moved:0,weighted:0,approaches:new Set()};missionStartedAt=Date.now();
- const m=mission();queues=Object.fromEntries(dirs().map(d=>[d,[...m.queues[d]]]));nsSeconds=Math.max(m.minimumGreen||5,Math.min(budget()-(m.minimumGreen||5),Math.round(budget()/2/cfg().step)*cfg().step));
+ const m=mission();city.setPedestrianCrossing(m.modifier==="school-crossing");queues=Object.fromEntries(dirs().map(d=>[d,[...m.queues[d]]]));nsSeconds=Math.max(m.minimumGreen||5,Math.min(budget()-(m.minimumGreen||5),Math.round(budget()/2/cfg().step)*cfg().step));
  const challengeCount=cfg().rounds.length;
  $("#mission-number").textContent=String(round+1).padStart(2,"0")+" / "+challengeCount;
  $("#mission-progress-fill").style.width=((round+1)/challengeCount*100)+"%";
