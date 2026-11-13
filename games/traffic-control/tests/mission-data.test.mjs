@@ -37,6 +37,27 @@ assert.equal(capacityFor("medium", ["car", "car"], 15, 10), 1,
 assert.equal(capacityFor("hard", ["bike", "car", "truck"], 29, 10), 2,
   "Hard must add mixed-fleet service times and reject a vehicle that does not fit");
 
+// A protected school crossing is one shared five-second reserve per cycle,
+// not a five-second penalty applied independently to both signal phases.
+const planStart = bundle.indexOf("function planAt(");
+const planSource = bundle.slice(planStart, bundle.indexOf("\nfunction bestPlan", planStart));
+function planForSchoolCrossing() {
+  const context = {
+    module: { exports: {} }, level: "medium",
+    queues: { north: ["car", "car"], south: ["car", "car"], east: ["car", "car"], west: ["car", "car"] },
+    mission: () => ({ modifier: "school-crossing", budget: 40, minimumGreen: 5, waitMinutes: { north: 1, south: 1, east: 1, west: 1 }, scoringMode: "throughput" }),
+    cfg: () => ({ step: 5 }), budget: () => 40,
+    dirs: () => ["north", "south", "east", "west"],
+    capacity: (direction, seconds) => Math.floor(seconds / 10),
+    level: "medium"
+  };
+  vm.runInNewContext(`${planSource}\nmodule.exports = planAt;`, context);
+  return context.module.exports(20);
+}
+const schoolPlan = planForSchoolCrossing();
+assert.equal(schoolPlan.ns + schoolPlan.ew, 35,
+  "school crossing must reserve five seconds once from the whole cycle");
+
 
 const expectedDirections = {
   easy: ["north", "south"],
