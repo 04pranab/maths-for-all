@@ -314,15 +314,31 @@ function readProgress(){
  }catch{return{easy:[],medium:[],hard:[]}}
 }
 function saveProgress(data){try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(data))}catch(error){console.warn("Could not save challenge progress:",error.message)}}
+// The existing 50-level ladder now introduces real modifiers in deliberate bands.
+const CHALLENGE_MODIFIERS = [
+ {id:"standard",label:"Clear roads",description:"A steady day at the junction."},
+ {id:"rush-hour",label:"Rush hour",description:"A fresh wave of traffic joins the queues after the first shift."},
+ {id:"school-crossing",label:"School crossing",description:"A protected pedestrian crossing pauses vehicle service at the start of each shift."},
+ {id:"emergency-priority",label:"Emergency route",description:"The highlighted approach earns extra priority when vehicles are served."},
+ {id:"rain",label:"Rainy junction",description:"Wet roads slow vehicle movement, so allow more time for each clearing animation."}
+];
+for (const config of Object.values(LEVELS)) config.rounds.forEach((challenge,index)=>{
+ const band=Math.min(4,Math.floor(index/10));
+ challenge.modifier=CHALLENGE_MODIFIERS[band].id;
+ challenge.modifierLabel=CHALLENGE_MODIFIERS[band].label;
+ challenge.modifierDescription=CHALLENGE_MODIFIERS[band].description;
+ if(band===3) challenge.priorityDirection=config.directions[(index+1)%config.directions.length];
+});
+
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
 let level="easy",round=0,queues={},busy=false,paused=false,runId=0,nsSeconds=30,cleared=0,score=0,cycles=0,optimalScore=0,missionStartedAt=Date.now(),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
-let liveAxis=null,liveBudget=0,liveService={north:0,south:0,east:0,west:0},liveAnimating=false,liveCycleBest=null,liveCycleStats={moved:0,weighted:0,approaches:new Set()},liveTickHandle=null;
+let liveAxis=null,liveBudget=0,liveService={north:0,south:0,east:0,west:0},liveAnimating=false,liveCycleBest=null,liveCycleStats={moved:0,weighted:0,approaches:new Set()},liveTickHandle=null,livePedestrianHold=0,rushHourArrivalsAdded=false;
 const city=new TrafficCity3D($("#city3d"),{reducedMotion:reduced});
 function total(){return dirs().reduce((s,d)=>s+(queues[d]?.length||0),0)}
 function budget(){return mission().budget}
 function service(kind){const seconds=level==="hard"?TIMES[kind]:Number(mission().serviceSeconds??cfg().serviceSeconds??10);return Number.isFinite(seconds)&&seconds>0?seconds:10}
-function capacity(d,seconds){let used=0,count=0;for(const v of queues[d]||[]){const t=service(v);if(used+t>seconds)break;used+=t;count++}return count}
-function planAt(ns){ns=Math.max(mission().minimumGreen||5,Math.min(budget()-(mission().minimumGreen||5),ns));const ew=budget()-ns,caps={};for(const d of dirs()){if(level==="easy")caps[d]=capacity(d,d==="north"?ns:ew);else caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew)}let moved=0,weightedPoints=0,servedApproaches=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;if(n>0)servedApproaches++;weightedPoints+=n*mission().waitMinutes[d]*10}const mode=mission().scoringMode||"priority";const points=mode==="throughput"?moved*10:mode==="balanced"?weightedPoints+servedApproaches*25:weightedPoints;return{ns,ew,caps,moved,points,servedApproaches,scoringMode:mode}}
+function capacity(d,seconds){const effectiveSeconds=Math.max(0,seconds-(mission().modifier==="school-crossing"?5:0));let used=0,count=0;for(const v of queues[d]||[]){const t=service(v);if(used+t>effectiveSeconds)break;used+=t;count++}return count}
+function planAt(ns){ns=Math.max(mission().minimumGreen||5,Math.min(budget()-(mission().minimumGreen||5),ns));const ew=budget()-ns,caps={};for(const d of dirs()){if(level==="easy")caps[d]=capacity(d,d==="north"?ns:ew);else caps[d]=(d==="north"||d==="south")?capacity(d,ns):capacity(d,ew)}let moved=0,weightedPoints=0,servedApproaches=0;for(const d of dirs()){const n=Math.min(queues[d].length,caps[d]);moved+=n;if(n>0)servedApproaches++;weightedPoints+=n*mission().waitMinutes[d]*10*(mission().modifier==="emergency-priority"&&d===mission().priorityDirection?2:1)}const mode=mission().scoringMode||"priority";const points=mode==="throughput"?moved*10:mode==="balanced"?weightedPoints+servedApproaches*25:weightedPoints;return{ns,ew,caps,moved,points,servedApproaches,scoringMode:mode}}
 function bestPlan(){let best=null;const min=mission().minimumGreen||5;for(let n=min;n<=budget()-min;n+=cfg().step){const p=planAt(n);if(!best||p.points>best.points||(p.points===best.points&&p.moved>best.moved))best=p}return best}
 function updateQueue(){for(const d of DIRS)$("#count-"+d).textContent=queues[d]?.length||0;$("#cleared-count").textContent=cleared;$("#total-score").textContent=score;$("#cycles-used").textContent=cycles}
 function renderVehicles(){city.addVehicles(queues);updateQueue()}
@@ -366,12 +382,15 @@ function setLevelUI(){
  $("#tc-level-heading-brand").textContent=difficultyName+" challenges";
 }
 function startRound(index=0){
- runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;liveAxis=null;liveBudget=budget();liveService={north:0,south:0,east:0,west:0};liveAnimating=false;liveCycleStats={moved:0,weighted:0,approaches:new Set()};missionStartedAt=Date.now();
+ runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;liveAxis=null;liveBudget=budget();liveService={north:0,south:0,east:0,west:0};liveAnimating=false;livePedestrianHold=mission().modifier==="school-crossing"?5:0;rushHourArrivalsAdded=false;liveCycleStats={moved:0,weighted:0,approaches:new Set()};missionStartedAt=Date.now();
  const m=mission();queues=Object.fromEntries(dirs().map(d=>[d,[...m.queues[d]]]));nsSeconds=Math.max(m.minimumGreen||5,Math.min(budget()-(m.minimumGreen||5),Math.round(budget()/2/cfg().step)*cfg().step));
  const challengeCount=cfg().rounds.length;
  $("#mission-number").textContent=String(round+1).padStart(2,"0")+" / "+challengeCount;
  $("#mission-progress-fill").style.width=((round+1)/challengeCount*100)+"%";
  $("#mission-tag").textContent=cfg().label;
+  const modifier=CHALLENGE_MODIFIERS.find(item=>item.id===m.modifier)||CHALLENGE_MODIFIERS[0];
+  $("#mission-tag").textContent=cfg().label+" · "+modifier.label;
+  const modifierNote=$("#tc-modifier-note");if(modifierNote){modifierNote.hidden=m.modifier==="standard";modifierNote.textContent=modifier.description+(m.priorityDirection?" Priority approach: "+m.priorityDirection.toUpperCase()+".":"");}
  $("#challenge-tag").textContent=(window.TrafficControlDaily?"DAILY CHALLENGE · ":"")+level.toUpperCase()+" · "+String(round+1).padStart(2,"0")+" / "+challengeCount;
  $("#challenge-complete").hidden=true;$("#tc-leaderboard").hidden=true;$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
  for(const d of DIRS)setSignal(d,false);
@@ -441,7 +460,7 @@ function runPlan(){
  if(dirs().includes("north"))setSignal("north",ns);if(dirs().includes("south"))setSignal("south",level==="easy"?ew:ns);if(dirs().includes("east"))setSignal("east",ew);if(dirs().includes("west"))setSignal("west",ew);
  cleared+=p.moved;score+=p.points;
  $("#traffic-status").textContent="Your signal plan is running. Watch the vehicles clear the junction.";
- const duration=reduced?350:1900+moving.length*130;
+ const duration=reduced?350:(1900+moving.length*130)*(mission().modifier==="rain"?1.6:1);
  city.moveVehicles(moving,()=>{
   if(id!==runId)return;
   busy=false;for(const d of DIRS)setSignal(d,false);updateQueue();updateMath();
@@ -453,7 +472,14 @@ function runPlan(){
   $("#tc-live-feedback").textContent="Forecast vs actual: "+p.moved+" vehicles predicted and "+p.moved+" moved. Score: "+p.points+" points.";
  },{stagger:reduced?0:100,duration});
 }
-function failChallenge(reason){
+function addRushHourArrivals(){
+  if(mission().modifier!=="rush-hour"||rushHourArrivalsAdded||cycles!==1)return;
+  rushHourArrivalsAdded=true;
+  const direction=dirs().reduce((best,d)=>queues[d].length>queues[best].length?d:best,dirs()[0]);
+  queues[direction].push("car");renderVehicles();
+  $("#tc-live-feedback").textContent="Rush hour wave! One more car has joined the "+direction.toUpperCase()+" queue.";
+ }
+ function failChallenge(reason){
  busy=false;
  $("#challenge-complete").hidden=false;
  $("#challenge-complete-title").textContent="Not quite. Rework the plan.";
@@ -502,7 +528,7 @@ function finish(){
 
 function liveAxisDirections(axis){if(level==="easy")return axis==="ns"?["north"]:["south"];return axis==="ns"?["north","south"]:["east","west"]}
 function liveSetSignals(axis){for(const d of DIRS)setSignal(d,false);if(axis)for(const d of liveAxisDirections(axis))setSignal(d,true);document.querySelectorAll("[data-live-axis]").forEach(b=>{const active=b.dataset.liveAxis===axis;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))})}
-function beginLiveShift(axis){if(paused||busy||liveBudget<=0||!total())return;liveAxis=axis;liveSetSignals(axis);$("#traffic-status").textContent=(axis==="ns"?"North / South":"East / West")+" green! Hold to move traffic. Release to switch.";if(!liveTickHandle)liveTickHandle=setInterval(liveTick,100)}
+function beginLiveShift(axis){if(paused||busy||liveBudget<=0||!total())return;liveAxis=axis;liveSetSignals(axis);$("#traffic-status").textContent=livePedestrianHold>0?"Pedestrian crossing active. Vehicles will move when the crossing is clear.":(axis==="ns"?"North / South":"East / West")+" green! Hold to move traffic. Release to switch.";if(!liveTickHandle)liveTickHandle=setInterval(liveTick,100)}
 function endLiveShift(){liveAxis=null;liveSetSignals(null)}
 function liveTick(){
  if(paused||!liveAxis||liveAnimating)return;
@@ -512,12 +538,12 @@ function liveTick(){
   const q=queues[d]||[];if(!q.length)continue;
   liveService[d]=(liveService[d]||0)+1;
   const needed=service(q[0]);
-  if(liveService[d]>=needed){liveService[d]-=needed;const kind=q.shift(),start=city.positionsForQueue(d,[kind])[0];moving.push({d,kind,start});liveCycleStats.moved++;liveCycleStats.weighted+=mission().waitMinutes[d]*10;liveCycleStats.approaches.add(d)}
+  if(liveService[d]>=needed){liveService[d]-=needed;const kind=q.shift(),start=city.positionsForQueue(d,[kind])[0];moving.push({d,kind,start});liveCycleStats.moved++;liveCycleStats.weighted+=mission().waitMinutes[d]*10*(mission().modifier==="emergency-priority"&&d===mission().priorityDirection?2:1);liveCycleStats.approaches.add(d)}
  }
  updateQueue();$("#tc-live-time").textContent=liveBudget+"s";$("#tc-live-time-fill").style.width=Math.max(0,liveBudget/budget()*100)+"%";
  if(moving.length){
   liveAnimating=true;renderVehicles();
-  city.moveVehicles(moving,()=>{liveAnimating=false;cleared+=moving.length;updateQueue();updateMath();$("#tc-live-feedback").textContent="Nice! "+moving.length+" vehicle"+(moving.length===1?"":"s")+" through. Keep the flow going.";if(total()===0){endLiveShift();finishLiveCycle()}else if(liveBudget<=0)finishLiveCycle()}, {stagger:0,duration:480});
+  city.moveVehicles(moving,()=>{liveAnimating=false;cleared+=moving.length;updateQueue();updateMath();$("#tc-live-feedback").textContent="Nice! "+moving.length+" vehicle"+(moving.length===1?"":"s")+" through. Keep the flow going.";if(total()===0){endLiveShift();finishLiveCycle()}else if(liveBudget<=0)finishLiveCycle()}, {stagger:0,duration:mission().modifier==="rain"?760:480});
  }
  if(liveBudget<=0){endLiveShift();if(!liveAnimating)finishLiveCycle()}
 }
