@@ -391,7 +391,7 @@ async function main() {
       'Navigation.closeMenu();' +
       "Game.startArithmetic();" +
       "await new Promise(r => setTimeout(r, 20));" +
-      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("screen-quiz").classList.contains("active"), "Escape without an overlay must not navigate away from the game.");' +
       'Auth.open("login");' +
       "await new Promise(r => setTimeout(r, 50));" +
@@ -401,17 +401,17 @@ async function main() {
       // Modal Escape must dismiss only the overlay, never the game underneath it.
       "Game.startArithmetic();" +
       'document.getElementById("leaderboard-modal").classList.remove("hidden");' +
-      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("leaderboard-modal").classList.contains("hidden"), "Escape did not close the leaderboard overlay.");' +
       'assert(document.getElementById("screen-quiz").classList.contains("active"), "Closing the leaderboard also navigated away from the active game.");' +
-      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("screen-menu").classList.contains("active"), "Escape without an overlay should retain the existing return-to-menu behaviour.");' +
       "Game.startArithmetic();" +
       'document.getElementById("account-profile-modal").classList.remove("hidden");' +
-      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("account-profile-modal").classList.contains("hidden"), "Escape did not close the profile overlay.");' +
       'assert(document.getElementById("screen-quiz").classList.contains("active"), "Closing the profile also navigated away from the active game.");' +
-      'document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
+      'document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("screen-menu").classList.contains("active"), "Escape after closing the profile should retain normal game navigation.");' +
       "ResearchConsent.open();" +
       "await new Promise(r => setTimeout(r, 50));" +
