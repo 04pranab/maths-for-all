@@ -1097,6 +1097,16 @@
             <div class="approach-chip east-chip"><span class="direction">← EAST</span><strong id="math-east">0 vehicles</strong><small>Wait <b id="wait-east">0 min</b></small></div>
             <div class="approach-chip west-chip"><span class="direction">→ WEST</span><strong id="math-west">0 vehicles</strong><small>Wait <b id="wait-west">0 min</b></small></div>
           </div>
+<div class="tc-live-play" aria-label="Live traffic controls">
+            <div class="tc-live-hud"><span>⏱ SHIFT TIME</span><strong id="tc-live-time">40s</strong><span id="tc-live-cycle">SHIFT 1 / 3</span></div>
+            <div class="tc-live-time-track"><i id="tc-live-time-fill"></i></div>
+            <p class="tc-live-prompt">HOLD A LIGHT TO KEEP TRAFFIC MOVING</p>
+            <div class="tc-live-buttons">
+              <button type="button" class="tc-live-button tc-live-ns" data-live-axis="ns" aria-pressed="false"><span>⬆️</span><strong id="tc-live-ns-label">NORTH GREEN</strong><small>Hold to let traffic through</small></button>
+              <button type="button" class="tc-live-button tc-live-ew" data-live-axis="ew" aria-pressed="false"><span>➡️</span><strong id="tc-live-ew-label">SOUTH GREEN</strong><small>Hold to let traffic through</small></button>
+            </div>
+            <p class="tc-live-tip">Release to stop. Switch lights to clear every queue before time runs out.</p>
+          </div>
           <div class="schedule-inputs" id="schedule-inputs">
             <div class="slider-heading"><label id="slider-label" for="ns-seconds">Green time for North + South</label><output id="ns-output" for="ns-seconds">20 sec</output></div>
             <input id="ns-seconds" type="range" min="5" max="35" step="5" value="20" aria-describedby="tc-cycle-rule">
