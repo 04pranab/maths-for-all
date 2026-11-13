@@ -316,6 +316,7 @@ function readProgress(){
 function saveProgress(data){try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(data))}catch(error){console.warn("Could not save challenge progress:",error.message)}}
 const cfg=()=>LEVELS[level],mission=()=>cfg().rounds[round],dirs=()=>cfg().directions;
 let level="easy",round=0,queues={},busy=false,paused=false,runId=0,nsSeconds=30,cleared=0,score=0,cycles=0,optimalScore=0,missionStartedAt=Date.now(),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let liveAxis=null,liveBudget=0,liveService={north:0,south:0,east:0,west:0},liveAnimating=false,liveCycleBest=null,liveCycleStats={moved:0,weighted:0,approaches:new Set()},liveTickHandle=null;
 const city=new TrafficCity3D($("#city3d"),{reducedMotion:reduced});
 function total(){return dirs().reduce((s,d)=>s+(queues[d]?.length||0),0)}
 function budget(){return mission().budget}
@@ -331,12 +332,12 @@ function updateMath(){
  for(const d of DIRS){const active=dirs().includes(d),chip=$(".approach-math ."+d+"-chip");if(chip)chip.hidden=!active;if(active){$("#math-"+d).textContent=queues[d].length+" "+(queues[d].length===1?"vehicle":"vehicles");$("#wait-"+d).textContent=m.waitMinutes[d]+" min"}}
  $("#vehicle-budget").innerHTML=budget()+' <small>seconds</small>';
  $("#reserve-note").textContent=level==="hard"?"Mixed fleet: bicycle 5s · car 10s · truck 15s":level==="easy"?"Northbound and southbound take separate green turns":"Split the cycle between the two roads";
- $("#math-briefing-title").textContent=m.title;$("#planner-question").textContent="Set the green light. Move the traffic. Beat your best!";$("#reserve-note").hidden=level==="hard";$("#reserve-note").textContent=level==="hard"?"🚲 5s · 🚗 10s · 🚚 15s":"🚗 Each car needs 10 seconds";$("#fleet-legend").hidden=level!=="hard";$("#schedule-inputs").hidden=false;
+ $("#math-briefing-title").textContent=m.title;$("#planner-question").textContent="Keep the junction moving!";$("#tc-live-ns-label").textContent=level==="easy"?"NORTH GREEN":"NORTH + SOUTH GREEN";$("#tc-live-ew-label").textContent=level==="easy"?"SOUTH GREEN":"EAST + WEST GREEN";$("#reserve-note").hidden=level==="hard";$("#reserve-note").textContent=level==="hard"?"🚲 5s · 🚗 10s · 🚚 15s":"🚗 Each car needs 10 seconds";$("#fleet-legend").hidden=level!=="hard";$("#schedule-inputs").hidden=false;
  $("#tc-score-label").textContent=m.scoringMode==="throughput"?"THROUGHPUT POINTS":m.scoringMode==="balanced"?"FLOW + FAIRNESS POINTS":"WAIT-PRIORITY POINTS";
  const result=planAt(nsSeconds);
  $("#predicted-vehicles").textContent=result.moved+" / "+total();$("#predicted-score").textContent=result.points+" pts";
  {const ew=budget()-nsSeconds;$("#ns-seconds").max=budget();$("#ns-seconds").step=cfg().step;$("#ns-seconds").value=nsSeconds;$("#ns-output").textContent=nsSeconds+" sec";$("#ns-preview").textContent=nsSeconds+" sec";$("#ew-preview").textContent=ew+" sec";$("#ns-track").style.width=(nsSeconds/budget()*100)+"%";$("#ew-track").style.width=(ew/budget()*100)+"%";$("#slider-label").textContent=level==="easy"?"Green time for Northbound traffic":"Green time for North + South";$("#ns-side-label").textContent=level==="easy"?"Northbound":"North + South";$("#ew-side-label").textContent=level==="easy"?"Southbound":"East + West";}
- $("#math-hint").textContent="";$("#ns-seconds").min=m.minimumGreen||5;$("#ns-seconds").max=budget()-(m.minimumGreen||5);$("#run-plan").disabled=busy||paused||total()===0;$("#ns-seconds").disabled=paused||busy;
+ $("#math-hint").textContent="";$("#tc-live-time").textContent=liveBudget+"s";$("#tc-live-time-fill").style.width=Math.max(0,liveBudget/budget()*100)+"%";$("#tc-live-cycle").textContent="SHIFT "+(cycles+1)+" / "+m.maxCycles;$("#ns-seconds").min=m.minimumGreen||5;$("#ns-seconds").max=budget()-(m.minimumGreen||5);$("#run-plan").disabled=busy||paused||total()===0;$("#ns-seconds").disabled=paused||busy;
  const learning=m.learning||LEARNING_MODULES[level][0];
  $("#tc-learning-topic").textContent=learning.topic;
  $("#tc-learning-formula").textContent=learning.formula;
@@ -365,7 +366,7 @@ function setLevelUI(){
  $("#tc-level-heading-brand").textContent=difficultyName+" challenges";
 }
 function startRound(index=0){
- runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;missionStartedAt=Date.now();
+ runId++;round=index;busy=false;cleared=0;score=0;cycles=0;optimalScore=0;liveAxis=null;liveBudget=budget();liveService={north:0,south:0,east:0,west:0};liveAnimating=false;liveCycleStats={moved:0,weighted:0,approaches:new Set()};missionStartedAt=Date.now();
  const m=mission();queues=Object.fromEntries(dirs().map(d=>[d,[...m.queues[d]]]));nsSeconds=Math.max(m.minimumGreen||5,Math.min(budget()-(m.minimumGreen||5),Math.round(budget()/2/cfg().step)*cfg().step));
  const challengeCount=cfg().rounds.length;
  $("#mission-number").textContent=String(round+1).padStart(2,"0")+" / "+challengeCount;
@@ -374,8 +375,8 @@ function startRound(index=0){
  $("#challenge-tag").textContent=(window.TrafficControlDaily?"DAILY CHALLENGE · ":"")+level.toUpperCase()+" · "+String(round+1).padStart(2,"0")+" / "+challengeCount;
  $("#challenge-complete").hidden=true;$("#tc-leaderboard").hidden=true;$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
  for(const d of DIRS)setSignal(d,false);
- $("#traffic-status").textContent="Study the queues, calculate your plan and run the signal.";
- renderVehicles();updateMath();
+ $("#traffic-status").textContent="Hold a green light to guide traffic. Switch before the timer runs out!";
+ renderVehicles();updateMath();liveCycleBest=bestPlan();
 }
 function setLevel(next,index=0){
  level=next;
@@ -460,7 +461,7 @@ function failChallenge(reason){
  $("#next-mission").hidden=false;
  $("#next-mission").textContent="Retry this challenge ↻";
  $("#traffic-status").textContent=reason;
- $("#math-hint").textContent="Study the worked example, adjust the green-time split and try again. Your best result is kept locally.";
+ $("#math-hint").textContent="Try holding the other green light for longer. Your best result is saved.";
 }
 function finish(){
  const m=mission(),lastChallenge=round===cfg().rounds.length-1;
@@ -498,6 +499,40 @@ function finish(){
  if(accounts?.refreshSession&&accounts?.submitAttempt)accounts.refreshSession().then(()=>accounts.submitAttempt("traffic-control",scorePercent,durationSeconds,null,{difficulty:level,level:round+1,stars,efficiency,dailyChallenge:Boolean(window.TrafficControlDaily),cycles})).catch(error=>console.warn("Could not save Traffic Control Centre score:",error.message));
  window.ResearchEventGateway?.record("traffic-control","mission_complete",{difficulty:level,level:round+1,completed:true,correct:true,seconds:durationSeconds,stars,efficiency,scoringMode:m.scoringMode,dailyChallenge:Boolean(window.TrafficControlDaily)});
 }
+
+function liveAxisDirections(axis){if(level==="easy")return axis==="ns"?["north"]:["south"];return axis==="ns"?["north","south"]:["east","west"]}
+function liveSetSignals(axis){for(const d of DIRS)setSignal(d,false);if(axis)for(const d of liveAxisDirections(axis))setSignal(d,true);document.querySelectorAll("[data-live-axis]").forEach(b=>{const active=b.dataset.liveAxis===axis;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))})}
+function beginLiveShift(axis){if(paused||busy||liveBudget<=0||!total())return;liveAxis=axis;liveSetSignals(axis);$("#traffic-status").textContent=(axis==="ns"?"North / South":"East / West")+" green! Hold to move traffic. Release to switch.";if(!liveTickHandle)liveTickHandle=setInterval(liveTick,100)}
+function endLiveShift(){liveAxis=null;liveSetSignals(null)}
+function liveTick(){
+ if(paused||!liveAxis||liveAnimating)return;
+ liveBudget=Math.max(0,liveBudget-1);
+ const moving=[];
+ for(const d of liveAxisDirections(liveAxis)){
+  const q=queues[d]||[];if(!q.length)continue;
+  liveService[d]=(liveService[d]||0)+1;
+  const needed=service(q[0]);
+  if(liveService[d]>=needed){liveService[d]-=needed;const kind=q.shift(),start=city.positionsForQueue(d,[kind])[0];moving.push({d,kind,start});liveCycleStats.moved++;liveCycleStats.weighted+=mission().waitMinutes[d]*10;liveCycleStats.approaches.add(d)}
+ }
+ updateQueue();$("#tc-live-time").textContent=liveBudget+"s";$("#tc-live-time-fill").style.width=Math.max(0,liveBudget/budget()*100)+"%";
+ if(moving.length){
+  liveAnimating=true;renderVehicles();
+  city.moveVehicles(moving,()=>{liveAnimating=false;cleared+=moving.length;updateQueue();updateMath();$("#tc-live-feedback").textContent="Nice! "+moving.length+" vehicle"+(moving.length===1?"":"s")+" through. Keep the flow going.";if(total()===0){endLiveShift();finishLiveCycle()}}, {stagger:0,duration:480});
+ }
+ if(liveBudget<=0){endLiveShift();if(!liveAnimating)finishLiveCycle()}
+}
+function finishLiveCycle(){
+ if(!liveCycleBest)return;
+ endLiveShift();const mode=mission().scoringMode||"priority";
+ const earned=mode==="throughput"?liveCycleStats.moved*10:mode==="balanced"?liveCycleStats.moved*10+liveCycleStats.approaches.size*25:liveCycleStats.weighted;
+ score+=earned;optimalScore+=liveCycleBest.points;cycles++;liveCycleBest=null;
+ $("#tc-live-feedback").textContent="Shift score: "+earned+" points. "+total()+" vehicles left.";
+ if(total()===0){finish();return}
+ if(cycles>=mission().maxCycles){failChallenge("The shifts are over! "+total()+" vehicles are still waiting. Switch green lights sooner next time.");return}
+ liveBudget=budget();liveService={north:0,south:0,east:0,west:0};liveCycleStats={moved:0,weighted:0,approaches:new Set()};liveCycleBest=bestPlan();
+ $("#traffic-status").textContent="New shift! "+total()+" vehicles remain. Grab a green light.";updateMath();
+}
+
 $("#ns-seconds").addEventListener("input",e=>{nsSeconds=Number(e.target.value);updateMath()});
 $("#tc-daily-challenge")?.addEventListener("click",startDailyChallenge);
 $("#tc-leaderboard")?.addEventListener("click",()=>{const select=document.getElementById("leaderboard-game-select");if(select)select.value="traffic-control";window.MfaAccounts?.openLeaderboard?.();});
@@ -506,7 +541,7 @@ document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("cl
 $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.getElementById("screen-traffic-control").classList.toggle("reduce-motion",reduced)});
 $("#text-size-toggle")?.addEventListener("click",()=>document.getElementById("screen-traffic-control").classList.toggle("large-type"));
 if(reduced)document.getElementById("screen-traffic-control").classList.add("reduce-motion");
-function pauseGame(){paused=true;city.pause();updateMath()}
+function pauseGame(){paused=true;endLiveShift();city.pause();updateMath()}
 function resumeGame(){paused=false;city.resume();updateMath()}
 window.TrafficControlGame={
   pause:pauseGame,
@@ -553,4 +588,16 @@ const TrafficControlIntegration=(()=>{
   return{open,setFontScale,pause,resume,help,showDifficulty:showDifficultyView,showLevels:()=>showLevelsView(level),requestExit,cancelExit,confirmExit,pauseForNavigation};
 })();
 window.TrafficControlIntegration=TrafficControlIntegration;
+
+document.querySelectorAll("[data-live-axis]").forEach(button=>{
+ const axis=button.dataset.liveAxis;
+ button.addEventListener("pointerdown",event=>{event.preventDefault();button.setPointerCapture?.(event.pointerId);beginLiveShift(axis)});
+ const release=()=>{if(liveAxis===axis)endLiveShift()};
+ button.addEventListener("pointerup",release);button.addEventListener("pointercancel",release);button.addEventListener("lostpointercapture",release);
+ button.addEventListener("keydown",event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();beginLiveShift(axis)}});
+ button.addEventListener("keyup",event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();if(liveAxis===axis)endLiveShift()}});
+});
+document.addEventListener("keydown",event=>{if($("#tc-game-view").hidden||event.repeat||event.target.matches("input,textarea,select,button"))return;const axis=["ArrowUp","ArrowDown","w","W","s","S"].includes(event.key)?"ns":["ArrowLeft","ArrowRight","a","A","d","D"].includes(event.key)?"ew":null;if(axis){event.preventDefault();beginLiveShift(axis)}});
+document.addEventListener("keyup",event=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","W","a","A","s","S","d","D"].includes(event.key))endLiveShift()});
+
 setLevel("easy");
