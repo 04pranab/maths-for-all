@@ -399,14 +399,14 @@ async function main() {
       'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));' +
       'assert(document.getElementById("auth-modal").classList.contains("hidden"), "Escape did not close the auth overlay.");' +
       // Modal Escape must dismiss only the overlay, never the game underneath it.
-      "Game.startArithmetic();" +
+      "Game.startArithmetic(); ControlsOverlay.close();" +
       'document.getElementById("leaderboard-modal").classList.remove("hidden");' +
       'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("leaderboard-modal").classList.contains("hidden"), "Escape did not close the leaderboard overlay.");' +
       'assert(document.getElementById("screen-quiz").classList.contains("active"), "Closing the leaderboard also navigated away from the active game.");' +
       'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("screen-menu").classList.contains("active"), "Escape without an overlay should retain the existing return-to-menu behaviour.");' +
-      "Game.startArithmetic();" +
+      "Game.startArithmetic(); ControlsOverlay.close();" +
       'document.getElementById("account-profile-modal").classList.remove("hidden");' +
       'window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));' +
       'assert(document.getElementById("account-profile-modal").classList.contains("hidden"), "Escape did not close the profile overlay.");' +
