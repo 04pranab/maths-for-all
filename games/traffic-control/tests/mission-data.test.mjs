@@ -77,13 +77,14 @@ assert.match(bundle, /function failChallenge\(/, "a poor plan must be able to fa
 assert.match(bundle, /cycles>=mission\(\)\.maxCycles/, "the simulation must enforce a cycle limit");
 assert.match(bundle, /efficiency<m\.targetEfficiency/, "clearing queues alone must not guarantee success");
 assert.match(bundle, /mfa-traffic-control-best-v2/, "personal bests and stars must be persisted locally");
-assert.match(arcadeHtml, /tc-learning-formula/, "the learning formula must be visible in the game");
-assert.match(arcadeHtml, /tc-queue-chart/, "the game must visualise predicted queue clearance");
 
 
 // Structural integration checks: the game has one native screen and one JS/CSS entry.
 const arcadeHtml = readFileSync(new URL("../../../index.html", import.meta.url), "utf8");
 const gameCss = readFileSync(new URL("../../../css/traffic-control.css", import.meta.url), "utf8");
+assert.match(arcadeHtml, /tc-learning-formula/, "the learning formula must be visible in the game");
+assert.match(arcadeHtml, /tc-queue-chart/, "the game must visualise predicted queue clearance");
+assert.match(arcadeHtml, /id="tc-daily-challenge"/, "the level selector must expose a daily challenge");
 assert.equal((arcadeHtml.match(/id="screen-traffic-control"/g) || []).length, 1,
   "Traffic Control markup must exist once in the main arcade");
 assert.match(arcadeHtml, /href="css\/traffic-control\.css(?:\?[^"]*)?"/,
@@ -110,8 +111,10 @@ assert.match(bundle, /function chooseLevel\(index\)/,
   "every level tile must be directly playable");
 assert.match(bundle, /actionLabel:"Choose another level"/,
   "completing a challenge must offer free level selection instead of forced progression");
-assert.ok(bundle.includes('$("#next-mission").addEventListener("click",()=>showLevelsView(level));'),
-  "the completion action must return to the selected difficulty's level grid");
+assert.match(bundle, /startsWith\("Retry"\).*startRound\(round\).*showLevelsView\(level\)/,
+  "failed attempts must retry while successful attempts return to level selection");
+assert.match(bundle, /function startDailyChallenge\(/,
+  "the game must expose a deterministic daily challenge");
 assert.match(bundle, /Array\.isArray\(value\)/,
   "progress storage must preserve individually completed levels while migrating older progress");
 assert.match(gameCss, /\.tc-level-grid[^{]*\{[^}]*grid-template-columns/s,

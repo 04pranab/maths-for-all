@@ -379,14 +379,15 @@ function renderLevelGrid(){
  const grid=$("#tc-level-grid"),completed=readProgress()[level]||[];
  if(!grid)return;
  grid.replaceChildren();
+ let bestStore={};try{bestStore=JSON.parse(localStorage.getItem("mfa-traffic-control-best-v2")||"{}")||{}}catch{}
  cfg().rounds.forEach((challenge,index)=>{
-  const number=index+1,isComplete=completed.includes(number),button=document.createElement("button");
+  const number=index+1,isComplete=completed.includes(number),record=bestStore[level+":"+number],button=document.createElement("button");
   button.type="button";button.dataset.levelIndex=String(index);button.className="tc-level-tile"+(isComplete?" completed":"");
   button.setAttribute("aria-label","Level "+number+": "+challenge.title+(isComplete?", completed":""));
   button.title=challenge.title;
   const numberLabel=document.createElement("span");numberLabel.className="tc-level-number";numberLabel.textContent=String(number).padStart(2,"0");
   const title=document.createElement("span");title.className="tc-level-name";title.textContent=challenge.title.replace(/^Challenge \d+ · /,"");
-  const status=document.createElement("span");status.className="tc-level-status";status.textContent=isComplete?"✓ Completed":"Play level";
+  const status=document.createElement("span");status.className="tc-level-status";status.textContent=record?"★".repeat(record.stars||0)+" · "+Math.round((record.efficiency||0)*100)+"%":isComplete?"✓ Completed":"Play level";
   button.append(numberLabel,title,status);
   button.addEventListener("click",()=>chooseLevel(index));
   grid.append(button);
@@ -403,9 +404,16 @@ function showLevelsView(next=level){
  $("#tc-difficulty-view").hidden=true;$("#tc-level-view").hidden=false;$("#tc-game-view").hidden=true;
 }
 function chooseLevel(index){
+ window.TrafficControlDaily=false;
  $("#tc-difficulty-view").hidden=true;$("#tc-level-view").hidden=true;$("#tc-game-view").hidden=false;
  setLevel(level,index);
  resumeGame();
+}
+function startDailyChallenge(){
+ const today=new Date(),day=Math.floor(Date.UTC(today.getUTCFullYear(),today.getUTCMonth(),today.getUTCDate())/86400000);
+ chooseLevel(day%cfg().rounds.length);
+ window.TrafficControlDaily=true;
+ $("#challenge-tag").textContent="DAILY CHALLENGE · "+level.toUpperCase()+" · "+String(round+1).padStart(2,"0");
 }
 function runPlan(){
  if(busy||paused||!total())return;
@@ -480,6 +488,7 @@ function finish(){
  window.ResearchEventGateway?.record("traffic-control","mission_complete",{difficulty:level,level:round+1,completed:true,correct:true,seconds:durationSeconds});
 }
 $("#ns-seconds").addEventListener("input",e=>{nsSeconds=Number(e.target.value);updateMath()});
+$("#tc-daily-challenge")?.addEventListener("click",startDailyChallenge);
 $("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>{if($("#next-mission").textContent.startsWith("Retry"))startRound(round);else showLevelsView(level)});
 document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>showLevelsView(b.dataset.difficulty)));
 $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.getElementById("screen-traffic-control").classList.toggle("reduce-motion",reduced)});
