@@ -464,7 +464,8 @@ function runPlan(){
   busy=false;for(const d of DIRS)setSignal(d,false);updateQueue();updateMath();
   $("#math-hint").textContent=p.points===best.points?"Excellent! That split earned the best possible score for this cycle.":"Your plan earned "+p.points+" points. Best split: "+best.ns+"s North–South and "+best.ew+"s East–West ("+best.points+" points).";
 
-  if(total()===0)finish();
+  if(cycles===1)addRushHourArrivals();
+   if(total()===0)finish();
   else if(cycles>=mission().maxCycles)failChallenge("The cycle limit was reached with "+total()+" vehicles still waiting. The challenge allows "+mission().maxCycles+" cycles. Restart and allocate green time more carefully.");
   else {$("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for cycle "+(cycles+1)+" of "+mission().maxCycles+".";updateMath();}
   $("#tc-live-feedback").textContent="Forecast vs actual: "+p.moved+" vehicles predicted and "+p.moved+" moved. Score: "+p.points+" points.";
@@ -552,7 +553,8 @@ function finishLiveCycle(){
  const earned=mode==="throughput"?liveCycleStats.moved*10:mode==="balanced"?liveCycleStats.weighted+liveCycleStats.approaches.size*25:liveCycleStats.weighted;
  score+=earned;optimalScore+=liveCycleBest.points;cycles++;liveCycleBest=null;
  $("#tc-live-feedback").textContent="Shift score: "+earned+" points. "+total()+" vehicles left.";
- if(total()===0){finish();return}
+ if(cycles===1)addRushHourArrivals();
+  if(total()===0){finish();return}
  if(cycles>=mission().maxCycles){failChallenge("The shifts are over! "+total()+" vehicles are still waiting. Switch green lights sooner next time.");return}
  liveBudget=budget();liveService={north:0,south:0,east:0,west:0};liveCycleStats={moved:0,weighted:0,approaches:new Set()};liveCycleBest=bestPlan();
  $("#traffic-status").textContent="New shift! "+total()+" vehicles remain. Grab a green light.";updateMath();
