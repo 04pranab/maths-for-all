@@ -778,7 +778,7 @@ window.CompletionOverlay = CompletionOverlay;
    consume keystrokes while the learner is typing in a text field.
    ============================================================= */
 function isTypingTarget(target) {
-  return !!target && (target.matches("input, textarea, select") || target.isContentEditable);
+  return !!target && ((typeof target.matches === "function" && target.matches("input, textarea, select")) || target.isContentEditable);
 }
 
 function activeGameScreen() {
@@ -829,6 +829,14 @@ window.addEventListener(
   "keydown",
   (event) => {
     if (event.key !== "Escape") return;
+
+    const completionOverlay = document.getElementById("game-completion-overlay");
+    if (completionOverlay && !completionOverlay.hidden) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.CompletionOverlay?.close();
+      return;
+    }
 
     const overlays = [
       "controls-overlay",
