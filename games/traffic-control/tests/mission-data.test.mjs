@@ -92,12 +92,25 @@ for (const [difficulty, config] of Object.entries(LEVELS)) {
     assert.ok(challenge.targetEfficiency >= 0.75 && challenge.targetEfficiency <= 0.9,
       "every challenge must enforce a measurable efficiency target");
     assert.ok(challenge.minimumGreen >= 5, "every challenge must prevent zero-green starvation");
+    assert.ok(["standard", "rush-hour", "school-crossing", "emergency-priority", "rain"].includes(challenge.modifier),
+      "every level must have a real gameplay modifier");
+    assert.ok(challenge.modifierLabel?.length > 2 && challenge.modifierDescription?.length > 10,
+      "each modifier must be explained to the learner");
+    if (challenge.modifier === "emergency-priority") assert.ok(config.directions.includes(challenge.priorityDirection),
+      "emergency-priority challenges must identify a valid approach");
     assert.ok(["throughput", "balanced", "priority"].includes(challenge.scoringMode),
       "each challenge must define a real scoring mechanic");
     topics.add(challenge.learning.topic);
   }
   assert.ok(topics.size >= 5, difficulty + " must teach a progression of distinct concepts");
 }
+assert.match(bundle, /function addRushHourArrivals\(/, "rush-hour challenges must introduce a real traffic wave");
+assert.match(bundle, /livePedestrianHold>0/, "school-crossing challenges must pause live vehicle service");
+assert.match(bundle, /modifier==="emergency-priority"/, "emergency routes must affect priority scoring");
+assert.match(bundle, /modifier==="rain"/, "rain challenges must change vehicle movement timing");
+assert.match(bundle, /paint\("amber"\)/, "signals must show an amber transition");
+assert.match(bundle, /g.userData.brakeLights=brakeLights/, "queued vehicles must expose illuminated brake lights");
+assert.match(bundle, /setInterval\(liveTick,1000\)/, "live shift budget must tick in one-second intervals");
 assert.match(bundle, /function failChallenge\(/, "a poor plan must be able to fail and be retried");
 assert.match(bundle, /mission\(\)\.serviceSeconds\?\?cfg\(\)\.serviceSeconds\?\?10/, "Easy and Medium capacity must use a finite vehicle service time");
 assert.match(bundle, /cycles>=mission\(\)\.maxCycles/, "the simulation must enforce a cycle limit");
