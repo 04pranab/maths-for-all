@@ -393,7 +393,7 @@ function startRound(index=0){
   $("#mission-tag").textContent=cfg().label+" · "+modifier.label;
   const modifierNote=$("#tc-modifier-note");if(modifierNote){modifierNote.hidden=m.modifier==="standard";modifierNote.textContent=modifier.description+(m.priorityDirection?" Priority approach: "+m.priorityDirection.toUpperCase()+".":"");}
  $("#challenge-tag").textContent=(window.TrafficControlDaily?"DAILY CHALLENGE · ":"")+level.toUpperCase()+" · "+String(round+1).padStart(2,"0")+" / "+challengeCount;
- $("#challenge-complete").hidden=true;$("#tc-leaderboard").hidden=true;$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
+ $("#challenge-complete").hidden=true;$("#tc-leaderboard").hidden=true;$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;let modifierNote=$("#tc-modifier-note");if(!modifierNote){modifierNote=document.createElement("p");modifierNote.id="tc-modifier-note";modifierNote.className="tc-modifier-note";$("#mission-description").insertAdjacentElement("afterend",modifierNote)}const modifier=CHALLENGE_MODIFIERS.find(item=>item.id===m.modifier)||CHALLENGE_MODIFIERS[0];modifierNote.hidden=m.modifier==="standard";modifierNote.textContent=modifier.description+(m.priorityDirection?" Priority approach: "+m.priorityDirection.toUpperCase()+".":"");$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
  for(const d of DIRS)setSignal(d,false);
  $("#traffic-status").textContent="Hold a green light to guide traffic. Switch before the timer runs out!";
  renderVehicles();updateMath();liveCycleBest=bestPlan();
@@ -469,7 +469,7 @@ function runPlan(){
 
   if(total()===0)finish();
   else if(cycles>=mission().maxCycles)failChallenge("The cycle limit was reached with "+total()+" vehicles still waiting. The challenge allows "+mission().maxCycles+" cycles. Restart and allocate green time more carefully.");
-  else {$("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for cycle "+(cycles+1)+" of "+mission().maxCycles+".";updateMath();}
+  else {addRushHourArrivals();$("#traffic-status").textContent=p.moved+" vehicles moved. "+total()+" remain. Recalculate for cycle "+(cycles+1)+" of "+mission().maxCycles+".";updateMath();}
   $("#tc-live-feedback").textContent="Forecast vs actual: "+p.moved+" vehicles predicted and "+p.moved+" moved. Score: "+p.points+" points.";
  },{stagger:reduced?0:100,duration});
 }
@@ -480,7 +480,6 @@ function addRushHourArrivals(){
   queues[direction].push("car");renderVehicles();
   $("#tc-live-feedback").textContent="Rush hour wave! One more car has joined the "+direction.toUpperCase()+" queue.";
  }
- function addRushHourArrivals(){if(mission().modifier!=="rush-hour"||rushHourArrivalsAdded||cycles!==1)return;rushHourArrivalsAdded=true;const direction=dirs().reduce((best,d)=>queues[d].length>queues[best].length?d:best,dirs()[0]);queues[direction].push("car");renderVehicles();$("#tc-live-feedback").textContent="Rush-hour wave! One more car has joined the "+direction.toUpperCase()+" queue."}
  function failChallenge(reason){
  busy=false;
  $("#challenge-complete").hidden=false;
@@ -530,7 +529,7 @@ function finish(){
 
 function liveAxisDirections(axis){if(level==="easy")return axis==="ns"?["north"]:["south"];return axis==="ns"?["north","south"]:["east","west"]}
 function liveSetSignals(axis){for(const d of DIRS)setSignal(d,false);if(axis)for(const d of liveAxisDirections(axis))setSignal(d,true);document.querySelectorAll("[data-live-axis]").forEach(b=>{const active=b.dataset.liveAxis===axis;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))})}
-function beginLiveShift(axis){if(paused||busy||liveBudget<=0||!total())return;liveAxis=axis;liveSetSignals(axis);$("#traffic-status").textContent=livePedestrianHold>0?"Pedestrian crossing active. Vehicles will move when the crossing is clear.":(axis==="ns"?"North / South":"East / West")+" green! Hold to move traffic. Release to switch.";if(!liveTickHandle)liveTickHandle=setInterval(liveTick,100)}
+function beginLiveShift(axis){if(paused||busy||liveBudget<=0||!total())return;liveAxis=axis;liveSetSignals(axis);$("#traffic-status").textContent=livePedestrianHold>0?"Pedestrian crossing active. Vehicles will move when the crossing is clear.":(axis==="ns"?"North / South":"East / West")+" green! Hold to move traffic. Release to switch.";if(!liveTickHandle)liveTickHandle=setInterval(liveTick,1000)}
 function endLiveShift(){liveAxis=null;liveSetSignals(null)}
 function liveTick(){
  if(paused||!liveAxis||liveAnimating)return;
