@@ -281,7 +281,7 @@ class TrafficCity3D{
   this.box(g,width,.42,length,0,.67,0,paint);
   if(kind==="truck"){this.box(g,width*.96,1.05,2.45,0,1.35,-.55,mat(color===0xe8b34e?0xe7e4d9:0xd9e0e4));this.box(g,width*.9,.8,1.15,0,1.22,1.35,paint);this.box(g,width*.72,.48,.06,0,1.42,1.94,glass)}
   else{this.box(g,width*.84,.68,1.28,0,1.12,-.12,paint);this.box(g,width*.76,.48,.92,0,1.19,.72,glass);this.box(g,width*.76,.42,.72,0,1.15,-.82,glass)}
-  for(const x of [-width*.34,width*.34]){this.box(g,.18,.14,.12,x,.65,length/2-.04,lamp,false);this.box(g,.18,.14,.12,x,.65,-length/2+.04,mat(0xe45d52),false)}
+  const brakeLights=[];for(const x of [-width*.34,width*.34]){this.box(g,.18,.14,.12,x,.65,length/2-.04,lamp,false);const brake=this.box(g,.18,.14,.12,x,.65,-length/2+.04,new THREE.MeshStandardMaterial({color:0x7d302d,emissive:0x000000,roughness:.3}),false);brakeLights.push(brake)}g.userData.brakeLights=brakeLights;
   return g;
  }
  setBrakeLights(group,on){for(const light of group?.userData?.brakeLights||[]){light.material.emissive.setHex(on?0xff3028:0x000000);light.material.emissiveIntensity=on?1.4:0}}
