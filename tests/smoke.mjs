@@ -1045,7 +1045,7 @@ async function main() {
     assert(northButton && southButton, "Live signal controls are missing.");
     assert(getComputedStyle(document.getElementById("run-plan")).display === "none", "Old one-click Run button must not be part of live play.");
     assert(getComputedStyle(document.getElementById("schedule-inputs")).display === "none", "Old planning slider must not be part of live play.");
-    window.dispatchEvent(new KeyboardEvent("keydown", {key:"ArrowUp",bubbles:true}));
+    document.dispatchEvent(new KeyboardEvent("keydown", {key:"ArrowUp",bubbles:true}));
     assert(northButton.classList.contains("active"), "Arrow Up should activate the north green light.");
     document.body.dispatchEvent(new KeyboardEvent("keyup", {key:"ArrowUp",bubbles:true}));
     const northBefore = Number(document.getElementById("count-north").textContent);
