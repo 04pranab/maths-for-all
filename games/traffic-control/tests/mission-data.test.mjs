@@ -78,8 +78,8 @@ for (const [difficulty, config] of Object.entries(LEVELS)) {
 assert.match(bundle, /function failChallenge\(/, "a poor plan must be able to fail and be retried");
 assert.match(bundle, /mission\(\)\.serviceSeconds\?\?cfg\(\)\.serviceSeconds\?\?10/, "Easy and Medium capacity must use a finite vehicle service time");
 assert.match(bundle, /cycles>=mission\(\)\.maxCycles/, "the simulation must enforce a cycle limit");
-assert.match(bundle, /mode==="throughput"/, "throughput levels must score completed movements"/);
-assert.match(bundle, /mode==="balanced"/, "balanced levels must reward approach fairness"/);
+assert.match(bundle, /mode==="throughput"/, "throughput levels must score completed movements");
+assert.match(bundle, /mode==="balanced"/, "balanced levels must reward approach fairness");
 assert.match(bundle, /efficiency<m\.targetEfficiency/, "clearing queues alone must not guarantee success");
 assert.match(bundle, /mfa-traffic-control-best-v2/, "personal bests and stars must be persisted locally");
 
