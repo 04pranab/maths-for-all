@@ -15,7 +15,7 @@ vm.runInNewContext(
 );
 const LEVELS = JSON.parse(JSON.stringify(sandbox.module.exports.LEVELS));
 const capacityStart = bundle.indexOf("function service(kind)");
-const capacityEnd = bundle.indexOf("\\nfunction planAt", capacityStart);
+const capacityEnd = bundle.indexOf("\nfunction planAt", capacityStart);
 assert.ok(capacityStart >= 0 && capacityEnd > capacityStart, "service and capacity functions must remain testable");
 const capacitySource = bundle.slice(capacityStart, capacityEnd);
 function capacityFor(difficulty, queue, greenSeconds, configuredServiceSeconds) {
@@ -27,7 +27,7 @@ function capacityFor(difficulty, queue, greenSeconds, configuredServiceSeconds) 
     cfg: () => ({ serviceSeconds: configuredServiceSeconds }),
     TIMES: { bike: 5, car: 10, truck: 15 }
   };
-  vm.runInNewContext(`${capacitySource}\\nmodule.exports = capacity;`, context);
+  vm.runInNewContext(`${capacitySource}\nmodule.exports = capacity;`, context);
   return context.module.exports("north", greenSeconds);
 }
 assert.equal(capacityFor("easy", ["car", "car", "car"], 20, undefined), 2,
