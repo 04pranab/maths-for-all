@@ -369,7 +369,7 @@ function startRound(index=0){
  $("#mission-progress-fill").style.width=((round+1)/challengeCount*100)+"%";
  $("#mission-tag").textContent=cfg().label;
  $("#challenge-tag").textContent=(window.TrafficControlDaily?"DAILY CHALLENGE · ":"")+level.toUpperCase()+" · "+String(round+1).padStart(2,"0")+" / "+challengeCount;
- $("#challenge-complete").hidden=true;$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
+ $("#challenge-complete").hidden=true;$("#tc-leaderboard").hidden=true;$("#mission-title").textContent=m.title;$("#mission-description").textContent=m.description;$("#mission-objective").textContent=m.objective;$("#math-check").hidden=true;$("#next-mission").hidden=true;
  for(const d of DIRS)setSignal(d,false);
  $("#traffic-status").textContent="Study the queues, calculate your plan and run the signal.";
  renderVehicles();updateMath();
@@ -477,6 +477,7 @@ function finish(){
  $("#challenge-complete-title").textContent="Challenge complete · "+"★".repeat(stars)+"☆".repeat(3-stars);
  $("#challenge-complete-text").textContent="Efficiency: "+Math.round(efficiency*100)+"%. "+cleared+" vehicles cleared in "+cycles+" cycles. "+(previous.stars?"Personal best retained.":"A new personal record!");
  $("#next-mission").hidden=false;
+ $("#tc-leaderboard").hidden=false;
  $("#next-mission").textContent="Choose another level →";
  $("#tc-star-result").textContent="★".repeat(stars)+"☆".repeat(3-stars);
  $("#tc-best-result").textContent="Best: "+bestStore[key].stars+" stars · "+Math.round(bestStore[key].efficiency*100)+"%";
@@ -489,11 +490,12 @@ function finish(){
   onContinue:()=>showLevelsView(level)
 });
  const scorePercent=optimalScore>0?Math.max(0,Math.min(100,(score/optimalScore)*100)):0,durationSeconds=Math.max(1,Math.min(14400,Math.round((Date.now()-missionStartedAt)/1000))),accounts=window.MfaAccounts;
- if(accounts?.refreshSession&&accounts?.submitAttempt)accounts.refreshSession().then(()=>accounts.submitAttempt("traffic-control",scorePercent,durationSeconds,null,{difficulty:level,level:round+1})).catch(error=>console.warn("Could not save Traffic Control Centre score:",error.message));
- window.ResearchEventGateway?.record("traffic-control","mission_complete",{difficulty:level,level:round+1,completed:true,correct:true,seconds:durationSeconds});
+ if(accounts?.refreshSession&&accounts?.submitAttempt)accounts.refreshSession().then(()=>accounts.submitAttempt("traffic-control",scorePercent,durationSeconds,null,{difficulty:level,level:round+1,stars,efficiency,dailyChallenge:Boolean(window.TrafficControlDaily),cycles})).catch(error=>console.warn("Could not save Traffic Control Centre score:",error.message));
+ window.ResearchEventGateway?.record("traffic-control","mission_complete",{difficulty:level,level:round+1,completed:true,correct:true,seconds:durationSeconds,stars,efficiency,scoringMode:m.scoringMode,dailyChallenge:Boolean(window.TrafficControlDaily)});
 }
 $("#ns-seconds").addEventListener("input",e=>{nsSeconds=Number(e.target.value);updateMath()});
 $("#tc-daily-challenge")?.addEventListener("click",startDailyChallenge);
+$("#tc-leaderboard")?.addEventListener("click",()=>{const select=document.getElementById("leaderboard-game-select");if(select)select.value="traffic-control";window.MfaAccounts?.openLeaderboard?.();});
 $("#run-plan").addEventListener("click",runPlan);$("#restart-mission").addEventListener("click",()=>startRound(round));$("#next-mission").addEventListener("click",()=>{if($("#next-mission").textContent.startsWith("Retry"))startRound(round);else showLevelsView(level)});
 document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>showLevelsView(b.dataset.difficulty)));
 $("#motion-toggle")?.addEventListener("click",()=>{reduced=!reduced;document.getElementById("screen-traffic-control").classList.toggle("reduce-motion",reduced)});

@@ -181,3 +181,7 @@
 #screen-traffic-control .tc-daily-button{min-height:46px;padding:10px 14px;border:1.5px solid #d9b56d;border-radius:13px;background:#fff5df;color:#815719;font:inherit;font-size:.78rem;font-weight:900;cursor:pointer}
 #screen-traffic-control .tc-daily-button:hover{background:#ffedc8;border-color:#b9893a}
 @media(max-width:680px){#screen-traffic-control .tc-level-actions{align-items:stretch;flex-direction:column}#screen-traffic-control .tc-daily-button{font-size:.7rem;padding:8px}}
+
+#screen-traffic-control .tc-leaderboard-button{width:100%;min-height:44px;margin-top:8px;padding:9px 12px;border:1.5px solid #c5dcd5;border-radius:11px;background:#eef8f4;color:#17645f;font:inherit;font-size:.78rem;font-weight:900;cursor:pointer}
+#screen-traffic-control .tc-leaderboard-button:hover{background:#e1f2eb;border-color:#087e83}
+#screen-traffic-control .tc-leaderboard-button[hidden]{display:none!important}
